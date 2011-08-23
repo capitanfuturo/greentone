@@ -22,7 +22,7 @@
 	  <modifier key="headingImageOnLeft" value="yes" />
 	  <modifier key="headingLineCount" value="2" />
 	  <modifier key="headingFontSize" value="1.5" />
-	  <modifier key="headingBackgroundColor" value="0xf09f3e" />
+	  <modifier key="headingBackgroundColor" value="0x9cd941" />
 	  <modifier key="headingPanelCounter" value="text" />
 	  <modifier key="headingPanelCounterPos" value="inHeading" />
    </guiprefs>
@@ -41,6 +41,10 @@
 	  <variable name="basedir" value="@{basedir}" />
 	  <variable name="tempDir" value="@{tempDir}" />
    </variables>
+   
+   <resources>
+	  <res id="Heading.image" src="@{basedir}/logo_128x128.png" />
+   </resources>
 
    <panels>
 	  <panel classname="HelloPanel" />

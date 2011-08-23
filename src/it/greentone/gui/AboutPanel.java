@@ -28,14 +28,19 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Pannello delle informazioni sul programma.
  * 
  * @author Giuseppe Caliendo
  */
+@SuppressWarnings("serial")
 @Component
 public class AboutPanel extends ContextualPanel
 {
 	private final String panelTitle;
 
+	/**
+	 * Pannello delle informazioni sul programma.
+	 */
 	public AboutPanel()
 	{
 		super();
@@ -47,8 +52,12 @@ public class AboutPanel extends ContextualPanel
 	protected JPanel createHeaderPanel()
 	{
 		JPanel headerPanel = new JPanel(new MigLayout());
+		JLabel logoLabel =
+		  new JLabel(getResourceMap().getIcon("viewAbout.Panel.logo"));
+		headerPanel.add(logoLabel, "spany 2");
 		JLabel titleLabel =
-		  new JLabel(getResourceMap().getString("Application.title"));
+		  new JLabel(getResourceMap().getString("Application.title") + " v."
+		    + getResourceMap().getString("Application.version"));
 		titleLabel.setFont(FontProvider.TITLE_BIG);
 		headerPanel.add(titleLabel, "span");
 		JLabel subtitleLabel =
@@ -93,7 +102,7 @@ public class AboutPanel extends ContextualPanel
 	@Override
 	public void setup()
 	{
-		// non fa null
+		return;
 	}
 
 	@Override

@@ -1,5 +1,9 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.dialog.EditJobStakeholderDialog;
+
+import javax.inject.Inject;
+
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
 import org.springframework.stereotype.Component;
@@ -19,17 +23,24 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Visualizza una finestra di dialogo per la gestione delle persone interessate
+ * ad un incarico.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
 public class EditJobStakeholderAction extends AbstractBean
 {
+	@Inject
+	EditJobStakeholderDialog editJobStakeholderDialog;
 
+	/**
+	 * Visualizza una finestra di dialogo per la gestione delle persone
+	 * interessate ad un incarico.
+	 */
 	@Action
 	public void editJobStakeholder()
 	{
-		// TODO
-		System.out.println(getClass());
+		editJobStakeholderDialog.setVisible(true);
 	}
 }

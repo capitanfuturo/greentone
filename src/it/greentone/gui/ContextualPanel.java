@@ -29,9 +29,13 @@ import org.jdesktop.swingx.JXTable;
  * </code>
  * <br>
  * <br>
+ * Pannello generico da estendere per poter avere delle facilities utili. Un
+ * pannello contestuale è composto da un pannello di intestazione contenente le
+ * informazioni dell'oggetto selezionato nella tabella generale sottostante.
  * 
  * @author Giuseppe Caliendo
  */
+@SuppressWarnings("serial")
 public abstract class ContextualPanel extends JPanel
 {
 	private JXTable contentTable;
@@ -39,6 +43,12 @@ public abstract class ContextualPanel extends JPanel
 	private JPanel headerPanel;
 	private final ResourceMap resourceMap;
 
+	/**
+	 * Pannello generico da estendere per poter avere delle facilities utili. Un
+	 * pannello contestuale è composto da un pannello di intestazione contenente
+	 * le informazioni dell'oggetto selezionato nella tabella generale
+	 * sottostante.
+	 */
 	public ContextualPanel()
 	{
 		resourceMap =
@@ -57,6 +67,13 @@ public abstract class ContextualPanel extends JPanel
 		add(mainScrollPane);
 	}
 
+	/**
+	 * Restituisce il pannello superiore contenente tipicamente le informazioni
+	 * dettagliate della tabella sottostante.
+	 * 
+	 * @return il pannello superiore contenente tipicamente le informazioni
+	 *         dettagliate della tabella sottostante
+	 */
 	public JPanel getHeaderPanel()
 	{
 		if(headerPanel == null)
@@ -64,11 +81,23 @@ public abstract class ContextualPanel extends JPanel
 		return headerPanel;
 	}
 
+	/**
+	 * Costruisce il pannello superiore contenente tipicamente le informazioni
+	 * dettagliate della tabella sottostante.
+	 * 
+	 * @return il pannello superiore contenente tipicamente le informazioni
+	 *         dettagliate della tabella sottostante
+	 */
 	protected JPanel createHeaderPanel()
 	{
 		return new JPanel(new BorderLayout());
 	}
 
+	/**
+	 * Restituisce la tabella di tutti gli elementi dell'oggetto di modello.
+	 * 
+	 * @return la tabella di tutti gli elementi dell'oggetto di modello
+	 */
 	public JXTable getContentTable()
 	{
 		if(contentTable == null)
@@ -76,6 +105,11 @@ public abstract class ContextualPanel extends JPanel
 		return contentTable;
 	}
 
+	/**
+	 * Costruisce la tabella di tutti gli elementi dell'oggetto di modello.
+	 * 
+	 * @return la tabella di tutti gli elementi dell'oggetto di modello
+	 */
 	protected JXTable createContentTable()
 	{
 		JXTable table = new JXTable();
@@ -84,6 +118,13 @@ public abstract class ContextualPanel extends JPanel
 		return table;
 	}
 
+	/**
+	 * Restituisce la barra degli strumenti delle azioni disponibili per il
+	 * pannello corrente.
+	 * 
+	 * @return la barra degli strumenti delle azioni disponibili per il pannello
+	 *         corrente
+	 */
 	public JToolBar getContextualToolBar()
 	{
 		if(contextualToolBar == null)
@@ -99,12 +140,23 @@ public abstract class ContextualPanel extends JPanel
 		return resourceMap;
 	}
 
+	/**
+	 * Inizializza o re-inizializza il pannello intero
+	 */
 	public abstract void setup();
 
+	/**
+	 * Ripulisce il pannello {@link #getHeaderPanel()} di intestazione.
+	 */
 	public void clearForm()
 	{
 		// non fa nulla
 	}
 
+	/**
+	 * Restituisce il nome localizzato del pannello.
+	 * 
+	 * @return il nome localizzato del pannello
+	 */
 	public abstract String getPanelName();
 }

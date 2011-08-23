@@ -34,6 +34,13 @@ public class GreenTone extends SingleFrameApplication
 {
 	private SpringBeansHolder springBeansHolder;
 
+	/**
+	 * Esegue l'applicazione. Per il momento non sono disponibili argomenti di
+	 * lancio.
+	 * 
+	 * @param args
+	 *          array degli argomenti del comando di lancio
+	 */
 	public static void main(final String[] args)
 	{
 		Application.launch(GreenTone.class, args);

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Visualizza il pannello sulle informazioni dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
@@ -32,12 +33,21 @@ public class ViewAboutAction extends ContextualAction
 	@Inject
 	private AboutPanel aboutPanel;
 
+	/**
+	 * Visualizza il pannello sulle informazioni dell'applicazione.
+	 * 
+	 * @param mainPanel
+	 *          pannello principale
+	 */
 	@Inject
 	public ViewAboutAction(MainPanel mainPanel)
 	{
 		super(mainPanel);
 	}
 
+	/**
+	 * Visualizza il pannello sulle informazioni dell'applicazione.
+	 */
 	@Action
 	public void viewAbout()
 	{

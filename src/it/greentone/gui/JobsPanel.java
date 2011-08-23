@@ -213,42 +213,42 @@ public class JobsPanel extends ContextualPanel
 		return panelTitle;
 	}
 
-	public JTextField getProtocolTextField()
+	protected JTextField getProtocolTextField()
 	{
 		if(protocolTextField == null)
 			protocolTextField = new JTextField(25);
 		return protocolTextField;
 	}
 
-	public JXDatePicker getDueDatePicker()
+	protected JXDatePicker getDueDatePicker()
 	{
 		if(dueDatePicker == null)
 			dueDatePicker = new JXDatePicker(Calendar.getInstance().getTime());
 		return dueDatePicker;
 	}
 
-	public JXDatePicker getStartDatePicker()
+	protected JXDatePicker getStartDatePicker()
 	{
 		if(startDatePicker == null)
 			startDatePicker = new JXDatePicker(Calendar.getInstance().getTime());
 		return startDatePicker;
 	}
 
-	public JXDatePicker getFinishDatePicker()
+	protected JXDatePicker getFinishDatePicker()
 	{
 		if(finishDatePicker == null)
 			finishDatePicker = new JXDatePicker(Calendar.getInstance().getTime());
 		return finishDatePicker;
 	}
 
-	public JComboBox getCategoryComboBox()
+	protected JComboBox getCategoryComboBox()
 	{
 		if(categoryComboBox == null)
 			categoryComboBox = new JComboBox();
 		return categoryComboBox;
 	}
 
-	public JComboBox getStatusComboBox()
+	protected JComboBox getStatusComboBox()
 	{
 		if(statusComboBox == null)
 		{
@@ -262,39 +262,46 @@ public class JobsPanel extends ContextualPanel
 		return statusComboBox;
 	}
 
-	public JTextField getDescriptionTextField()
+	protected JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
 			descriptionTextField = new JTextField(30);
 		return descriptionTextField;
 	}
 
-	public JTextArea getNotesTextArea()
+	protected JTextArea getNotesTextArea()
 	{
 		if(notesTextArea == null)
 			notesTextArea = new JTextArea(5, 50);
 		return notesTextArea;
 	}
 
-	public JComboBox getCustomerComboBox()
+	protected JComboBox getCustomerComboBox()
 	{
 		if(customerComboBox == null)
 			customerComboBox = new JComboBox();
 		return customerComboBox;
 	}
 
-	public JComboBox getManagerComboBox()
+	protected JComboBox getManagerComboBox()
 	{
 		if(managerComboBox == null)
 			managerComboBox = new JComboBox();
 		return managerComboBox;
 	}
 
-	public boolean isNewJob()
+	protected boolean isNewJob()
 	{
 		return isNewJob;
 	}
 
+	/**
+	 * Imposta lo stato di nuovo incarico al pannello.
+	 * 
+	 * @param isNewJob
+	 *          <code>true</code> se la modifica nel pannello implica un nuovo
+	 *          incarico, <code>false</code> altrimenti
+	 */
 	public void setNewJob(boolean isNewJob)
 	{
 		this.isNewJob = isNewJob;

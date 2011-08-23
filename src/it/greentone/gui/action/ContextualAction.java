@@ -26,6 +26,9 @@ import org.jdesktop.application.ResourceMap;
  * </code>
  * <br>
  * <br>
+ * Azione legata alla visualizzazione di tipi di oggetti del database nel
+ * pannello principale dell'applicazione. Aggiunge una scheda se non già
+ * presente nel pannello principale.
  * 
  * @author Giuseppe Caliendo
  */
@@ -35,6 +38,14 @@ public abstract class ContextualAction
 	private final ResourceMap resourceMap;
 	private final String applicationName;
 
+	/**
+	 * Azione legata alla visualizzazione di tipi di oggetti del database nel
+	 * pannello principale dell'applicazione. Aggiunge una scheda se non già
+	 * presente nel pannello principale.
+	 * 
+	 * @param mainPanel
+	 *          pannello principale dell'applicazione
+	 */
 	public ContextualAction(MainPanel mainPanel)
 	{
 		this.mainPanel = mainPanel;

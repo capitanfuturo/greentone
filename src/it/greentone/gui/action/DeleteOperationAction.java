@@ -1,7 +1,6 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.JobsPanel;
-import it.greentone.gui.dialog.EditJobCategoryDialog;
+import it.greentone.gui.OperationsPanel;
 
 import javax.inject.Inject;
 
@@ -24,29 +23,17 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Visualizza una finestra di dialogo per la gestione delle categorie degli
- * incarichi.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class EditJobCategoryAction extends AbstractBean
+public class DeleteOperationAction extends AbstractBean
 {
 	@Inject
-	EditJobCategoryDialog editJobCategoryDialog;
-	@Inject
-	JobsPanel jobsPanel;
+	OperationsPanel operationsPanel;
 
-	/**
-	 * Visualizza una finestra di dialogo per la gestione delle categorie degli
-	 * incarichi.
-	 */
 	@Action
-	public void editJobCategory()
+	public void deleteOperation()
 	{
-		editJobCategoryDialog.setup();
-		editJobCategoryDialog.setVisible(true);
-		/* aggiorno la combo box delle categorie */
-		jobsPanel.refreshJobCategories();
 	}
 }
