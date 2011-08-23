@@ -22,7 +22,10 @@ import java.awt.Font;
  */
 public class FontProvider
 {
+	/** Font per titoli */
 	public static final Font TITLE_BIG = new Font("SansSerif", Font.BOLD, 30);
+	/** Font per titoletti */
 	public static final Font TITLE_SMALL = new Font("SansSerif", Font.ITALIC, 20);
+	/** Font per visualizzare codice */
 	public static final Font CODE = new Font("Monospaced", Font.PLAIN, 12);
 }

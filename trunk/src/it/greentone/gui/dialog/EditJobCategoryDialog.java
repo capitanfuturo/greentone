@@ -1,4 +1,4 @@
-package it.greentone.gui;
+package it.greentone.gui.dialog;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
@@ -95,14 +95,14 @@ public class EditJobCategoryDialog extends JDialog
 		pack();
 	}
 
-	public JTextField getInputTextField()
+	protected JTextField getInputTextField()
 	{
 		if(inputTextField == null)
 			inputTextField = new JTextField(10);
 		return inputTextField;
 	}
 
-	public JList getJobCategoryJList()
+	protected JList getJobCategoryJList()
 	{
 		if(jobCategoryJList == null)
 		{
@@ -112,7 +112,7 @@ public class EditJobCategoryDialog extends JDialog
 		return jobCategoryJList;
 	}
 
-	public JButton getAddButton()
+	protected JButton getAddButton()
 	{
 		if(addButton == null)
 		{
@@ -141,7 +141,7 @@ public class EditJobCategoryDialog extends JDialog
 		return addButton;
 	}
 
-	public JButton getDeleteButton()
+	protected JButton getDeleteButton()
 	{
 		if(deleteButton == null)
 		{

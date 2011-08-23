@@ -1,4 +1,4 @@
-package it.greentone.gui;
+package it.greentone.gui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

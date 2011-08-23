@@ -1,7 +1,7 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.EditUserDialog;
 import it.greentone.gui.PersonsPanel;
+import it.greentone.gui.dialog.EditUserDialog;
 import it.greentone.persistence.Person;
 
 import javax.inject.Inject;

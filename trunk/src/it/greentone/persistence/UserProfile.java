@@ -62,8 +62,18 @@ public enum UserProfile
 		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
 	}
 
+	/**
+	 * Restituisce la chiave di localizzazione del valore dell'enumerato.
+	 * 
+	 * @return la chiave di localizzazione del valore dell'enumerato
+	 */
 	public abstract String getLocalizationKey();
 
+	/**
+	 * Restituisce il nome localizzato del valore dell'enumerato.
+	 * 
+	 * @return il nome localizzato del valore dell'enumerato
+	 */
 	public String getLocalizedName(){
 		return resourceMap.getString(getLocalizationKey());
 	}

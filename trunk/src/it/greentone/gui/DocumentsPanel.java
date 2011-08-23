@@ -1,6 +1,8 @@
 package it.greentone.gui;
 
 import it.greentone.gui.action.ActionProvider;
+import it.greentone.persistence.Document;
+import it.greentone.persistence.DocumentService;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
@@ -22,7 +24,27 @@ import org.springframework.stereotype.Component;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
+import ca.odell.glazedlists.swing.EventJXTableModel;
 
+/**
+ * <code>
+ * GreenTone - gestionale per geometri italiani.<br>
+ * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version. This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details. You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * </code>
+ * <br>
+ * <br>
+ * Pannello di visualizzazione di tutti i documenti presenti in database.
+ * 
+ * @author Giuseppe Caliendo
+ */
 @SuppressWarnings("serial")
 @Component
 public class DocumentsPanel extends ContextualPanel
@@ -33,6 +55,8 @@ public class DocumentsPanel extends ContextualPanel
 	private ActionProvider actionProvider;
 	@Inject
 	private PersonService personService;
+	@Inject
+	private DocumentService documentService;
 
 	private JTextField protocolTextField;
 	private JTextField descriptionTextField;
@@ -44,6 +68,12 @@ public class DocumentsPanel extends ContextualPanel
 	private JXDatePicker releaseDateDatePicker;
 	private JTextArea notesTextArea;
 
+	private EventList<Document> documentsEventList;
+	private EventJXTableModel<Document> tableModel;
+
+	/**
+	 * Pannello di visualizzazione di tutti i documenti presenti in database.
+	 */
 	public DocumentsPanel()
 	{
 		super();
@@ -95,56 +125,56 @@ public class DocumentsPanel extends ContextualPanel
 		return headerPanel;
 	}
 
-	public JTextField getProtocolTextField()
+	protected JTextField getProtocolTextField()
 	{
 		if(protocolTextField == null)
 			protocolTextField = new JTextField(15);
 		return protocolTextField;
 	}
 
-	public JTextField getDescriptionTextField()
+	protected JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
 			descriptionTextField = new JTextField(20);
 		return descriptionTextField;
 	}
 
-	public JComboBox getJobComboBox()
+	protected JComboBox getJobComboBox()
 	{
 		if(jobComboBox == null)
 			jobComboBox = new JComboBox();
 		return jobComboBox;
 	}
 
-	public JComboBox getRecipientComboBox()
+	protected JComboBox getRecipientComboBox()
 	{
 		if(recipientComboBox == null)
 			recipientComboBox = new JComboBox();
 		return recipientComboBox;
 	}
 
-	public JCheckBox getIsDigitalCheckBox()
+	protected JCheckBox getIsDigitalCheckBox()
 	{
 		if(isDigitalCheckBox == null)
 			isDigitalCheckBox = new JCheckBox();
 		return isDigitalCheckBox;
 	}
 
-	public JTextField getFileTextField()
+	protected JTextField getFileTextField()
 	{
 		if(fileTextField == null)
 			fileTextField = new JTextField(25);
 		return fileTextField;
 	}
 
-	public JCheckBox getIncomingCheckBox()
+	protected JCheckBox getIncomingCheckBox()
 	{
 		if(incomingCheckBox == null)
 			incomingCheckBox = new JCheckBox();
 		return incomingCheckBox;
 	}
 
-	public JXDatePicker getReleaseDateDatePicker()
+	protected JXDatePicker getReleaseDateDatePicker()
 	{
 		if(releaseDateDatePicker == null)
 			releaseDateDatePicker =
@@ -152,7 +182,7 @@ public class DocumentsPanel extends ContextualPanel
 		return releaseDateDatePicker;
 	}
 
-	public JTextArea getNotesTextArea()
+	protected JTextArea getNotesTextArea()
 	{
 		if(notesTextArea == null)
 			notesTextArea = new JTextArea(5, 50);
@@ -173,6 +203,34 @@ public class DocumentsPanel extends ContextualPanel
 		allPersonsEventList.addAll(personService.getAllPersons());
 		getRecipientComboBox().setModel(
 		  new EventComboBoxModel<Person>(allPersonsEventList));
+
+		/* aggiorno la tabella degli incarichi */
+		documentsEventList = new BasicEventList<Document>();
+		documentsEventList.addAll(documentService.getAllDocuments());
+		String[] properties =
+		  new String[] {"protocol", "description", "job", "recipient", "isDigital",
+		    "uri", "incoming", "releaseDate", "notes"};
+		String[] columnsName =
+		  new String[] {
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.recipient"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isDigital"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.incoming"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
+		boolean[] writable =
+		  new boolean[] {false, false, false, false, false, false, false, false,
+		    false};
+
+		tableModel =
+		  new EventJXTableModel<Document>(documentsEventList, properties,
+		    columnsName,
+		    writable);
+		getContentTable().setModel(tableModel);
+
 
 	}
 

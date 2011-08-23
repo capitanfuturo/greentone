@@ -24,6 +24,9 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Classe di convenienza contenente tutte le azioni disponibili
+ * nell'applicazione. Collega le azioni supportate dal framework BSAF con le
+ * {@link Action} di Swing.
  * 
  * @author Giuseppe Caliendo
  */
@@ -36,17 +39,25 @@ public class ActionProvider
 	@Inject
 	AddJobAction addJob;
 	@Inject
+	AddOperationAction addOperation;
+	@Inject
 	AddPersonAction addPerson;
 	@Inject
 	DeleteDocumentAction deleteDocument;
 	@Inject
 	DeleteJobAction deleteJob;
 	@Inject
+	DeleteOperationAction deleteOperation;
+	@Inject
 	DeletePersonAction deletePerson;
 	@Inject
 	EditJobCategoryAction editJobCategory;
 	@Inject
 	EditJobStakeholderAction editJobStakeholder;
+	@Inject
+	EditOperationTypeAction editOperationType;
+	@Inject
+	EditOperationTypeTypologyAction editOperationTypeTypology;
 	@Inject
 	EditUserAction editUser;
 	@Inject
@@ -55,6 +66,8 @@ public class ActionProvider
 	SaveDocumentAction saveDocument;
 	@Inject
 	SaveJobAction saveJob;
+	@Inject
+	SaveOperationAction saveOperation;
 	@Inject
 	SavePersonAction savePerson;
 	@Inject
@@ -68,102 +81,251 @@ public class ActionProvider
 	@Inject
 	ViewAboutAction viewAbout;
 
+	/**
+	 * Oggetto di convenienza contenente tutte le azioni disponibili
+	 * nell'applicazione. Collega le azioni supportate dal framework BSAF con le
+	 * {@link Action} di Swing.
+	 */
 	public ActionProvider()
 	{
 		applicationContext = Application.getInstance(GreenTone.class).getContext();
 	}
 
+	/**
+	 * Restituisce l'azione di aggiunta di una persona in anagrafica.
+	 * 
+	 * @return azione di aggiunta di una persona in anagrafica
+	 */
 	public Action getAddPerson()
 	{
 		return applicationContext.getActionMap(addPerson).get("addPerson");
 	}
 
+	/**
+	 * Restituisce l'azione di rimozione di una persona in anagrafica.
+	 * 
+	 * @return azione di rimozione di una persona in anagrafica
+	 */
 	public Action getDeletePerson()
 	{
 		return applicationContext.getActionMap(deletePerson).get("deletePerson");
 	}
 
+	/**
+	 * Restituisce l'azione di gestione delle categorie di un incarico.
+	 * 
+	 * @return azione di gestione delle categorie di un incarico
+	 */
 	public Action getEditJobCategory()
 	{
 		return applicationContext.getActionMap(editJobCategory).get(
 		  "editJobCategory");
 	}
 
+	/**
+	 * Restituisce l'azione di gestione delle persone interessate ad un incarico.
+	 * 
+	 * @return azione di gestione delle persone interessate ad un incarico
+	 */
 	public Action getEditJobStakeholder()
 	{
 		return applicationContext.getActionMap(editJobStakeholder).get(
 		  "editJobStakeholder");
 	}
 
+	/**
+	 * Restituisce l'azione di gestione della login di una persona.
+	 * 
+	 * @return l'azione di gestione della login di una persona
+	 */
 	public Action getEditUser()
 	{
 		return applicationContext.getActionMap(editUser).get("editUser");
 	}
 
+	/**
+	 * Restituisce l'azione di chiusura dell'applicazione.
+	 * 
+	 * @return l'azione di chiusura dell'applicazione
+	 */
 	public Action getExit()
 	{
 		return applicationContext.getActionMap(exitAction).get("exit");
 	}
 
+	/**
+	 * Restituisce l'azione di salvataggio di una persona in anagrafica.
+	 * 
+	 * @return l'azione di salvataggio di una persona in anagrafica
+	 */
 	public Action getSavePerson()
 	{
 		return applicationContext.getActionMap(savePerson).get("savePerson");
 	}
 
+	/**
+	 * Restituisce l'azione di visualizzazione delle informazioni
+	 * sull'applicazione.
+	 * 
+	 * @return l'azione di visualizzazione delle informazioni sull'applicazione
+	 */
 	public Action getViewAbout()
 	{
 		return applicationContext.getActionMap(viewAbout).get("viewAbout");
 	}
 
+	/**
+	 * Restituisce l'azione di visualizzazione degli incarichi.
+	 * 
+	 * @return l'azione di visualizzazione degli incarichi
+	 */
 	public Action getViewJobs()
 	{
 		return applicationContext.getActionMap(viewJobs).get("viewJobs");
 	}
 
+	/**
+	 * Restituisce l'azione di visualizzazione delle persone in anagrafica.
+	 * 
+	 * @return l'azione di visualizzazione delle persone in anagrafica
+	 */
 	public Action getViewPersons()
 	{
 		return applicationContext.getActionMap(viewPersons).get("viewPersons");
 	}
 
+	/**
+	 * Restituisce l'azione di aggiunta di un incarico.
+	 * 
+	 * @return azione di aggiunta di un incarico
+	 */
 	public Action getAddJob()
 	{
 		return applicationContext.getActionMap(addJob).get("addJob");
 	}
 
+	/**
+	 * Restituisce l'azione di rimozione di un incarico.
+	 * 
+	 * @return azione di rimozione di un incarico
+	 */
 	public Action getDeleteJob()
 	{
 		return applicationContext.getActionMap(deleteJob).get("deleteJob");
 	}
 
+	/**
+	 * Restituisce l'azione di salvataggio di un incarico.
+	 * 
+	 * @return azione di salvataggio di un incarico
+	 */
 	public Action getSaveJob()
 	{
 		return applicationContext.getActionMap(saveJob).get("saveJob");
 	}
 
+	/**
+	 * Restituisce l'azione di visualizzazione dei documenti.
+	 * 
+	 * @return l'azione di visualizzazione dei documenti
+	 */
 	public Action getViewDocuments()
 	{
 		return applicationContext.getActionMap(viewDocuments).get("viewDocuments");
 	}
 
+	/**
+	 * Restituisce l'azione di aggiunta di un documento.
+	 * 
+	 * @return azione di aggiunta di un documento
+	 */
 	public Action getAddDocument()
 	{
 		return applicationContext.getActionMap(addDocument).get("addDocument");
 	}
 
+	/**
+	 * Restituisce l'azione di rimozione di un documento.
+	 * 
+	 * @return azione di rimozione di un documento
+	 */
 	public Action getDeleteDocument()
 	{
 		return applicationContext.getActionMap(deleteDocument)
 		  .get("deleteDocument");
 	}
 
+	/**
+	 * Restituisce l'azione di salvataggio di un documento.
+	 * 
+	 * @return azione di salvataggio di un documento
+	 */
 	public Action getSaveDocument()
 	{
 		return applicationContext.getActionMap(saveDocument).get("saveDocument");
 	}
 
+	/**
+	 * Restituisce l'azione di visualizzazione delle operazioni.
+	 * 
+	 * @return l'azione di visualizzazione delle operazioni
+	 */
 	public Action getViewOperations()
 	{
 		return applicationContext.getActionMap(viewOperations)
 		  .get("viewOperations");
+	}
+
+	/**
+	 * Restituisce l'azione di aggiunta di un'operazione.
+	 * 
+	 * @return azione di aggiunta di un'operazione
+	 */
+	public Action getAddOperation()
+	{
+		return applicationContext.getActionMap(addOperation).get("addOperation");
+	}
+
+	/**
+	 * Restituisce l'azione di rimozione di un'operazione.
+	 * 
+	 * @return azione di rimozione di un'operazione
+	 */
+	public Action getDeleteOperation()
+	{
+		return applicationContext.getActionMap(deleteOperation).get(
+		  "deleteOperation");
+	}
+
+	/**
+	 * Restituisce l'azione di salvataggio di un'operazione.
+	 * 
+	 * @return azione di salvataggio di un'operazione
+	 */
+	public Action getSaveOperation()
+	{
+		return applicationContext.getActionMap(saveOperation).get("saveOperation");
+	}
+
+	/**
+	 * Restituisce l'azione di gestione dei tipi di operazione.
+	 * 
+	 * @return azione di gestione dei tipi di operazione
+	 */
+	public Action getEditOperationType()
+	{
+		return applicationContext.getActionMap(editOperationType).get(
+		  "editOperationType");
+	}
+
+	/**
+	 * Restituisce l'azione di gestione delle tipologie dei tipi di operazione.
+	 * 
+	 * @return azione di gestione delle tipologie dei tipi di operazione
+	 */
+	public Action getEditOperationTypeTypology()
+	{
+		return applicationContext.getActionMap(editOperationTypeTypology).get(
+		  "editOperationTypeTypology");
 	}
 }

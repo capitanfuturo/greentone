@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Visualizza le persone presenti nel database.
  * 
  * @author Giuseppe Caliendo
  */
@@ -32,12 +33,21 @@ public class ViewPersonsAction extends ContextualAction
 	@Inject
 	private PersonsPanel personsPanel;
 
+	/**
+	 * Azione per la visualizzazione delle persone nel pannello principale.
+	 * 
+	 * @param mainPanel
+	 *          pannello principale
+	 */
 	@Inject
 	public ViewPersonsAction(MainPanel mainPanel)
 	{
 		super(mainPanel);
 	}
 
+	/**
+	 * Visualizza le persone presenti nel database.
+	 */
 	@Action
 	public void viewPersons()
 	{

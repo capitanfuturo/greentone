@@ -1,4 +1,4 @@
-package it.greentone.gui;
+package it.greentone.gui.dialog;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
@@ -117,42 +117,42 @@ public class EditUserDialog extends JDialog
 		pack();
 	}
 
-	public JLabel getNameContentLabel()
+	protected JLabel getNameContentLabel()
 	{
 		if(nameContentLabel == null)
 			nameContentLabel = new JLabel();
 		return nameContentLabel;
 	}
 
-	public JTextField getUsernameTextField()
+	protected JTextField getUsernameTextField()
 	{
 		if(usernameTextField == null)
 			usernameTextField = new JTextField(25);
 		return usernameTextField;
 	}
 
-	public JPasswordField getPasswordField()
+	protected JPasswordField getPasswordField()
 	{
 		if(passwordField == null)
 			passwordField = new JPasswordField(25);
 		return passwordField;
 	}
 
-	public JCheckBox getIsActiveCheckBox()
+	protected JCheckBox getIsActiveCheckBox()
 	{
 		if(isActiveCheckBox == null)
 			isActiveCheckBox = new JCheckBox();
 		return isActiveCheckBox;
 	}
 
-	public JLabel getActivationDateContentLabel()
+	protected JLabel getActivationDateContentLabel()
 	{
 		if(activationDateContentLabel == null)
 			activationDateContentLabel = new JLabel();
 		return activationDateContentLabel;
 	}
 
-	public JComboBox getUserProfileComboBox()
+	protected JComboBox getUserProfileComboBox()
 	{
 		if(userProfileComboBox == null)
 		{
@@ -166,7 +166,7 @@ public class EditUserDialog extends JDialog
 		return userProfileComboBox;
 	}
 
-	public Action getOkAction()
+	protected Action getOkAction()
 	{
 		if(okAction == null)
 		{
@@ -207,7 +207,7 @@ public class EditUserDialog extends JDialog
 		return okAction;
 	}
 
-	public Action getCancelAction()
+	protected Action getCancelAction()
 	{
 		if(cancelAction == null)
 		{

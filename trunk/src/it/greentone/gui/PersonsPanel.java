@@ -41,6 +41,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  * </code>
  * <br>
  * <br>
+ * Pannello di gestione delle persone in anagrafica.
  * 
  * @author Giuseppe Caliendo
  */
@@ -78,6 +79,9 @@ public class PersonsPanel extends ContextualPanel
 	private JCheckBox isLegalCheckBox;
 	private JTextField identityCardTextField;
 
+	/**
+	 * Pannello di gestione delle persone in anagrafica.
+	 */
 	public PersonsPanel()
 	{
 		super();
@@ -386,27 +390,51 @@ public class PersonsPanel extends ContextualPanel
 		return identityCardTextField;
 	}
 
+	/**
+	 * Restituisce <code>true</code> se la persona è da aggiungere,
+	 * <code>false</code> se modificata.
+	 * 
+	 * @return <code>true</code> se la persona è da aggiungere, <code>false</code>
+	 *         se modificata
+	 */
 	public boolean isNewPerson()
 	{
 		return isNewPerson;
 	}
 
+	/**
+	 * Imposta lo stato di nuova persona al pannello.
+	 * 
+	 * @param isNewPerson
+	 *          <code>true</code> se la modifica nel pannello implica una nuova
+	 *          persona, <code>false</code> altrimenti
+	 */
 	public void setNewPerson(boolean isNewPerson)
 	{
 		this.isNewPerson = isNewPerson;
 	}
 
+	/**
+	 * Restituisce la persona correntemente selezionata.
+	 * 
+	 * @return la persona correntemente selezionata
+	 */
 	public Person getSelectedPerson()
 	{
 		return selectedPerson;
 	}
 
+	/**
+	 * Restituisce la lista delle persone disponibili in anagrafica.
+	 * 
+	 * @return la lista delle persone disponibili in anagrafica
+	 */
 	public EventList<Person> getPersonEventList()
 	{
 		return personEventList;
 	}
 
-	private SortedList<Person> getSortedPersonEventList()
+	protected SortedList<Person> getSortedPersonEventList()
 	{
 		return sortedPersonEventList;
 	}

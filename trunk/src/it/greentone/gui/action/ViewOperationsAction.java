@@ -1,6 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.gui.MainPanel;
+import it.greentone.gui.OperationsPanel;
 
 import javax.inject.Inject;
 
@@ -22,21 +23,35 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Visualizza le operazioni presenti nel database.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
 public class ViewOperationsAction extends ContextualAction
 {
+	@Inject
+	private OperationsPanel operationsPanel;
 
+	/**
+	 * Azione per la visualizzazione delle operazioni nel pannello principale.
+	 * 
+	 * @param mainPanel
+	 *          pannello principale
+	 */
 	@Inject
 	public ViewOperationsAction(MainPanel mainPanel)
 	{
 		super(mainPanel);
 	}
 
+	/**
+	 * Visualizza le operazioni presenti nel database.
+	 */
 	@Action
 	public void viewOperations()
 	{
+		operationsPanel.setup();
+		addTab(operationsPanel);
 	}
 }

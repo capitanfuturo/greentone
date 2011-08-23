@@ -1,11 +1,5 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.JobsPanel;
-import it.greentone.gui.dialog.EditJobCategoryDialog;
-
-import javax.inject.Inject;
-
-import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
 import org.springframework.stereotype.Component;
 
@@ -24,29 +18,17 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Visualizza una finestra di dialogo per la gestione delle categorie degli
- * incarichi.
+ * Azione di salvataggio di un incarico.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class EditJobCategoryAction extends AbstractBean
+public class SaveOperationAction
 {
-	@Inject
-	EditJobCategoryDialog editJobCategoryDialog;
-	@Inject
-	JobsPanel jobsPanel;
 
-	/**
-	 * Visualizza una finestra di dialogo per la gestione delle categorie degli
-	 * incarichi.
-	 */
 	@Action
-	public void editJobCategory()
+	public void saveOperation()
 	{
-		editJobCategoryDialog.setup();
-		editJobCategoryDialog.setVisible(true);
-		/* aggiorno la combo box delle categorie */
-		jobsPanel.refreshJobCategories();
+
 	}
 }
