@@ -1,5 +1,6 @@
-package it.greentone.gui;
+package it.greentone.gui.panel;
 
+import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;

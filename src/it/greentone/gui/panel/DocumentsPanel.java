@@ -1,8 +1,12 @@
-package it.greentone.gui;
+package it.greentone.gui.panel;
 
+import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
+import it.greentone.gui.action.DeleteDocumentAction;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
+import it.greentone.persistence.Job;
+import it.greentone.persistence.JobService;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
@@ -15,10 +19,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -57,6 +64,12 @@ public class DocumentsPanel extends ContextualPanel
 	private PersonService personService;
 	@Inject
 	private DocumentService documentService;
+	@Inject
+	private JobService jobService;
+	@Inject
+	private DeleteDocumentAction deleteDocumentAction;
+	private boolean isNewDocument;
+	private Document selectedDocument;
 
 	private JTextField protocolTextField;
 	private JTextField descriptionTextField;
@@ -125,56 +138,56 @@ public class DocumentsPanel extends ContextualPanel
 		return headerPanel;
 	}
 
-	protected JTextField getProtocolTextField()
+	public JTextField getProtocolTextField()
 	{
 		if(protocolTextField == null)
 			protocolTextField = new JTextField(15);
 		return protocolTextField;
 	}
 
-	protected JTextField getDescriptionTextField()
+	public JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
 			descriptionTextField = new JTextField(20);
 		return descriptionTextField;
 	}
 
-	protected JComboBox getJobComboBox()
+	public JComboBox getJobComboBox()
 	{
 		if(jobComboBox == null)
 			jobComboBox = new JComboBox();
 		return jobComboBox;
 	}
 
-	protected JComboBox getRecipientComboBox()
+	public JComboBox getRecipientComboBox()
 	{
 		if(recipientComboBox == null)
 			recipientComboBox = new JComboBox();
 		return recipientComboBox;
 	}
 
-	protected JCheckBox getIsDigitalCheckBox()
+	public JCheckBox getIsDigitalCheckBox()
 	{
 		if(isDigitalCheckBox == null)
 			isDigitalCheckBox = new JCheckBox();
 		return isDigitalCheckBox;
 	}
 
-	protected JTextField getFileTextField()
+	public JTextField getFileTextField()
 	{
 		if(fileTextField == null)
 			fileTextField = new JTextField(25);
 		return fileTextField;
 	}
 
-	protected JCheckBox getIncomingCheckBox()
+	public JCheckBox getIncomingCheckBox()
 	{
 		if(incomingCheckBox == null)
 			incomingCheckBox = new JCheckBox();
 		return incomingCheckBox;
 	}
 
-	protected JXDatePicker getReleaseDateDatePicker()
+	public JXDatePicker getReleaseDateDatePicker()
 	{
 		if(releaseDateDatePicker == null)
 			releaseDateDatePicker =
@@ -182,7 +195,7 @@ public class DocumentsPanel extends ContextualPanel
 		return releaseDateDatePicker;
 	}
 
-	protected JTextArea getNotesTextArea()
+	public JTextArea getNotesTextArea()
 	{
 		if(notesTextArea == null)
 			notesTextArea = new JTextArea(5, 50);
@@ -201,15 +214,23 @@ public class DocumentsPanel extends ContextualPanel
 		/* carico destinatari */
 		EventList<Person> allPersonsEventList = new BasicEventList<Person>();
 		allPersonsEventList.addAll(personService.getAllPersons());
-		getRecipientComboBox().setModel(
-		  new EventComboBoxModel<Person>(allPersonsEventList));
+		EventComboBoxModel<Person> recipientComboBoxModel = 
+		  new EventComboBoxModel<Person>(allPersonsEventList);
+		getRecipientComboBox().setModel(recipientComboBoxModel);
+		
+		/* carico gli incarichi */
+		EventList<Job> allJobEventList = new BasicEventList<Job>();
+		allJobEventList.addAll(jobService.getAllJobs());
+		EventComboBoxModel<Job> jobComboBoxModel =
+		  new EventComboBoxModel<Job>(allJobEventList);
+		getJobComboBox().setModel(jobComboBoxModel);
 
-		/* aggiorno la tabella degli incarichi */
+		/* aggiorno la tabella dei documenti */
 		documentsEventList = new BasicEventList<Document>();
 		documentsEventList.addAll(documentService.getAllDocuments());
 		String[] properties =
 		  new String[] {"protocol", "description", "job", "recipient", "isDigital",
-		    "uri", "incoming", "releaseDate", "notes"};
+		    "uri", "isIncoming", "releaseDate", "notes"};
 		String[] columnsName =
 		  new String[] {
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
@@ -230,9 +251,54 @@ public class DocumentsPanel extends ContextualPanel
 		    columnsName,
 		    writable);
 		getContentTable().setModel(tableModel);
-
-
 	}
+
+	@Override
+	protected JXTable createContentTable()
+	{
+		JXTable documentTable = super.createContentTable();
+		documentTable.getSelectionModel().addListSelectionListener(
+		  new ListSelectionListener()
+			  {
+				  @Override
+				  public void valueChanged(ListSelectionEvent e)
+				  {
+					  if(!e.getValueIsAdjusting())
+					  {
+						  int selectedRow = getContentTable().getSelectedRow();
+						  if(selectedRow > -1)
+						  {
+							  setNewDocument(false);
+							  selectedDocument = getDocumentsEventList().get(selectedRow);
+							  /* aggiorno il pannello */
+							  getProtocolTextField().setText(selectedDocument.getProtocol());
+							  getDescriptionTextField().setText(
+							    selectedDocument.getDescription());
+							  getJobComboBox().setSelectedItem(selectedDocument.getJob());
+							  getRecipientComboBox().setSelectedItem(
+							    selectedDocument.getRecipient());
+							  getIsDigitalCheckBox().setSelected(
+							    selectedDocument.getIsDigital());
+							  getFileTextField().setText(selectedDocument.getUri());
+							  getIncomingCheckBox().setSelected(
+							    selectedDocument.getIsIncoming());
+							  getReleaseDateDatePicker().setDate(
+							    selectedDocument.getReleaseDate().toDate());
+							  getNotesTextArea().setText(selectedDocument.getNotes());
+							  /* abilito le azioni legate alla selezione */
+							  deleteDocumentAction.setDeleteDocumentActionEnabled(true);
+						  }
+						  else
+						  {
+							  /* disabilito le azioni legate alla selezione */
+							  deleteDocumentAction.setDeleteDocumentActionEnabled(false);
+						  }
+					  }
+				  }
+			  });
+		return documentTable;
+	}
+
 
 	@Override
 	public String getPanelName()
@@ -240,4 +306,37 @@ public class DocumentsPanel extends ContextualPanel
 		return panelTitle;
 	}
 
+	public boolean isNewDocument()
+	{
+		return isNewDocument;
+	}
+
+	public void setNewDocument(boolean isNewDocument)
+	{
+		this.isNewDocument = isNewDocument;
+	}
+
+	@Override
+	public void clearForm()
+	{
+		getProtocolTextField().setText(null);
+		getDescriptionTextField().setText(null);
+		getJobComboBox().setSelectedIndex(-1);
+		getRecipientComboBox().setSelectedIndex(-1);
+		getIsDigitalCheckBox().setSelected(false);
+		getFileTextField().setText(null);
+		getIncomingCheckBox().setSelected(false);
+		getReleaseDateDatePicker().setDate(null);
+		getNotesTextArea().setText(null);
+	}
+
+	public Document getSelectedDocument()
+	{
+		return selectedDocument;
+	}
+
+	public EventList<Document> getDocumentsEventList()
+	{
+		return documentsEventList;
+	}
 }

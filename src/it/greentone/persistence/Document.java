@@ -85,12 +85,12 @@ public class Document
 		this.notes = notes;
 	}
 
-	public boolean isDigital()
+	public boolean getIsDigital()
 	{
 		return isDigital;
 	}
 
-	public void setDigital(boolean isDigital)
+	public void setIsDigital(boolean isDigital)
 	{
 		this.isDigital = isDigital;
 	}
@@ -105,12 +105,12 @@ public class Document
 		this.protocol = protocol;
 	}
 
-	public boolean isIncoming()
+	public boolean getIsIncoming()
 	{
 		return incoming;
 	}
 
-	public void setIncoming(boolean incoming)
+	public void setIsIncoming(boolean incoming)
 	{
 		this.incoming = incoming;
 	}

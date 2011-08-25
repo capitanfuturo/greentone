@@ -1,7 +1,7 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.MainPanel;
-import it.greentone.gui.OperationsPanel;
+import it.greentone.gui.panel.MainPanel;
+import it.greentone.gui.panel.OperationsPanel;
 
 import javax.inject.Inject;
 

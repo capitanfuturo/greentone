@@ -1,6 +1,6 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.PersonsPanel;
+import it.greentone.gui.panel.PersonsPanel;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Elimina una persona dall'anagrafica.
  * 
  * @author Giuseppe Caliendo
  */
@@ -37,6 +38,9 @@ public class DeletePersonAction extends AbstractBean
 	PersonService personService;
 	boolean deletePersonActionEnabled = false;
 
+	/**
+	 * Elimina una persona dall'anagrafica.
+	 */
 	@Action(enabledProperty = "deletePersonActionEnabled")
 	public void deletePerson()
 	{
@@ -47,11 +51,25 @@ public class DeletePersonAction extends AbstractBean
 		personsPanel.setNewPerson(true);
 	}
 
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
 	public boolean isDeletePersonActionEnabled()
 	{
 		return deletePersonActionEnabled;
 	}
 
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param deletePersonActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
 	public void setDeletePersonActionEnabled(boolean deletePersonActionEnabled)
 	{
 		final boolean oldValue = this.deletePersonActionEnabled;

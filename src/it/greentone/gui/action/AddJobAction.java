@@ -1,6 +1,6 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.JobsPanel;
+import it.greentone.gui.panel.JobsPanel;
 
 import javax.inject.Inject;
 

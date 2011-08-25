@@ -1,5 +1,9 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.dialog.EditOperationTypeDialog;
+
+import javax.inject.Inject;
+
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
 import org.springframework.stereotype.Component;
@@ -27,6 +31,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class EditOperationTypeAction extends AbstractBean
 {
+	@Inject
+	EditOperationTypeDialog editOperationTypeDialog;
 
 	/**
 	 * Visualizza una finestra di dialogo per la gestione dei tipi di operazione
@@ -35,5 +41,8 @@ public class EditOperationTypeAction extends AbstractBean
 	@Action
 	public void editOperationType()
 	{
+		editOperationTypeDialog.setup();
+		editOperationTypeDialog.setVisible(true);
+		// operationsPanel.refreshJobCategories();
 	}
 }
