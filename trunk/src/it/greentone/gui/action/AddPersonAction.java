@@ -1,6 +1,6 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.PersonsPanel;
+import it.greentone.gui.panel.PersonsPanel;
 
 import javax.inject.Inject;
 
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Aggiunge una persona in anagrafica.
  * 
  * @author Giuseppe Caliendo
  */
@@ -35,6 +36,9 @@ public class AddPersonAction
 	@Inject
 	private DeletePersonAction deletePersonAction;
 
+	/**
+	 * Aggiunge una persona in anagrafica.
+	 */
 	@Action
 	public void addPerson()
 	{

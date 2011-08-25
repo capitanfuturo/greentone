@@ -1,6 +1,6 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.DocumentsPanel;
+import it.greentone.gui.panel.DocumentsPanel;
 
 import javax.inject.Inject;
 
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Aggiunge un documento.
  * 
  * @author Giuseppe Caliendo
  */
@@ -30,11 +31,17 @@ public class AddDocumentAction
 {
 	@Inject
 	private DocumentsPanel documentsPanel;
+	@Inject
+	private DeleteDocumentAction deleteDocumentAction;
 
+	/**
+	 * Aggiunge un documento.
+	 */
 	@Action
 	public void addDocument()
 	{
-// documentsPanel.clearForm();
-// documentsPanel.setNewDocument(true);
+		documentsPanel.clearForm();
+		documentsPanel.setNewDocument(true);
+		deleteDocumentAction.setDeleteDocumentActionEnabled(true);
 	}
 }

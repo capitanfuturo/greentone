@@ -1,4 +1,7 @@
-package it.greentone.gui;
+package it.greentone.gui.panel;
+
+import it.greentone.gui.ContextualPanel;
+import it.greentone.gui.FontProvider;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
