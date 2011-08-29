@@ -1,0 +1,4 @@
+= GreenTone ChangeLog =
+
+== 0.0.1 (29 Agosto 2011) ==
+Primo rilascio. :-)
