@@ -170,6 +170,8 @@ public class Job
 	@Override
 	public String toString()
 	{
-		return getProtocol() + " " + getDescription();
+		String protocol = getProtocol();
+		String description = getDescription() != null? getDescription(): "";
+		return protocol + " " + description;
 	}
 }

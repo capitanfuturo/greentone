@@ -1,9 +1,11 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeletePersonAction;
 import it.greentone.gui.action.EditUserAction;
+import it.greentone.gui.action.SavePersonAction;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
@@ -14,6 +16,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -56,6 +60,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private EditUserAction editUserAction;
 	@Inject
 	private DeletePersonAction deletePersonAction;
+	@Inject
+	private SavePersonAction savePersonAction;
 	@Inject
 	private PersonService personService;
 	private SortedList<Person> sortedPersonEventList;
@@ -175,8 +181,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 							    getSelectedItem().getTelephone2());
 							  getFaxTextField().setText(getSelectedItem().getFax());
 							  getEmailTextField().setText(getSelectedItem().getEmail());
-							  getIsLegalCheckBox().setSelected(
-							    getSelectedItem().getPiva() != null);
+							  getIsLegalCheckBox()
+							    .setSelected(getSelectedItem().getIsLegal());
 							  getIdentityCardTextField().setText(
 							    getSelectedItem().getIdentityCard());
 							  /* abilito le azioni legate alla selezione */
@@ -198,6 +204,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	@Override
 	public void setup()
 	{
+		super.setup();
+
 		/* pulisco e ricostruisco la toolbar */
 		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddPerson());
@@ -205,9 +213,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		getContextualToolBar().add(actionProvider.getDeletePerson());
 		// TODO getContextualToolBar().addSeparator();
 		// TODO getContextualToolBar().add(actionProvider.getEditUser());
-
-		/* imposto la modalità di aggiunta risorsa */
-		setStatus(EStatus.NEW);
 
 		/* aggiorno la tabella delle persone in anagrafica */
 		sortedPersonEventList =
@@ -261,6 +266,33 @@ public class PersonsPanel extends ContextualPanel<Person>
 		{
 			nameTextField = new JTextField(25);
 			registerComponent(nameTextField);
+			nameTextField.getDocument().addDocumentListener(new DocumentListener()
+				{
+
+					@Override
+					public void removeUpdate(DocumentEvent e)
+					{
+						toogleAction();
+					}
+
+					@Override
+					public void insertUpdate(DocumentEvent e)
+					{
+						toogleAction();
+					}
+
+					@Override
+					public void changedUpdate(DocumentEvent e)
+					{
+						toogleAction();
+					}
+
+					private void toogleAction()
+					{
+						savePersonAction.setSavePersonActionEnabled(GreenToneUtilities
+						  .getText(nameTextField) != null);
+					}
+				});
 		}
 		return nameTextField;
 	}
@@ -415,7 +447,11 @@ public class PersonsPanel extends ContextualPanel<Person>
 		return emailTextField;
 	}
 
-
+	/**
+	 * Restituisce il flag che marca una persona come legale.
+	 * 
+	 * @return il flag che marca una persona come legale
+	 */
 	public JCheckBox getIsLegalCheckBox()
 	{
 		if(isLegalCheckBox == null)
@@ -426,6 +462,11 @@ public class PersonsPanel extends ContextualPanel<Person>
 		return isLegalCheckBox;
 	}
 
+	/**
+	 * Restituisce il campo di numero di carta di identità.
+	 * 
+	 * @return il campo di numero di carta di identità
+	 */
 	public JTextField getIdentityCardTextField()
 	{
 		if(identityCardTextField == null)

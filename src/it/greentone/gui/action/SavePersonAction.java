@@ -66,8 +66,7 @@ public class SavePersonAction extends AbstractBean
 		{
 			JOptionPane.showMessageDialog(personsPanel,
 			  resourceMap.getString("savePerson.Action.nameNotNull"),
-			  resourceMap.getString("ErrorDialog.title"),
-			  JOptionPane.ERROR_MESSAGE);
+			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
 			personsPanel.getNameTextField().requestFocus();
 		}
 		else
@@ -80,7 +79,8 @@ public class SavePersonAction extends AbstractBean
 			  personsPanel.getStatus() == EStatus.NEW? new Person(): personsPanel
 			    .getSelectedItem();
 			/* compilo il bean */
-			person.setAddress(GreenToneUtilities.getText(personsPanel.getAddressTextField()));
+			person.setAddress(GreenToneUtilities.getText(personsPanel
+			  .getAddressTextField()));
 			person.setCap(GreenToneUtilities.getText(personsPanel.getCapTextField()));
 			person.setCf(GreenToneUtilities.getText(personsPanel.getCfTexField()));
 			person
@@ -110,7 +110,7 @@ public class SavePersonAction extends AbstractBean
 			{
 				personService.storePerson(person);
 			}
-			personsPanel.setStatus(EStatus.NEW);
+			personsPanel.clearForm();
 		}
 	}
 

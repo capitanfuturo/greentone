@@ -32,10 +32,6 @@ public class AddPersonAction
 {
 	@Inject
 	private PersonsPanel personsPanel;
-	@Inject
-	private EditUserAction editUserAction;
-	@Inject
-	private DeletePersonAction deletePersonAction;
 
 	/**
 	 * Aggiunge una persona in anagrafica.
@@ -45,7 +41,5 @@ public class AddPersonAction
 	{
 		personsPanel.clearForm();
 		personsPanel.setStatus(EStatus.NEW);
-		deletePersonAction.setDeletePersonActionEnabled(false);
-		editUserAction.setEditUserActionEnabled(false);
 	}
 }

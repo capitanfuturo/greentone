@@ -1,6 +1,11 @@
 package it.greentone;
 
+import java.util.Date;
+
 import javax.swing.text.JTextComponent;
+
+import org.jdesktop.swingx.JXDatePicker;
+import org.joda.time.DateTime;
 
 /**
  * <code>
@@ -46,5 +51,18 @@ public class GreenToneUtilities
 			}
 		}
 		return tmp;
+	}
+
+	/**
+	 * Restituisce una data di tipo Joda Time a partire dal widget di Swingx.
+	 * 
+	 * @param datePicker
+	 *          il componente grafico
+	 * @return la data di tipo Joda Time
+	 */
+	public static DateTime getDateTime(JXDatePicker datePicker)
+	{
+		Date date = datePicker.getDate();
+		return date != null? new DateTime(date): null;
 	}
 }

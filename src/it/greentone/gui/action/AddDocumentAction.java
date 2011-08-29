@@ -32,8 +32,6 @@ public class AddDocumentAction
 {
 	@Inject
 	private DocumentsPanel documentsPanel;
-	@Inject
-	private DeleteDocumentAction deleteDocumentAction;
 
 	/**
 	 * Aggiunge un documento.
@@ -43,6 +41,5 @@ public class AddDocumentAction
 	{
 		documentsPanel.clearForm();
 		documentsPanel.setStatus(EStatus.NEW);
-		deleteDocumentAction.setDeleteDocumentActionEnabled(true);
 	}
 }

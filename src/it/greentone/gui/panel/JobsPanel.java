@@ -1,7 +1,10 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
+import it.greentone.gui.action.DeleteJobAction;
+import it.greentone.gui.action.SaveJobAction;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobCategory;
 import it.greentone.persistence.JobCategoryService;
@@ -17,10 +20,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
@@ -58,6 +66,10 @@ public class JobsPanel extends ContextualPanel<Job>
 	private JobCategoryService jobCategoryService;
 	@Inject
 	private PersonService personService;
+	@Inject
+	private SaveJobAction saveJobAction;
+	@Inject
+	private DeleteJobAction deleteJobAction;
 
 	private static final String LOCALIZATION_PREFIX = "viewJobs.Panel.";
 	private final String panelTitle;
@@ -135,19 +147,70 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
+	protected JXTable createContentTable()
+	{
+		JXTable table = super.createContentTable();
+		table.getSelectionModel().addListSelectionListener(
+		  new ListSelectionListener()
+			  {
+
+				  @Override
+				  public void valueChanged(ListSelectionEvent e)
+				  {
+					  if(!e.getValueIsAdjusting())
+					  {
+						  int selectedRow = getContentTable().getSelectedRow();
+						  if(selectedRow > -1)
+						  {
+							  setStatus(EStatus.EDIT);
+							  setSelectedItem(jobService.getAllJobs().get(selectedRow));
+							  /* aggiorno il pannello */
+							  getProtocolTextField().setText(getSelectedItem().getProtocol());
+							  getDueDatePicker().setDate(
+							    getSelectedItem().getDueDate().toDate());
+							  getStartDatePicker().setDate(
+							    getSelectedItem().getStartDate().toDate());
+							  getFinishDatePicker().setDate(
+							    getSelectedItem().getFinishDate().toDate());
+							  getCategoryComboBox().setSelectedItem(
+							    getSelectedItem().getCategory());
+							  getStatusComboBox().setSelectedItem(
+							    getSelectedItem().getStatus() != null? getSelectedItem()
+							      .getStatus().getLocalizedName(): null);
+							  getDescriptionTextField().setText(
+							    getSelectedItem().getDescription());
+							  getCustomerComboBox().setSelectedItem(
+							    getSelectedItem().getCustomer());
+							  getManagerComboBox().setSelectedItem(
+							    getSelectedItem().getManager());
+							  getNotesTextArea().setText(getSelectedItem().getNotes());
+							  /* abilito le azioni legate alla selezione */
+							  deleteJobAction.setDeleteJobActionEnabled(true);
+						  }
+						  else
+						  {
+							  /* disabilito le azioni legate alla selezione */
+							  deleteJobAction.setDeleteJobActionEnabled(false);
+						  }
+					  }
+				  }
+			  });
+		return table;
+	}
+
+	@Override
 	public void setup()
 	{
+		super.setup();
 		/* pulisco e ricostruisco la toolbar */
 		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddJob());
 		getContextualToolBar().add(actionProvider.getSaveJob());
 		getContextualToolBar().add(actionProvider.getDeleteJob());
 		getContextualToolBar().addSeparator();
-		// TODO getContextualToolBar().add(actionProvider.getEditJobStakeholder());
+		// TODO
+		// getContextualToolBar().add(actionProvider.getEditJobStakeholder());
 		getContextualToolBar().add(actionProvider.getEditJobCategory());
-
-		/* imposto la modalità di aggiunta incarico */
-		setStatus(EStatus.NEW);
 
 		/* aggiorno la tabella degli incarichi */
 		String[] properties =
@@ -199,6 +262,34 @@ public class JobsPanel extends ContextualPanel<Job>
 		{
 			protocolTextField = new JTextField(25);
 			registerComponent(protocolTextField);
+			protocolTextField.getDocument().addDocumentListener(
+			  new DocumentListener()
+				  {
+
+					  @Override
+					  public void removeUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  @Override
+					  public void insertUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  @Override
+					  public void changedUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  private void toogleAction()
+					  {
+						  saveJobAction.setSaveJobActionEnabled(GreenToneUtilities
+						    .getText(protocolTextField) != null);
+					  }
+				  });
 		}
 		return protocolTextField;
 	}

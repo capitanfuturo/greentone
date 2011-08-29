@@ -32,8 +32,6 @@ public class AddJobAction
 {
 	@Inject
 	private JobsPanel jobsPanel;
-	@Inject
-	private DeleteJobAction deleteJobAction;
 
 	/**
 	 * Aggiunge un incarico.
@@ -43,6 +41,5 @@ public class AddJobAction
 	{
 		jobsPanel.clearForm();
 		jobsPanel.setStatus(EStatus.NEW);
-		deleteJobAction.setDeleteJobActionEnabled(true);
 	}
 }

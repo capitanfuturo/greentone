@@ -30,29 +30,13 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Giuseppe Caliendo
  */
+@SuppressWarnings("serial")
 public class PasswordDialog extends JDialog
 {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField usernameTextField;
 	private JPasswordField passwordField;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args)
-	{
-		try
-		{
-			PasswordDialog dialog = new PasswordDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.

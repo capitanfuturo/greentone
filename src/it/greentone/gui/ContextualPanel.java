@@ -1,8 +1,10 @@
 package it.greentone.gui;
 
 import it.greentone.GreenTone;
+import it.greentone.persistence.JobStatus;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,14 +14,17 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.JTextComponent;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
+import org.joda.time.DateTime;
 
 /**
  * <code>
@@ -129,6 +134,39 @@ public abstract class ContextualPanel<T> extends JPanel
 		JXTable table = new JXTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setColumnControlVisible(true);
+		table.setDefaultRenderer(JobStatus.class, new DefaultTableCellRenderer()
+			{
+
+				@Override
+				public Component getTableCellRendererComponent(JTable table,
+				  Object value, boolean isSelected, boolean hasFocus, int row,
+				  int column)
+				{
+					JobStatus status = (JobStatus) value;
+					return super.getTableCellRendererComponent(table, status != null
+					  ? status.getLocalizedName()
+					  : null, isSelected, hasFocus, row, column);
+				}
+			});
+		table.setDefaultRenderer(DateTime.class, new DefaultTableCellRenderer()
+			{
+				@Override
+				public Component getTableCellRendererComponent(JTable table,
+				  Object value, boolean isSelected, boolean hasFocus, int row,
+				  int column)
+				{
+					String formatted = "";
+					DateTime date = (DateTime) value;
+					if(date != null)
+					{
+						formatted =
+						  date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/"
+						    + date.getYear();
+					}
+					return super.getTableCellRendererComponent(table, formatted,
+					  isSelected, hasFocus, row, column);
+				}
+			});
 		return table;
 	}
 
@@ -157,7 +195,10 @@ public abstract class ContextualPanel<T> extends JPanel
 	/**
 	 * Inizializza o re-inizializza il pannello intero
 	 */
-	public abstract void setup();
+	public void setup()
+	{
+		setStatus(EStatus.NEW);
+	}
 
 	/**
 	 * Ripulisce il pannello {@link #getHeaderPanel()} di intestazione.
