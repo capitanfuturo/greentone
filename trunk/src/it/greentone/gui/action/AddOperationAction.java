@@ -32,8 +32,6 @@ public class AddOperationAction
 {
 	@Inject
 	private OperationsPanel operationsPanel;
-	@Inject
-	private DeleteOperationAction deleteOperationAction;
 
 	/**
 	 * Aggiunge una nuova operazione.
@@ -43,6 +41,5 @@ public class AddOperationAction
 	{
 		operationsPanel.clearForm();
 		operationsPanel.setStatus(EStatus.NEW);
-		deleteOperationAction.setDeleteOperationActionEnabled(true);
 	}
 }

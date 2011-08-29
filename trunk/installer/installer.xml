@@ -7,7 +7,8 @@
 	  <appname>@{application.name}</appname>
 	  <appversion>@{major.version.number}.@{minor.version.number}.@{minus.version.number}</appversion>
 	  <authors>
-		 <author email="capitanfuturo@users.sourceforge.net" name="Giuseppe Caliendo" />
+		 <author name="Giuseppe Caliendo" email="capitanfuturo@users.sourceforge.net"/>
+		 <author name="Davide Marcolongo" email=""/>
 	  </authors>
 	  <url>http://code.google.com/p/greentone/</url>
 	  <javaversion>1.6</javaversion>
@@ -28,8 +29,7 @@
    </guiprefs>
 
    <locale>
-	  <langpack iso3="eng" />
-	  <langpack iso3="ita" />
+   	<langpack iso3="ita" />
    </locale>
 
    <!-- Need to define ant properties we want to use during install as variables -->

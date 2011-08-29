@@ -10,8 +10,8 @@ import it.greentone.persistence.Person;
 
 import javax.inject.Inject;
 
+import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,17 +34,18 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class SaveDocumentAction
+public class SaveDocumentAction extends AbstractBean
 {
 	@Inject
-	DocumentsPanel documentsPanel;
+	private DocumentsPanel documentsPanel;
 	@Inject
-	DocumentService documentService;
+	private DocumentService documentService;
+	boolean saveDocumentActionEnabled = false;
 
 	/**
 	 * Salva un documento.
 	 */
-	@Action
+	@Action(enabledProperty = "saveDocumentActionEnabled")
 	public void saveDocument()
 	{
 		/*
@@ -59,21 +60,50 @@ public class SaveDocumentAction
 		  .getDescriptionTextField()));
 		document.setIsDigital(documentsPanel.getIsDigitalCheckBox().isSelected());
 		document.setIsIncoming(documentsPanel.getIncomingCheckBox().isSelected());
-		document.setJob((Job)documentsPanel.getJobComboBox().getSelectedItem());
+		document.setJob((Job) documentsPanel.getJobComboBox().getSelectedItem());
 		document.setNotes(documentsPanel.getNotesTextArea().getText());
 		document.setProtocol(GreenToneUtilities.getText(documentsPanel
 		  .getProtocolTextField()));
-		document.setRecipient((Person)documentsPanel.getRecipientComboBox().getSelectedItem());
-		DateTime releaseDate =
-		  new DateTime(documentsPanel.getReleaseDateDatePicker().getDate());
-		document.setReleaseDate(releaseDate);
+		document.setRecipient((Person) documentsPanel.getRecipientComboBox()
+		  .getSelectedItem());
+		document.setReleaseDate(GreenToneUtilities.getDateTime(documentsPanel
+		  .getReleaseDateDatePicker()));
 		/* aggiorno la tabella */
 		if(documentsPanel.getStatus() == EStatus.NEW)
 		{
 			documentService.addDocument(document);
-		}else{
+		}
+		else
+		{
 			documentService.storeDocument(document);
 		}
-		documentsPanel.setStatus(EStatus.NEW);
+		documentsPanel.clearForm();
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isSaveDocumentActionEnabled()
+	{
+		return saveDocumentActionEnabled;
+	}
+
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param saveDocumentActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
+	public void setSaveDocumentActionEnabled(boolean saveDocumentActionEnabled)
+	{
+		final boolean oldValue = this.saveDocumentActionEnabled;
+		this.saveDocumentActionEnabled = saveDocumentActionEnabled;
+		firePropertyChange("saveDocumentActionEnabled", oldValue,
+		  saveDocumentActionEnabled);
 	}
 }

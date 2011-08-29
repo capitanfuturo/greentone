@@ -92,6 +92,7 @@
 	    		<include name="**/*.properties"/>
 				<include name="**/*.png"/>
 				<include name="**/*.xml"/>
+				<include name="**/*.txt"/>
 	    		<exclude name="**/*.java"/>
 			</fileset>
 		</jar>

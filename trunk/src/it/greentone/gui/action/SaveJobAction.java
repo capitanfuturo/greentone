@@ -11,8 +11,8 @@ import it.greentone.persistence.Person;
 
 import javax.inject.Inject;
 
+import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,17 +35,18 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class SaveJobAction
+public class SaveJobAction extends AbstractBean
 {
 	@Inject
 	private JobsPanel jobsPanel;
 	@Inject
 	private JobService jobService;
+	boolean saveJobActionEnabled = false;
 
 	/**
 	 * Azione di salvataggio di un incarico.
 	 */
-	@Action
+	@Action(enabledProperty = "saveJobActionEnabled")
 	public void saveJob()
 	{
 		/*
@@ -63,13 +64,18 @@ public class SaveJobAction
 		job.setManager((Person) jobsPanel.getManagerComboBox().getSelectedItem());
 		job.setDescription(GreenToneUtilities.getText(jobsPanel
 		  .getDescriptionTextField()));
-		job.setDueDate(new DateTime(jobsPanel.getDueDatePicker().getDate()));
-		job.setStartDate(new DateTime(jobsPanel.getStartDatePicker().getDate()));
-		job.setFinishDate(new DateTime(jobsPanel.getFinishDatePicker().getDate()));
+		job.setDueDate(GreenToneUtilities.getDateTime(jobsPanel.getDueDatePicker()));
+		job
+		  .setStartDate(GreenToneUtilities.getDateTime(jobsPanel.getStartDatePicker()));
+		job.setFinishDate(GreenToneUtilities.getDateTime(jobsPanel
+		  .getFinishDatePicker()));
 		job.setCategory((JobCategory) jobsPanel.getCategoryComboBox()
 		  .getSelectedItem());
-		job.setStatus(JobStatus.values()[jobsPanel.getStatusComboBox()
-		  .getSelectedIndex()]);
+		if(jobsPanel.getStatusComboBox().getSelectedIndex() > -1)
+		{
+			job.setStatus(JobStatus.values()[jobsPanel.getStatusComboBox()
+			  .getSelectedIndex()]);
+		}
 		job.setNotes(jobsPanel.getNotesTextArea().getText());
 		/* aggiorno la tabella */
 		if(jobsPanel.getStatus() == EStatus.NEW)
@@ -80,6 +86,32 @@ public class SaveJobAction
 		{
 			jobService.storeJob(job);
 		}
-		jobsPanel.setStatus(EStatus.NEW);
+		jobsPanel.clearForm();
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isSaveJobActionEnabled()
+	{
+		return saveJobActionEnabled;
+	}
+
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param saveJobActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
+	public void setSaveJobActionEnabled(boolean saveJobActionEnabled)
+	{
+		final boolean oldValue = this.saveJobActionEnabled;
+		this.saveJobActionEnabled = saveJobActionEnabled;
+		firePropertyChange("saveJobActionEnabled", oldValue, saveJobActionEnabled);
 	}
 }

@@ -1,8 +1,10 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteDocumentAction;
+import it.greentone.gui.action.SaveDocumentAction;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
 import it.greentone.persistence.Job;
@@ -17,6 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -67,6 +71,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private JobService jobService;
 	@Inject
 	private DeleteDocumentAction deleteDocumentAction;
+	@Inject
+	private SaveDocumentAction saveDocumentAction;
 
 	private JTextField protocolTextField;
 	private JTextField descriptionTextField;
@@ -140,6 +146,35 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		{
 			protocolTextField = new JTextField(15);
 			registerComponent(protocolTextField);
+			protocolTextField.getDocument().addDocumentListener(
+			  new DocumentListener()
+				  {
+
+					  @Override
+					  public void removeUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  @Override
+					  public void insertUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  @Override
+					  public void changedUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  private void toogleAction()
+					  {
+						  saveDocumentAction
+						    .setSaveDocumentActionEnabled(GreenToneUtilities
+						      .getText(protocolTextField) != null);
+					  }
+				  });
 		}
 		return protocolTextField;
 	}
@@ -227,6 +262,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	@Override
 	public void setup()
 	{
+		super.setup();
 		/* pulisco e ricostruisco la toolbar */
 		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddDocument());
@@ -286,7 +322,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 						  int selectedRow = getContentTable().getSelectedRow();
 						  if(selectedRow > -1)
 						  {
-							  setStatus(EStatus.NEW);
+							  setStatus(EStatus.EDIT);
 							  setSelectedItem(documentService.getAllDocuments().get(
 							    selectedRow));
 							  /* aggiorno il pannello */

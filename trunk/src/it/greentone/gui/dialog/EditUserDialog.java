@@ -224,6 +224,12 @@ public class EditUserDialog extends JDialog
 		return cancelAction;
 	}
 
+	/**
+	 * Configura la finestra di dialogo prima che venga visualizzata.
+	 * 
+	 * @param person
+	 *          la persona di cui modificare le credenziali
+	 */
 	public void setup(Person person)
 	{
 		this.person = person;

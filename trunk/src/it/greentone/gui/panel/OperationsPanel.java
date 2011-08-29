@@ -1,7 +1,10 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
+import it.greentone.gui.action.DeleteOperationAction;
+import it.greentone.gui.action.SaveOperationAction;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.Operation;
@@ -15,10 +18,15 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
@@ -59,6 +67,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private JobService jobService;
 	@Inject
 	OperationTypeService operationTypeService;
+	@Inject
+	DeleteOperationAction deleteOperationAction;
+	@Inject
+	SaveOperationAction saveOperationAction;
 	private EventJXTableModel<Operation> tableModel;
 
 	private JTextField descriptionTextField;
@@ -124,8 +136,59 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	}
 
 	@Override
+	protected JXTable createContentTable()
+	{
+		JXTable table = super.createContentTable();
+		table.getSelectionModel().addListSelectionListener(
+		  new ListSelectionListener()
+			  {
+
+				  @Override
+				  public void valueChanged(ListSelectionEvent e)
+				  {
+					  if(!e.getValueIsAdjusting())
+					  {
+						  int selectedRow = getContentTable().getSelectedRow();
+						  if(selectedRow > -1)
+						  {
+							  setStatus(EStatus.EDIT);
+							  setSelectedItem(operationService.getAllOperations().get(
+							    selectedRow));
+
+							  /* aggiorno il pannello */
+							  getDescriptionTextField().setText(
+							    getSelectedItem().getDescription());
+							  getJobComboBox().setSelectedItem(getSelectedItem().getJob());
+							  getTypeComboBox().setSelectedItem(
+							    getSelectedItem().getOperationType());
+							  getVacazioneCheckBox().setSelected(
+							    getSelectedItem().getIsVacazione());
+							  getProfessionalVacazioneCheckBox().setSelected(
+							    getSelectedItem().getIsProfessionalVacazione());
+							  getOperationDate().setDate(
+							    getSelectedItem().getOperationDate().toDate());
+							  getAmountTextField().setText(
+							    getSelectedItem().getAmount().toString());
+
+							  /* abilito le azioni legate alla selezione */
+							  deleteOperationAction.setDeleteOperationActionEnabled(true);
+						  }
+						  else
+						  {
+							  /* disabilito le azioni legate alla selezione */
+							  deleteOperationAction.setDeleteOperationActionEnabled(false);
+						  }
+					  }
+				  }
+			  });
+		return table;
+	}
+
+	@Override
 	public void setup()
 	{
+		super.setup();
+
 		/* pulisco e ricostruisco la toolbar */
 		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddOperation());
@@ -136,11 +199,13 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		getContextualToolBar().add(actionProvider.getEditOperationTypeTypology());
 
 		/* aggiorno la lista degli incarichi */
-		getJobComboBox().setModel(new EventComboBoxModel<Job>(jobService.getAllJobs()));
+		getJobComboBox().setModel(
+		  new EventComboBoxModel<Job>(jobService.getAllJobs()));
 
 		/* aggiorno la lista dei tipi */
 		getTypeComboBox().setModel(
-		  new EventComboBoxModel<OperationType>(operationTypeService.getAllOperationTypes()));
+		  new EventComboBoxModel<OperationType>(operationTypeService
+		    .getAllOperationTypes()));
 
 		/* aggiorno la tabella */
 		String[] properties =
@@ -173,12 +238,46 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		return panelTitle;
 	}
 
+	/**
+	 * Restituisce il campo descrizione.
+	 * 
+	 * @return il campo descrizione
+	 */
 	public JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
 		{
 			descriptionTextField = new JTextField(20);
 			registerComponent(descriptionTextField);
+			descriptionTextField.getDocument().addDocumentListener(
+			  new DocumentListener()
+				  {
+
+					  @Override
+					  public void removeUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  @Override
+					  public void insertUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  @Override
+					  public void changedUpdate(DocumentEvent e)
+					  {
+						  toogleAction();
+					  }
+
+					  private void toogleAction()
+					  {
+						  saveOperationAction
+						    .setSaveOperationActionEnabled(GreenToneUtilities
+						      .getText(descriptionTextField) != null);
+					  }
+				  });
 		}
 		return descriptionTextField;
 	}

@@ -67,6 +67,7 @@ public class EditJobCategoryDialog extends JDialog
 	{
 		resourceMap =
 		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
 
 		setModal(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);

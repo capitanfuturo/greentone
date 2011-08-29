@@ -10,8 +10,8 @@ import it.greentone.persistence.OperationType;
 
 import javax.inject.Inject;
 
+import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,17 +34,18 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class SaveOperationAction
+public class SaveOperationAction extends AbstractBean
 {
 	@Inject
 	private OperationService operationService;
 	@Inject
 	private OperationsPanel operationsPanel;
+	boolean saveOperationActionEnabled = false;
 
 	/**
 	 * Salva un'operazione.
 	 */
-	@Action
+	@Action(enabledProperty = "saveOperationActionEnabled")
 	public void saveOperation()
 	{
 		/*
@@ -66,8 +67,8 @@ public class SaveOperationAction
 		operation.setIsVacazione(operationsPanel.getVacazioneCheckBox()
 		  .isSelected());
 		operation.setJob((Job) operationsPanel.getJobComboBox().getSelectedItem());
-		operation.setOperationDate(new DateTime(operationsPanel.getOperationDate()
-		  .getDate()));
+		operation.setOperationDate(GreenToneUtilities.getDateTime(operationsPanel
+		  .getOperationDate()));
 		operation.setOperationType((OperationType) operationsPanel
 		  .getTypeComboBox().getSelectedItem());
 		/* aggiorno la tabella */
@@ -79,6 +80,33 @@ public class SaveOperationAction
 		{
 			operationService.storeOperation(operation);
 		}
-		operationsPanel.setStatus(EStatus.NEW);
+		operationsPanel.clearForm();
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isSaveOperationActionEnabled()
+	{
+		return saveOperationActionEnabled;
+	}
+
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param saveOperationActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
+	public void setSaveOperationActionEnabled(boolean saveOperationActionEnabled)
+	{
+		final boolean oldValue = this.saveOperationActionEnabled;
+		this.saveOperationActionEnabled = saveOperationActionEnabled;
+		firePropertyChange("saveOperationActionEnabled", oldValue,
+		  saveOperationActionEnabled);
 	}
 }

@@ -34,8 +34,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class GreenToneAppConfig
 {
+	/**
+	 * Path del file di configurazione di Spring Framework
+	 */
 	public static final String SPRING_CONFIG_LOCATION =
 	  "classpath:/it/greentone/resources/springAppConfig.xml";
+	/**
+	 * Path del file di configurazione di Datanucleus
+	 */
 	public static final String DATANUCLEUS_CONFIG_LOCATION =
 	  "/it/greentone/resources/datanucleus.properties";
 
@@ -57,7 +63,8 @@ public class GreenToneAppConfig
 		final StringBuilder connectionURL = new StringBuilder();
 		connectionURL.append("jdbc:h2:");
 		// TODO recuperare le impostazioni di configurazione
-		final String storageDirPath = "/tmp/provaGreenTone";
+		final String storageDirPath =
+		  System.getProperty("user.home") + "/GreenTone/db";
 		if(storageDirPath != null && storageDirPath.length() > 0)
 		{
 			connectionURL.append(storageDirPath);
@@ -74,6 +81,11 @@ public class GreenToneAppConfig
 		return JDOHelper.getPersistenceManagerFactory(props);
 	}
 
+	/**
+	 * Restituisce il manager delle transazioni.
+	 * 
+	 * @return il manager delle transazioni
+	 */
 	@Bean
 	public PlatformTransactionManager txManager()
 	{
