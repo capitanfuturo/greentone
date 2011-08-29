@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
 
 import javax.inject.Inject;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Aggiunge un incarico.
  * 
  * @author Giuseppe Caliendo
  */
@@ -30,11 +32,17 @@ public class AddJobAction
 {
 	@Inject
 	private JobsPanel jobsPanel;
+	@Inject
+	private DeleteJobAction deleteJobAction;
 
+	/**
+	 * Aggiunge un incarico.
+	 */
 	@Action
 	public void addJob()
 	{
 		jobsPanel.clearForm();
-		jobsPanel.setNewJob(true);
+		jobsPanel.setStatus(EStatus.NEW);
+		deleteJobAction.setDeleteJobActionEnabled(true);
 	}
 }

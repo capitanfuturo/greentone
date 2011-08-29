@@ -1,13 +1,14 @@
 package it.greentone.persistence;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * <code>
@@ -33,25 +34,31 @@ public class JobCategoryService
 {
 	@Inject
 	private JobCategoryDAO jobCategoryDAO;
-
-	public JobCategory loadJobCategory(final long id)
-	{
-		return jobCategoryDAO.loadJobCategory(id);
-	}
+	private final EventList<JobCategory> allJobCategories =
+	  new BasicEventList<JobCategory>();
 
 	public void storeJobCategory(final JobCategory jobCategory)
 	{
 		jobCategoryDAO.storeJobCategory(jobCategory);
 	}
 
+	public void addJobCategory(JobCategory jobCategory)
+	{
+		storeJobCategory(jobCategory);
+		allJobCategories.add(jobCategory);
+	}
+
 	public void deleteJobCategory(final JobCategory jobCategory)
 	{
 		jobCategoryDAO.deleteJobCategory(jobCategory);
+		allJobCategories.remove(jobCategory);
 	}
 
-	public Collection<JobCategory> getAllJobCategories()
+	public EventList<JobCategory> getAllJobCategories()
 	  throws DataAccessException
 	{
-		return jobCategoryDAO.getAllJobCategories();
+		if(allJobCategories.isEmpty())
+			allJobCategories.addAll(jobCategoryDAO.getAllJobCategories());
+		return allJobCategories;
 	}
 }

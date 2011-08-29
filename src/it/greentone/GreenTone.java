@@ -1,6 +1,6 @@
 package it.greentone;
 
-import it.greentone.gui.panel.MainPanel;
+import it.greentone.gui.MainPanel;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;

@@ -1,14 +1,18 @@
 package it.greentone.gui.action;
 
-import it.greentone.GreenTone;
+import it.greentone.GreenToneUtilities;
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
+import it.greentone.persistence.Job;
+import it.greentone.persistence.JobCategory;
 import it.greentone.persistence.JobService;
+import it.greentone.persistence.JobStatus;
+import it.greentone.persistence.Person;
 
 import javax.inject.Inject;
 
 import org.jdesktop.application.Action;
-import org.jdesktop.application.Application;
-import org.jdesktop.application.ResourceMap;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,17 +41,45 @@ public class SaveJobAction
 	private JobsPanel jobsPanel;
 	@Inject
 	private JobService jobService;
-	private final ResourceMap resourceMap;
 
-	public SaveJobAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
-
+	/**
+	 * Azione di salvataggio di un incarico.
+	 */
 	@Action
 	public void saveJob()
 	{
-
+		/*
+		 * se si tratta di una nuova entry creo un nuovo incarico altrimenti
+		 * modifico quella selezionato
+		 */
+		Job job =
+		  jobsPanel.getStatus() == EStatus.EDIT
+		    ? jobsPanel.getSelectedItem()
+		    : new Job();
+		/* compilo il bean */
+		job
+		  .setProtocol(GreenToneUtilities.getText(jobsPanel.getProtocolTextField()));
+		job.setCustomer((Person) jobsPanel.getCustomerComboBox().getSelectedItem());
+		job.setManager((Person) jobsPanel.getManagerComboBox().getSelectedItem());
+		job.setDescription(GreenToneUtilities.getText(jobsPanel
+		  .getDescriptionTextField()));
+		job.setDueDate(new DateTime(jobsPanel.getDueDatePicker().getDate()));
+		job.setStartDate(new DateTime(jobsPanel.getStartDatePicker().getDate()));
+		job.setFinishDate(new DateTime(jobsPanel.getFinishDatePicker().getDate()));
+		job.setCategory((JobCategory) jobsPanel.getCategoryComboBox()
+		  .getSelectedItem());
+		job.setStatus(JobStatus.values()[jobsPanel.getStatusComboBox()
+		  .getSelectedIndex()]);
+		job.setNotes(jobsPanel.getNotesTextArea().getText());
+		/* aggiorno la tabella */
+		if(jobsPanel.getStatus() == EStatus.NEW)
+		{
+			jobService.addJob(job);
+		}
+		else
+		{
+			jobService.storeJob(job);
+		}
+		jobsPanel.setStatus(EStatus.NEW);
 	}
 }

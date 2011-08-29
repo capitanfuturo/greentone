@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.PersonsPanel;
 
 import javax.inject.Inject;
@@ -43,7 +44,7 @@ public class AddPersonAction
 	public void addPerson()
 	{
 		personsPanel.clearForm();
-		personsPanel.setNewPerson(true);
+		personsPanel.setStatus(EStatus.NEW);
 		deletePersonAction.setDeletePersonActionEnabled(false);
 		editUserAction.setEditUserActionEnabled(false);
 	}

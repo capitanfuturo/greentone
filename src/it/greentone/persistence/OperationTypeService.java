@@ -1,13 +1,14 @@
 package it.greentone.persistence;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * <code>
@@ -33,25 +34,31 @@ public class OperationTypeService
 {
 	@Inject
 	private OperationTypeDAO operationTypeDAO;
-
-	public OperationType loadOperationType(final long id)
-	{
-		return operationTypeDAO.loadOperationType(id);
-	}
+	private final EventList<OperationType> allOperationTypeEventList =
+	  new BasicEventList<OperationType>();
 
 	public void storeOperationType(final OperationType operationType)
 	{
 		operationTypeDAO.storeOperationType(operationType);
 	}
 
+	public void addOperationType(OperationType operationType)
+	{
+		storeOperationType(operationType);
+		allOperationTypeEventList.add(operationType);
+	}
+
 	public void deleteOperationType(final OperationType operationType)
 	{
 		operationTypeDAO.deleteOperationType(operationType);
+		allOperationTypeEventList.remove(operationType);
 	}
 
-	public Collection<OperationType> getAllOperationTypes()
+	public EventList<OperationType> getAllOperationTypes()
 	  throws DataAccessException
 	{
-		return operationTypeDAO.getAllOperationTypes();
+		if(allOperationTypeEventList.isEmpty())
+			allOperationTypeEventList.addAll(operationTypeDAO.getAllOperationTypes());
+		return allOperationTypeEventList;
 	}
 }

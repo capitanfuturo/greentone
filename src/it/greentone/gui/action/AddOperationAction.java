@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 
 import javax.inject.Inject;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Aggiunge una nuova operazione.
  * 
  * @author Giuseppe Caliendo
  */
@@ -30,11 +32,17 @@ public class AddOperationAction
 {
 	@Inject
 	private OperationsPanel operationsPanel;
+	@Inject
+	private DeleteOperationAction deleteOperationAction;
 
+	/**
+	 * Aggiunge una nuova operazione.
+	 */
 	@Action
 	public void addOperation()
 	{
 		operationsPanel.clearForm();
-		// TODO operationsPanel.setNewOperation(true);
+		operationsPanel.setStatus(EStatus.NEW);
+		deleteOperationAction.setDeleteOperationActionEnabled(true);
 	}
 }

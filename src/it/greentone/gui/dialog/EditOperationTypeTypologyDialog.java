@@ -26,8 +26,6 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
 
 /**
@@ -62,7 +60,6 @@ public class EditOperationTypeTypologyDialog extends JDialog
 	private JList operationTypeTypologyJList;
 	private JButton addButton;
 	private JButton deleteButton;
-	private final EventList<OperationTypeTypology> operationTypeTypologyEventList;
 
 	/**
 	 * Finestra di dialogo per la gestione delle categorie degli incarichi.
@@ -71,8 +68,6 @@ public class EditOperationTypeTypologyDialog extends JDialog
 	{
 		resourceMap =
 		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		operationTypeTypologyEventList =
-		  new BasicEventList<OperationTypeTypology>();
 
 		setModal(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -134,8 +129,7 @@ public class EditOperationTypeTypologyDialog extends JDialog
 							  new OperationTypeTypology();
 							operationTypeTypology.setName(name);
 							operationTypeTypologyService
-							  .storeOperationTypeTypology(operationTypeTypology);
-							operationTypeTypologyEventList.add(operationTypeTypology);
+							  .addOperationTypeTypology(operationTypeTypology);
 							getInputTextField().setText(null);
 						}
 					}
@@ -163,10 +157,10 @@ public class EditOperationTypeTypologyDialog extends JDialog
 						if(selectedIndex > -1)
 						{
 							OperationTypeTypology operationTypeTypology =
-							  operationTypeTypologyEventList.get(selectedIndex);
+							  operationTypeTypologyService.getAllOperationTypeTypologies()
+							    .get(selectedIndex);
 							operationTypeTypologyService
 							  .deleteOperationTypeTypology(operationTypeTypology);
-							operationTypeTypologyEventList.remove(operationTypeTypology);
 						}
 					}
 				});
@@ -178,12 +172,14 @@ public class EditOperationTypeTypologyDialog extends JDialog
 		return deleteButton;
 	}
 
+	/**
+	 * Configura la finestra di dialogo prima che venga visualizzata.
+	 */
 	public void setup()
 	{
-		operationTypeTypologyEventList.addAll(operationTypeTypologyService
-		  .getAllOperationTypeTypologies());
 		ListModel listModel =
-		  new EventListModel<OperationTypeTypology>(operationTypeTypologyEventList);
+		  new EventListModel<OperationTypeTypology>(
+		    operationTypeTypologyService.getAllOperationTypeTypologies());
 		getOperationTypeTypologyJList().setModel(listModel);
 	}
 

@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.PersonsPanel;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
@@ -44,11 +45,10 @@ public class DeletePersonAction extends AbstractBean
 	@Action(enabledProperty = "deletePersonActionEnabled")
 	public void deletePerson()
 	{
-		Person person = personsPanel.getSelectedPerson();
+		Person person = personsPanel.getSelectedItem();
 		personService.deletePerson(person);
-		personsPanel.getPersonEventList().remove(person);
 		personsPanel.clearForm();
-		personsPanel.setNewPerson(true);
+		personsPanel.setStatus(EStatus.NEW);
 	}
 
 	/**

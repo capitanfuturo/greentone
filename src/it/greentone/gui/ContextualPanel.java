@@ -4,14 +4,21 @@ import it.greentone.GreenTone;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.text.JTextComponent;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 
 /**
@@ -34,14 +41,20 @@ import org.jdesktop.swingx.JXTable;
  * informazioni dell'oggetto selezionato nella tabella generale sottostante.
  * 
  * @author Giuseppe Caliendo
+ * @param <T>
+ *          Oggetto base del pannello contestuale
  */
 @SuppressWarnings("serial")
-public abstract class ContextualPanel extends JPanel
+public abstract class ContextualPanel<T> extends JPanel
 {
 	private JXTable contentTable;
 	private JToolBar contextualToolBar;
 	private JPanel headerPanel;
 	private final ResourceMap resourceMap;
+	private T selectedItem;
+	private EStatus status;
+	Set<JComponent> registeredComponents;
+
 
 	/**
 	 * Pannello generico da estendere per poter avere delle facilities utili. Un
@@ -53,6 +66,7 @@ public abstract class ContextualPanel extends JPanel
 	{
 		resourceMap =
 		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		registeredComponents = new HashSet<JComponent>();
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(getContextualToolBar(), BorderLayout.NORTH);
 		northPanel.add(getHeaderPanel(), BorderLayout.CENTER);
@@ -150,7 +164,54 @@ public abstract class ContextualPanel extends JPanel
 	 */
 	public void clearForm()
 	{
-		// non fa nulla
+		for(JComponent component : registeredComponents)
+		{
+			if(component instanceof JTextComponent)
+			{
+				JTextComponent textComponent = (JTextComponent) component;
+				textComponent.setText(null);
+			}
+			else
+				if(component instanceof JComboBox)
+				{
+					JComboBox comboBox = (JComboBox) component;
+					comboBox.setSelectedItem(null);
+				}
+				else
+					if(component instanceof JCheckBox)
+					{
+						JCheckBox checkBox = (JCheckBox) component;
+						checkBox.setSelected(false);
+					}
+					else
+						if(component instanceof JXDatePicker)
+						{
+							JXDatePicker datePicker = (JXDatePicker) component;
+							datePicker.setDate(null);
+						}
+		}
+	}
+
+	/**
+	 * Registra un componente per la gestione automatizzata.
+	 * 
+	 * @param component
+	 *          componente da aggiungere
+	 */
+	public void registerComponent(JComponent component)
+	{
+		registeredComponents.add(component);
+	}
+
+	/**
+	 * Deregistra un componente per la gestione automatizzata.
+	 * 
+	 * @param component
+	 *          componente da rimuovere
+	 */
+	public void deregisterComponent(JComponent component)
+	{
+		registeredComponents.remove(component);
 	}
 
 	/**
@@ -159,4 +220,65 @@ public abstract class ContextualPanel extends JPanel
 	 * @return il nome localizzato del pannello
 	 */
 	public abstract String getPanelName();
+
+	/**
+	 * Restituisce l'elemento correntemente selezionato dalla tabella contestuale.
+	 * 
+	 * @return l'elemento correntemente selezionato dalla tabella contestuale
+	 * @see ContextualPanel#getContentTable()
+	 */
+	public T getSelectedItem()
+	{
+		return selectedItem;
+	}
+
+	/**
+	 * Imposta l'elemento correntemente selezionato dalla tabella contestuale.
+	 * 
+	 * @param selectedItem
+	 *          l'elemento correntemente selezionato dalla tabella contestuale
+	 * @see ContextualPanel#getContentTable()
+	 */
+	public void setSelectedItem(T selectedItem)
+	{
+		this.selectedItem = selectedItem;
+	}
+
+	/**
+	 * Restituisce lo stato attuale del pannello contestuale.
+	 * 
+	 * @return lo stato attuale del pannello contestuale
+	 */
+	public EStatus getStatus()
+	{
+		return status;
+	}
+
+	/**
+	 * Imposta lo stato attuale del pannello contestuale.
+	 * 
+	 * @param status
+	 *          lo stato attuale del pannello contestuale
+	 */
+	public void setStatus(EStatus status)
+	{
+		this.status = status;
+	}
+
+	/**
+	 * Stato di un pannello contestuale.
+	 * 
+	 * @author Giuseppe Caliendo
+	 */
+	public enum EStatus
+	{
+		/**
+		 * Modalità modifica.
+		 */
+		EDIT,
+		/**
+		 * Modalità nuovo inserimento.
+		 */
+		NEW;
+	}
 }

@@ -1,7 +1,7 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.MainPanel;
 import it.greentone.gui.panel.DocumentsPanel;
-import it.greentone.gui.panel.MainPanel;
 
 import javax.inject.Inject;
 
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Mostra i documenti nel pannello principale dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
@@ -32,12 +33,21 @@ public class ViewDocumentsAction extends ContextualAction
 	@Inject
 	private DocumentsPanel documentsPanel;
 
+	/**
+	 * Mostra i documenti nel pannello principale dell'applicazione.
+	 * 
+	 * @param mainPanel
+	 *          pannello principale
+	 */
 	@Inject
 	public ViewDocumentsAction(MainPanel mainPanel)
 	{
 		super(mainPanel);
 	}
 
+	/**
+	 * Mostra i documenti nel pannello principale dell'applicazione.
+	 */
 	@Action
 	public void viewDocuments()
 	{

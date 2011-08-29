@@ -1,13 +1,14 @@
 package it.greentone.persistence;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * <code>
@@ -33,11 +34,8 @@ public class OperationTypeTypologyService
 {
 	@Inject
 	private OperationTypeTypologyDAO operationTypeTypologyDAO;
-
-	public OperationTypeTypology loadOperationTypeTypology(final long id)
-	{
-		return operationTypeTypologyDAO.loadOperationTypeTypology(id);
-	}
+	private final EventList<OperationTypeTypology> allOperationTypeTypologies =
+	  new BasicEventList<OperationTypeTypology>();
 
 	public void storeOperationTypeTypology(
 	  final OperationTypeTypology operationTypeTypology)
@@ -45,15 +43,26 @@ public class OperationTypeTypologyService
 		operationTypeTypologyDAO.storeOperationTypeTypology(operationTypeTypology);
 	}
 
+	public void addOperationTypeTypology(
+	  final OperationTypeTypology operationTypeTypology)
+	{
+		storeOperationTypeTypology(operationTypeTypology);
+		allOperationTypeTypologies.add(operationTypeTypology);
+	}
+
 	public void deleteOperationTypeTypology(
 	  final OperationTypeTypology operationTypeTypology)
 	{
 		operationTypeTypologyDAO.deleteOperationTypeTypology(operationTypeTypology);
+		allOperationTypeTypologies.remove(operationTypeTypology);
 	}
 
-	public Collection<OperationTypeTypology> getAllOperationTypeTypologies()
+	public EventList<OperationTypeTypology> getAllOperationTypeTypologies()
 	  throws DataAccessException
 	{
-		return operationTypeTypologyDAO.getAllOperationTypeTypologies();
+		if(allOperationTypeTypologies.isEmpty())
+			allOperationTypeTypologies.addAll(operationTypeTypologyDAO
+			  .getAllOperationTypeTypologies());
+		return allOperationTypeTypologies;
 	}
 }

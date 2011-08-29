@@ -46,7 +46,5 @@ public class EditJobCategoryAction extends AbstractBean
 	{
 		editJobCategoryDialog.setup();
 		editJobCategoryDialog.setVisible(true);
-		/* aggiorno la combo box delle categorie */
-		jobsPanel.refreshJobCategories();
 	}
 }

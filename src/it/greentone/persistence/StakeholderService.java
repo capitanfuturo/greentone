@@ -1,13 +1,14 @@
 package it.greentone.persistence;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * <code>
@@ -33,25 +34,31 @@ public class StakeholderService
 {
 	@Inject
 	private StakeholderDAO stakeholderDAO;
-
-	public Stakeholder loadStakeholder(final long id)
-	{
-		return stakeholderDAO.loadStakeholder(id);
-	}
+	private final EventList<Stakeholder> allStakeholdersEventList =
+	  new BasicEventList<Stakeholder>();
 
 	public void storeStakeholder(final Stakeholder stakeholder)
 	{
 		stakeholderDAO.storeStakeholder(stakeholder);
 	}
 
+	public void addStakeholder(final Stakeholder stakeholder)
+	{
+		storeStakeholder(stakeholder);
+		allStakeholdersEventList.add(stakeholder);
+	}
+
 	public void deleteStakeholder(final Stakeholder stakeholder)
 	{
 		stakeholderDAO.deleteStakeholder(stakeholder);
+		allStakeholdersEventList.remove(stakeholder);
 	}
 
-	public Collection<Stakeholder> getAllStakeholders()
+	public EventList<Stakeholder> getAllStakeholders()
 	  throws DataAccessException
 	{
-		return stakeholderDAO.getAllStakeholders();
+		if(allStakeholdersEventList.isEmpty())
+			allStakeholdersEventList.addAll(stakeholderDAO.getAllStakeholders());
+		return allStakeholdersEventList;
 	}
 }

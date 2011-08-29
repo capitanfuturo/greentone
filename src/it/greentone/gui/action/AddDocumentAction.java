@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 
 import javax.inject.Inject;
@@ -41,7 +42,7 @@ public class AddDocumentAction
 	public void addDocument()
 	{
 		documentsPanel.clearForm();
-		documentsPanel.setNewDocument(true);
+		documentsPanel.setStatus(EStatus.NEW);
 		deleteDocumentAction.setDeleteDocumentActionEnabled(true);
 	}
 }

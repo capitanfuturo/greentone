@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
@@ -44,11 +45,10 @@ public class DeleteDocumentAction extends AbstractBean
 	@Action(enabledProperty = "deleteDocumentActionEnabled")
 	public void deleteDocument()
 	{
-		Document document = documentsPanel.getSelectedDocument();
+		Document document = documentsPanel.getSelectedItem();
 		documentService.deleteDocument(document);
-		documentsPanel.getDocumentsEventList().remove(document);
 		documentsPanel.clearForm();
-		documentsPanel.setNewDocument(true);
+		documentsPanel.setStatus(EStatus.NEW);
 	}
 
 	/**

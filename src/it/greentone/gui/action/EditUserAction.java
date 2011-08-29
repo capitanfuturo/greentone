@@ -40,7 +40,7 @@ public class EditUserAction extends AbstractBean
 	@Action(enabledProperty = "editUserActionEnabled")
 	public void editUser()
 	{
-		Person person = personsPanel.getSelectedPerson();
+		Person person = personsPanel.getSelectedItem();
 		editUserDialog.setup(person);
 		editUserDialog.setVisible(true);
 	}

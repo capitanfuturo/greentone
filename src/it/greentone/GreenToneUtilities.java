@@ -1,6 +1,6 @@
 package it.greentone;
 
-import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 /**
  * <code>
@@ -34,7 +34,7 @@ public class GreenToneUtilities
 	 *         testo viene ripulito di spazi iniziali e finali del campo passato
 	 *         in ingresso. Restituisce <code>null</code> se il testo è vuoto
 	 */
-	public static String getText(JTextField textField)
+	public static String getText(JTextComponent textField)
 	{
 		String tmp = textField.getText();
 		if(tmp != null)
