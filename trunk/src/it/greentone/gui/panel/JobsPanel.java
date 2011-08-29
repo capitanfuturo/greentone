@@ -10,8 +10,6 @@ import it.greentone.persistence.JobStatus;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
-import java.util.Calendar;
-
 import javax.inject.Inject;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -25,8 +23,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
@@ -51,23 +48,20 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class JobsPanel extends ContextualPanel
+public class JobsPanel extends ContextualPanel<Job>
 {
 	@Inject
 	private ActionProvider actionProvider;
 	@Inject
 	private JobService jobService;
 	@Inject
-	private PersonService personService;
-	@Inject
 	private JobCategoryService jobCategoryService;
+	@Inject
+	private PersonService personService;
 
 	private static final String LOCALIZATION_PREFIX = "viewJobs.Panel.";
 	private final String panelTitle;
-	private boolean isNewJob;
-	private EventList<Job> jobEventList;
 	private EventJXTableModel<Job> tableModel;
-	private EventList<JobCategory> jobCategoriesEventList;
 
 	private JTextField protocolTextField;
 	private JXDatePicker dueDatePicker;
@@ -149,15 +143,13 @@ public class JobsPanel extends ContextualPanel
 		getContextualToolBar().add(actionProvider.getSaveJob());
 		getContextualToolBar().add(actionProvider.getDeleteJob());
 		getContextualToolBar().addSeparator();
-		getContextualToolBar().add(actionProvider.getEditJobStakeholder());
+		// TODO getContextualToolBar().add(actionProvider.getEditJobStakeholder());
 		getContextualToolBar().add(actionProvider.getEditJobCategory());
 
 		/* imposto la modalità di aggiunta incarico */
-		setNewJob(true);
+		setStatus(EStatus.NEW);
 
 		/* aggiorno la tabella degli incarichi */
-		jobEventList = new BasicEventList<Job>();
-		jobEventList.addAll(jobService.getAllJobs());
 		String[] properties =
 		  new String[] {"protocol", "customer", "manager", "description",
 		    "dueDate", "startDate", "finishDate", "category", "status", "notes"};
@@ -178,34 +170,21 @@ public class JobsPanel extends ContextualPanel
 		    false, false};
 
 		tableModel =
-		  new EventJXTableModel<Job>(jobEventList, properties, columnsName,
-		    writable);
+		  new EventJXTableModel<Job>(jobService.getAllJobs(),
+		    new BeanTableFormat<Job>(Job.class, properties, columnsName, writable));
 		getContentTable().setModel(tableModel);
 
 		/* carico responsabili e committenti */
-		EventList<Person> allPersonsEventList = new BasicEventList<Person>();
-		allPersonsEventList.addAll(personService.getAllPersons());
-
 		getCustomerComboBox().setModel(
-		  new EventComboBoxModel<Person>(allPersonsEventList));
+		  new EventComboBoxModel<Person>(personService.getAllPersons()));
 		getManagerComboBox().setModel(
-		  new EventComboBoxModel<Person>(allPersonsEventList));
-		
-		/* carico le categorie */
-		jobCategoriesEventList = new BasicEventList<JobCategory>();
-		refreshJobCategories();
-		ComboBoxModel model =
-		  new EventComboBoxModel<JobCategory>(jobCategoriesEventList);
-		categoryComboBox.setModel(model);
-	}
+		  new EventComboBoxModel<Person>(personService.getAllPersons()));
 
-	/**
-	 * Aggiorna il modello delle categorie degli incarichi.
-	 */
-	public void refreshJobCategories()
-	{
-		jobCategoriesEventList.clear();
-		jobCategoriesEventList.addAll(jobCategoryService.getAllJobCategories());
+		/* carico le categorie */
+		ComboBoxModel model =
+		  new EventComboBoxModel<JobCategory>(
+		    jobCategoryService.getAllJobCategories());
+		categoryComboBox.setModel(model);
 	}
 
 	@Override
@@ -214,46 +193,62 @@ public class JobsPanel extends ContextualPanel
 		return panelTitle;
 	}
 
-	protected JTextField getProtocolTextField()
+	public JTextField getProtocolTextField()
 	{
 		if(protocolTextField == null)
+		{
 			protocolTextField = new JTextField(25);
+			registerComponent(protocolTextField);
+		}
 		return protocolTextField;
 	}
 
-	protected JXDatePicker getDueDatePicker()
+	public JXDatePicker getDueDatePicker()
 	{
 		if(dueDatePicker == null)
-			dueDatePicker = new JXDatePicker(Calendar.getInstance().getTime());
+		{
+			dueDatePicker = new JXDatePicker();
+			registerComponent(dueDatePicker);
+		}
 		return dueDatePicker;
 	}
 
-	protected JXDatePicker getStartDatePicker()
+	public JXDatePicker getStartDatePicker()
 	{
 		if(startDatePicker == null)
-			startDatePicker = new JXDatePicker(Calendar.getInstance().getTime());
+		{
+			startDatePicker = new JXDatePicker();
+			registerComponent(startDatePicker);
+		}
 		return startDatePicker;
 	}
 
-	protected JXDatePicker getFinishDatePicker()
+	public JXDatePicker getFinishDatePicker()
 	{
 		if(finishDatePicker == null)
-			finishDatePicker = new JXDatePicker(Calendar.getInstance().getTime());
+		{
+			finishDatePicker = new JXDatePicker();
+			registerComponent(finishDatePicker);
+		}
 		return finishDatePicker;
 	}
 
-	protected JComboBox getCategoryComboBox()
+	public JComboBox getCategoryComboBox()
 	{
 		if(categoryComboBox == null)
+		{
 			categoryComboBox = new JComboBox();
+			registerComponent(categoryComboBox);
+		}
 		return categoryComboBox;
 	}
 
-	protected JComboBox getStatusComboBox()
+	public JComboBox getStatusComboBox()
 	{
 		if(statusComboBox == null)
 		{
 			statusComboBox = new JComboBox();
+			registerComponent(statusComboBox);
 			JobStatus[] statusArray = JobStatus.values();
 			for(int i = 0; i < statusArray.length; i++)
 			{
@@ -263,48 +258,43 @@ public class JobsPanel extends ContextualPanel
 		return statusComboBox;
 	}
 
-	protected JTextField getDescriptionTextField()
+	public JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
+		{
 			descriptionTextField = new JTextField(30);
+			registerComponent(descriptionTextField);
+		}
 		return descriptionTextField;
 	}
 
-	protected JTextArea getNotesTextArea()
+	public JTextArea getNotesTextArea()
 	{
 		if(notesTextArea == null)
+		{
 			notesTextArea = new JTextArea(5, 50);
+			registerComponent(notesTextArea);
+		}
 		return notesTextArea;
 	}
 
-	protected JComboBox getCustomerComboBox()
+	public JComboBox getCustomerComboBox()
 	{
 		if(customerComboBox == null)
+		{
 			customerComboBox = new JComboBox();
+			registerComponent(customerComboBox);
+		}
 		return customerComboBox;
 	}
 
-	protected JComboBox getManagerComboBox()
+	public JComboBox getManagerComboBox()
 	{
 		if(managerComboBox == null)
+		{
 			managerComboBox = new JComboBox();
+			registerComponent(managerComboBox);
+		}
 		return managerComboBox;
-	}
-
-	protected boolean isNewJob()
-	{
-		return isNewJob;
-	}
-
-	/**
-	 * Imposta lo stato di nuovo incarico al pannello.
-	 * 
-	 * @param isNewJob
-	 *          <code>true</code> se la modifica nel pannello implica un nuovo
-	 *          incarico, <code>false</code> altrimenti
-	 */
-	public void setNewJob(boolean isNewJob)
-	{
-		this.isNewJob = isNewJob;
 	}
 }

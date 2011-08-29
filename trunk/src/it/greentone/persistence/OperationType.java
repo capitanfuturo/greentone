@@ -20,6 +20,7 @@ import javax.jdo.annotations.PrimaryKey;
  * </code>
  * <br>
  * <br>
+ * Tipo di operazione.
  * 
  * @author Giuseppe Caliendo
  */
@@ -38,15 +39,27 @@ public class OperationType
 	@Persistent
 	private boolean isTaxable;
 
+	/**
+	 * Restituisce l'identificativo dell'oggetto
+	 * 
+	 * @return l'identificativo dell'oggetto
+	 */
 	public Long getId()
 	{
 		return id;
 	}
 
+	/**
+	 * Imposta l'identificativo dell'oggetto
+	 * 
+	 * @param id
+	 *          l'identificativo dell'oggetto
+	 */
 	public void setId(Long id)
 	{
 		this.id = id;
 	}
+
 
 	public OperationTypeTypology getTypology()
 	{
@@ -86,5 +99,11 @@ public class OperationType
 	public void setIsTaxable(boolean isTaxable)
 	{
 		this.isTaxable = isTaxable;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
 	}
 }

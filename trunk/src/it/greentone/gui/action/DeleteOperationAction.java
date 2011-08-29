@@ -1,6 +1,9 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
+import it.greentone.persistence.Operation;
+import it.greentone.persistence.OperationService;
 
 import javax.inject.Inject;
 
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Elimina l'operazione selezionata in tabella.
  * 
  * @author Giuseppe Caliendo
  */
@@ -31,9 +35,47 @@ public class DeleteOperationAction extends AbstractBean
 {
 	@Inject
 	OperationsPanel operationsPanel;
+	@Inject
+	OperationService operationService;
+	boolean deleteOperationActionEnabled = false;
 
-	@Action
+	/**
+	 * Elimina l'operazione selezionata in tabella.
+	 */
+	@Action(enabledProperty = "deleteOperationActionEnabled")
 	public void deleteOperation()
 	{
+		Operation operation = operationsPanel.getSelectedItem();
+		operationService.deleteOperation(operation);
+		operationsPanel.clearForm();
+		operationsPanel.setStatus(EStatus.NEW);
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isDeleteOperationActionEnabled()
+	{
+		return deleteOperationActionEnabled;
+	}
+
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param deleteOperationActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
+	public void setDeleteOperationActionEnabled(
+	  boolean deleteOperationActionEnabled)
+	{
+		final boolean oldValue = this.deleteOperationActionEnabled;
+		this.deleteOperationActionEnabled = deleteOperationActionEnabled;
+		firePropertyChange("deleteOperationActionEnabled", oldValue,
+		  deleteOperationActionEnabled);
 	}
 }

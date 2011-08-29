@@ -1,7 +1,10 @@
 package it.greentone.gui.dialog;
 
 import it.greentone.GreenTone;
+import it.greentone.GreenToneUtilities;
+import it.greentone.persistence.OperationType;
 import it.greentone.persistence.OperationTypeService;
+import it.greentone.persistence.OperationTypeTypology;
 import it.greentone.persistence.OperationTypeTypologyService;
 
 import java.awt.BorderLayout;
@@ -24,6 +27,10 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
+
+import ca.odell.glazedlists.impl.beans.BeanTableFormat;
+import ca.odell.glazedlists.swing.EventComboBoxModel;
+import ca.odell.glazedlists.swing.EventJXTableModel;
 
 /**
  * <code>
@@ -62,6 +69,7 @@ public class EditOperationTypeDialog extends JDialog
 	private JCheckBox activeCheckBox;
 	private JCheckBox taxableCheckBox;
 	private JXTable typeTable;
+	private EventJXTableModel<OperationType> tableModel;
 
 	/**
 	 * Finestra di dialogo per la gestione dei tipi di operazione.
@@ -134,12 +142,13 @@ public class EditOperationTypeDialog extends JDialog
 			taxableCheckBox = new JCheckBox();
 		return taxableCheckBox;
 	}
-	
+
 	protected JXTable getTypeTable()
-  {
-		if(typeTable==null)typeTable=new JXTable();
-	  return typeTable;
-  }
+	{
+		if(typeTable == null)
+			typeTable = new JXTable();
+		return typeTable;
+	}
 
 	protected JButton getAddButton()
 	{
@@ -152,7 +161,16 @@ public class EditOperationTypeDialog extends JDialog
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-
+						OperationType operationType = new OperationType();
+						operationType.setIsActive(getActiveCheckBox().isSelected());
+						operationType.setIsTaxable(getTaxableCheckBox().isSelected());
+						operationType.setName(GreenToneUtilities
+						  .getText(getNameTextField()));
+						operationType
+						  .setTypology((OperationTypeTypology) getTypologyComboBox()
+						    .getSelectedItem());
+						operationTypeService.addOperationType(operationType);
+						clearForm();
 					}
 				});
 			addButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
@@ -173,7 +191,13 @@ public class EditOperationTypeDialog extends JDialog
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-
+						int selectedIndex = getTypeTable().getSelectedRow();
+						if(selectedIndex > -1)
+						{
+							OperationType operationType =
+							  operationTypeService.getAllOperationTypes().get(selectedIndex);
+							operationTypeService.deleteOperationType(operationType);
+						}
 					}
 				});
 			deleteButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
@@ -184,9 +208,42 @@ public class EditOperationTypeDialog extends JDialog
 		return deleteButton;
 	}
 
+	/**
+	 * Configura la finestra di dialogo prima che venga visualizzata.
+	 */
 	public void setup()
 	{
+		/* aggiorno le tipologie */
+		EventComboBoxModel<OperationTypeTypology> comboBoxModel =
+		  new EventComboBoxModel<OperationTypeTypology>(
+		    operationTypeTypologyService.getAllOperationTypeTypologies());
+		getTypologyComboBox().setModel(comboBoxModel);
 
+		/* aggiorno la tabella */
+		String[] properties =
+		  new String[] {"typology", "name", "isActive", "isTaxable"};
+		String[] columnsName =
+		  new String[] {
+		    resourceMap.getString(LOCALIZATION_PREFIX + "Table.typology"),
+		    resourceMap.getString(LOCALIZATION_PREFIX + "Table.name"),
+		    resourceMap.getString(LOCALIZATION_PREFIX + "Table.active"),
+		    resourceMap.getString(LOCALIZATION_PREFIX + "Table.taxable")};
+		boolean[] writable = new boolean[] {false, false, false, false};
+
+		tableModel =
+		  new EventJXTableModel<OperationType>(
+		    operationTypeService.getAllOperationTypes(),
+		    new BeanTableFormat<OperationType>(OperationType.class, properties,
+		      columnsName, writable));
+
+		getTypeTable().setModel(tableModel);
 	}
 
+	private void clearForm()
+	{
+		getTypologyComboBox().setSelectedIndex(-1);
+		getNameTextField().setText(null);
+		getActiveCheckBox().setSelected(false);
+		getTaxableCheckBox().setSelected(false);
+	}
 }

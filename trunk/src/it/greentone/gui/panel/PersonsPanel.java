@@ -22,9 +22,8 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
 /**
@@ -48,22 +47,18 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class PersonsPanel extends ContextualPanel
+public class PersonsPanel extends ContextualPanel<Person>
 {
 	private static final String LOCALIZATION_PREFIX = "viewPersons.Panel.";
-
-	@Inject
-	private PersonService personService;
 	@Inject
 	private ActionProvider actionProvider;
 	@Inject
 	private EditUserAction editUserAction;
 	@Inject
 	private DeletePersonAction deletePersonAction;
-	private boolean isNewPerson;
-	private Person selectedPerson;
+	@Inject
+	private PersonService personService;
 	private SortedList<Person> sortedPersonEventList;
-	private EventList<Person> personEventList;
 	private EventJXTableModel<Person> tableModel;
 	private final String panelTitle;
 	private JTextField nameTextField;
@@ -165,25 +160,25 @@ public class PersonsPanel extends ContextualPanel
 						  int selectedRow = getContentTable().getSelectedRow();
 						  if(selectedRow > -1)
 						  {
-							  setNewPerson(false);
-							  selectedPerson = getSortedPersonEventList().get(selectedRow);
-							  getNameTextField().setText(selectedPerson.getName());
-							  getAddressTextField().setText(selectedPerson.getAddress());
-							  getCityTextField().setText(selectedPerson.getCity());
-							  getProvinceTextField().setText(selectedPerson.getProvince());
-							  getCapTextField().setText(selectedPerson.getCap());
-							  getCfTexField().setText(selectedPerson.getCf());
-							  getPivaTextField().setText(selectedPerson.getPiva());
-							  getTelephone1TextField()
-							    .setText(selectedPerson.getTelephone1());
-							  getTelephone2TextField()
-							    .setText(selectedPerson.getTelephone2());
-							  getFaxTextField().setText(selectedPerson.getFax());
-							  getEmailTextField().setText(selectedPerson.getEmail());
+							  setStatus(EStatus.EDIT);
+							  setSelectedItem(getSortedPersonEventList().get(selectedRow));
+							  getNameTextField().setText(getSelectedItem().getName());
+							  getAddressTextField().setText(getSelectedItem().getAddress());
+							  getCityTextField().setText(getSelectedItem().getCity());
+							  getProvinceTextField().setText(getSelectedItem().getProvince());
+							  getCapTextField().setText(getSelectedItem().getCap());
+							  getCfTexField().setText(getSelectedItem().getCf());
+							  getPivaTextField().setText(getSelectedItem().getPiva());
+							  getTelephone1TextField().setText(
+							    getSelectedItem().getTelephone1());
+							  getTelephone2TextField().setText(
+							    getSelectedItem().getTelephone2());
+							  getFaxTextField().setText(getSelectedItem().getFax());
+							  getEmailTextField().setText(getSelectedItem().getEmail());
 							  getIsLegalCheckBox().setSelected(
-							    selectedPerson.getPiva() != null);
+							    getSelectedItem().getPiva() != null);
 							  getIdentityCardTextField().setText(
-							    selectedPerson.getIdentityCard());
+							    getSelectedItem().getIdentityCard());
 							  /* abilito le azioni legate alla selezione */
 							  deletePersonAction.setDeletePersonActionEnabled(true);
 							  editUserAction.setEditUserActionEnabled(true);
@@ -208,25 +203,23 @@ public class PersonsPanel extends ContextualPanel
 		getContextualToolBar().add(actionProvider.getAddPerson());
 		getContextualToolBar().add(actionProvider.getSavePerson());
 		getContextualToolBar().add(actionProvider.getDeletePerson());
-		getContextualToolBar().addSeparator();
-		getContextualToolBar().add(actionProvider.getEditUser());
+		// TODO getContextualToolBar().addSeparator();
+		// TODO getContextualToolBar().add(actionProvider.getEditUser());
 
 		/* imposto la modalità di aggiunta risorsa */
-		setNewPerson(true);
+		setStatus(EStatus.NEW);
 
 		/* aggiorno la tabella delle persone in anagrafica */
-		personEventList = new BasicEventList<Person>();
-		personEventList.addAll(personService.getAllPersons());
 		sortedPersonEventList =
-		  new SortedList<Person>(personEventList, new Comparator<Person>()
-			  {
-
-				  @Override
-				  public int compare(Person o1, Person o2)
-				  {
-					  return o1.getName().compareToIgnoreCase(o2.getName());
-				  }
-			  });
+		  new SortedList<Person>(personService.getAllPersons(),
+		    new Comparator<Person>()
+			    {
+				    @Override
+				    public int compare(Person o1, Person o2)
+				    {
+					    return o1.getName().compareToIgnoreCase(o2.getName());
+				    }
+			    });
 		String[] properties =
 		  new String[] {"name", "address", "city", "province", "cap", "isLegal",
 		    "cf", "piva", "identityCard", "telephone1", "telephone2", "fax",
@@ -251,133 +244,184 @@ public class PersonsPanel extends ContextualPanel
 		    false, false, false, false, false};
 
 		tableModel =
-		  new EventJXTableModel<Person>(sortedPersonEventList, properties,
-		    columnsName, writable);
+		  new EventJXTableModel<Person>(sortedPersonEventList,
+		    new BeanTableFormat<Person>(Person.class, properties, columnsName,
+		      writable));
 		getContentTable().setModel(tableModel);
 	}
 
-	@Override
-	public void clearForm()
-	{
-		getNameTextField().setText(null);
-		getAddressTextField().setText(null);
-		getCityTextField().setText(null);
-		getProvinceTextField().setText(null);
-		getCapTextField().setText(null);
-		getCfTexField().setText(null);
-		getPivaTextField().setText(null);
-		getTelephone1TextField().setText(null);
-		getTelephone2TextField().setText(null);
-		getFaxTextField().setText(null);
-		getEmailTextField().setText(null);
-		getIsLegalCheckBox().setSelected(false);
-		getIdentityCardTextField().setText(null);
-	}
-
+	/**
+	 * Restituisce il campo di inserimento del nome.
+	 * 
+	 * @return il campo di inserimento del nome
+	 */
 	public JTextField getNameTextField()
 	{
 		if(nameTextField == null)
 		{
 			nameTextField = new JTextField(25);
+			registerComponent(nameTextField);
 		}
 		return nameTextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento della descrizione.
+	 * 
+	 * @return il campo di inserimento della descrizione
+	 */
 	public JTextField getAddressTextField()
 	{
 		if(addressTextField == null)
 		{
 			addressTextField = new JTextField(25);
+			registerComponent(addressTextField);
 		}
 		return addressTextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento della città.
+	 * 
+	 * @return il campo di inserimento della città
+	 */
 	public JTextField getCityTextField()
 	{
 		if(cityTextField == null)
 		{
 			cityTextField = new JTextField(20);
+			registerComponent(capTextField);
 		}
 		return cityTextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento della provincia.
+	 * 
+	 * @return il campo di inserimento della provincia
+	 */
 	public JTextField getProvinceTextField()
 	{
 		if(provinceTextField == null)
 		{
 			provinceTextField = new JTextField(20);
+			registerComponent(provinceTextField);
 		}
 		return provinceTextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento del codice di avviamento postale.
+	 * 
+	 * @return il campo di inserimento del codice di avviamento postale
+	 */
 	public JTextField getCapTextField()
 	{
 		if(capTextField == null)
 		{
 			capTextField = new JTextField(5);
+			registerComponent(capTextField);
 		}
 		return capTextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento del codice fiscale.
+	 * 
+	 * @return il campo di inserimento del codice fiscale
+	 */
 	public JTextField getCfTexField()
 	{
 		if(cfTexField == null)
 		{
 			cfTexField = new JTextField(16);
+			registerComponent(cfTexField);
 		}
 		return cfTexField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento della partita IVA.
+	 * 
+	 * @return il campo di inserimento della partita IVA
+	 */
 	public JTextField getPivaTextField()
 	{
 		if(pivaTextField == null)
 		{
 			pivaTextField = new JTextField(9);
+			registerComponent(pivaTextField);
 		}
 		return pivaTextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento del telefono principale.
+	 * 
+	 * @return il campo di inserimento del telefono principale
+	 */
 	public JTextField getTelephone1TextField()
 	{
 		if(telephone1TextField == null)
 		{
 			telephone1TextField = new JTextField(12);
+			registerComponent(telephone1TextField);
 		}
 		return telephone1TextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento del telefono secondario.
+	 * 
+	 * @return il campo di inserimento del telefono secondario
+	 */
 	public JTextField getTelephone2TextField()
 	{
 		if(telephone2TextField == null)
 		{
 			telephone2TextField = new JTextField(12);
+			registerComponent(telephone2TextField);
 		}
 		return telephone2TextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento del fax.
+	 * 
+	 * @return il campo di inserimento del fax
+	 */
 	public JTextField getFaxTextField()
 	{
 		if(faxTextField == null)
 		{
 			faxTextField = new JTextField(9);
+			registerComponent(faxTextField);
 		}
 		return faxTextField;
 	}
 
+	/**
+	 * Restituisce il campo di inserimento dell'indirizzo mail.
+	 * 
+	 * @return il campo di inserimento dell'indirizzo mail
+	 */
 	public JTextField getEmailTextField()
 	{
 		if(emailTextField == null)
 		{
 			emailTextField = new JTextField(30);
+			registerComponent(emailTextField);
 		}
 		return emailTextField;
 	}
+
 
 	public JCheckBox getIsLegalCheckBox()
 	{
 		if(isLegalCheckBox == null)
 		{
 			isLegalCheckBox = new JCheckBox();
+			registerComponent(isLegalCheckBox);
 		}
 		return isLegalCheckBox;
 	}
@@ -387,52 +431,9 @@ public class PersonsPanel extends ContextualPanel
 		if(identityCardTextField == null)
 		{
 			identityCardTextField = new JTextField(9);
+			registerComponent(identityCardTextField);
 		}
 		return identityCardTextField;
-	}
-
-	/**
-	 * Restituisce <code>true</code> se la persona è da aggiungere,
-	 * <code>false</code> se modificata.
-	 * 
-	 * @return <code>true</code> se la persona è da aggiungere, <code>false</code>
-	 *         se modificata
-	 */
-	public boolean isNewPerson()
-	{
-		return isNewPerson;
-	}
-
-	/**
-	 * Imposta lo stato di nuova persona al pannello.
-	 * 
-	 * @param isNewPerson
-	 *          <code>true</code> se la modifica nel pannello implica una nuova
-	 *          persona, <code>false</code> altrimenti
-	 */
-	public void setNewPerson(boolean isNewPerson)
-	{
-		this.isNewPerson = isNewPerson;
-	}
-
-	/**
-	 * Restituisce la persona correntemente selezionata.
-	 * 
-	 * @return la persona correntemente selezionata
-	 */
-	public Person getSelectedPerson()
-	{
-		return selectedPerson;
-	}
-
-	/**
-	 * Restituisce la lista delle persone disponibili in anagrafica.
-	 * 
-	 * @return la lista delle persone disponibili in anagrafica
-	 */
-	public EventList<Person> getPersonEventList()
-	{
-		return personEventList;
 	}
 
 	protected SortedList<Person> getSortedPersonEventList()

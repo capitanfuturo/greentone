@@ -2,10 +2,12 @@ package it.greentone.gui.panel;
 
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
+import it.greentone.persistence.Job;
+import it.greentone.persistence.JobService;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
-
-import java.util.Calendar;
+import it.greentone.persistence.OperationType;
+import it.greentone.persistence.OperationTypeService;
 
 import javax.inject.Inject;
 import javax.swing.JCheckBox;
@@ -19,8 +21,8 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.impl.beans.BeanTableFormat;
+import ca.odell.glazedlists.swing.EventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
 /**
@@ -45,7 +47,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class OperationsPanel extends ContextualPanel
+public class OperationsPanel extends ContextualPanel<Operation>
 {
 	private static final String LOCALIZATION_PREFIX = "viewOperations.Panel.";
 	private final String panelTitle;
@@ -53,7 +55,10 @@ public class OperationsPanel extends ContextualPanel
 	private OperationService operationService;
 	@Inject
 	private ActionProvider actionProvider;
-	private EventList<Operation> operationEventList;
+	@Inject
+	private JobService jobService;
+	@Inject
+	OperationTypeService operationTypeService;
 	private EventJXTableModel<Operation> tableModel;
 
 	private JTextField descriptionTextField;
@@ -130,9 +135,14 @@ public class OperationsPanel extends ContextualPanel
 		getContextualToolBar().add(actionProvider.getEditOperationType());
 		getContextualToolBar().add(actionProvider.getEditOperationTypeTypology());
 
-		/* aggiorno la tabella degli incarichi */
-		operationEventList = new BasicEventList<Operation>();
-		operationEventList.addAll(operationService.getAllOperations());
+		/* aggiorno la lista degli incarichi */
+		getJobComboBox().setModel(new EventComboBoxModel<Job>(jobService.getAllJobs()));
+
+		/* aggiorno la lista dei tipi */
+		getTypeComboBox().setModel(
+		  new EventComboBoxModel<OperationType>(operationTypeService.getAllOperationTypes()));
+
+		/* aggiorno la tabella */
 		String[] properties =
 		  new String[] {"description", "job", "operationType", "isVacazione",
 		    "isProfessionalVacazione", "operationDate", "amount"};
@@ -150,8 +160,9 @@ public class OperationsPanel extends ContextualPanel
 		  new boolean[] {false, false, false, false, false, false, false};
 
 		tableModel =
-		  new EventJXTableModel<Operation>(operationEventList, properties,
-		    columnsName, writable);
+		  new EventJXTableModel<Operation>(operationService.getAllOperations(),
+		    new BeanTableFormat<Operation>(Operation.class, properties,
+		      columnsName, writable));
 		getContentTable().setModel(tableModel);
 
 	}
@@ -162,52 +173,73 @@ public class OperationsPanel extends ContextualPanel
 		return panelTitle;
 	}
 
-	protected JTextField getDescriptionTextField()
+	public JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
+		{
 			descriptionTextField = new JTextField(20);
+			registerComponent(descriptionTextField);
+		}
 		return descriptionTextField;
 	}
 
-	protected JComboBox getJobComboBox()
+	public JComboBox getJobComboBox()
 	{
 		if(jobComboBox == null)
+		{
 			jobComboBox = new JComboBox();
+			registerComponent(jobComboBox);
+		}
 		return jobComboBox;
 	}
 
-	protected JComboBox getTypeComboBox()
+	public JComboBox getTypeComboBox()
 	{
 		if(typeComboBox == null)
+		{
 			typeComboBox = new JComboBox();
+			registerComponent(typeComboBox);
+		}
 		return typeComboBox;
 	}
 
-	protected JCheckBox getVacazioneCheckBox()
+	public JCheckBox getVacazioneCheckBox()
 	{
 		if(vacazioneCheckBox == null)
+		{
 			vacazioneCheckBox = new JCheckBox();
+			registerComponent(vacazioneCheckBox);
+		}
 		return vacazioneCheckBox;
 	}
 
-	protected JCheckBox getProfessionalVacazioneCheckBox()
+	public JCheckBox getProfessionalVacazioneCheckBox()
 	{
 		if(professionalVacazioneCheckBox == null)
+		{
 			professionalVacazioneCheckBox = new JCheckBox();
+			registerComponent(professionalVacazioneCheckBox);
+		}
 		return professionalVacazioneCheckBox;
 	}
 
-	protected JXDatePicker getOperationDate()
+	public JXDatePicker getOperationDate()
 	{
 		if(operationDate == null)
-			operationDate = new JXDatePicker(Calendar.getInstance().getTime());
+		{
+			operationDate = new JXDatePicker();
+			registerComponent(operationDate);
+		}
 		return operationDate;
 	}
 
-	protected JTextField getAmountTextField()
+	public JTextField getAmountTextField()
 	{
 		if(amountTextField == null)
+		{
 			amountTextField = new JTextField(10);
+			registerComponent(amountTextField);
+		}
 		return amountTextField;
 	}
 }

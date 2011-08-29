@@ -20,6 +20,8 @@ import javax.jdo.annotations.PrimaryKey;
  * </code>
  * <br>
  * <br>
+ * Ogni tipo di operazione {@link OperationType} appartiene ad una macro
+ * categoria caratterizzata da un'etichetta identificativa.
  * 
  * @author Giuseppe Caliendo
  */
@@ -32,23 +34,51 @@ public class OperationTypeTypology
 	@Persistent
 	private String name;
 
+	/**
+	 * Restituisce l'identificativo della tipologia del tipo di operazione.
+	 * 
+	 * @return l'identificativo della tipologia del tipo di operazione
+	 */
 	public Long getId()
 	{
 		return id;
 	}
 
+	/**
+	 * Imposta l'identificativo della tipologia del tipo di operazione.
+	 * 
+	 * @param id
+	 *          l'identificativo della tipologia del tipo di operazione
+	 */
 	public void setId(Long id)
 	{
 		this.id = id;
 	}
 
+	/**
+	 * Restituisce il nome della tipologia del tipo di operazione.
+	 * 
+	 * @return il nome della tipologia del tipo di operazione
+	 */
 	public String getName()
 	{
 		return name;
 	}
 
+	/**
+	 * Imposta il nome della tipologia del tipo di operazione
+	 * 
+	 * @param name
+	 *          il nome della tipologia del tipo di operazione
+	 */
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
 	}
 }

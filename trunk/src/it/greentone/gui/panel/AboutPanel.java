@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("serial")
 @Component
-public class AboutPanel extends ContextualPanel
+public class AboutPanel extends ContextualPanel<Void>
 {
 	private final String panelTitle;
 
@@ -83,9 +83,9 @@ public class AboutPanel extends ContextualPanel
 		licenceTextArea.setFont(FontProvider.CODE);
 		try
 		{
-			InputStream inputStream =
-			  getClass().getResourceAsStream(
-			    "/" + getResourceMap().getResourcesDir() + "license.txt");
+			String licenceURL =
+			  "/" + getResourceMap().getResourcesDir() + "license.txt";
+			InputStream inputStream = getClass().getResourceAsStream(licenceURL);
 			licenceTextArea.read(new InputStreamReader(inputStream), null);
 		}
 		catch(Exception e)

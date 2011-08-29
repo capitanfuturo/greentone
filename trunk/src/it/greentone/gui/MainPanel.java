@@ -1,4 +1,4 @@
-package it.greentone.gui.panel;
+package it.greentone.gui;
 
 import it.greentone.gui.action.ActionProvider;
 
@@ -28,9 +28,11 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Pannello principale dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
+@SuppressWarnings("serial")
 @Component
 public class MainPanel extends JPanel
 {
@@ -38,16 +40,25 @@ public class MainPanel extends JPanel
 	@Inject
 	private ActionProvider actionProvider;
 	private JTabbedPane mainTabbedPane;
+	private JLabel statusLabel;
 
+	/**
+	 * Inizializza l'interfaccia grafica.
+	 */
 	public void initialize()
 	{
 		setLayout(new BorderLayout());
 		add(getMainToolBar(), BorderLayout.WEST);
 		add(getMainTabbedPane(), BorderLayout.CENTER);
-		JLabel statusLabel = new JLabel("New label");
+		statusLabel = new JLabel();
 		add(statusLabel, BorderLayout.PAGE_END);
 	}
 
+	/**
+	 * Restituisce la barra laterale con la barra dei bottoni principale.
+	 * 
+	 * @return la barra laterale con la barra dei bottoni principale
+	 */
 	public JToolBar getMainToolBar()
 	{
 		if(mainToolBar == null)
@@ -65,6 +76,11 @@ public class MainPanel extends JPanel
 		return mainToolBar;
 	}
 
+	/**
+	 * Restituisce la tabbed pane che contiene le schede aperte dell'applicazione.
+	 * 
+	 * @return la tabbed pane che contiene le schede aperte dell'applicazione
+	 */
 	public JTabbedPane getMainTabbedPane()
 	{
 		if(mainTabbedPane == null)
@@ -72,5 +88,15 @@ public class MainPanel extends JPanel
 			mainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		}
 		return mainTabbedPane;
+	}
+
+	/**
+	 * Restituisce l'etichetta di stato.
+	 * 
+	 * @return l'etichetta di stato
+	 */
+	public JLabel getStatusLabel()
+	{
+		return statusLabel;
 	}
 }

@@ -1,6 +1,8 @@
 package it.greentone.gui.action;
 
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
+import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 
 import javax.inject.Inject;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Elimina un incarico.
  * 
  * @author Giuseppe Caliendo
  */
@@ -34,9 +37,44 @@ public class DeleteJobAction extends AbstractBean
 	JobsPanel jobsPanel;
 	@Inject
 	JobService jobService;
+	boolean deleteJobActionEnabled = false;
 
-	@Action
+	/**
+	 * Elimina un incarico.
+	 */
+	@Action(enabledProperty = "deleteJobActionEnabled")
 	public void deleteJob()
 	{
+		Job job = jobsPanel.getSelectedItem();
+		jobService.deleteJob(job);
+		jobsPanel.clearForm();
+		jobsPanel.setStatus(EStatus.NEW);
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isDeleteJobActionEnabled()
+	{
+		return deleteJobActionEnabled;
+	}
+
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param deleteJobActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
+	public void setDeleteJobActionEnabled(boolean deleteJobActionEnabled)
+	{
+		final boolean oldValue = this.deleteJobActionEnabled;
+		this.deleteJobActionEnabled = deleteJobActionEnabled;
+		firePropertyChange("deleteJobActionEnabled", oldValue,
+		  deleteJobActionEnabled);
 	}
 }

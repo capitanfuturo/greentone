@@ -1,6 +1,17 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenToneUtilities;
+import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.panel.OperationsPanel;
+import it.greentone.persistence.Job;
+import it.greentone.persistence.Operation;
+import it.greentone.persistence.OperationService;
+import it.greentone.persistence.OperationType;
+
+import javax.inject.Inject;
+
 import org.jdesktop.application.Action;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,17 +29,56 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Azione di salvataggio di un incarico.
+ * Salva un'operazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
 public class SaveOperationAction
 {
+	@Inject
+	private OperationService operationService;
+	@Inject
+	private OperationsPanel operationsPanel;
 
+	/**
+	 * Salva un'operazione.
+	 */
 	@Action
 	public void saveOperation()
 	{
-
+		/*
+		 * se si tratta di una nuova entry creo un nuova operazione altrimenti
+		 * modifico quella selezionata
+		 */
+		Operation operation =
+		  operationsPanel.getStatus() == EStatus.EDIT? operationsPanel
+		    .getSelectedItem(): new Operation();
+		/* compilo il bean */
+		String value =
+		  GreenToneUtilities.getText(operationsPanel.getAmountTextField());
+		Double amount = value != null? Double.valueOf(value): null;
+		operation.setAmount(amount);
+		operation.setDescription(GreenToneUtilities.getText(operationsPanel
+		  .getDescriptionTextField()));
+		operation.setIsProfessionalVacazione(operationsPanel
+		  .getProfessionalVacazioneCheckBox().isSelected());
+		operation.setIsVacazione(operationsPanel.getVacazioneCheckBox()
+		  .isSelected());
+		operation.setJob((Job) operationsPanel.getJobComboBox().getSelectedItem());
+		operation.setOperationDate(new DateTime(operationsPanel.getOperationDate()
+		  .getDate()));
+		operation.setOperationType((OperationType) operationsPanel
+		  .getTypeComboBox().getSelectedItem());
+		/* aggiorno la tabella */
+		if(operationsPanel.getStatus() == EStatus.NEW)
+		{
+			operationService.addOperation(operation);
+		}
+		else
+		{
+			operationService.storeOperation(operation);
+		}
+		operationsPanel.setStatus(EStatus.NEW);
 	}
 }

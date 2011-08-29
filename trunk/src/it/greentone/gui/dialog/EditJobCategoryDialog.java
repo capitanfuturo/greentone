@@ -26,8 +26,6 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
 
 /**
@@ -61,7 +59,6 @@ public class EditJobCategoryDialog extends JDialog
 	private JList jobCategoryJList;
 	private JButton addButton;
 	private JButton deleteButton;
-	private final EventList<JobCategory> jobCategoryEventList;
 
 	/**
 	 * Finestra di dialogo per la gestione delle categorie degli incarichi.
@@ -70,7 +67,6 @@ public class EditJobCategoryDialog extends JDialog
 	{
 		resourceMap =
 		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		jobCategoryEventList = new BasicEventList<JobCategory>();
 
 		setModal(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -128,8 +124,7 @@ public class EditJobCategoryDialog extends JDialog
 						{
 							JobCategory jobCategory = new JobCategory();
 							jobCategory.setName(name);
-							jobCategoryService.storeJobCategory(jobCategory);
-							jobCategoryEventList.add(jobCategory);
+							jobCategoryService.addJobCategory(jobCategory);
 							getInputTextField().setText(null);
 						}
 					}
@@ -155,9 +150,9 @@ public class EditJobCategoryDialog extends JDialog
 						int selectedIndex = getJobCategoryJList().getSelectedIndex();
 						if(selectedIndex > -1)
 						{
-							JobCategory jobCategory = jobCategoryEventList.get(selectedIndex);
+							JobCategory jobCategory =
+							  jobCategoryService.getAllJobCategories().get(selectedIndex);
 							jobCategoryService.deleteJobCategory(jobCategory);
-							jobCategoryEventList.remove(jobCategory);
 						}
 					}
 				});
@@ -169,10 +164,13 @@ public class EditJobCategoryDialog extends JDialog
 		return deleteButton;
 	}
 
+	/**
+	 * Configura la finestra di dialogo prima che venga visualizzata.
+	 */
 	public void setup()
 	{
-		jobCategoryEventList.addAll(jobCategoryService.getAllJobCategories());
-		ListModel listModel = new EventListModel<JobCategory>(jobCategoryEventList);
+		ListModel listModel =
+		  new EventListModel<JobCategory>(jobCategoryService.getAllJobCategories());
 		getJobCategoryJList().setModel(listModel);
 	}
 

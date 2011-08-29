@@ -1,13 +1,14 @@
 package it.greentone.persistence;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * <code>
@@ -33,24 +34,30 @@ public class DocumentService
 {
 	@Inject
 	private DocumentDAO documentDAO;
-
-	public Document loadDocument(final long id)
-	{
-		return documentDAO.loadDocument(id);
-	}
+	private final EventList<Document> allDocuments =
+	  new BasicEventList<Document>();
 
 	public void storeDocument(final Document document)
 	{
 		documentDAO.storeDocument(document);
 	}
 
+	public void addDocument(Document document)
+	{
+		storeDocument(document);
+		allDocuments.add(document);
+	}
+
 	public void deleteDocument(final Document document)
 	{
 		documentDAO.deleteDocument(document);
+		allDocuments.remove(document);
 	}
 
-	public Collection<Document> getAllDocuments() throws DataAccessException
+	public EventList<Document> getAllDocuments() throws DataAccessException
 	{
-		return documentDAO.getAllDocuments();
+		if(allDocuments.isEmpty())
+			allDocuments.addAll(documentDAO.getAllDocuments());
+		return allDocuments;
 	}
 }

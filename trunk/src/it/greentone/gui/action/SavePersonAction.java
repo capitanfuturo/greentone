@@ -2,6 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.PersonsPanel;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
@@ -9,6 +10,7 @@ import it.greentone.persistence.PersonService;
 import javax.inject.Inject;
 import javax.swing.JOptionPane;
 
+import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
@@ -34,13 +36,14 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class SavePersonAction
+public class SavePersonAction extends AbstractBean
 {
 	@Inject
 	private PersonsPanel personsPanel;
 	@Inject
 	private PersonService personService;
 	private final ResourceMap resourceMap;
+	boolean savePersonActionEnabled = false;
 
 	/**
 	 * Azione di salvataggio di una persona in anagrafica.
@@ -55,7 +58,7 @@ public class SavePersonAction
 	 * Rende persistente una persona in anagrafica. La ragione sociale è
 	 * obbligatoria.
 	 */
-	@Action
+	@Action(enabledProperty = "savePersonActionEnabled")
 	public void savePerson()
 	{
 		String name = personsPanel.getNameTextField().getText();
@@ -74,8 +77,8 @@ public class SavePersonAction
 			 * modifico quella selezionata
 			 */
 			Person person =
-			  personsPanel.isNewPerson()? new Person(): personsPanel
-			    .getSelectedPerson();
+			  personsPanel.getStatus() == EStatus.NEW? new Person(): personsPanel
+			    .getSelectedItem();
 			/* compilo il bean */
 			person.setAddress(GreenToneUtilities.getText(personsPanel.getAddressTextField()));
 			person.setCap(GreenToneUtilities.getText(personsPanel.getCapTextField()));
@@ -98,14 +101,43 @@ public class SavePersonAction
 			  .getTelephone1TextField()));
 			person.setTelephone2(GreenToneUtilities.getText(personsPanel
 			  .getTelephone2TextField()));
-			/* rendo persistente il bean */
-			personService.storePerson(person);
 			/* aggiorno la GUI */
-			if(personsPanel.isNewPerson())
+			if(personsPanel.getStatus() == EStatus.NEW)
 			{
-				personsPanel.getPersonEventList().add(person);
+				personService.addPerson(person);
 			}
-			personsPanel.setNewPerson(false);
+			else
+			{
+				personService.storePerson(person);
+			}
+			personsPanel.setStatus(EStatus.NEW);
 		}
+	}
+
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param savePersonActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
+	public void setSavePersonActionEnabled(boolean savePersonActionEnabled)
+	{
+		final boolean oldValue = this.savePersonActionEnabled;
+		this.savePersonActionEnabled = savePersonActionEnabled;
+		firePropertyChange("savePersonActionEnabled", oldValue,
+		  savePersonActionEnabled);
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isSavePersonActionEnabled()
+	{
+		return savePersonActionEnabled;
 	}
 }

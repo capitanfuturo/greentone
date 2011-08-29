@@ -1,13 +1,14 @@
 package it.greentone.persistence;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 
 /**
  * <code>
@@ -33,10 +34,13 @@ public class OperationService
 {
 	@Inject
 	private OperationDAO operationDAO;
+	private final EventList<Operation> allOperationEventList =
+	  new BasicEventList<Operation>();
 
-	public Operation loadOperation(final long id)
+	public void addOperation(Operation operation)
 	{
-		return operationDAO.loadOperation(id);
+		storeOperation(operation);
+		allOperationEventList.add(operation);
 	}
 
 	public void storeOperation(final Operation operation)
@@ -47,10 +51,13 @@ public class OperationService
 	public void deleteOperation(final Operation operation)
 	{
 		operationDAO.deleteOperation(operation);
+		allOperationEventList.remove(operation);
 	}
 
-	public Collection<Operation> getAllOperations() throws DataAccessException
+	public EventList<Operation> getAllOperations() throws DataAccessException
 	{
-		return operationDAO.getAllOperations();
+		if(allOperationEventList.isEmpty())
+			allOperationEventList.addAll(operationDAO.getAllOperations());
+		return allOperationEventList;
 	}
 }

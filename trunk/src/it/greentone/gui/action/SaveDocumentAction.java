@@ -1,6 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
@@ -51,8 +52,8 @@ public class SaveDocumentAction
 		 * modifico quella selezionata
 		 */
 		Document document =
-		  documentsPanel.getSelectedDocument() != null? documentsPanel
-		    .getSelectedDocument(): new Document();
+		  documentsPanel.getStatus() == EStatus.EDIT? documentsPanel
+		    .getSelectedItem(): new Document();
 		/* compilo il bean */
 		document.setDescription(GreenToneUtilities.getText(documentsPanel
 		  .getDescriptionTextField()));
@@ -66,12 +67,13 @@ public class SaveDocumentAction
 		DateTime releaseDate =
 		  new DateTime(documentsPanel.getReleaseDateDatePicker().getDate());
 		document.setReleaseDate(releaseDate);
-		/* rendo persistente il bean */
-		documentService.storeDocument(document);
 		/* aggiorno la tabella */
-		if(documentsPanel.isNewDocument()){
-			documentsPanel.getDocumentsEventList().add(document);
+		if(documentsPanel.getStatus() == EStatus.NEW)
+		{
+			documentService.addDocument(document);
+		}else{
+			documentService.storeDocument(document);
 		}
-		documentsPanel.setNewDocument(true);
+		documentsPanel.setStatus(EStatus.NEW);
 	}
 }
