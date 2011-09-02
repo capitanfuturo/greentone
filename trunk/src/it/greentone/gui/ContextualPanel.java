@@ -79,7 +79,10 @@ public abstract class ContextualPanel<T> extends JPanel
 		contentPanel.add(new JScrollPane(getContentTable()), BorderLayout.CENTER);
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(northPanel, BorderLayout.NORTH);
-		mainPanel.add(contentPanel, BorderLayout.CENTER);
+		if(getContentTable() != null)
+		{
+			mainPanel.add(contentPanel, BorderLayout.CENTER);
+		}
 		mainPanel.setPreferredSize(new Dimension(800, 600));
 		setLayout(new BorderLayout());
 		JScrollPane mainScrollPane = new JScrollPane(mainPanel);
@@ -256,11 +259,11 @@ public abstract class ContextualPanel<T> extends JPanel
 	}
 
 	/**
-	 * Restituisce il nome localizzato del pannello.
+	 * Restituisce il nome del bundle del pannello.
 	 * 
-	 * @return il nome localizzato del pannello
+	 * @return il nome del bundle del pannello
 	 */
-	public abstract String getPanelName();
+	public abstract String getBundleName();
 
 	/**
 	 * Restituisce l'elemento correntemente selezionato dalla tabella contestuale.

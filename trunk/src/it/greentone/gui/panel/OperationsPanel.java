@@ -12,9 +12,12 @@ import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
 import it.greentone.persistence.OperationTypeService;
 
+import java.text.DecimalFormat;
+
 import javax.inject.Inject;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -57,8 +60,8 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
 @Component
 public class OperationsPanel extends ContextualPanel<Operation>
 {
-	private static final String LOCALIZATION_PREFIX = "viewOperations.Panel.";
-	private final String panelTitle;
+	private static final String BUNDLE_NAME = "viewOperations";
+	private static final String LOCALIZATION_PREFIX = BUNDLE_NAME + ".Panel.";
 	@Inject
 	private OperationService operationService;
 	@Inject
@@ -79,7 +82,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private JCheckBox vacazioneCheckBox;
 	private JCheckBox professionalVacazioneCheckBox;
 	private JXDatePicker operationDate;
-	private JTextField amountTextField;
+	private JFormattedTextField amountTextField;
 
 	/**
 	 * Pannello di gestione delle operazioni degli incarichi dello studio
@@ -88,7 +91,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	public OperationsPanel()
 	{
 		super();
-		panelTitle = getResourceMap().getString(LOCALIZATION_PREFIX + "title");
 	}
 
 	@Override
@@ -166,9 +168,12 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							  getProfessionalVacazioneCheckBox().setSelected(
 							    getSelectedItem().getIsProfessionalVacazione());
 							  getOperationDate().setDate(
-							    getSelectedItem().getOperationDate().toDate());
-							  getAmountTextField().setText(
-							    getSelectedItem().getAmount().toString());
+							    getSelectedItem().getOperationDate() != null
+							      ? getSelectedItem().getOperationDate().toDate()
+							      : null);
+							  getAmountTextField().setValue(
+							    getSelectedItem().getAmount() != null? getSelectedItem()
+							      .getAmount(): null);
 
 							  /* abilito le azioni legate alla selezione */
 							  deleteOperationAction.setDeleteOperationActionEnabled(true);
@@ -233,9 +238,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	}
 
 	@Override
-	public String getPanelName()
+	public String getBundleName()
 	{
-		return panelTitle;
+		return BUNDLE_NAME;
 	}
 
 	/**
@@ -282,6 +287,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		return descriptionTextField;
 	}
 
+	/**
+	 * Restituisce l'elenco dei tipi degli incarichi disponibili.
+	 * 
+	 * @return l'elenco dei tipi degli incarichi disponibili
+	 */
 	public JComboBox getJobComboBox()
 	{
 		if(jobComboBox == null)
@@ -292,6 +302,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		return jobComboBox;
 	}
 
+	/**
+	 * Restituisce l'elenco dei tipi di operazione disponibili.
+	 * 
+	 * @return l'elenco dei tipi di operazione disponibili
+	 */
 	public JComboBox getTypeComboBox()
 	{
 		if(typeComboBox == null)
@@ -302,6 +317,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		return typeComboBox;
 	}
 
+	/**
+	 * Restituisce il flag che dichiara se l'operazione è a vacazione.
+	 * 
+	 * @return il flag che dichiara se l'operazione è a vacazione
+	 */
 	public JCheckBox getVacazioneCheckBox()
 	{
 		if(vacazioneCheckBox == null)
@@ -312,6 +332,12 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		return vacazioneCheckBox;
 	}
 
+	/**
+	 * Restituisce il flag che dichiara se l'operazione è a vacazione
+	 * professionale.
+	 * 
+	 * @return il flag che dichiara se l'operazione è a vacazione professionale
+	 */
 	public JCheckBox getProfessionalVacazioneCheckBox()
 	{
 		if(professionalVacazioneCheckBox == null)
@@ -322,6 +348,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		return professionalVacazioneCheckBox;
 	}
 
+	/**
+	 * Restituisce il campo della data in cui è stata effettuata l'operazione.
+	 * 
+	 * @return il campo della data in cui è stata effettuata l'operazione
+	 */
 	public JXDatePicker getOperationDate()
 	{
 		if(operationDate == null)
@@ -332,11 +363,19 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		return operationDate;
 	}
 
-	public JTextField getAmountTextField()
+	/**
+	 * Restituisce il campo dell'importo dell'operazione.
+	 * 
+	 * @return il campo dell'importo dell'operazione
+	 */
+	public JFormattedTextField getAmountTextField()
 	{
 		if(amountTextField == null)
 		{
-			amountTextField = new JTextField(10);
+			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			decimalFormat.setMinimumFractionDigits(2);
+			amountTextField = new JFormattedTextField(decimalFormat);
+			amountTextField.setColumns(10);
 			registerComponent(amountTextField);
 		}
 		return amountTextField;

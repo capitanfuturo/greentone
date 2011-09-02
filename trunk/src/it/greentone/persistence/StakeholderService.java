@@ -25,6 +25,7 @@ import ca.odell.glazedlists.EventList;
  * </code>
  * <br>
  * <br>
+ * Classe di supporto per l'accesso e gestione di {@link Stakeholder}.
  * 
  * @author Giuseppe Caliendo
  */
@@ -37,25 +38,48 @@ public class StakeholderService
 	private final EventList<Stakeholder> allStakeholdersEventList =
 	  new BasicEventList<Stakeholder>();
 
+	/**
+	 * Rende persistente l'oggetto passato come parametro.
+	 * 
+	 * @param stakeholder
+	 *          l'interessato all'incarico
+	 */
 	public void storeStakeholder(final Stakeholder stakeholder)
 	{
 		stakeholderDAO.storeStakeholder(stakeholder);
 	}
 
+	/**
+	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+	 * 
+	 * @param stakeholder
+	 *          l'interessato all'incarico
+	 */
 	public void addStakeholder(final Stakeholder stakeholder)
 	{
 		storeStakeholder(stakeholder);
 		allStakeholdersEventList.add(stakeholder);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param stakeholder
+	 *          l'interessato all'incarico
+	 */
 	public void deleteStakeholder(final Stakeholder stakeholder)
 	{
 		stakeholderDAO.deleteStakeholder(stakeholder);
 		allStakeholdersEventList.remove(stakeholder);
 	}
 
-	public EventList<Stakeholder> getAllStakeholders()
-	  throws DataAccessException
+	/**
+	 * Restituisce la lista degli elementi presenti in database.
+	 * 
+	 * @return la lista degli elementi presenti in database
+	 * @throws DataAccessException
+	 */
+	public EventList<Stakeholder> getAllStakeholders() throws DataAccessException
 	{
 		if(allStakeholdersEventList.isEmpty())
 			allStakeholdersEventList.addAll(stakeholderDAO.getAllStakeholders());

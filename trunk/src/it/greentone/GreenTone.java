@@ -2,8 +2,11 @@ package it.greentone;
 
 import it.greentone.gui.MainPanel;
 
+import java.util.EventObject;
+
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -26,7 +29,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Classe di lancio dell'applicazione e di collegamento a BSAF.
+ * Classe di lancio dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
@@ -64,8 +67,27 @@ public class GreenTone extends SingleFrameApplication
 	{
 		getMainFrame().setTitle(
 		  getContext().getResourceMap().getString("Application.title"));
-		MainPanel mainPanel = springBeansHolder.getMainPanel();
+		final MainPanel mainPanel = springBeansHolder.getMainPanel();
 		mainPanel.initialize();
+		/* aggiungo un listener per la chiusura dell'applicazione */
+		addExitListener(new ExitListener()
+			{
+
+				@Override
+				public void willExit(EventObject event)
+				{
+					// non va nulla per adesso.
+				}
+
+				@Override
+				public boolean canExit(EventObject event)
+				{
+					int confirmDialog =
+					  JOptionPane.showConfirmDialog(mainPanel, getContext()
+					    .getResourceMap().getString("exit.Action.confirmMessage"));
+					return confirmDialog == JOptionPane.OK_OPTION;
+				}
+			});
 		show(mainPanel);
 	}
 
@@ -75,6 +97,13 @@ public class GreenTone extends SingleFrameApplication
 		super.shutdown();
 	}
 
+
+	/**
+	 * Bean di comunicazione tra la classe di lancio dell'applicazione (framework
+	 * BSAF) e il framework di Spring.
+	 * 
+	 * @author Giuseppe Caliendo
+	 */
 	@Component
 	public static class SpringBeansHolder
 	{
@@ -83,21 +112,43 @@ public class GreenTone extends SingleFrameApplication
 		@Inject
 		private MainPanel mainPanel;
 
+		/**
+		 * Restituisce la factory del manager della persistenza di JDO.
+		 * 
+		 * @return la factory del manager della persistenza di JDO
+		 */
 		public PersistenceManagerFactory getPmf()
 		{
 			return pmf;
 		}
 
+		/**
+		 * Imposta la factory del manager della persistenza di JDO.
+		 * 
+		 * @param pmf
+		 *          la factory del manager della persistenza di JDO
+		 */
 		public void setPmf(PersistenceManagerFactory pmf)
 		{
 			this.pmf = pmf;
 		}
 
+		/**
+		 * Restituisce il pannello principale dell'applicazione.
+		 * 
+		 * @return il pannello principale dell'applicazione
+		 */
 		public MainPanel getMainPanel()
 		{
 			return mainPanel;
 		}
 
+		/**
+		 * Imposta il pannello principale dell'applicazione.
+		 * 
+		 * @param mainPanel
+		 *          il pannello principale dell'applicazione
+		 */
 		public void setMainPanel(MainPanel mainPanel)
 		{
 			this.mainPanel = mainPanel;

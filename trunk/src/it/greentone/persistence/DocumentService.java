@@ -25,6 +25,7 @@ import ca.odell.glazedlists.EventList;
  * </code>
  * <br>
  * <br>
+ * Classe di supporto per l'accesso e gestione di {@link Document}.
  * 
  * @author Giuseppe Caliendo
  */

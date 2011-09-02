@@ -56,10 +56,18 @@ public class SaveOperationAction extends AbstractBean
 		  operationsPanel.getStatus() == EStatus.EDIT? operationsPanel
 		    .getSelectedItem(): new Operation();
 		/* compilo il bean */
-		String value =
-		  GreenToneUtilities.getText(operationsPanel.getAmountTextField());
-		Double amount = value != null? Double.valueOf(value): null;
-		operation.setAmount(amount);
+		Double amount = 0.0;
+		Object value = operationsPanel.getAmountTextField().getValue();
+		if(value instanceof Double)
+		{
+			amount = (Double) value;
+		}
+		else
+			if(value instanceof Long)
+			{
+				amount = ((Long) value).doubleValue();
+			}
+		operation.setAmount(amount != null? amount: null);
 		operation.setDescription(GreenToneUtilities.getText(operationsPanel
 		  .getDescriptionTextField()));
 		operation.setIsProfessionalVacazione(operationsPanel

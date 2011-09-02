@@ -1,6 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
+import it.greentone.gui.ButtonTabComponent;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.MainPanel;
 
@@ -34,6 +35,11 @@ import org.jdesktop.application.ResourceMap;
  */
 public abstract class ContextualAction
 {
+	private static final String PANEL_TITLE_SUFFIX = ".Panel.title";
+	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
+	private static final String ACTION_TOOLTIP_SUFFIX =
+	  ".Action.shortDescription";
+
 	private final MainPanel mainPanel;
 	private final ResourceMap resourceMap;
 	private final String applicationName;
@@ -64,7 +70,7 @@ public abstract class ContextualAction
 		return mainPanel;
 	}
 
-	protected void addTab(ContextualPanel panel)
+	protected void addTab(ContextualPanel<?> panel)
 	{
 		/* controllo che il tab non sia già presente */
 		JTabbedPane tabbedPane = getMainPanel().getMainTabbedPane();
@@ -79,12 +85,21 @@ public abstract class ContextualAction
 		}
 		if(!tabInserted)
 		{
+			String title =
+			  resourceMap.getString(panel.getBundleName() + PANEL_TITLE_SUFFIX);
 			/* aggiorno il titolo dell'applicazione */
 			Application.getInstance(GreenTone.class).getMainFrame()
-			  .setTitle(panel.getPanelName() + " - " + applicationName);
+			  .setTitle(title + " - " + applicationName);
 			/* configuro e aggiungo il tab */
 			panel.setup();
-			tabbedPane.add(panel, panel.getPanelName(), 0);
+			tabbedPane
+			  .insertTab(
+			    title,
+			    resourceMap.getIcon(panel.getBundleName() + ACTION_SMALL_ICON_SUFFIX),
+			    panel,
+			    resourceMap.getString(panel.getBundleName() + ACTION_TOOLTIP_SUFFIX),
+			    0);
+			tabbedPane.setTabComponentAt(0, new ButtonTabComponent(tabbedPane));
 		}
 		tabbedPane.setSelectedComponent(panel);
 	}

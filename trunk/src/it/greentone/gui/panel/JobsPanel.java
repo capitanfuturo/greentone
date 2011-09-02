@@ -18,6 +18,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -72,7 +73,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	private DeleteJobAction deleteJobAction;
 
 	private static final String LOCALIZATION_PREFIX = "viewJobs.Panel.";
-	private final String panelTitle;
+	private final String panelBundle;
 	private EventJXTableModel<Job> tableModel;
 
 	private JTextField protocolTextField;
@@ -92,7 +93,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	public JobsPanel()
 	{
 		super();
-		panelTitle = getResourceMap().getString(LOCALIZATION_PREFIX + "title");
+		panelBundle = "viewJobs";
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public class JobsPanel extends ContextualPanel<Job>
 		headerPanel.add(statusLabel, "gap para");
 		headerPanel.add(getStatusComboBox(), "wrap");
 		headerPanel.add(notesLabel, "gap para");
-		headerPanel.add(getNotesTextArea(), "span, growx");
+		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx");
 
 		return headerPanel;
 	}
@@ -167,11 +168,14 @@ public class JobsPanel extends ContextualPanel<Job>
 							  /* aggiorno il pannello */
 							  getProtocolTextField().setText(getSelectedItem().getProtocol());
 							  getDueDatePicker().setDate(
-							    getSelectedItem().getDueDate().toDate());
+							    getSelectedItem().getDueDate() != null? getSelectedItem()
+							      .getDueDate().toDate(): null);
 							  getStartDatePicker().setDate(
-							    getSelectedItem().getStartDate().toDate());
+							    getSelectedItem().getStartDate() != null? getSelectedItem()
+							      .getStartDate().toDate(): null);
 							  getFinishDatePicker().setDate(
-							    getSelectedItem().getFinishDate().toDate());
+							    getSelectedItem().getFinishDate() != null? getSelectedItem()
+							      .getFinishDate().toDate(): null);
 							  getCategoryComboBox().setSelectedItem(
 							    getSelectedItem().getCategory());
 							  getStatusComboBox().setSelectedItem(
@@ -251,11 +255,16 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	public String getPanelName()
+	public String getBundleName()
 	{
-		return panelTitle;
+		return panelBundle;
 	}
 
+	/**
+	 * Restituisce il campo protocollo.
+	 * 
+	 * @return il campo protocollo
+	 */
 	public JTextField getProtocolTextField()
 	{
 		if(protocolTextField == null)
@@ -294,6 +303,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return protocolTextField;
 	}
 
+	/**
+	 * Restituisce il campo scadenza.
+	 * 
+	 * @return il campo scadenza
+	 */
 	public JXDatePicker getDueDatePicker()
 	{
 		if(dueDatePicker == null)
@@ -304,6 +318,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return dueDatePicker;
 	}
 
+	/**
+	 * Restituisce il campo data di inizio.
+	 * 
+	 * @return il campo data di inizio
+	 */
 	public JXDatePicker getStartDatePicker()
 	{
 		if(startDatePicker == null)
@@ -314,6 +333,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return startDatePicker;
 	}
 
+	/**
+	 * Restituisce il campo data di fine.
+	 * 
+	 * @return il campo data di fine
+	 */
 	public JXDatePicker getFinishDatePicker()
 	{
 		if(finishDatePicker == null)
@@ -324,6 +348,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return finishDatePicker;
 	}
 
+	/**
+	 * Restituisce il campo categoria.
+	 * 
+	 * @return il campo categoria
+	 */
 	public JComboBox getCategoryComboBox()
 	{
 		if(categoryComboBox == null)
@@ -334,6 +363,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return categoryComboBox;
 	}
 
+	/**
+	 * Restituisce il campo stato.
+	 * 
+	 * @return il campo stato
+	 */
 	public JComboBox getStatusComboBox()
 	{
 		if(statusComboBox == null)
@@ -349,6 +383,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return statusComboBox;
 	}
 
+	/**
+	 * Restituisce il campo descrizione.
+	 * 
+	 * @return il campo descrizione
+	 */
 	public JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
@@ -359,6 +398,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return descriptionTextField;
 	}
 
+	/**
+	 * Restituisce il campo note.
+	 * 
+	 * @return il campo note
+	 */
 	public JTextArea getNotesTextArea()
 	{
 		if(notesTextArea == null)
@@ -369,6 +413,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return notesTextArea;
 	}
 
+	/**
+	 * Restituisce il campo committente.
+	 * 
+	 * @return il campo committente
+	 */
 	public JComboBox getCustomerComboBox()
 	{
 		if(customerComboBox == null)
@@ -379,6 +428,11 @@ public class JobsPanel extends ContextualPanel<Job>
 		return customerComboBox;
 	}
 
+	/**
+	 * Restituisce il campo responsabile.
+	 * 
+	 * @return il campo responsabile
+	 */
 	public JComboBox getManagerComboBox()
 	{
 		if(managerComboBox == null)

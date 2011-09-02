@@ -45,12 +45,24 @@ public class StakeholderDAO extends JdoDaoSupport
 		return getPersistenceManager().detachCopy(stakeholder);
 	}
 
+	/**
+	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+	 * 
+	 * @param stakeholder
+	 *          l'interessato all'incarico
+	 */
 	public void storeStakeholder(final Stakeholder stakeholder)
 	  throws DataAccessException
 	{
 		getJdoTemplate().makePersistent(stakeholder);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param stakeholder
+	 *          l'interessato all'incarico
+	 */
 	public void deleteStakeholder(final Stakeholder stakeholder)
 	  throws DataAccessException
 	{
@@ -60,6 +72,12 @@ public class StakeholderDAO extends JdoDaoSupport
 			getPersistenceManager().deletePersistent(stakeholder);
 	}
 
+	/**
+	 * Restituisce la lista degli elementi presenti in database.
+	 * 
+	 * @return la lista degli elementi presenti in database
+	 * @throws DataAccessException
+	 */
 	public Collection<Stakeholder> getAllStakeholders()
 	  throws DataAccessException
 	{

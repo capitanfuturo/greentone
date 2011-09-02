@@ -66,7 +66,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private PersonService personService;
 	private SortedList<Person> sortedPersonEventList;
 	private EventJXTableModel<Person> tableModel;
-	private final String panelTitle;
+	private final String panelBundle;
 	private JTextField nameTextField;
 	private JTextField addressTextField;
 	private JTextField cityTextField;
@@ -87,7 +87,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	public PersonsPanel()
 	{
 		super();
-		panelTitle = getResourceMap().getString(LOCALIZATION_PREFIX + "title");
+		panelBundle = "viewPersons";
 	}
 
 	@Override
@@ -366,7 +366,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(cfTexField == null)
 		{
-			cfTexField = new JTextField(16);
+			cfTexField = new JTextField(15);
 			registerComponent(cfTexField);
 		}
 		return cfTexField;
@@ -381,7 +381,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(pivaTextField == null)
 		{
-			pivaTextField = new JTextField(9);
+			pivaTextField = new JTextField(11);
 			registerComponent(pivaTextField);
 		}
 		return pivaTextField;
@@ -483,8 +483,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	@Override
-	public String getPanelName()
+	public String getBundleName()
 	{
-		return panelTitle;
+		return panelBundle;
 	}
 }
