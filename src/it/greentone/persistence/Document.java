@@ -22,6 +22,7 @@ import org.joda.time.DateTime;
  * </code>
  * <br>
  * <br>
+ * Documento relativo ad un incarico.
  * 
  * @author Giuseppe Caliendo
  */
@@ -50,21 +51,40 @@ public class Document
 	@Persistent(defaultFetchGroup = "true", dependent = "false")
 	Job job;
 
+	/**
+	 * Documento relativo ad un incarico.
+	 */
 	public Document()
 	{
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Restituisce l'identificativo del record.
+	 * 
+	 * @return l'identificativo del record
+	 */
 	public Long getId()
 	{
 		return id;
 	}
 
+	/**
+	 * Imposta l'identificativo del record.
+	 * 
+	 * @param id
+	 *          l'identificativo del record
+	 */
 	public void setId(Long id)
 	{
 		this.id = id;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public String getDescription()
 	{
 		return description;
@@ -75,6 +95,11 @@ public class Document
 		this.description = description;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public String getNotes()
 	{
 		return notes;
@@ -85,6 +110,11 @@ public class Document
 		this.notes = notes;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public boolean getIsDigital()
 	{
 		return isDigital;
@@ -95,6 +125,11 @@ public class Document
 		this.isDigital = isDigital;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public String getProtocol()
 	{
 		return protocol;
@@ -105,6 +140,11 @@ public class Document
 		this.protocol = protocol;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public boolean getIsIncoming()
 	{
 		return incoming;
@@ -115,6 +155,11 @@ public class Document
 		this.incoming = incoming;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public DateTime getReleaseDate()
 	{
 		return releaseDate;
@@ -125,6 +170,11 @@ public class Document
 		this.releaseDate = releaseDate;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public Person getRecipient()
 	{
 		return recipient;
@@ -135,6 +185,11 @@ public class Document
 		this.recipient = recipient;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public String getUri()
 	{
 		return uri;
@@ -145,6 +200,11 @@ public class Document
 		this.uri = uri;
 	}
 
+	/**
+	 * Restituisce
+	 * 
+	 * @return
+	 */
 	public Job getJob()
 	{
 		return job;

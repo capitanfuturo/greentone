@@ -12,11 +12,19 @@ import it.greentone.persistence.JobService;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+
 import javax.inject.Inject;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -60,7 +68,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
 public class DocumentsPanel extends ContextualPanel<Document>
 {
 	private static final String LOCALIZATION_PREFIX = "viewDocuments.Panel.";
-	private final String panelTitle;
+	private static final String PANEL_BUNDLE = "viewDocuments";
 	@Inject
 	private ActionProvider actionProvider;
 	@Inject
@@ -83,6 +91,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private JCheckBox incomingCheckBox;
 	private JXDatePicker releaseDateDatePicker;
 	private JTextArea notesTextArea;
+	private JButton fileChooserButton;
 
 	private EventJXTableModel<Document> tableModel;
 
@@ -92,7 +101,6 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	public DocumentsPanel()
 	{
 		super();
-		panelTitle = getResourceMap().getString(LOCALIZATION_PREFIX + "title");
 	}
 
 	@Override
@@ -130,16 +138,22 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		headerPanel.add(isDigitalLabel, "gap para");
 		headerPanel.add(getIsDigitalCheckBox());
 		headerPanel.add(fileLabel, "gap para");
-		headerPanel.add(getFileTextField(), "growx, wrap");
+		headerPanel.add(getFileTextField());
+		headerPanel.add(getFileChooserButton(), "growx, wrap");
 		headerPanel.add(incomingLabel, "gap para");
 		headerPanel.add(getIncomingCheckBox());
 		headerPanel.add(releaseDateLabel, "gap para");
 		headerPanel.add(getReleaseDateDatePicker(), "growx, wrap");
 		headerPanel.add(notesLabel, "gap para");
-		headerPanel.add(getNotesTextArea(), "span, growx");
+		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx");
 		return headerPanel;
 	}
 
+	/**
+	 * Restituisce il campo protocollo.
+	 * 
+	 * @return il campo protocollo
+	 */
 	public JTextField getProtocolTextField()
 	{
 		if(protocolTextField == null)
@@ -179,6 +193,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return protocolTextField;
 	}
 
+	/**
+	 * Restituisce il campo descrizione.
+	 * 
+	 * @return il campo descrizione
+	 */
 	public JTextField getDescriptionTextField()
 	{
 		if(descriptionTextField == null)
@@ -189,6 +208,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return descriptionTextField;
 	}
 
+	/**
+	 * Restituisce il campo incarico.
+	 * 
+	 * @return il campo incarico
+	 */
 	public JComboBox getJobComboBox()
 	{
 		if(jobComboBox == null)
@@ -199,6 +223,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return jobComboBox;
 	}
 
+	/**
+	 * Restituisce il campo destinatario.
+	 * 
+	 * @return il campo destinatario
+	 */
 	public JComboBox getRecipientComboBox()
 	{
 		if(recipientComboBox == null)
@@ -209,6 +238,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return recipientComboBox;
 	}
 
+	/**
+	 * Restituisce il flag che indica se un documento è digitale.
+	 * 
+	 * @return il flag che indica se un documento è digitale
+	 */
 	public JCheckBox getIsDigitalCheckBox()
 	{
 		if(isDigitalCheckBox == null)
@@ -219,6 +253,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return isDigitalCheckBox;
 	}
 
+	/**
+	 * Restituisce il campo file.
+	 * 
+	 * @return il campo file
+	 */
 	public JTextField getFileTextField()
 	{
 		if(fileTextField == null)
@@ -229,6 +268,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return fileTextField;
 	}
 
+	/**
+	 * Restituisce il flag che indica se il documento è entrante.
+	 * 
+	 * @return il flag che indica se il documento è entrante
+	 */
 	public JCheckBox getIncomingCheckBox()
 	{
 		if(incomingCheckBox == null)
@@ -239,6 +283,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return incomingCheckBox;
 	}
 
+	/**
+	 * Restituisce il campo della data di rilascio del documento.
+	 * 
+	 * @return il campo della data di rilascio del documento
+	 */
 	public JXDatePicker getReleaseDateDatePicker()
 	{
 		if(releaseDateDatePicker == null)
@@ -249,6 +298,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return releaseDateDatePicker;
 	}
 
+	/**
+	 * Restituisce il campo note.
+	 * 
+	 * @return il campo note
+	 */
 	public JTextArea getNotesTextArea()
 	{
 		if(notesTextArea == null)
@@ -257,6 +311,43 @@ public class DocumentsPanel extends ContextualPanel<Document>
 			registerComponent(notesTextArea);
 		}
 		return notesTextArea;
+	}
+
+	/**
+	 * Restituisce un pulsante per navigare nel file system.
+	 * 
+	 * @return un pulsante per navigare nel file system
+	 */
+	public JButton getFileChooserButton()
+	{
+		if(fileChooserButton == null)
+		{
+			fileChooserButton = new JButton(new AbstractAction()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent arg0)
+					{
+						JFileChooser fileChooser = new JFileChooser();
+						int returnVal = fileChooser.showOpenDialog(null);
+						if(returnVal == JFileChooser.APPROVE_OPTION)
+						{
+							File file = fileChooser.getSelectedFile();
+							try
+							{
+								getFileTextField().setText(file.getCanonicalPath().toString());
+							}
+							catch(IOException e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}
+				});
+			fileChooserButton.setText(getResourceMap().getString(
+			  LOCALIZATION_PREFIX + "openFile"));
+		}
+		return fileChooserButton;
 	}
 
 	@Override
@@ -338,7 +429,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 							  getIncomingCheckBox().setSelected(
 							    getSelectedItem().getIsIncoming());
 							  getReleaseDateDatePicker().setDate(
-							    getSelectedItem().getReleaseDate().toDate());
+							    getSelectedItem().getReleaseDate() != null? getSelectedItem()
+							      .getReleaseDate().toDate(): null);
 							  getNotesTextArea().setText(getSelectedItem().getNotes());
 							  /* abilito le azioni legate alla selezione */
 							  deleteDocumentAction.setDeleteDocumentActionEnabled(true);
@@ -354,24 +446,9 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		return documentTable;
 	}
 
-
 	@Override
-	public String getPanelName()
+	public String getBundleName()
 	{
-		return panelTitle;
-	}
-
-	@Override
-	public void clearForm()
-	{
-		getProtocolTextField().setText(null);
-		getDescriptionTextField().setText(null);
-		getJobComboBox().setSelectedIndex(-1);
-		getRecipientComboBox().setSelectedIndex(-1);
-		getIsDigitalCheckBox().setSelected(false);
-		getFileTextField().setText(null);
-		getIncomingCheckBox().setSelected(false);
-		getReleaseDateDatePicker().setDate(null);
-		getNotesTextArea().setText(null);
+		return PANEL_BUNDLE;
 	}
 }

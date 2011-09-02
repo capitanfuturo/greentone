@@ -20,6 +20,9 @@ import javax.jdo.annotations.PrimaryKey;
  * </code>
  * <br>
  * <br>
+ * Interessati ad un incarico. Questa tabella di relazione serve per poter
+ * definire delle liste di persone che possono aver accesso alle informazioni di
+ * un certo incarico o che comunque ne sono coinvolte.
  * 
  * @author Giuseppe Caliendo
  */
@@ -34,16 +37,31 @@ public class Stakeholder
 	@Persistent(defaultFetchGroup = "true", dependent = "false")
 	private Job job;
 
+	/**
+	 * Interessati ad un incarico. Questa tabella di relazione serve per poter
+	 * definire delle liste di persone che possono aver accesso alle informazioni
+	 * di un certo incarico o che comunque ne sono coinvolte.
+	 */
 	public Stakeholder()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Restituisce l'identificativo del record.
+	 * 
+	 * @return l'identificativo del record
+	 */
 	public Long getId()
 	{
 		return id;
 	}
 
+	/**
+	 * Imposta l'identificativo del record.
+	 * 
+	 * @param id
+	 *          l'identificativo del record
+	 */
 	public void setId(Long id)
 	{
 		this.id = id;

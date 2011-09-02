@@ -46,11 +46,22 @@ public class Operation
 	@Persistent(defaultFetchGroup = "true")
 	private OperationType operationType;
 
+	/**
+	 * Restituisce l'identificativo del record.
+	 * 
+	 * @return l'identificativo del record
+	 */
 	public Long getId()
 	{
 		return id;
 	}
 
+	/**
+	 * Imposta l'identificativo del record.
+	 * 
+	 * @param id
+	 *          l'identificativo del record
+	 */
 	public void setId(Long id)
 	{
 		this.id = id;

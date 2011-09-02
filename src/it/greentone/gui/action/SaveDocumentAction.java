@@ -68,15 +68,13 @@ public class SaveDocumentAction extends AbstractBean
 		  .getSelectedItem());
 		document.setReleaseDate(GreenToneUtilities.getDateTime(documentsPanel
 		  .getReleaseDateDatePicker()));
+		document.setUri(GreenToneUtilities.getText(documentsPanel
+		  .getFileTextField()));
 		/* aggiorno la tabella */
 		if(documentsPanel.getStatus() == EStatus.NEW)
-		{
 			documentService.addDocument(document);
-		}
 		else
-		{
 			documentService.storeDocument(document);
-		}
 		documentsPanel.clearForm();
 	}
 

@@ -3,13 +3,20 @@ package it.greentone.gui.panel;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.FontProvider;
 
+import java.awt.Desktop;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -39,7 +46,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AboutPanel extends ContextualPanel<Void>
 {
-	private final String panelTitle;
+	private final String panelBundle;
 
 	/**
 	 * Pannello delle informazioni sul programma.
@@ -48,7 +55,7 @@ public class AboutPanel extends ContextualPanel<Void>
 	{
 		super();
 		remove(getContextualToolBar());
-		panelTitle = getResourceMap().getString("viewAbout.Panel.title");
+		panelBundle = "viewAbout";
 	}
 
 	@Override
@@ -66,21 +73,54 @@ public class AboutPanel extends ContextualPanel<Void>
 		JLabel subtitleLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.description"));
 		subtitleLabel.setFont(FontProvider.TITLE_SMALL);
-		headerPanel.add(subtitleLabel, "span");
+		headerPanel.add(subtitleLabel, "wrap");
+
 		JLabel authorsLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.authors"));
 		headerPanel.add(authorsLabel);
 		JTextArea authorsTextArea =
 		  new JTextArea(getResourceMap()
 		    .getString("viewAbout.Panel.authorsContent"));
+		authorsTextArea.setOpaque(false);
 		authorsTextArea.setEditable(false);
-		headerPanel.add(authorsTextArea, "span");
+		headerPanel.add(authorsTextArea, "wrap");
+
+		JLabel webLabel =
+		  new JLabel(getResourceMap().getString("viewAbout.Panel.web"));
+		headerPanel.add(webLabel);
+		String web = getResourceMap().getString("Application.homepage");
+		JEditorPane webContent =
+		  new JEditorPane("text/html", "<a href='" + web + "'>" + web + "</a>");
+		webContent.setEditable(false);
+		webContent.setOpaque(false);
+		webContent.addHyperlinkListener(new HyperlinkListener()
+			{
+				@Override
+				public void hyperlinkUpdate(HyperlinkEvent hle)
+				{
+					if(HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType()))
+					{
+						try
+						{
+							open(hle.getURL().toURI());
+						}
+						catch(URISyntaxException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+		headerPanel.add(webContent, "wrap");
+
 		JLabel licenseLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
 		headerPanel.add(licenseLabel);
 		JTextArea licenceTextArea = new JTextArea(50, 100);
 		licenceTextArea.setEditable(false);
 		licenceTextArea.setFont(FontProvider.CODE);
+		licenceTextArea.setLineWrap(true);
+		licenceTextArea.setWrapStyleWord(true);
 		try
 		{
 			String licenceURL =
@@ -92,7 +132,8 @@ public class AboutPanel extends ContextualPanel<Void>
 		{
 			e.printStackTrace();
 		}
-		headerPanel.add(new JScrollPane(licenceTextArea), "span");
+
+		headerPanel.add(new JScrollPane(licenceTextArea), "shrinkx");
 		return headerPanel;
 	}
 
@@ -109,8 +150,31 @@ public class AboutPanel extends ContextualPanel<Void>
 	}
 
 	@Override
-	public String getPanelName()
+	public String getBundleName()
 	{
-		return panelTitle;
+		return panelBundle;
 	}
+
+	/**
+	 * Apre un indirizzo di risorsa.
+	 * 
+	 * @param uri
+	 *          indirizzo di risorsa
+	 */
+	private static void open(URI uri)
+	{
+		if(Desktop.isDesktopSupported())
+		{
+			Desktop desktop = Desktop.getDesktop();
+			try
+			{
+				desktop.browse(uri);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

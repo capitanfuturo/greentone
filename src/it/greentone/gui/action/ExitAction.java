@@ -21,15 +21,19 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Esce dall'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
 public class ExitAction
 {
+	/**
+	 * Esce dall'applicazione.
+	 */
 	@Action
 	public void exit()
 	{
-		Application.getInstance(GreenTone.class).exit();
+		Application.getInstance(GreenTone.class).quit(null);
 	}
 }

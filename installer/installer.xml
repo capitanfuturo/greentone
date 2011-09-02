@@ -12,6 +12,8 @@
 	  </authors>
 	  <url>http://code.google.com/p/greentone/</url>
 	  <javaversion>1.6</javaversion>
+	  <!-- ISSUE 3: diritti da amministratore per Windows -->
+	  <run-privileged condition="izpack.windowsinstall|izpack.macinstall"/>
 	  <uninstaller write="yes" />
 	  <summarylogfilepath>$INSTALL_PATH/installinfo/Summary.htm</summarylogfilepath>
    </info>

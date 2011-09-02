@@ -45,6 +45,11 @@ public class GreenToneAppConfig
 	public static final String DATANUCLEUS_CONFIG_LOCATION =
 	  "/it/greentone/resources/datanucleus.properties";
 
+	/**
+	 * Resituisce la factory di gestione della persistenza.
+	 * 
+	 * @return la factory di gestione della persistenza
+	 */
 	@Bean
 	PersistenceManagerFactory pmf()
 	{
