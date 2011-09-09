@@ -13,6 +13,7 @@ import java.util.Comparator;
 
 import javax.inject.Inject;
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,6 +21,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.MaskFormatter;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -336,7 +338,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(provinceTextField == null)
 		{
-			provinceTextField = new JTextField(20);
+			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("UU");
+			provinceTextField = new JFormattedTextField(mf);
+			provinceTextField.setColumns(4);
 			registerComponent(provinceTextField);
 		}
 		return provinceTextField;
@@ -351,7 +355,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(capTextField == null)
 		{
-			capTextField = new JTextField(5);
+			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("#####");
+			capTextField = new JFormattedTextField(mf);
+			capTextField.setColumns(10);
 			registerComponent(capTextField);
 		}
 		return capTextField;
@@ -381,7 +387,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(pivaTextField == null)
 		{
-			pivaTextField = new JTextField(11);
+			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("###########");
+			pivaTextField = new JFormattedTextField(mf);
+			pivaTextField.setColumns(25);
 			registerComponent(pivaTextField);
 		}
 		return pivaTextField;
