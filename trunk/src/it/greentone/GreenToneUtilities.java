@@ -1,8 +1,10 @@
 package it.greentone;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import javax.swing.text.JTextComponent;
+import javax.swing.text.MaskFormatter;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.joda.time.DateTime;
@@ -64,5 +66,37 @@ public class GreenToneUtilities
 	{
 		Date date = datePicker.getDate();
 		return date != null? new DateTime(date): null;
+	}
+
+	/**
+	 * Restituisce un formatter per il pattern passato in ingresso.
+	 * 
+	 * @param mask
+	 * @return un formatter per il pattern passato in ingresso
+	 * @see MaskFormatter
+	 */
+	public static MaskFormatter createMaskFormatter(String mask)
+	{
+		MaskFormatter mf = null;
+		try
+		{
+			mf = new MaskFormatter(mask)
+				{
+					@Override
+					public Object stringToValue(String value) throws ParseException
+					{
+						if(value == null || value.length() == 0 || value.trim().isEmpty())
+						{
+							return null;
+						}
+						return super.stringToValue(value);
+					}
+				};
+		}
+		catch(ParseException e)
+		{
+			e.printStackTrace();
+		}
+		return mf;
 	}
 }
