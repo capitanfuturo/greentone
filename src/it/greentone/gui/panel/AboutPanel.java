@@ -85,6 +85,7 @@ public class AboutPanel extends ContextualPanel<Void>
 		authorsTextArea.setEditable(false);
 		headerPanel.add(authorsTextArea, "wrap");
 
+		/* Indirizzo web */
 		JLabel webLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.web"));
 		headerPanel.add(webLabel);
@@ -112,6 +113,38 @@ public class AboutPanel extends ContextualPanel<Void>
 				}
 			});
 		headerPanel.add(webContent, "wrap");
+
+		/* Indirizzo mail */
+		JLabel mailLabel =
+		  new JLabel(getResourceMap().getString("viewAbout.Panel.mail"));
+		headerPanel.add(mailLabel);
+		String mail = getResourceMap().getString("Application.email");
+		JEditorPane mailContent =
+		  new JEditorPane("text/html", "<a href='mailto:" + mail
+		    + "?Subject=Greentone%20"
+		    + getResourceMap().getString("Application.version") + "'>" + mail
+		    + "</a>");
+		mailContent.setEditable(false);
+		mailContent.setOpaque(false);
+		mailContent.addHyperlinkListener(new HyperlinkListener()
+			{
+				@Override
+				public void hyperlinkUpdate(HyperlinkEvent hle)
+				{
+					if(HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType()))
+					{
+						try
+						{
+							open(hle.getURL().toURI());
+						}
+						catch(URISyntaxException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+		headerPanel.add(mailContent, "wrap");
 
 		JLabel licenseLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
