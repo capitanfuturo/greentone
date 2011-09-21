@@ -24,18 +24,33 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
+ * Classe di accesso alla tabella {@link Job}
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("jobDAO")
 public class JobDAO extends JdoDaoSupport
 {
+	/**
+	 * Classe di accesso alla tabella {@link Job}
+	 * 
+	 * @param pmf
+	 *          manager della persistenza
+	 */
 	@Inject
 	public JobDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
 
+	/**
+	 * Restituisce l'oggetto di identificativo passato in ingresso.
+	 * 
+	 * @param id
+	 *          identificativo dell'oggetto
+	 * @return l'oggetto di identificativo passato in ingresso
+	 * @throws DataAccessException
+	 */
 	public Job loadJob(final long id) throws DataAccessException
 	{
 		final Job job = getJdoTemplate().getObjectById(Job.class, Long.valueOf(id));
@@ -44,11 +59,24 @@ public class JobDAO extends JdoDaoSupport
 		return getPersistenceManager().detachCopy(job);
 	}
 
+	/**
+	 * Rende persistente l'oggetto passato in ingresso.
+	 * 
+	 * @param job
+	 * @throws DataAccessException
+	 */
 	public void storeJob(final Job job) throws DataAccessException
 	{
 		getJdoTemplate().makePersistent(job);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param job
+	 *          l'oggetto da eliminare
+	 * @throws DataAccessException
+	 */
 	public void deleteJob(final Job job) throws DataAccessException
 	{
 		if(job == null || job.getId() == null)
@@ -57,6 +85,12 @@ public class JobDAO extends JdoDaoSupport
 			getPersistenceManager().deletePersistent(job);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli elementi presenti in database.
+	 * 
+	 * @return la lista di tutti gli elementi presenti in database
+	 * @throws DataAccessException
+	 */
 	public Collection<Job> getAllJobs() throws DataAccessException
 	{
 		return getPersistenceManager().detachCopyAll(

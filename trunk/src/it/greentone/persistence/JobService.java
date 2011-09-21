@@ -38,6 +38,18 @@ public class JobService
 	private final EventList<Job> allJobs = new BasicEventList<Job>();
 
 	/**
+	 * Restitusice l'oggetto di identificativo passato in ingresso.
+	 * 
+	 * @param id
+	 *          identificativo da caricare
+	 * @return l'oggetto di identificativo passato in ingresso
+	 */
+	public Job loadJob(long id)
+	{
+		return jobDAO.loadJob(id);
+	}
+
+	/**
 	 * Rende persistente un oggetto nel database.
 	 * 
 	 * @param job
@@ -48,18 +60,36 @@ public class JobService
 		jobDAO.storeJob(job);
 	}
 
+	/**
+	 * Aggiunge un nuovo oggetto nel database
+	 * 
+	 * @param job
+	 *          l'incarico da aggiungere
+	 */
 	public void addJob(Job job)
 	{
 		storeJob(job);
 		allJobs.add(job);
 	}
 
+	/**
+	 * Elimina un oggetto dal database
+	 * 
+	 * @param job
+	 *          l'incarico da eliminare
+	 */
 	public void deleteJob(final Job job)
 	{
 		jobDAO.deleteJob(job);
 		allJobs.remove(job);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli incarichi presenti in database.
+	 * 
+	 * @return la lista di tutti gli incarichi presenti in database
+	 * @throws DataAccessException
+	 */
 	public EventList<Job> getAllJobs() throws DataAccessException
 	{
 		if(allJobs.isEmpty())

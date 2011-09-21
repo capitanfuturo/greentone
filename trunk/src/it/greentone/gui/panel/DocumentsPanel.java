@@ -420,8 +420,9 @@ public class DocumentsPanel extends ContextualPanel<Document>
 							  getProtocolTextField().setText(getSelectedItem().getProtocol());
 							  getDescriptionTextField().setText(
 							    getSelectedItem().getDescription());
-							  getJobComboBox().setSelectedItem(getSelectedItem().getJob());
-							  getRecipientComboBox().setSelectedItem(
+							  getJobComboBox().getModel().setSelectedItem(
+							    getSelectedItem().getJob());
+							  getRecipientComboBox().getModel().setSelectedItem(
 							    getSelectedItem().getRecipient());
 							  getIsDigitalCheckBox().setSelected(
 							    getSelectedItem().getIsDigital());

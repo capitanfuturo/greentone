@@ -24,18 +24,33 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
+ * Classe di accesso alla tabella {@link Document}
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("documentDAO")
 public class DocumentDAO extends JdoDaoSupport
 {
+	/**
+	 * Classe di accesso alla tabella {@link Document}
+	 * 
+	 * @param pmf
+	 *          manager della persistenza
+	 */
 	@Inject
 	public DocumentDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
 
+	/**
+	 * Restituisce l'oggetto di identificativo passato in ingresso.
+	 * 
+	 * @param id
+	 *          identificativo dell'oggetto
+	 * @return l'oggetto di identificativo passato in ingresso
+	 * @throws DataAccessException
+	 */
 	public Document loadDocument(final long id) throws DataAccessException
 	{
 		final Document document =
@@ -45,11 +60,25 @@ public class DocumentDAO extends JdoDaoSupport
 		return getPersistenceManager().detachCopy(document);
 	}
 
+	/**
+	 * Rende persistente l'oggetto passato come parametro.
+	 * 
+	 * @param document
+	 *          l'oggetto da rendere persistente
+	 * @throws DataAccessException
+	 */
 	public void storeDocument(final Document document) throws DataAccessException
 	{
 		getJdoTemplate().makePersistent(document);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param document
+	 *          l'oggetto da eliminare
+	 * @throws DataAccessException
+	 */
 	public void deleteDocument(final Document document)
 	  throws DataAccessException
 	{
@@ -59,6 +88,14 @@ public class DocumentDAO extends JdoDaoSupport
 			getPersistenceManager().deletePersistent(document);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli elementi presenti nel database per questa
+	 * tabella.
+	 * 
+	 * @return la lista di tutti gli elementi presenti nel database per questa
+	 *         tabella
+	 * @throws DataAccessException
+	 */
 	public Collection<Document> getAllDocuments() throws DataAccessException
 	{
 		return getPersistenceManager().detachCopyAll(

@@ -24,18 +24,33 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
+ * Classe di accesso alla tabella {@link OperationTypeTypology}
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("operationTypeTypologyDAO")
 public class OperationTypeTypologyDAO extends JdoDaoSupport
 {
+	/**
+	 * Classe di accesso alla tabella {@link OperationTypeTypology}
+	 * 
+	 * @param pmf
+	 *          manager della persistenza
+	 */
 	@Inject
 	public OperationTypeTypologyDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
 
+	/**
+	 * Restituisce l'oggetto di identificativo passato in ingresso.
+	 * 
+	 * @param id
+	 *          identificativo dell'oggetto
+	 * @return l'oggetto di identificativo passato in ingresso
+	 * @throws DataAccessException
+	 */
 	public OperationTypeTypology loadOperationTypeTypology(final long id)
 	  throws DataAccessException
 	{
@@ -47,6 +62,13 @@ public class OperationTypeTypologyDAO extends JdoDaoSupport
 		return getPersistenceManager().detachCopy(operationTypeTypology);
 	}
 
+	/**
+	 * Rende persistente l'oggetto passato come parametro.
+	 * 
+	 * @param operationTypeTypology
+	 *          l'oggetto da rendere persistente
+	 * @throws DataAccessException
+	 */
 	public void storeOperationTypeTypology(
 	  final OperationTypeTypology operationTypeTypology)
 	  throws DataAccessException
@@ -54,6 +76,13 @@ public class OperationTypeTypologyDAO extends JdoDaoSupport
 		getJdoTemplate().makePersistent(operationTypeTypology);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param operationTypeTypology
+	 *          l'oggetto da eliminare
+	 * @throws DataAccessException
+	 */
 	public void deleteOperationTypeTypology(
 	  final OperationTypeTypology operationTypeTypology)
 	  throws DataAccessException
@@ -64,6 +93,14 @@ public class OperationTypeTypologyDAO extends JdoDaoSupport
 			getPersistenceManager().deletePersistent(operationTypeTypology);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli elementi presenti nel database per questa
+	 * tabella.
+	 * 
+	 * @return la lista di tutti gli elementi presenti nel database per questa
+	 *         tabella
+	 * @throws DataAccessException
+	 */
 	public Collection<OperationTypeTypology> getAllOperationTypeTypologies()
 	  throws DataAccessException
 	{
