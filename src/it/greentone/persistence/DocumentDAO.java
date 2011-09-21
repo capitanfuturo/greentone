@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.jdo.support.JdoDaoSupport;
@@ -100,5 +101,28 @@ public class DocumentDAO extends JdoDaoSupport
 	{
 		return getPersistenceManager().detachCopyAll(
 		  getJdoTemplate().find(Document.class));
+	}
+
+	/**
+	 * Restituisce la lista di documenti appartenenti alla persona passata in
+	 * ingresso.
+	 * 
+	 * @param person
+	 *          persona
+	 * @return la lista di documenti appartenenti alla persona passata in ingresso
+	 * @throws DataAccessException
+	 */
+	public Collection<Document> getDocumentsAsRecipient(Person person)
+	  throws DataAccessException
+	{
+		Query query =
+		  getPersistenceManager()
+		    .newQuery(
+		      "SELECT FROM it.greentone.persistence.Document WHERE recipient == m PARAMETERS it.greentone.persistence.Person m");
+		@SuppressWarnings("unchecked")
+		Collection<Document> result =
+		  getPersistenceManager().detachCopyAll(
+		    (Collection<Document>) query.execute(person));
+		return result;
 	}
 }

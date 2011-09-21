@@ -59,15 +59,23 @@ public class DeletePersonAction extends AbstractBean
 	@Action(enabledProperty = "deletePersonActionEnabled")
 	public void deletePerson()
 	{
-		int confirmDialog =
-		  JOptionPane.showConfirmDialog(personsPanel,
-		    resourceMap.getString("deletePerson.Action.confirmMessage"));
-		if(confirmDialog == JOptionPane.OK_OPTION)
+		Person person = personsPanel.getSelectedItem();
+		if(personService.canDeletePerson(person))
 		{
-			Person person = personsPanel.getSelectedItem();
-			personService.deletePerson(person);
-			personsPanel.clearForm();
-			personsPanel.setStatus(EStatus.NEW);
+			int confirmDialog =
+			  JOptionPane.showConfirmDialog(personsPanel,
+			    resourceMap.getString("deletePerson.Action.confirmMessage"));
+			if(confirmDialog == JOptionPane.OK_OPTION)
+			{
+				personService.deletePerson(person);
+				personsPanel.clearForm();
+				personsPanel.setStatus(EStatus.NEW);
+			}
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(personsPanel,
+			  resourceMap.getString("deletePerson.Action.cannotDelete"));
 		}
 	}
 
