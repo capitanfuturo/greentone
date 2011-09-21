@@ -62,6 +62,7 @@ public class SavePersonAction extends AbstractBean
 	public void savePerson()
 	{
 		String name = personsPanel.getNameTextField().getText();
+		/* la ragione sociale è obbligatoria */
 		if(name == null || name.trim().equals(""))
 		{
 			JOptionPane.showMessageDialog(personsPanel,
@@ -111,6 +112,7 @@ public class SavePersonAction extends AbstractBean
 				personService.storePerson(person);
 			}
 			personsPanel.clearForm();
+			personsPanel.getContentTable().clearSelection();
 		}
 	}
 

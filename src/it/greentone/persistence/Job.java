@@ -22,6 +22,7 @@ import org.joda.time.DateTime;
  * </code>
  * <br>
  * <br>
+ * L'incarico è una prestazione che il geometra contrae con il committente.
  * 
  * @author Giuseppe Caliendo
  */
@@ -52,6 +53,9 @@ public class Job
 	@Persistent
 	String notes;
 
+	/**
+	 * L'incarico è una prestazione che il geometra contrae con il committente.
+	 */
 	public Job()
 	{
 		// vuoto
@@ -78,101 +82,211 @@ public class Job
 		this.id = id;
 	}
 
+	/**
+	 * Restituisce il protocollo univoco dell'incarico.
+	 * 
+	 * @return il protocollo univoco dell'incarico
+	 */
 	public String getProtocol()
 	{
 		return protocol;
 	}
 
+	/**
+	 * Imposta il protocollo univoco dell'incarico
+	 * 
+	 * @param protocol
+	 *          il protocollo univoco dell'incarico
+	 */
 	public void setProtocol(String protocol)
 	{
 		this.protocol = protocol;
 	}
 
+	/**
+	 * Restituisce la scadenza dell'incarico.
+	 * 
+	 * @return la scadenza dell'incarico
+	 */
 	public DateTime getDueDate()
 	{
 		return dueDate;
 	}
 
+	/**
+	 * Imposta la scadenza dell'incarico.
+	 * 
+	 * @param dueDate
+	 *          la scadenza dell'incarico
+	 */
 	public void setDueDate(DateTime dueDate)
 	{
 		this.dueDate = dueDate;
 	}
 
+	/**
+	 * Restituisce la data di inizio.
+	 * 
+	 * @return la data di inizio
+	 */
 	public DateTime getStartDate()
 	{
 		return startDate;
 	}
 
+	/**
+	 * Imposta la data di inizio.
+	 * 
+	 * @param startDate
+	 *          la data di inizio
+	 */
 	public void setStartDate(DateTime startDate)
 	{
 		this.startDate = startDate;
 	}
 
+	/**
+	 * Restituisce la data di fine.
+	 * 
+	 * @return la data di fine
+	 */
 	public DateTime getFinishDate()
 	{
 		return finishDate;
 	}
 
+	/**
+	 * Imposta la data di fine.
+	 * 
+	 * @param finishDate
+	 *          la data di fine
+	 */
 	public void setFinishDate(DateTime finishDate)
 	{
 		this.finishDate = finishDate;
 	}
 
+	/**
+	 * Restituisce la categoria dell'incarico.
+	 * 
+	 * @return la categoria dell'incarico
+	 */
 	public JobCategory getCategory()
 	{
 		return category;
 	}
 
+	/**
+	 * Imposta la categoria dell'incarico
+	 * 
+	 * @param category
+	 *          la categoria dell'incarico
+	 */
 	public void setCategory(JobCategory category)
 	{
 		this.category = category;
 	}
 
+	/**
+	 * Restituisce lo stato dell'incarico.
+	 * 
+	 * @return lo stato dell'incarico
+	 */
 	public JobStatus getStatus()
 	{
 		return status;
 	}
 
+	/**
+	 * Imposta lo stato dell'incarico.
+	 * 
+	 * @param status
+	 *          lo stato dell'incarico
+	 */
 	public void setStatus(JobStatus status)
 	{
 		this.status = status;
 	}
 
+	/**
+	 * Restituisce la descrizione.
+	 * 
+	 * @return la descrizione
+	 */
 	public String getDescription()
 	{
 		return description;
 	}
 
+	/**
+	 * Imposta la descrizione.
+	 * 
+	 * @param description
+	 *          la descrizione
+	 */
 	public void setDescription(String description)
 	{
 		this.description = description;
 	}
 
+	/**
+	 * Restituisce il responsabile dell'incarico.
+	 * 
+	 * @return il responsabile dell'incarico
+	 */
 	public Person getManager()
 	{
 		return manager;
 	}
 
+	/**
+	 * Imposta il responsabile dell'incarico.
+	 * 
+	 * @param manager
+	 *          il responsabile dell'incarico
+	 */
 	public void setManager(Person manager)
 	{
 		this.manager = manager;
 	}
 
+	/**
+	 * Restituisce il campo note.
+	 * 
+	 * @return il campo note
+	 */
 	public String getNotes()
 	{
 		return notes;
 	}
 
+	/**
+	 * Imposta il campo note.
+	 * 
+	 * @param notes
+	 *          il campo note
+	 */
 	public void setNotes(String notes)
 	{
 		this.notes = notes;
 	}
 
+	/**
+	 * Restituisce il committente.
+	 * 
+	 * @return il committente
+	 */
 	public Person getCustomer()
 	{
 		return customer;
 	}
 
+	/**
+	 * Imposta il committente.
+	 * 
+	 * @param customer
+	 *          il committente
+	 */
 	public void setCustomer(Person customer)
 	{
 		this.customer = customer;

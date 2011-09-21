@@ -89,6 +89,7 @@ public class SaveOperationAction extends AbstractBean
 			operationService.storeOperation(operation);
 		}
 		operationsPanel.clearForm();
+		operationsPanel.getContentTable().clearSelection();
 	}
 
 	/**

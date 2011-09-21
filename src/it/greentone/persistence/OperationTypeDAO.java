@@ -24,18 +24,33 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
+ * Classe di accesso alla tabella {@link OperationType}
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("operationTypeDAO")
 public class OperationTypeDAO extends JdoDaoSupport
 {
+	/**
+	 * Classe di accesso alla tabella {@link OperationType}
+	 * 
+	 * @param pmf
+	 *          manager della persistenza
+	 */
 	@Inject
 	public OperationTypeDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
 
+	/**
+	 * Restituisce l'oggetto di identificativo passato in ingresso.
+	 * 
+	 * @param id
+	 *          identificativo dell'oggetto
+	 * @return l'oggetto di identificativo passato in ingresso
+	 * @throws DataAccessException
+	 */
 	public OperationType loadOperationType(final long id)
 	  throws DataAccessException
 	{
@@ -46,12 +61,26 @@ public class OperationTypeDAO extends JdoDaoSupport
 		return getPersistenceManager().detachCopy(operationType);
 	}
 
+	/**
+	 * Rende persistente l'oggetto passato come parametro.
+	 * 
+	 * @param operationType
+	 *          l'oggetto da rendere persistente
+	 * @throws DataAccessException
+	 */
 	public void storeOperationType(final OperationType operationType)
 	  throws DataAccessException
 	{
 		getJdoTemplate().makePersistent(operationType);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param operationType
+	 *          l'oggetto da eliminare
+	 * @throws DataAccessException
+	 */
 	public void deleteOperationType(final OperationType operationType)
 	  throws DataAccessException
 	{
@@ -61,6 +90,14 @@ public class OperationTypeDAO extends JdoDaoSupport
 			getPersistenceManager().deletePersistent(operationType);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli elementi presenti nel database per questa
+	 * tabella.
+	 * 
+	 * @return la lista di tutti gli elementi presenti nel database per questa
+	 *         tabella
+	 * @throws DataAccessException
+	 */
 	public Collection<OperationType> getAllOperationTypes()
 	  throws DataAccessException
 	{

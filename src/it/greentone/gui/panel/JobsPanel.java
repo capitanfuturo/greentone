@@ -164,30 +164,30 @@ public class JobsPanel extends ContextualPanel<Job>
 						  if(selectedRow > -1)
 						  {
 							  setStatus(EStatus.EDIT);
-							  setSelectedItem(jobService.getAllJobs().get(selectedRow));
+							  Job selectedJob = jobService.getAllJobs().get(selectedRow);
+							  setSelectedItem(selectedJob);
 							  /* aggiorno il pannello */
-							  getProtocolTextField().setText(getSelectedItem().getProtocol());
+							  getProtocolTextField().setText(selectedJob.getProtocol());
 							  getDueDatePicker().setDate(
-							    getSelectedItem().getDueDate() != null? getSelectedItem()
-							      .getDueDate().toDate(): null);
+							    selectedJob.getDueDate() != null? selectedJob.getDueDate()
+							      .toDate(): null);
 							  getStartDatePicker().setDate(
-							    getSelectedItem().getStartDate() != null? getSelectedItem()
+							    selectedJob.getStartDate() != null? selectedJob
 							      .getStartDate().toDate(): null);
 							  getFinishDatePicker().setDate(
-							    getSelectedItem().getFinishDate() != null? getSelectedItem()
+							    selectedJob.getFinishDate() != null? selectedJob
 							      .getFinishDate().toDate(): null);
-							  getCategoryComboBox().setSelectedItem(
-							    getSelectedItem().getCategory());
+							  getCategoryComboBox().getModel().setSelectedItem(
+							    selectedJob.getCategory());
 							  getStatusComboBox().setSelectedItem(
-							    getSelectedItem().getStatus() != null? getSelectedItem()
-							      .getStatus().getLocalizedName(): null);
-							  getDescriptionTextField().setText(
-							    getSelectedItem().getDescription());
-							  getCustomerComboBox().setSelectedItem(
-							    getSelectedItem().getCustomer());
-							  getManagerComboBox().setSelectedItem(
-							    getSelectedItem().getManager());
-							  getNotesTextArea().setText(getSelectedItem().getNotes());
+							    selectedJob.getStatus() != null? selectedJob.getStatus()
+							      .getLocalizedName(): null);
+							  getDescriptionTextField().setText(selectedJob.getDescription());
+							  Person customer = selectedJob.getCustomer();
+							  getCustomerComboBox().getModel().setSelectedItem(customer);
+							  Person manager = selectedJob.getManager();
+							  getManagerComboBox().getModel().setSelectedItem(manager);
+							  getNotesTextArea().setText(selectedJob.getNotes());
 							  /* abilito le azioni legate alla selezione */
 							  deleteJobAction.setDeleteJobActionEnabled(true);
 						  }

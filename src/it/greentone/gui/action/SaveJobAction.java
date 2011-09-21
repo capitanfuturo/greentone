@@ -64,9 +64,10 @@ public class SaveJobAction extends AbstractBean
 		job.setManager((Person) jobsPanel.getManagerComboBox().getSelectedItem());
 		job.setDescription(GreenToneUtilities.getText(jobsPanel
 		  .getDescriptionTextField()));
-		job.setDueDate(GreenToneUtilities.getDateTime(jobsPanel.getDueDatePicker()));
 		job
-		  .setStartDate(GreenToneUtilities.getDateTime(jobsPanel.getStartDatePicker()));
+		  .setDueDate(GreenToneUtilities.getDateTime(jobsPanel.getDueDatePicker()));
+		job.setStartDate(GreenToneUtilities.getDateTime(jobsPanel
+		  .getStartDatePicker()));
 		job.setFinishDate(GreenToneUtilities.getDateTime(jobsPanel
 		  .getFinishDatePicker()));
 		job.setCategory((JobCategory) jobsPanel.getCategoryComboBox()
@@ -87,6 +88,7 @@ public class SaveJobAction extends AbstractBean
 			jobService.storeJob(job);
 		}
 		jobsPanel.clearForm();
+		jobsPanel.getContentTable().clearSelection();
 	}
 
 	/**

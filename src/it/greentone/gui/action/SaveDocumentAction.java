@@ -76,6 +76,7 @@ public class SaveDocumentAction extends AbstractBean
 		else
 			documentService.storeDocument(document);
 		documentsPanel.clearForm();
+		documentsPanel.getContentTable().clearSelection();
 	}
 
 	/**

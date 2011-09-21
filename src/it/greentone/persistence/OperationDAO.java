@@ -24,18 +24,33 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
+ * Classe di accesso alla tabella {@link Operation}
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("operationDAO")
 public class OperationDAO extends JdoDaoSupport
 {
+	/**
+	 * Classe di accesso alla tabella {@link Operation}
+	 * 
+	 * @param pmf
+	 *          manager della persistenza
+	 */
 	@Inject
 	public OperationDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
 
+	/**
+	 * Restituisce l'oggetto di identificativo passato in ingresso.
+	 * 
+	 * @param id
+	 *          identificativo dell'oggetto
+	 * @return l'oggetto di identificativo passato in ingresso
+	 * @throws DataAccessException
+	 */
 	public Operation loadOperation(final long id) throws DataAccessException
 	{
 		final Operation operation =
@@ -45,12 +60,26 @@ public class OperationDAO extends JdoDaoSupport
 		return getPersistenceManager().detachCopy(operation);
 	}
 
+	/**
+	 * Rende persistente l'oggetto passato come parametro.
+	 * 
+	 * @param operation
+	 *          l'oggetto da rendere persistente
+	 * @throws DataAccessException
+	 */
 	public void storeOperation(final Operation operation)
 	  throws DataAccessException
 	{
 		getJdoTemplate().makePersistent(operation);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param operation
+	 *          l'oggetto da eliminare
+	 * @throws DataAccessException
+	 */
 	public void deleteOperation(final Operation operation)
 	  throws DataAccessException
 	{
@@ -60,6 +89,14 @@ public class OperationDAO extends JdoDaoSupport
 			getPersistenceManager().deletePersistent(operation);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli elementi presenti nel database per questa
+	 * tabella.
+	 * 
+	 * @return la lista di tutti gli elementi presenti nel database per questa
+	 *         tabella
+	 * @throws DataAccessException
+	 */
 	public Collection<Operation> getAllOperations() throws DataAccessException
 	{
 		return getPersistenceManager().detachCopyAll(

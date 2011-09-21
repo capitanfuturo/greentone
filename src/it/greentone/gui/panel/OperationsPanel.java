@@ -154,25 +154,28 @@ public class OperationsPanel extends ContextualPanel<Operation>
 						  if(selectedRow > -1)
 						  {
 							  setStatus(EStatus.EDIT);
-							  setSelectedItem(operationService.getAllOperations().get(
-							    selectedRow));
+							  Operation selectedOperation =
+							    operationService.getAllOperations().get(selectedRow);
+							  setSelectedItem(selectedOperation);
 
 							  /* aggiorno il pannello */
 							  getDescriptionTextField().setText(
-							    getSelectedItem().getDescription());
-							  getJobComboBox().setSelectedItem(getSelectedItem().getJob());
-							  getTypeComboBox().setSelectedItem(
-							    getSelectedItem().getOperationType());
+							    selectedOperation.getDescription());
+							  Job job = selectedOperation.getJob();
+							  getJobComboBox().getModel().setSelectedItem(job);
+							  OperationType operationType =
+							    selectedOperation.getOperationType();
+							  getTypeComboBox().getModel().setSelectedItem(operationType);
 							  getVacazioneCheckBox().setSelected(
-							    getSelectedItem().getIsVacazione());
+							    selectedOperation.getIsVacazione());
 							  getProfessionalVacazioneCheckBox().setSelected(
-							    getSelectedItem().getIsProfessionalVacazione());
+							    selectedOperation.getIsProfessionalVacazione());
 							  getOperationDate().setDate(
-							    getSelectedItem().getOperationDate() != null
-							      ? getSelectedItem().getOperationDate().toDate()
+							    selectedOperation.getOperationDate() != null
+							      ? selectedOperation.getOperationDate().toDate()
 							      : null);
 							  getAmountTextField().setValue(
-							    getSelectedItem().getAmount() != null? getSelectedItem()
+							    selectedOperation.getAmount() != null? selectedOperation
 							      .getAmount(): null);
 
 							  /* abilito le azioni legate alla selezione */
