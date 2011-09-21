@@ -1,14 +1,18 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenTone;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,6 +42,16 @@ public class DeleteOperationAction extends AbstractBean
 	@Inject
 	OperationService operationService;
 	boolean deleteOperationActionEnabled = false;
+	private final ResourceMap resourceMap;
+
+	/**
+	 * Elimina l'operazione selezionata in tabella.
+	 */
+	public DeleteOperationAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
 
 	/**
 	 * Elimina l'operazione selezionata in tabella.
@@ -45,10 +59,16 @@ public class DeleteOperationAction extends AbstractBean
 	@Action(enabledProperty = "deleteOperationActionEnabled")
 	public void deleteOperation()
 	{
-		Operation operation = operationsPanel.getSelectedItem();
-		operationService.deleteOperation(operation);
-		operationsPanel.clearForm();
-		operationsPanel.setStatus(EStatus.NEW);
+		int confirmDialog =
+		  JOptionPane.showConfirmDialog(operationsPanel,
+		    resourceMap.getString("deleteOperation.Action.confirmMessage"));
+		if(confirmDialog == JOptionPane.OK_OPTION)
+		{
+			Operation operation = operationsPanel.getSelectedItem();
+			operationService.deleteOperation(operation);
+			operationsPanel.clearForm();
+			operationsPanel.setStatus(EStatus.NEW);
+		}
 	}
 
 	/**

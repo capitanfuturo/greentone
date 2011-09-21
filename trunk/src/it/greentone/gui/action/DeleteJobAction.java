@@ -1,14 +1,18 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenTone;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,6 +42,16 @@ public class DeleteJobAction extends AbstractBean
 	@Inject
 	JobService jobService;
 	boolean deleteJobActionEnabled = false;
+	private final ResourceMap resourceMap;
+
+	/**
+	 * Elimina un incarico.
+	 */
+	public DeleteJobAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
 
 	/**
 	 * Elimina un incarico.
@@ -45,10 +59,16 @@ public class DeleteJobAction extends AbstractBean
 	@Action(enabledProperty = "deleteJobActionEnabled")
 	public void deleteJob()
 	{
-		Job job = jobsPanel.getSelectedItem();
-		jobService.deleteJob(job);
-		jobsPanel.clearForm();
-		jobsPanel.setStatus(EStatus.NEW);
+		int confirmDialog =
+		  JOptionPane.showConfirmDialog(jobsPanel,
+		    resourceMap.getString("deleteJob.Action.confirmMessage"));
+		if(confirmDialog == JOptionPane.OK_OPTION)
+		{
+			Job job = jobsPanel.getSelectedItem();
+			jobService.deleteJob(job);
+			jobsPanel.clearForm();
+			jobsPanel.setStatus(EStatus.NEW);
+		}
 	}
 
 	/**
