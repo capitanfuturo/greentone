@@ -60,42 +60,89 @@ public class OperationType
 		this.id = id;
 	}
 
-
+	/**
+	 * Restituisce la tipologia del tipo di operazione.
+	 * 
+	 * @return la tipologia del tipo di operazione
+	 */
 	public OperationTypeTypology getTypology()
 	{
 		return typology;
 	}
 
+	/**
+	 * Imposta la tipologia del tipo di operazione.
+	 * 
+	 * @param typology
+	 *          la tipologia del tipo di operazione
+	 */
 	public void setTypology(OperationTypeTypology typology)
 	{
 		this.typology = typology;
 	}
 
+	/**
+	 * Restituisce il nome.
+	 * 
+	 * @return il nome
+	 */
 	public String getName()
 	{
 		return name;
 	}
 
+	/**
+	 * Imposta il nome.
+	 * 
+	 * @param name
+	 *          il nome
+	 */
 	public void setName(String name)
 	{
 		this.name = name;
 	}
 
+	/**
+	 * Restituisce <code>true</code> se il tipo di operazione è attivo,
+	 * <code>false</code> se passivo
+	 * 
+	 * @return <code>true</code> se il tipo di operazione è attivo,
+	 *         <code>false</code> se passivo
+	 */
 	public boolean getIsActive()
 	{
 		return isActive;
 	}
 
+	/**
+	 * Imposta un tipo di operazione come attivo o passivo
+	 * 
+	 * @param isActive
+	 *          <code>true</code> se il tipo di operazione è attivo,
+	 *          <code>false</code> se passivo
+	 */
 	public void setIsActive(boolean isActive)
 	{
 		this.isActive = isActive;
 	}
 
+	/**
+	 * Restituisce <code>true</code> se è imponibile, <code>false</code>
+	 * altrimenti.
+	 * 
+	 * @return <code>true</code> se è imponibile, <code>false</code> altrimenti
+	 */
 	public boolean getIsTaxable()
 	{
 		return isTaxable;
 	}
 
+	/**
+	 * Imposta un tipo di operazione come imponibile.
+	 * 
+	 * @param isTaxable
+	 *          <code>true</code> se è imponibile, <code>false</code> altrimenti
+	 */
 	public void setIsTaxable(boolean isTaxable)
 	{
 		this.isTaxable = isTaxable;

@@ -20,6 +20,14 @@ import javax.jdo.annotations.PrimaryKey;
  * </code>
  * <br>
  * <br>
+ * L'incarico è specializzato in macro-categorie come per esempio:
+ * <ul>
+ * <li>Pratiche catastali</li>
+ * <li>Progettazione</li>
+ * <li>Stima e perizie di stima</li>
+ * <li>Consulenza</li>
+ * <li>Successioni</li>
+ * </ul>
  * 
  * @author Giuseppe Caliendo
  */
@@ -32,6 +40,16 @@ public class JobCategory
 	@Persistent
 	String name;
 
+	/**
+	 * L'incarico è specializzato in macro-categorie come per esempio:
+	 * <ul>
+	 * <li>Pratiche catastali</li>
+	 * <li>Progettazione</li>
+	 * <li>Stima e perizie di stima</li>
+	 * <li>Consulenza</li>
+	 * <li>Successioni</li>
+	 * </ul>
+	 */
 	public JobCategory()
 	{
 		// vuoto
@@ -58,11 +76,22 @@ public class JobCategory
 		this.id = id;
 	}
 
+	/**
+	 * Restituisce il nome della categoria dell'incarico.
+	 * 
+	 * @return il nome della categoria dell'incarico
+	 */
 	public String getName()
 	{
 		return name;
 	}
 
+	/**
+	 * Imposta il nome della categoria dell'incarico.
+	 * 
+	 * @param name
+	 *          il nome della categoria dell'incarico
+	 */
 	public void setName(String name)
 	{
 		this.name = name;

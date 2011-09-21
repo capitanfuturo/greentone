@@ -49,18 +49,36 @@ public class DocumentService
 		documentDAO.storeDocument(document);
 	}
 
+	/**
+	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+	 * 
+	 * @param document
+	 *          documento
+	 */
 	public void addDocument(Document document)
 	{
 		storeDocument(document);
 		allDocuments.add(document);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param document
+	 *          l'oggetto da eliminare
+	 */
 	public void deleteDocument(final Document document)
 	{
 		documentDAO.deleteDocument(document);
 		allDocuments.remove(document);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli oggetti presenti in database.
+	 * 
+	 * @return la lista di tutti gli oggetti presenti in database
+	 * @throws DataAccessException
+	 */
 	public EventList<Document> getAllDocuments() throws DataAccessException
 	{
 		if(allDocuments.isEmpty())

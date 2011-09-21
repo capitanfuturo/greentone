@@ -49,18 +49,36 @@ public class OperationTypeService
 		operationTypeDAO.storeOperationType(operationType);
 	}
 
+	/**
+	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+	 * 
+	 * @param operationType
+	 *          tipo di operazione
+	 */
 	public void addOperationType(OperationType operationType)
 	{
 		storeOperationType(operationType);
 		allOperationTypeEventList.add(operationType);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param operationType
+	 *          l'oggetto da eliminare
+	 */
 	public void deleteOperationType(final OperationType operationType)
 	{
 		operationTypeDAO.deleteOperationType(operationType);
 		allOperationTypeEventList.remove(operationType);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli oggetti presenti in database.
+	 * 
+	 * @return la lista di tutti gli oggetti presenti in database
+	 * @throws DataAccessException
+	 */
 	public EventList<OperationType> getAllOperationTypes()
 	  throws DataAccessException
 	{
