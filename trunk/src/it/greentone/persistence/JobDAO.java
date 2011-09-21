@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.jdo.support.JdoDaoSupport;
@@ -95,5 +96,53 @@ public class JobDAO extends JdoDaoSupport
 	{
 		return getPersistenceManager().detachCopyAll(
 		  getJdoTemplate().find(Job.class));
+	}
+
+	/**
+	 * Restituisce la lista di incarichi per i quali la persona passata in
+	 * ingresso sia il responsabile.
+	 * 
+	 * @param manager
+	 *          responsabile dell'incarico
+	 * @return la lista di incarichi per i quali la persona passata in ingresso
+	 *         sia il responsabile
+	 * @throws DataAccessException
+	 */
+	public Collection<Job> getJobsAsManager(Person manager)
+	  throws DataAccessException
+	{
+		Query query =
+		  getPersistenceManager()
+		    .newQuery(
+		      "SELECT FROM it.greentone.persistence.Job WHERE manager == m PARAMETERS it.greentone.persistence.Person m");
+		@SuppressWarnings("unchecked")
+		Collection<Job> result =
+		  getPersistenceManager().detachCopyAll(
+		    (Collection<Job>) query.execute(manager));
+		return result;
+	}
+
+	/**
+	 * Restituisce la lista di incarichi per i quali la persona passata in
+	 * ingresso sia il committente.
+	 * 
+	 * @param customer
+	 *          committente dell'incarico
+	 * @return la lista di incarichi per i quali la persona passata in ingresso
+	 *         sia il committente
+	 * @throws DataAccessException
+	 */
+	public Collection<Job> getJobsAsCustomer(Person customer)
+	  throws DataAccessException
+	{
+		Query query =
+		  getPersistenceManager()
+		    .newQuery(
+		      "SELECT FROM it.greentone.persistence.Job WHERE customer == m PARAMETERS it.greentone.persistence.Person m");
+		@SuppressWarnings("unchecked")
+		Collection<Job> result =
+		  getPersistenceManager().detachCopyAll(
+		    (Collection<Job>) query.execute(customer));
+		return result;
 	}
 }
