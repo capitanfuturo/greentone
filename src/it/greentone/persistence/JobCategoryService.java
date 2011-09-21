@@ -49,18 +49,36 @@ public class JobCategoryService
 		jobCategoryDAO.storeJobCategory(jobCategory);
 	}
 
+	/**
+	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+	 * 
+	 * @param jobCategory
+	 *          categoria di incarico
+	 */
 	public void addJobCategory(JobCategory jobCategory)
 	{
 		storeJobCategory(jobCategory);
 		allJobCategories.add(jobCategory);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param jobCategory
+	 *          l'oggetto da eliminare
+	 */
 	public void deleteJobCategory(final JobCategory jobCategory)
 	{
 		jobCategoryDAO.deleteJobCategory(jobCategory);
 		allJobCategories.remove(jobCategory);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli oggetti presenti in database.
+	 * 
+	 * @return la lista di tutti gli oggetti presenti in database
+	 * @throws DataAccessException
+	 */
 	public EventList<JobCategory> getAllJobCategories()
 	  throws DataAccessException
 	{

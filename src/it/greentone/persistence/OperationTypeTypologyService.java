@@ -50,6 +50,12 @@ public class OperationTypeTypologyService
 		operationTypeTypologyDAO.storeOperationTypeTypology(operationTypeTypology);
 	}
 
+	/**
+	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+	 * 
+	 * @param operationTypeTypology
+	 *          tipologia del tipo di operazione
+	 */
 	public void addOperationTypeTypology(
 	  final OperationTypeTypology operationTypeTypology)
 	{
@@ -57,6 +63,12 @@ public class OperationTypeTypologyService
 		allOperationTypeTypologies.add(operationTypeTypology);
 	}
 
+	/**
+	 * Elimina l'oggetto passato in ingresso.
+	 * 
+	 * @param operationTypeTypology
+	 *          l'oggetto da eliminare
+	 */
 	public void deleteOperationTypeTypology(
 	  final OperationTypeTypology operationTypeTypology)
 	{
@@ -64,6 +76,12 @@ public class OperationTypeTypologyService
 		allOperationTypeTypologies.remove(operationTypeTypology);
 	}
 
+	/**
+	 * Restituisce la lista di tutti gli oggetti presenti in database.
+	 * 
+	 * @return la lista di tutti gli oggetti presenti in database
+	 * @throws DataAccessException
+	 */
 	public EventList<OperationTypeTypology> getAllOperationTypeTypologies()
 	  throws DataAccessException
 	{

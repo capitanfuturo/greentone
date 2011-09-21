@@ -324,7 +324,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 		if(cityTextField == null)
 		{
 			cityTextField = new JTextField(20);
-			registerComponent(capTextField);
+			registerComponent(cityTextField);
 		}
 		return cityTextField;
 	}

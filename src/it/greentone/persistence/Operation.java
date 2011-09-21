@@ -67,71 +67,154 @@ public class Operation
 		this.id = id;
 	}
 
+	/**
+	 * Restituisce la descrizione.
+	 * 
+	 * @return la descrizione
+	 */
 	public String getDescription()
 	{
 		return description;
 	}
 
+	/**
+	 * Imposta la descrizione.
+	 * 
+	 * @param description
+	 *          la descrizione
+	 */
 	public void setDescription(String description)
 	{
 		this.description = description;
 	}
 
+	/**
+	 * Restituisce l'importo.
+	 * 
+	 * @return l'importo
+	 */
 	public Double getAmount()
 	{
 		return amount;
 	}
 
+	/**
+	 * Imposta l'importo
+	 * 
+	 * @param amount
+	 *          l'importo
+	 */
 	public void setAmount(Double amount)
 	{
 		this.amount = amount;
 	}
 
+	/**
+	 * Restituisce la data di registrazione dell'operazione.
+	 * 
+	 * @return la data di registrazione dell'operazione
+	 */
 	public DateTime getOperationDate()
 	{
 		return operationDate;
 	}
 
+	/**
+	 * Imposta la data di registrazione dell'operazione.
+	 * 
+	 * @param operationDate
+	 *          la data di registrazione dell'operazione
+	 */
 	public void setOperationDate(DateTime operationDate)
 	{
 		this.operationDate = operationDate;
 	}
 
+	/**
+	 * Restituisce <code>true</code> se l'operazione è di tipo vacazione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se l'operazione è di tipo vacazione,
+	 *         <code>false</code> altrimenti
+	 */
 	public boolean getIsVacazione()
 	{
 		return isVacazione;
 	}
 
+	/**
+	 * Imposta un'operazione come di vacazione.
+	 * 
+	 * @param isVacazione
+	 *          <code>true</code> se l'operazione è di tipo vacazione,
+	 *          <code>false</code> altrimenti
+	 */
 	public void setIsVacazione(boolean isVacazione)
 	{
 		this.isVacazione = isVacazione;
 	}
 
+	/**
+	 * Restituisce <code>true</code> se l'operazione è di tipo vacazione
+	 * professionale, <code>false</code> altrimenti
+	 * 
+	 * @return <code>true</code> se l'operazione è di tipo vacazione
+	 *         professionale, <code>false</code> altrimenti
+	 */
 	public boolean getIsProfessionalVacazione()
 	{
 		return isProfessionalVacazione;
 	}
 
+	/**
+	 * Imposta un'operazione come di vacazione professionale.
+	 * 
+	 * @param isProfessionalVacazione
+	 *          <code>true</code> se l'operazione è di tipo vacazione
+	 *          professionale, <code>false</code> altrimenti
+	 */
 	public void setIsProfessionalVacazione(boolean isProfessionalVacazione)
 	{
 		this.isProfessionalVacazione = isProfessionalVacazione;
 	}
 
+	/**
+	 * Restituisce l'incarico.
+	 * 
+	 * @return l'incarico
+	 */
 	public Job getJob()
 	{
 		return job;
 	}
 
+	/**
+	 * Restituisce l'incarico.
+	 * 
+	 * @param job
+	 *          l'incarico
+	 */
 	public void setJob(Job job)
 	{
 		this.job = job;
 	}
 
+	/**
+	 * Restituisce il tipo di operazione.
+	 * 
+	 * @return il tipo di operazione
+	 */
 	public OperationType getOperationType()
 	{
 		return operationType;
 	}
 
+	/**
+	 * Imposta il tipo di operazione
+	 * 
+	 * @param operationType
+	 *          il tipo di operazione
+	 */
 	public void setOperationType(OperationType operationType)
 	{
 		this.operationType = operationType;

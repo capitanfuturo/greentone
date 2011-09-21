@@ -122,105 +122,153 @@ public class Document
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce <code>true</code> se il documento è in formato digitale,
+	 * <code>false</code> altrimenti.
 	 * 
-	 * @return
+	 * @return <code>true</code> se il documento è in formato digitale,
+	 *         <code>false</code> altrimenti
 	 */
 	public boolean getIsDigital()
 	{
 		return isDigital;
 	}
 
+	/**
+	 * Indica se il documento è in formato digitale oppure no.
+	 * 
+	 * @param isDigital
+	 *          <code>true</code> se il documento è in formato digitale,
+	 *          <code>false</code> altrimenti
+	 */
 	public void setIsDigital(boolean isDigital)
 	{
 		this.isDigital = isDigital;
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce il protocollo del documento.
 	 * 
-	 * @return
+	 * @return il protocollo del documento
 	 */
 	public String getProtocol()
 	{
 		return protocol;
 	}
 
+	/**
+	 * Imposta il protocollo del documento.
+	 * 
+	 * @param protocol
+	 *          il protocollo del documento
+	 */
 	public void setProtocol(String protocol)
 	{
 		this.protocol = protocol;
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce <code>true</code> se il documento è entrante nell'archivio
+	 * dello studio, <code>false</code> altrimenti.
 	 * 
-	 * @return
+	 * @return <code>true</code> se il documento è entrante nell'archivio dello
+	 *         studio, <code>false</code> altrimenti
 	 */
 	public boolean getIsIncoming()
 	{
 		return incoming;
 	}
 
+	/**
+	 * Indica se il documento è entrante nell'archivio dello studio.
+	 * 
+	 * @param incoming
+	 *          <code>true</code> se il documento è entrante nell'archivio dello
+	 *          studio, <code>false</code> altrimenti
+	 */
 	public void setIsIncoming(boolean incoming)
 	{
 		this.incoming = incoming;
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce la data di rilascio del documento.
 	 * 
-	 * @return
+	 * @return la data di rilascio del documento
 	 */
 	public DateTime getReleaseDate()
 	{
 		return releaseDate;
 	}
 
+	/**
+	 * Imposta la data di rilascio del documento.
+	 * 
+	 * @param releaseDate
+	 *          la data di rilascio del documento
+	 */
 	public void setReleaseDate(DateTime releaseDate)
 	{
 		this.releaseDate = releaseDate;
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce il destinatario.
 	 * 
-	 * @return
+	 * @return il destinatario
 	 */
 	public Person getRecipient()
 	{
 		return recipient;
 	}
 
+	/**
+	 * Imposta il destinatario.
+	 * 
+	 * @param recipient
+	 *          il destinatario
+	 */
 	public void setRecipient(Person recipient)
 	{
 		this.recipient = recipient;
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce il pecorso al file.
 	 * 
-	 * @return
+	 * @return il pecorso al file
 	 */
 	public String getUri()
 	{
 		return uri;
 	}
 
+	/**
+	 * Imposta il pecorso al file.
+	 * 
+	 * @param uri
+	 *          il pecorso al file
+	 */
 	public void setUri(String uri)
 	{
 		this.uri = uri;
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce l'incarico associato.
 	 * 
-	 * @return
+	 * @return l'incarico associato
 	 */
 	public Job getJob()
 	{
 		return job;
 	}
 
+	/**
+	 * Imposta l'incarico associato.
+	 * 
+	 * @param job
+	 *          l'incarico associato
+	 */
 	public void setJob(Job job)
 	{
 		this.job = job;
