@@ -38,26 +38,70 @@ public class PersonService
 	private final EventList<Person> allPersonsEventList =
 	  new BasicEventList<Person>();
 
+	/**
+	 * Rende persistente un oggetto nel database.
+	 * 
+	 * @param person
+	 *          oggetto da rendere persistente
+	 */
 	public void storePerson(final Person person)
 	{
 		personDAO.storePerson(person);
 	}
 
+	/**
+	 * Aggiunge una nuova persona in anagrafica.
+	 * 
+	 * @param person
+	 *          nuova persona da inserire
+	 */
 	public void addPerson(Person person)
 	{
 		storePerson(person);
 		allPersonsEventList.add(person);
 	}
 
+	/**
+	 * Rimuove la persona dall'anagrafica.
+	 * 
+	 * @param person
+	 *          la persona da eliminare
+	 */
 	public void deletePerson(final Person person)
 	{
-		personDAO.deletePerson(person);
+		if(canDeletePerson(person))
+		{
+			personDAO.deletePerson(person);
+			allPersonsEventList.remove(person);
+		}
 	}
 
+	/**
+	 * Restituisce la lista di tutte le persone presenti in anagrafica.
+	 * 
+	 * @return la lista di tutte le persone presenti in anagrafica
+	 * @throws DataAccessException
+	 */
 	public EventList<Person> getAllPersons() throws DataAccessException
 	{
 		if(allPersonsEventList.isEmpty())
 			allPersonsEventList.addAll(personDAO.getAllPersons());
 		return allPersonsEventList;
+	}
+
+	/**
+	 * Le condizioni per eliminare una persona sono:
+	 * <ul>
+	 * <li></li>
+	 * </ul>
+	 * 
+	 * @param person
+	 *          persona da eliminare
+	 * @return <code>true</code> se è possibile eliminare la persona,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean canDeletePerson(Person person)
+	{
+		return true;
 	}
 }

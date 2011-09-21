@@ -38,6 +38,12 @@ public class JobCategoryService
 	private final EventList<JobCategory> allJobCategories =
 	  new BasicEventList<JobCategory>();
 
+	/**
+	 * Rende persistente un oggetto nel database.
+	 * 
+	 * @param jobCategory
+	 *          oggetto da rendere persistente
+	 */
 	public void storeJobCategory(final JobCategory jobCategory)
 	{
 		jobCategoryDAO.storeJobCategory(jobCategory);

@@ -24,18 +24,33 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
+ * Classe di accessso alla tabella Person nel database.
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("personDAO")
 public class PersonDAO extends JdoDaoSupport
 {
+	/**
+	 * Classe di accessso alla tabella Person nel database.
+	 * 
+	 * @param pmf
+	 *          manager della persistenza
+	 */
 	@Inject
 	public PersonDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
 
+	/**
+	 * Restituice la persona con id passato in ingresso.
+	 * 
+	 * @param id
+	 *          identificativo della persona
+	 * @return la persona con id passato in ingresso
+	 * @throws DataAccessException
+	 */
 	public Person loadPerson(final long id) throws DataAccessException
 	{
 		final Person person =
@@ -45,11 +60,25 @@ public class PersonDAO extends JdoDaoSupport
 		return getPersistenceManager().detachCopy(person);
 	}
 
+	/**
+	 * Rende persistente l'oggetto passato come parametro.
+	 * 
+	 * @param person
+	 *          l'oggetto da rendere persistente
+	 * @throws DataAccessException
+	 */
 	public void storePerson(final Person person) throws DataAccessException
 	{
 		getJdoTemplate().makePersistent(person);
 	}
 
+	/**
+	 * Elimina l'oggetto passato come parametro.
+	 * 
+	 * @param person
+	 *          oggetto da eliminare
+	 * @throws DataAccessException
+	 */
 	public void deletePerson(final Person person) throws DataAccessException
 	{
 		if(person == null || person.getId() == null)
@@ -58,6 +87,12 @@ public class PersonDAO extends JdoDaoSupport
 			getPersistenceManager().deletePersistent(person);
 	}
 
+	/**
+	 * Restituisce la lista di tutte le persone presenti in anagrafica.
+	 * 
+	 * @return la lista di tutte le persone presenti in anagrafica
+	 * @throws DataAccessException
+	 */
 	public Collection<Person> getAllPersons() throws DataAccessException
 	{
 		return getPersistenceManager().detachCopyAll(

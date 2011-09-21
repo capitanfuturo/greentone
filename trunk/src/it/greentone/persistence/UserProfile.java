@@ -20,7 +20,9 @@ import org.jdesktop.application.ResourceMap;
  * </code>
  * <br>
  * <br>
- * Profili applicativi.
+ * Profili applicativi. A seconda della profilazione di un utente appartenente
+ * all'anagrafica il programma consentirà l'utilizzo o meno di alcune
+ * funzionalità.
  * 
  * @author Giuseppe Caliendo
  */
@@ -74,7 +76,8 @@ public enum UserProfile
 	 * 
 	 * @return il nome localizzato del valore dell'enumerato
 	 */
-	public String getLocalizedName(){
+	public String getLocalizedName()
+	{
 		return resourceMap.getString(getLocalizationKey());
 	}
 }

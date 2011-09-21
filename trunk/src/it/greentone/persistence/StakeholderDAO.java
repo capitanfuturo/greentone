@@ -24,18 +24,35 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
+ * Classe di accesso alla tabella degli stakeholder, ovvero interessati ad un
+ * certo incarico.
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("stakeholderDAO")
 public class StakeholderDAO extends JdoDaoSupport
 {
+	/**
+	 * Classe di accesso alla tabella degli stakeholder, ovvero interessati ad un
+	 * certo incarico.
+	 * 
+	 * @param pmf
+	 *          manager della persistenza
+	 */
 	@Inject
 	public StakeholderDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
 
+	/**
+	 * Cerca e restituisce lo stakholder con identificativo id.
+	 * 
+	 * @param id
+	 *          identificativo dello stakeholder
+	 * @return eventuale stakeholder identificato dall'id passato in ingresso
+	 * @throws DataAccessException
+	 */
 	public Stakeholder loadStakeholder(final long id) throws DataAccessException
 	{
 		final Stakeholder stakeholder =
@@ -50,6 +67,7 @@ public class StakeholderDAO extends JdoDaoSupport
 	 * 
 	 * @param stakeholder
 	 *          l'interessato all'incarico
+	 * @throws DataAccessException
 	 */
 	public void storeStakeholder(final Stakeholder stakeholder)
 	  throws DataAccessException
@@ -62,6 +80,7 @@ public class StakeholderDAO extends JdoDaoSupport
 	 * 
 	 * @param stakeholder
 	 *          l'interessato all'incarico
+	 * @throws DataAccessException
 	 */
 	public void deleteStakeholder(final Stakeholder stakeholder)
 	  throws DataAccessException

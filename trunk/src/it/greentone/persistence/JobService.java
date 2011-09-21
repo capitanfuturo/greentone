@@ -37,6 +37,12 @@ public class JobService
 	private JobDAO jobDAO;
 	private final EventList<Job> allJobs = new BasicEventList<Job>();
 
+	/**
+	 * Rende persistente un oggetto nel database.
+	 * 
+	 * @param job
+	 *          oggetto da rendere persistente
+	 */
 	public void storeJob(final Job job)
 	{
 		jobDAO.storeJob(job);

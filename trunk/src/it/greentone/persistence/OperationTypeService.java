@@ -38,6 +38,12 @@ public class OperationTypeService
 	private final EventList<OperationType> allOperationTypeEventList =
 	  new BasicEventList<OperationType>();
 
+	/**
+	 * Rende persistente un oggetto nel database.
+	 * 
+	 * @param operationType
+	 *          oggetto da rendere persistente
+	 */
 	public void storeOperationType(final OperationType operationType)
 	{
 		operationTypeDAO.storeOperationType(operationType);
