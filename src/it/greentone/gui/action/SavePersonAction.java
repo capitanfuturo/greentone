@@ -102,7 +102,37 @@ public class SavePersonAction extends AbstractBean
 			  .getTelephone1TextField()));
 			person.setTelephone2(GreenToneUtilities.getText(personsPanel
 			  .getTelephone2TextField()));
-			/* aggiorno la GUI */
+			/*
+			 * controllo la compilazione del campo partita IVA, codice fiscale a
+			 * seconda che il flag sia impostato
+			 */
+			if(person.getIsLegal())
+			{
+				if(person.getPiva() == null)
+				{
+					JOptionPane.showMessageDialog(personsPanel,
+					  resourceMap.getString("savePerson.Action.pivaNotNull"),
+					  resourceMap.getString("ErrorDialog.title"),
+					  JOptionPane.ERROR_MESSAGE);
+					personsPanel.getNameTextField().requestFocus();
+					return;
+				}
+			}
+			else
+			{
+				if(person.getCf() == null)
+				{
+					JOptionPane.showMessageDialog(personsPanel,
+					  resourceMap.getString("savePerson.Action.cfNotNull"),
+					  resourceMap.getString("ErrorDialog.title"),
+					  JOptionPane.ERROR_MESSAGE);
+					personsPanel.getNameTextField().requestFocus();
+					return;
+				}
+			}
+
+
+			/* salvo il bean */
 			if(personsPanel.getStatus() == EStatus.NEW)
 			{
 				personService.addPerson(person);
