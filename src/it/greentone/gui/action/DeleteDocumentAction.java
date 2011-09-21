@@ -1,14 +1,18 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenTone;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,7 +30,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * * Elimina un documento.
+ * Elimina un documento.
  * 
  * @author Giuseppe Caliendo
  */
@@ -38,6 +42,16 @@ public class DeleteDocumentAction extends AbstractBean
 	@Inject
 	DocumentService documentService;
 	boolean deleteDocumentActionEnabled = false;
+	private final ResourceMap resourceMap;
+
+	/**
+	 * Elimina un documento.
+	 */
+	public DeleteDocumentAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
 
 	/**
 	 * Elimina un documento.
@@ -45,10 +59,16 @@ public class DeleteDocumentAction extends AbstractBean
 	@Action(enabledProperty = "deleteDocumentActionEnabled")
 	public void deleteDocument()
 	{
-		Document document = documentsPanel.getSelectedItem();
-		documentService.deleteDocument(document);
-		documentsPanel.clearForm();
-		documentsPanel.setStatus(EStatus.NEW);
+		int confirmDialog =
+		  JOptionPane.showConfirmDialog(documentsPanel,
+		    resourceMap.getString("deleteDocument.Action.confirmMessage"));
+		if(confirmDialog == JOptionPane.OK_OPTION)
+		{
+			Document document = documentsPanel.getSelectedItem();
+			documentService.deleteDocument(document);
+			documentsPanel.clearForm();
+			documentsPanel.setStatus(EStatus.NEW);
+		}
 	}
 
 	/**

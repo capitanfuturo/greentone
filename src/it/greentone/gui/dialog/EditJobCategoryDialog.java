@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -151,9 +152,15 @@ public class EditJobCategoryDialog extends JDialog
 						int selectedIndex = getJobCategoryJList().getSelectedIndex();
 						if(selectedIndex > -1)
 						{
-							JobCategory jobCategory =
-							  jobCategoryService.getAllJobCategories().get(selectedIndex);
-							jobCategoryService.deleteJobCategory(jobCategory);
+							int confirmDialog =
+							  JOptionPane.showConfirmDialog(getContentPane(), resourceMap
+							    .getString("editJobCategory.Action.confirmMessage"));
+							if(confirmDialog == JOptionPane.OK_OPTION)
+							{
+								JobCategory jobCategory =
+								  jobCategoryService.getAllJobCategories().get(selectedIndex);
+								jobCategoryService.deleteJobCategory(jobCategory);
+							}
 						}
 					}
 				});

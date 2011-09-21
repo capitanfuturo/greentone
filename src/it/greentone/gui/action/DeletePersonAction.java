@@ -1,14 +1,18 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenTone;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.PersonsPanel;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,6 +42,16 @@ public class DeletePersonAction extends AbstractBean
 	@Inject
 	PersonService personService;
 	boolean deletePersonActionEnabled = false;
+	private final ResourceMap resourceMap;
+
+	/**
+	 * Elimina una persona dall'anagrafica.
+	 */
+	public DeletePersonAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
 
 	/**
 	 * Elimina una persona dall'anagrafica.
@@ -45,10 +59,16 @@ public class DeletePersonAction extends AbstractBean
 	@Action(enabledProperty = "deletePersonActionEnabled")
 	public void deletePerson()
 	{
-		Person person = personsPanel.getSelectedItem();
-		personService.deletePerson(person);
-		personsPanel.clearForm();
-		personsPanel.setStatus(EStatus.NEW);
+		int confirmDialog =
+		  JOptionPane.showConfirmDialog(personsPanel,
+		    resourceMap.getString("deletePerson.Action.confirmMessage"));
+		if(confirmDialog == JOptionPane.OK_OPTION)
+		{
+			Person person = personsPanel.getSelectedItem();
+			personService.deletePerson(person);
+			personsPanel.clearForm();
+			personsPanel.setStatus(EStatus.NEW);
+		}
 	}
 
 	/**

@@ -17,6 +17,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -195,9 +196,16 @@ public class EditOperationTypeDialog extends JDialog
 						int selectedIndex = getTypeTable().getSelectedRow();
 						if(selectedIndex > -1)
 						{
-							OperationType operationType =
-							  operationTypeService.getAllOperationTypes().get(selectedIndex);
-							operationTypeService.deleteOperationType(operationType);
+							int confirmDialog =
+							  JOptionPane.showConfirmDialog(getContentPane(), resourceMap
+							    .getString("editOperationType.Action.confirmMessage"));
+							if(confirmDialog == JOptionPane.OK_OPTION)
+							{
+								OperationType operationType =
+								  operationTypeService.getAllOperationTypes()
+								    .get(selectedIndex);
+								operationTypeService.deleteOperationType(operationType);
+							}
 						}
 					}
 				});
