@@ -38,23 +38,47 @@ public class OperationService
 	private final EventList<Operation> allOperationEventList =
 	  new BasicEventList<Operation>();
 
+	/**
+	 * Aggiunge una nuova operazione.
+	 * 
+	 * @param operation
+	 *          operazione da aggiungere
+	 */
 	public void addOperation(Operation operation)
 	{
 		storeOperation(operation);
 		allOperationEventList.add(operation);
 	}
 
+	/**
+	 * Rende persistente un oggetto nel database.
+	 * 
+	 * @param operation
+	 *          oggetto da rendere persistente
+	 */
 	public void storeOperation(final Operation operation)
 	{
 		operationDAO.storeOperation(operation);
 	}
 
+	/**
+	 * Elimina l'operazione.
+	 * 
+	 * @param operation
+	 *          operazione da eliminare
+	 */
 	public void deleteOperation(final Operation operation)
 	{
 		operationDAO.deleteOperation(operation);
 		allOperationEventList.remove(operation);
 	}
 
+	/**
+	 * Restituisce la lista di tutte le operazioni.
+	 * 
+	 * @return la lista di tutte le operazioni
+	 * @throws DataAccessException
+	 */
 	public EventList<Operation> getAllOperations() throws DataAccessException
 	{
 		if(allOperationEventList.isEmpty())

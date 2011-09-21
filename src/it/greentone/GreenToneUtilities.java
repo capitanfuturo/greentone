@@ -82,6 +82,8 @@ public class GreenToneUtilities
 		{
 			mf = new MaskFormatter(mask)
 				{
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public Object stringToValue(String value) throws ParseException
 					{

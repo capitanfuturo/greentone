@@ -67,21 +67,43 @@ public class Stakeholder
 		this.id = id;
 	}
 
+	/**
+	 * Restituisce la persona in anagrafica.
+	 * 
+	 * @return la persona in anagrafica
+	 */
 	public Person getPerson()
 	{
 		return person;
 	}
 
+	/**
+	 * Imposta la persona dell'anagrafica come interessata ad un incarico.
+	 * 
+	 * @param person
+	 *          la persona dell'anagrafica come interessata ad un incarico
+	 */
 	public void setPerson(Person person)
 	{
 		this.person = person;
 	}
 
+	/**
+	 * Restituisce l'incarico.
+	 * 
+	 * @return l'incarico
+	 */
 	public Job getJob()
 	{
 		return job;
 	}
 
+	/**
+	 * Imposta l'incarico di interesse.
+	 * 
+	 * @param job
+	 *          l'incarico
+	 */
 	public void setJob(Job job)
 	{
 		this.job = job;

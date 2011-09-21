@@ -38,6 +38,12 @@ public class DocumentService
 	private final EventList<Document> allDocuments =
 	  new BasicEventList<Document>();
 
+	/**
+	 * Rende persistente un oggetto nel database.
+	 * 
+	 * @param document
+	 *          oggetto da rendere persistente
+	 */
 	public void storeDocument(final Document document)
 	{
 		documentDAO.storeDocument(document);

@@ -56,7 +56,6 @@ public class Document
 	 */
 	public Document()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -81,30 +80,42 @@ public class Document
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce la descrizione del documento.
 	 * 
-	 * @return
+	 * @return la descrizione del documento
 	 */
 	public String getDescription()
 	{
 		return description;
 	}
 
+	/**
+	 * Imposta la descrizione del documento.
+	 * 
+	 * @param description
+	 *          la descrizione del documento
+	 */
 	public void setDescription(String description)
 	{
 		this.description = description;
 	}
 
 	/**
-	 * Restituisce
+	 * Restituisce il campo note del documento.
 	 * 
-	 * @return
+	 * @return il campo note del documento
 	 */
 	public String getNotes()
 	{
 		return notes;
 	}
 
+	/**
+	 * Imposta il campo note del documento.
+	 * 
+	 * @param notes
+	 *          il campo note del documento
+	 */
 	public void setNotes(String notes)
 	{
 		this.notes = notes;

@@ -38,6 +38,12 @@ public class OperationTypeTypologyService
 	private final EventList<OperationTypeTypology> allOperationTypeTypologies =
 	  new BasicEventList<OperationTypeTypology>();
 
+	/**
+	 * Rende persistente un oggetto nel database.
+	 * 
+	 * @param operationTypeTypology
+	 *          il tipo della tipologia dell'operazione
+	 */
 	public void storeOperationTypeTypology(
 	  final OperationTypeTypology operationTypeTypology)
 	{
