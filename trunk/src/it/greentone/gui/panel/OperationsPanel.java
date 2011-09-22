@@ -83,6 +83,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private JCheckBox professionalVacazioneCheckBox;
 	private JXDatePicker operationDate;
 	private JFormattedTextField amountTextField;
+	private String[] tableProperties;
+	private String[] tableColumnsNames;
+	private boolean[] tableWritables;
 
 	/**
 	 * Pannello di gestione delle operazioni degli incarichi dello studio
@@ -215,11 +218,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		  new EventComboBoxModel<OperationType>(operationTypeService
 		    .getAllOperationTypes()));
 
-		/* aggiorno la tabella */
-		String[] properties =
+		tableProperties =
 		  new String[] {"description", "job", "operationType", "isVacazione",
 		    "isProfessionalVacazione", "operationDate", "amount"};
-		String[] columnsName =
+		tableColumnsNames =
 		  new String[] {
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
@@ -229,15 +231,14 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		      LOCALIZATION_PREFIX + "Table.isProfessionalVacazione"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount")};
-		boolean[] writable =
+		tableWritables =
 		  new boolean[] {false, false, false, false, false, false, false};
 
 		tableModel =
 		  new EventJXTableModel<Operation>(operationService.getAllOperations(),
-		    new BeanTableFormat<Operation>(Operation.class, properties,
-		      columnsName, writable));
+		    new BeanTableFormat<Operation>(Operation.class, tableProperties,
+		      tableColumnsNames, tableWritables));
 		getContentTable().setModel(tableModel);
-
 	}
 
 	@Override

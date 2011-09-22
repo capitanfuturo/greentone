@@ -1,5 +1,7 @@
 package it.greentone.persistence;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
@@ -85,4 +87,17 @@ public class OperationService
 			allOperationEventList.addAll(operationDAO.getAllOperations());
 		return allOperationEventList;
 	}
+
+	/**
+	 * Restituisce la lista delle operazioni dell'incarico passato in ingresso.
+	 * 
+	 * @param job
+	 *          incarico
+	 * @return la lista delle operazioni dell'incarico passato in ingresso
+	 */
+	public Collection<Operation> getOperationsJob(Job job)
+	{
+		return operationDAO.getOperationsJob(job);
+	}
+
 }

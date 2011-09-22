@@ -39,6 +39,18 @@ public class OperationType
 	@Persistent
 	private boolean isTaxable;
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj instanceof OperationType)
+		{
+			OperationType candidate = (OperationType) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
+	}
+
 	/**
 	 * Restituisce l'identificativo dell'oggetto
 	 * 

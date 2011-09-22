@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.jdo.support.JdoDaoSupport;
@@ -101,5 +102,27 @@ public class OperationDAO extends JdoDaoSupport
 	{
 		return getPersistenceManager().detachCopyAll(
 		  getJdoTemplate().find(Operation.class));
+	}
+
+	/**
+	 * Restituisce la lista delle operazioni dell'incarico passato in ingresso.
+	 * 
+	 * @param job
+	 *          incarico
+	 * @return la lista delle operazioni dell'incarico passato in ingresso
+	 * @throws DataAccessException
+	 */
+	public Collection<Operation> getOperationsJob(Job job)
+	  throws DataAccessException
+	{
+		Query query =
+		  getPersistenceManager()
+		    .newQuery(
+		      "SELECT FROM it.greentone.persistence.Operation WHERE job == j PARAMETERS it.greentone.persistence.Job j");
+		@SuppressWarnings("unchecked")
+		Collection<Operation> result =
+		  getPersistenceManager().detachCopyAll(
+		    (Collection<Operation>) query.execute(job));
+		return result;
 	}
 }

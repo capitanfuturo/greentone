@@ -46,6 +46,18 @@ public class Operation
 	@Persistent(defaultFetchGroup = "true")
 	private OperationType operationType;
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj instanceof Operation)
+		{
+			Operation candidate = (Operation) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
+	}
+
 	/**
 	 * Restituisce l'identificativo del record.
 	 * 

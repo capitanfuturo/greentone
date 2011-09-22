@@ -37,13 +37,16 @@ public class Stakeholder
 	@Persistent(defaultFetchGroup = "true", dependent = "false")
 	private Job job;
 
-	/**
-	 * Interessati ad un incarico. Questa tabella di relazione serve per poter
-	 * definire delle liste di persone che possono aver accesso alle informazioni
-	 * di un certo incarico o che comunque ne sono coinvolte.
-	 */
-	public Stakeholder()
+	@Override
+	public boolean equals(Object obj)
 	{
+		if(obj instanceof Stakeholder)
+		{
+			Stakeholder candidate = (Stakeholder) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package it.greentone.persistence;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
@@ -35,6 +37,10 @@ public class JobService
 {
 	@Inject
 	private JobDAO jobDAO;
+	@Inject
+	private OperationService operationService;
+	@Inject
+	private DocumentService documentService;
 	private final EventList<Job> allJobs = new BasicEventList<Job>();
 
 	/**
@@ -73,13 +79,33 @@ public class JobService
 	}
 
 	/**
-	 * Elimina un oggetto dal database
+	 * Elimina un oggetto dal database. Quando si elimina un incarico, allora
+	 * vengono eliminati anche:
+	 * <ul>
+	 * <li>tutti i documenti associati</li>
+	 * <li>tutte le operationi associate</li>
+	 * </ul>
 	 * 
 	 * @param job
 	 *          l'incarico da eliminare
+	 * @see Operation
+	 * @see Document
 	 */
 	public void deleteJob(final Job job)
 	{
+		/* elimino le operazioni */
+		Collection<Operation> operationsJob =
+		  operationService.getOperationsJob(job);
+		for(Operation operation : operationsJob)
+		{
+			operationService.deleteOperation(operation);
+		}
+		/* elimino i documenti */
+		Collection<Document> documentsJob = documentService.getDocumentsJob(job);
+		for(Document document : documentsJob)
+		{
+			documentService.deleteDocument(document);
+		}
 		jobDAO.deleteJob(job);
 		allJobs.remove(job);
 	}
@@ -95,5 +121,33 @@ public class JobService
 		if(allJobs.isEmpty())
 			allJobs.addAll(jobDAO.getAllJobs());
 		return allJobs;
+	}
+
+	/**
+	 * Restituisce la lista di incarichi per i quali la persona passata in
+	 * ingresso sia il committente.
+	 * 
+	 * @param customer
+	 *          committente dell'incarico
+	 * @return la lista di incarichi per i quali la persona passata in ingresso
+	 *         sia il committente
+	 */
+	public Collection<Job> getJobsAsCustomer(Person customer)
+	{
+		return jobDAO.getJobsAsCustomer(customer);
+	}
+
+	/**
+	 * Restituisce la lista di incarichi per i quali la persona passata in
+	 * ingresso sia il responsabile.
+	 * 
+	 * @param manager
+	 *          responsabile dell'incarico
+	 * @return la lista di incarichi per i quali la persona passata in ingresso
+	 *         sia il responsabile
+	 */
+	public Collection<Job> getJobsAsManager(Person manager)
+	{
+		return jobDAO.getJobsAsManager(manager);
 	}
 }

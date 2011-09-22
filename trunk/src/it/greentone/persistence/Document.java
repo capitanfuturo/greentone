@@ -51,11 +51,16 @@ public class Document
 	@Persistent(defaultFetchGroup = "true", dependent = "false")
 	Job job;
 
-	/**
-	 * Documento relativo ad un incarico.
-	 */
-	public Document()
+	@Override
+	public boolean equals(Object obj)
 	{
+		if(obj instanceof Document)
+		{
+			Document candidate = (Document) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
 	}
 
 	/**

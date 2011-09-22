@@ -34,6 +34,18 @@ public class OperationTypeTypology
 	@Persistent
 	private String name;
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj instanceof OperationTypeTypology)
+		{
+			OperationTypeTypology candidate = (OperationTypeTypology) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
+	}
+
 	/**
 	 * Restituisce l'identificativo della tipologia del tipo di operazione.
 	 * 
