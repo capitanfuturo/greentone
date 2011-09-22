@@ -72,14 +72,16 @@ public class Person
 	@Persistent(defaultFetchGroup = "true")
 	DateTime activationDate;
 
-	/**
-	 * Una persona è un elemento dell'anagrafica del programma. Può concorrere
-	 * negli incarichi e può ricoprire ruoli amministrativi, funzionali o di sola
-	 * lettura una volta attribuiti i campi di account, altrimenti è semplicemente
-	 * un record di anagrafica con ruolo di cliente dello studio professionale.
-	 */
-	public Person()
+	@Override
+	public boolean equals(Object obj)
 	{
+		if(obj instanceof Person)
+		{
+			Person candidate = (Person) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
 	}
 
 	/**

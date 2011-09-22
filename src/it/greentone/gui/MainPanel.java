@@ -1,5 +1,6 @@
 package it.greentone.gui;
 
+import it.greentone.GreenTone;
 import it.greentone.gui.action.ActionProvider;
 
 import java.awt.BorderLayout;
@@ -11,6 +12,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -41,16 +44,20 @@ public class MainPanel extends JPanel
 	private ActionProvider actionProvider;
 	private JTabbedPane mainTabbedPane;
 	private JLabel statusLabel;
+	private ResourceMap resourceMap;
 
 	/**
 	 * Inizializza l'interfaccia grafica.
 	 */
 	public void initialize()
 	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+
 		setLayout(new BorderLayout());
 		add(getMainToolBar(), BorderLayout.WEST);
 		add(getMainTabbedPane(), BorderLayout.CENTER);
-		statusLabel = new JLabel();
+		statusLabel = new JLabel(resourceMap.getString("MainPanel.statusBarReady"));
 		add(statusLabel, BorderLayout.PAGE_END);
 	}
 

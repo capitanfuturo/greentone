@@ -53,12 +53,16 @@ public class Job
 	@Persistent
 	String notes;
 
-	/**
-	 * L'incarico è una prestazione che il geometra contrae con il committente.
-	 */
-	public Job()
+	@Override
+	public boolean equals(Object obj)
 	{
-		// vuoto
+		if(obj instanceof Job)
+		{
+			Job candidate = (Job) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
 	}
 
 	/**

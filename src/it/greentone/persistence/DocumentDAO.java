@@ -125,4 +125,26 @@ public class DocumentDAO extends JdoDaoSupport
 		    (Collection<Document>) query.execute(person));
 		return result;
 	}
+
+	/**
+	 * Restituisce la lista dei documenti dell'incarico passato in ingresso.
+	 * 
+	 * @param job
+	 *          incarico
+	 * @return la lista dei documenti dell'incarico passato in ingresso
+	 * @throws DataAccessException
+	 */
+	public Collection<Document> getDocumentsJob(Job job)
+	  throws DataAccessException
+	{
+		Query query =
+		  getPersistenceManager()
+		    .newQuery(
+		      "SELECT FROM it.greentone.persistence.Document WHERE job == j PARAMETERS it.greentone.persistence.Job j");
+		@SuppressWarnings("unchecked")
+		Collection<Document> result =
+		  getPersistenceManager().detachCopyAll(
+		    (Collection<Document>) query.execute(job));
+		return result;
+	}
 }

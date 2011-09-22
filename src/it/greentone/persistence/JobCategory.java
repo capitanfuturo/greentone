@@ -40,19 +40,16 @@ public class JobCategory
 	@Persistent
 	String name;
 
-	/**
-	 * L'incarico è specializzato in macro-categorie come per esempio:
-	 * <ul>
-	 * <li>Pratiche catastali</li>
-	 * <li>Progettazione</li>
-	 * <li>Stima e perizie di stima</li>
-	 * <li>Consulenza</li>
-	 * <li>Successioni</li>
-	 * </ul>
-	 */
-	public JobCategory()
+	@Override
+	public boolean equals(Object obj)
 	{
-		// vuoto
+		if(obj instanceof JobCategory)
+		{
+			JobCategory candidate = (JobCategory) obj;
+			return id.equals(candidate.getId());
+		}
+		else
+			return super.equals(obj);
 	}
 
 	/**

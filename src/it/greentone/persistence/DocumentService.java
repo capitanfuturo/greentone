@@ -1,5 +1,7 @@
 package it.greentone.persistence;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import org.springframework.dao.DataAccessException;
@@ -84,5 +86,30 @@ public class DocumentService
 		if(allDocuments.isEmpty())
 			allDocuments.addAll(documentDAO.getAllDocuments());
 		return allDocuments;
+	}
+
+	/**
+	 * Restituisce la lista dei documenti dell'incarico passato in ingresso.
+	 * 
+	 * @param job
+	 *          incarico
+	 * @return la lista dei documenti dell'incarico passato in ingresso
+	 */
+	public Collection<Document> getDocumentsJob(Job job)
+	{
+		return documentDAO.getDocumentsJob(job);
+	}
+
+	/**
+	 * Restituisce la lista di documenti appartenenti alla persona passata in
+	 * ingresso.
+	 * 
+	 * @param person
+	 *          persona
+	 * @return la lista di documenti appartenenti alla persona passata in ingresso
+	 */
+	public Collection<Document> getDocumentsAsRecipient(Person person)
+	{
+		return documentDAO.getDocumentsAsRecipient(person);
 	}
 }

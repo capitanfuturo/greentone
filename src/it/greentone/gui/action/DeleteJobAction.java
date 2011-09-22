@@ -2,7 +2,9 @@ package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
 import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.gui.panel.JobsPanel;
+import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 
@@ -39,6 +41,10 @@ public class DeleteJobAction extends AbstractBean
 {
 	@Inject
 	JobsPanel jobsPanel;
+	@Inject
+	DocumentsPanel documentsPanel;
+	@Inject
+	OperationsPanel operationsPanel;
 	@Inject
 	JobService jobService;
 	boolean deleteJobActionEnabled = false;

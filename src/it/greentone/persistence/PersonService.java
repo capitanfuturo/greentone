@@ -36,7 +36,7 @@ public class PersonService
 	@Inject
 	private PersonDAO personDAO;
 	@Inject
-	private JobDAO jobDAO;
+	private JobService jobService;
 	@Inject
 	private DocumentDAO documentDAO;
 
@@ -109,9 +109,10 @@ public class PersonService
 	 */
 	public boolean canDeletePerson(Person person)
 	{
-		boolean isManager = jobDAO.getJobsAsManager(person).size() > 0;
-		boolean isCustomer = jobDAO.getJobsAsCustomer(person).size() > 0;
-		boolean hasDocument = documentDAO.getDocumentsAsRecipient(person).size() > 0;
+		boolean isManager = jobService.getJobsAsManager(person).size() > 0;
+		boolean isCustomer = jobService.getJobsAsCustomer(person).size() > 0;
+		boolean hasDocument =
+		  documentDAO.getDocumentsAsRecipient(person).size() > 0;
 
 		return !isManager && !isCustomer && !hasDocument;
 	}
