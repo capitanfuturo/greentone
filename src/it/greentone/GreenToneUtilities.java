@@ -69,9 +69,12 @@ public class GreenToneUtilities
 	}
 
 	/**
-	 * Restituisce un formatter per il pattern passato in ingresso.
+	 * Restituisce un formatter per il pattern passato in ingresso. A differenza
+	 * della classe fornita da Java questo formatter accetta anche valori
+	 * <code>null</code>
 	 * 
 	 * @param mask
+	 *          pattern di formattazione
 	 * @return un formatter per il pattern passato in ingresso
 	 * @see MaskFormatter
 	 */

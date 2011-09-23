@@ -11,12 +11,15 @@ import it.greentone.persistence.PersonService;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Comparator;
 
 import javax.inject.Inject;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -76,7 +79,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private JTextField cityTextField;
 	private JTextField provinceTextField;
 	private JTextField capTextField;
-	private JTextField cfTexField;
+	private JTextField cfTextField;
 	private JTextField pivaTextField;
 	private JTextField telephone1TextField;
 	private JTextField telephone2TextField;
@@ -214,8 +217,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 		getContextualToolBar().add(actionProvider.getAddPerson());
 		getContextualToolBar().add(actionProvider.getSavePerson());
 		getContextualToolBar().add(actionProvider.getDeletePerson());
-		// TODO getContextualToolBar().addSeparator();
-		// TODO getContextualToolBar().add(actionProvider.getEditUser());
+		// getContextualToolBar().addSeparator();
+		// getContextualToolBar().add(actionProvider.getEditUser());
 
 		/* aggiorno la tabella delle persone in anagrafica */
 		sortedPersonEventList =
@@ -347,7 +350,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	/**
-	 * Restituisce il campo di inserimento della provincia.
+	 * Restituisce il campo di inserimento della provincia.<br>
+	 * Accetta solo 2 lettere
 	 * 
 	 * @return il campo di inserimento della provincia
 	 */
@@ -364,7 +368,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	/**
-	 * Restituisce il campo di inserimento del codice di avviamento postale.
+	 * Restituisce il campo di inserimento del codice di avviamento postale.<br>
+	 * Accetta 5 cifre
 	 * 
 	 * @return il campo di inserimento del codice di avviamento postale
 	 */
@@ -381,22 +386,61 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	/**
-	 * Restituisce il campo di inserimento del codice fiscale.
+	 * Restituisce il campo di inserimento del codice fiscale.<br>
+	 * Accetta valori contenti, in sequenza:
+	 * <ol>
+	 * <li>6 lettere</li>
+	 * <li>2 cifre numeriche</li>
+	 * <li>1 lettera</li>
+	 * <li>2 cifre numeriche</li>
+	 * <li>1 lettera</li>
+	 * <li>3 cifre numeriche</li>
+	 * <li>1 lettera</li>
+	 * </ol>
+	 * ES: RSSGPP 00 A 00 G 111 Z
 	 * 
 	 * @return il campo di inserimento del codice fiscale
 	 */
 	public JTextField getCfTexField()
 	{
-		if(cfTexField == null)
+		if(cfTextField == null)
 		{
-			cfTexField = new JTextField(15);
-			registerComponent(cfTexField);
+			final MaskFormatter mf =
+			  GreenToneUtilities.createMaskFormatter("UUUUUU##U##U###U");
+			cfTextField = new JFormattedTextField(mf);
+			/*
+			 * Issue 25: se è obbligatorio il codice fiscale, flag legale non
+			 * impostato, allora in caso di malformattazione del codice fiscale far
+			 * comparire un popup che spiega il problema
+			 */
+			cfTextField.addFocusListener(new FocusListener()
+				{
+
+					@Override
+					public void focusLost(FocusEvent e)
+					{
+						if(!getIsLegalCheckBox().isSelected()
+						  && ((JFormattedTextField) cfTextField).getValue() == null)
+						{
+							showCFMessageDialog();
+						}
+					}
+
+					@Override
+					public void focusGained(FocusEvent e)
+					{
+					}
+				});
+
+			cfTextField.setColumns(15);
+			registerComponent(cfTextField);
 		}
-		return cfTexField;
+		return cfTextField;
 	}
 
 	/**
-	 * Restituisce il campo di inserimento della partita IVA.
+	 * Restituisce il campo di inserimento della partita IVA.<br>
+	 * Accetta solo 11 cifre
 	 * 
 	 * @return il campo di inserimento della partita IVA
 	 */
@@ -530,5 +574,17 @@ public class PersonsPanel extends ContextualPanel<Person>
 	public String getBundleName()
 	{
 		return panelBundle;
+	}
+
+	/**
+	 * Mostra una finestra di dialogo che informa come inserire il campo codice
+	 * fiscale.
+	 */
+	private void showCFMessageDialog()
+	{
+		JOptionPane.showMessageDialog(this,
+		  getResourceMap().getString(LOCALIZATION_PREFIX + "cfMessage"),
+		  getResourceMap().getString(LOCALIZATION_PREFIX + "infoTitle"),
+		  JOptionPane.INFORMATION_MESSAGE);
 	}
 }
