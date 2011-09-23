@@ -9,6 +9,8 @@ import it.greentone.gui.action.SavePersonAction;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Comparator;
 
 import javax.inject.Inject;
@@ -82,6 +84,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private JTextField emailTextField;
 	private JCheckBox isLegalCheckBox;
 	private JTextField identityCardTextField;
+	private JLabel nameLabel;
 
 	/**
 	 * Pannello di gestione delle persone in anagrafica.
@@ -95,8 +98,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 	@Override
 	public JPanel createHeaderPanel()
 	{
-		JLabel nameLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
 		JLabel addressLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
 		JLabel cityLabel =
@@ -124,7 +125,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 		    LOCALIZATION_PREFIX + "identityCard"));
 
 		JPanel headerPanel = new JPanel(new MigLayout());
-		headerPanel.add(nameLabel, "gap para");
+		headerPanel.add(isLegalLabel, "gap para");
+		headerPanel.add(getIsLegalCheckBox(), "growx, wrap");
+		headerPanel.add(getNameLabel(), "gap para");
 		headerPanel.add(getNameTextField(), "growx, wrap");
 		headerPanel.add(addressLabel, "gap para");
 		headerPanel.add(getAddressTextField());
@@ -134,8 +137,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		headerPanel.add(getProvinceTextField());
 		headerPanel.add(capLabel, "gap para");
 		headerPanel.add(getCapTextField(), "wrap");
-		headerPanel.add(isLegalLabel, "gap para");
-		headerPanel.add(getIsLegalCheckBox());
 		headerPanel.add(cfLabel, "gap para");
 		headerPanel.add(getCfTexField());
 		headerPanel.add(pivaLabel, "gap para");
@@ -258,6 +259,22 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	/**
+	 * Restituisce l'etichetta della ragione sociale.
+	 * 
+	 * @return l'etichetta della ragione sociale
+	 */
+	public JLabel getNameLabel()
+	{
+		if(nameLabel == null)
+		{
+			nameLabel =
+			  new JLabel(getResourceMap().getString(
+			    LOCALIZATION_PREFIX + "surnameName"));
+		}
+		return nameLabel;
+	}
+
+	/**
 	 * Restituisce il campo di inserimento del nome.
 	 * 
 	 * @return il campo di inserimento del nome
@@ -266,7 +283,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(nameTextField == null)
 		{
-			nameTextField = new JTextField(25);
+			nameTextField = new JTextField(20);
 			registerComponent(nameTextField);
 			nameTextField.getDocument().addDocumentListener(new DocumentListener()
 				{
@@ -308,7 +325,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(addressTextField == null)
 		{
-			addressTextField = new JTextField(25);
+			addressTextField = new JTextField(20);
 			registerComponent(addressTextField);
 		}
 		return addressTextField;
@@ -389,7 +406,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 		{
 			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("###########");
 			pivaTextField = new JFormattedTextField(mf);
-			pivaTextField.setColumns(25);
+			pivaTextField.setColumns(20);
 			registerComponent(pivaTextField);
 		}
 		return pivaTextField;
@@ -449,7 +466,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(emailTextField == null)
 		{
-			emailTextField = new JTextField(30);
+			emailTextField = new JTextField(20);
 			registerComponent(emailTextField);
 		}
 		return emailTextField;
@@ -465,6 +482,25 @@ public class PersonsPanel extends ContextualPanel<Person>
 		if(isLegalCheckBox == null)
 		{
 			isLegalCheckBox = new JCheckBox();
+			isLegalCheckBox.addActionListener(new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						if(isLegalCheckBox.isSelected())
+						{
+							getNameLabel().setText(
+							  getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
+						}
+						else
+						{
+							getNameLabel()
+							  .setText(
+							    getResourceMap().getString(
+							      LOCALIZATION_PREFIX + "surnameName"));
+						}
+					}
+				});
 			registerComponent(isLegalCheckBox);
 		}
 		return isLegalCheckBox;
