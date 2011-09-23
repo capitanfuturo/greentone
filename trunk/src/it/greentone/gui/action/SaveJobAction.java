@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -66,8 +67,13 @@ public class SaveJobAction extends AbstractBean
 		  .getDescriptionTextField()));
 		job
 		  .setDueDate(GreenToneUtilities.getDateTime(jobsPanel.getDueDatePicker()));
-		job.setStartDate(GreenToneUtilities.getDateTime(jobsPanel
-		  .getStartDatePicker()));
+		/*
+		 * Issue 26: la data di inizio deve essere sempre impostata, se non presente
+		 * viene assegnata automaticamente alla data odierna.
+		 */
+		DateTime dateTime =
+		  GreenToneUtilities.getDateTime(jobsPanel.getStartDatePicker());
+		job.setStartDate(dateTime != null? dateTime: new DateTime());
 		job.setFinishDate(GreenToneUtilities.getDateTime(jobsPanel
 		  .getFinishDatePicker()));
 		job.setCategory((JobCategory) jobsPanel.getCategoryComboBox()
