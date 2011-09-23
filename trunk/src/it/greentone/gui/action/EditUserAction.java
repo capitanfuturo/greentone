@@ -25,6 +25,8 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
+ * Visualizza la finestra di dialogo per la gestione dell'account
+ * dell'anagrafica selezionata.
  * 
  * @author Giuseppe Caliendo
  */
@@ -37,6 +39,10 @@ public class EditUserAction extends AbstractBean
 	private EditUserDialog editUserDialog;
 	boolean editUserActionEnabled = false;
 
+	/**
+	 * Visualizza la finestra di dialogo per la gestione dell'account
+	 * dell'anagrafica selezionata.
+	 */
 	@Action(enabledProperty = "editUserActionEnabled")
 	public void editUser()
 	{
@@ -45,11 +51,25 @@ public class EditUserAction extends AbstractBean
 		editUserDialog.setVisible(true);
 	}
 
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
 	public boolean isEditUserActionEnabled()
 	{
 		return editUserActionEnabled;
 	}
 
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param editUserActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
 	public void setEditUserActionEnabled(boolean editUserActionEnabled)
 	{
 		final boolean oldValue = this.editUserActionEnabled;
