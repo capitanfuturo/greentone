@@ -2,11 +2,13 @@ package it.greentone;
 
 import it.greentone.gui.MainPanel;
 
+import java.text.MessageFormat;
 import java.util.EventObject;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -89,6 +91,38 @@ public class GreenTone extends SingleFrameApplication
 				}
 			});
 		show(mainPanel);
+
+		/*
+		 * processo in background per verificare l'esistenza di una nuova versione
+		 * del programma
+		 */
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>()
+			{
+
+				@Override
+				protected Void doInBackground() throws Exception
+				{
+					String remoteVersion = GreenToneUtilities.checkUpdates();
+					if(remoteVersion != null)
+					{
+						String currentVersion =
+						  getContext().getResourceMap().getString("Application.version");
+						String message =
+						  MessageFormat.format(
+						    getContext().getResourceMap().getString(
+						      "Application.newVersionAvaible"), currentVersion,
+						    remoteVersion);
+						JOptionPane.showMessageDialog(mainPanel, message, getContext()
+						  .getResourceMap().getString("viewPersons.Panel.infoTitle"),
+						  JOptionPane.INFORMATION_MESSAGE);
+					}
+					return null;
+				}
+
+			};
+		worker.execute();
+
+
 	}
 
 	@Override
