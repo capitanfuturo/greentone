@@ -1,11 +1,17 @@
 package it.greentone;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXDatePicker;
 import org.joda.time.DateTime;
 
@@ -30,6 +36,16 @@ import org.joda.time.DateTime;
  */
 public class GreenToneUtilities
 {
+
+	private static final String UPDATE_URL =
+	  "http://greentone.googlecode.com/svn/trunk/installer/release.properties";
+	private static final String COMMENTS_CHAR = "#";
+	private static final String VERSION_SEPARATOR = ".";
+	private static final String APP_NAME = "application.name";
+	private static final String APP_MAJOR_VERSION = "major.version.number";
+	private static final String APP_MINOR_VERSION = "minor.version.number";
+	private static final String APP_MINUS_VERSION = "minus.version.number";
+
 	/**
 	 * Restituisce il testo contenuto nel campo di testo passato in ingresso. Tale
 	 * testo viene ripulito di spazi iniziali e finali del campo passato in
@@ -103,5 +119,76 @@ public class GreenToneUtilities
 			e.printStackTrace();
 		}
 		return mf;
+	}
+
+	/**
+	 * Restituisce la stringa della nuova versione disponibile, <code>null</code>
+	 * altrimenti.
+	 * 
+	 * @return la stringa della nuova versione disponibile, <code>null</code>
+	 *         altrimenti
+	 */
+	public static String checkUpdates()
+	{
+		ResourceMap resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		String currentVersion = resourceMap.getString("Application.version");
+		String remoteVersion = "";
+		try
+		{
+			/* carico il contenuto dal file in remoto */
+			BufferedInputStream in =
+			  new BufferedInputStream(new URL(UPDATE_URL).openStream());
+
+			StringBuffer strBuffer = new StringBuffer();
+			byte data[] = new byte[1024];
+			while(in.read(data, 0, 1024) >= 0)
+			{
+				for(int i = 0; i < data.length; i++)
+				{
+					strBuffer.append((char) data[i]);
+				}
+			}
+			in.close();
+			/* faccio il parsing dei dati caricati */
+			BufferedReader reader =
+			  new BufferedReader(new StringReader(strBuffer.toString()));
+			String str;
+			String major = "";
+			String minor = "";
+			String minus = "";
+			while((str = reader.readLine()) != null)
+			{
+				/* escludo la riga di commento e la riga del nome dell'applicazione */
+				if(str.length() > 0 && !str.startsWith(COMMENTS_CHAR)
+				  && !str.startsWith(APP_NAME))
+				{
+					if(str.startsWith(APP_MAJOR_VERSION))
+					{
+						major = str.substring(str.length() - 1) + VERSION_SEPARATOR;
+					}
+					else
+						if(str.startsWith(APP_MINOR_VERSION))
+						{
+							minor = str.substring(str.length() - 1) + VERSION_SEPARATOR;
+						}
+						else
+							if(str.startsWith(APP_MINUS_VERSION))
+							{
+								minus = str.substring(str.length() - 1);
+							}
+				}
+			}
+			remoteVersion = major + minor + minus;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		if(remoteVersion.length() > 0)
+		{
+			return remoteVersion.equals(currentVersion)? null: remoteVersion;
+		}
+		return null;
 	}
 }
