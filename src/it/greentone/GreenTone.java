@@ -120,15 +120,21 @@ public class GreenTone extends SingleFrameApplication
 				}
 
 			};
-		worker.execute();
-
-
+		/*
+		 * se è abilitato il controllo degli aggiornamenti allora avvio il processo
+		 * in background
+		 */
+		if(springBeansHolder.getConfigurationProperties().isCheckUpdateActivated())
+		{
+			worker.execute();
+		}
 	}
 
 	@Override
 	protected void shutdown()
 	{
 		super.shutdown();
+		springBeansHolder.getConfigurationProperties().store();
 	}
 
 
@@ -145,6 +151,8 @@ public class GreenTone extends SingleFrameApplication
 		private PersistenceManagerFactory pmf;
 		@Inject
 		private MainPanel mainPanel;
+		@Inject
+		private ConfigurationProperties configurationProperties;
 
 		/**
 		 * Restituisce la factory del manager della persistenza di JDO.
@@ -186,6 +194,28 @@ public class GreenTone extends SingleFrameApplication
 		public void setMainPanel(MainPanel mainPanel)
 		{
 			this.mainPanel = mainPanel;
+		}
+
+		/**
+		 * Restituisce la configurazione utente di Greentone.
+		 * 
+		 * @return la configurazione utente di Greentone
+		 */
+		public ConfigurationProperties getConfigurationProperties()
+		{
+			return configurationProperties;
+		}
+
+		/**
+		 * Imposta la configurazione utente di Greentone.
+		 * 
+		 * @param configurationProperties
+		 *          la configurazione utente di Greentone
+		 */
+		public void setConfigurationProperties(
+		  ConfigurationProperties configurationProperties)
+		{
+			this.configurationProperties = configurationProperties;
 		}
 	}
 }
