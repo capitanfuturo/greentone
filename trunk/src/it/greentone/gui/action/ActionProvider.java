@@ -77,6 +77,8 @@ public class ActionProvider
 	@Inject
 	ViewOperationsAction viewOperations;
 	@Inject
+	ViewOptionsAction viewOptions;
+	@Inject
 	ViewPersonsAction viewPersons;
 	@Inject
 	ViewAboutAction viewAbout;
@@ -274,6 +276,16 @@ public class ActionProvider
 	{
 		return applicationContext.getActionMap(viewOperations)
 		  .get("viewOperations");
+	}
+
+	/**
+	 * Restituisce l'azione di visualizzazione delle opzioni.
+	 * 
+	 * @return l'azione di visualizzazione delle opzioni
+	 */
+	public Action getViewOptions()
+	{
+		return applicationContext.getActionMap(viewOptions).get("viewOptions");
 	}
 
 	/**
