@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
 <shortcuts>
-	<skipIfNotSupported/>
 	<programGroup defaultName="Greentone" location="applications"/>
-	<shortcut
-    	name="GreenTone"
+	<shortcut name="GreenTone"
     	target="java"
-    	commandLine="-jar &quot;$INSTALL_PATH\greentone.jar&quot;"
-    	workingDirectory="$INSTALL_PATH\"
+    	workingDirectory="$INSTALL_PATH"
     	description="Gestionale per geometri"
-    	iconFile="$INSTALL_PATH/logo_32x32.ico"
-    	iconIndex="0"
-    	initialState="maximized"
+    	iconFile="$INSTALL_PATH\logo_32x32.ico"
+    	initialState="normal"
     	programGroup="yes"
     	desktop="yes"
-    	applications="yes"
+    	applications="no"
     	startMenu="no"
-    	startup="no">
+    	startup="no"
+    	encoding="UTF-8"
+    	commandLine="-jar &quot;$INSTALL_PATH\greentone.jar&quot;">
     	<createForPack name="Base"/>
  	</shortcut>
   
-	<shortcut
-		name="Uninstaller"
+	<shortcut name="Uninstaller"
     	target="java"
-    	commandLine="-jar &quot;$INSTALL_PATH\greentone.jar&quot;"
-    	workingDirectory="$INSTALL_PATH\"
+    	workingDirectory="$INSTALL_PATH"
     	description="Disinstalla"
-    	iconIndex="0"
 		iconFile="trashcan_full"
     	initialState="noShow"
     	programGroup="yes"
     	desktop="no"
-    	applications="yes"
+    	applications="no"
     	startMenu="no"
-    	startup="no">
+    	startup="no"
+    	commandLine="-jar &quot;$INSTALL_PATH\greentone.jar&quot;">
     	<createForPack name="Base" />     
    </shortcut>
    

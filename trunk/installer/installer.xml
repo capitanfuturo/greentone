@@ -12,7 +12,6 @@
 	  </authors>
 	  <url>http://code.google.com/p/greentone/</url>
 	  <javaversion>1.6</javaversion>
-	  <!-- ISSUE 3: diritti da amministratore per Windows -->
 	  <run-privileged condition="izpack.windowsinstall|izpack.macinstall"/>
 	  <uninstaller write="yes" />
 	  <summarylogfilepath>$INSTALL_PATH/installinfo/Summary.htm</summarylogfilepath>
@@ -58,7 +57,8 @@
 	  <panel classname="SimpleFinishPanel" />
    </panels>
    
-   <native type="izpack" name="ShellLink.dll"/>
+	<native type="izpack" name="ShellLink.dll"><os family="windows" /></native>
+	<native type="izpack" name="ShellLink_x64.dll"><os family="windows" /></native>
 
 	<listeners>
 		<listener installer="SummaryLoggerInstallerListener" />
