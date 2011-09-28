@@ -3,41 +3,53 @@
 <shortcuts>
   <programGroup defaultName="GreenTone" location="applications"/>
 
-   <shortcut
-     name="GreenTone"
-     programGroup="yes"
-     desktop="yes"
-     applications="no"
-     startMenu="yes"
-     startup="no"
-     target="/usr/lib/java/bin/java"
-     commandLine="-jar &quot;$INSTALL_PATH/greentone.jar&quot;"
-     iconFile="$INSTALL_PATH/logo_32x32.png"
-     initialState="noShow"
-     iconIndex="0"
-     workingDirectory=""
-     type="Application"
-     encoding="UTF-8"
-     description="Gestionale per geometri">
+<shortcut name="SQuirreL SQL Client"
+7 	target="$INSTALL_PATH/squirrel-sql.sh"
+8 	workingDirectory="$INSTALL_PATH"
+9 	description="An ISQL tool"
+10 	iconFile="$INSTALL_PATH/icons/acorn.ico"
+11 	initialState="normal"
+12 	programGroup="yes"
+13 	desktop="yes"
+14 	applications="no"
+15 	startMenu="no"
+16 	startup="no"
+17 	type="Application"
+18 	encoding="UTF-8" >
+19 	<createForPack name="Base"/>
+20 	</shortcut>
+
+	<shortcut name="GreenTone"
+		target="java"
+		workingDirectory="$INSTALL_PATH"
+     	description="Gestionale per geometri"
+     	iconFile="$INSTALL_PATH/logo_32x32.png"
+     	initialState="normal"
+		programGroup="yes"
+		desktop="yes"
+		applications="no"
+		startMenu="no"
+		startup="no"
+		type="Application"
+     	encoding="UTF-8"
+     	commandLine="-jar &quot;$INSTALL_PATH/greentone.jar&quot;">
      <createForPack name="Base" />
    </shortcut>
 
-   <shortcut
-     name="Uninstaller"
-     programGroup="yes"
-     desktop="yes"
-     applications="no"
-     startMenu="no"
-     startup="no"
-     target="java"
-     commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
-     initialState="noShow"
-     iconFile="trashcan_full"
-     iconIndex="0"
-     workingDirectory=""
-     type="Application"
-     encoding="UTF-8"
-     description="Disinstalla">
+   <shortcut name="Uninstaller"
+		target="java"
+		workingDirectory="$INSTALL_PATH/Uninstaller"	
+		description="Disinstalla"
+		iconFile="trashcan_full"
+		initialState="noShow"
+        programGroup="yes"
+     	desktop="yes"
+     	applications="no"
+     	startMenu="no"
+     	startup="no"
+     	type="Application"
+		encoding="UTF-8"
+		commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;">
      <createForPack name="Base" />
    </shortcut>
 

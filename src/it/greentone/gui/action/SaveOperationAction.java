@@ -77,9 +77,34 @@ public class SaveOperationAction extends AbstractBean
 			}
 		}
 		else
-		{
-			save();
-		}
+			if(operationsPanel.getVacazioneCheckBox().isSelected())
+			{
+				/*
+				 * Issue 36: se selezionato l'onorario a vacazione allora il valore deve
+				 * essere maggiore di 2
+				 */
+				Object value = operationsPanel.getAmountTextField().getValue();
+				Double amount = null;
+				if(value != null)
+				{
+					amount = new Double(value.toString());
+					if(amount.intValue() < 2)
+					{
+						JOptionPane.showMessageDialog(operationsPanel,
+						  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
+						  resourceMap.getString("ErrorDialog.title"),
+						  JOptionPane.ERROR_MESSAGE);
+					}
+					else
+					{
+						save();
+					}
+				}
+			}
+			else
+			{
+				save();
+			}
 	}
 
 	private void save()
@@ -101,11 +126,12 @@ public class SaveOperationAction extends AbstractBean
 		/* Issue 33: se si tratta di vacazioni allora il numero imputato è un intero */
 		if(operationsPanel.getVacazioneCheckBox().isSelected())
 		{
-			operation.setAmount(new Double(amount.intValue()));
+			operation.setAmount(amount != null? new Double(amount.intValue()): null);
 		}
 		else
 		{
-			operation.setAmount(GreenToneUtilities.roundTwoDecimals(amount));
+			operation.setAmount(amount != null? GreenToneUtilities
+			  .roundTwoDecimals(amount): null);
 		}
 		operation.setDescription(GreenToneUtilities.getText(operationsPanel
 		  .getDescriptionTextField()));
