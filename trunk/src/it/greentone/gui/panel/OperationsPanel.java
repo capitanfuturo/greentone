@@ -12,6 +12,8 @@ import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
 import it.greentone.persistence.OperationTypeService;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
 import javax.inject.Inject;
@@ -86,6 +88,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private String[] tableProperties;
 	private String[] tableColumnsNames;
 	private boolean[] tableWritables;
+	private JLabel amountLabel;
 
 	/**
 	 * Pannello di gestione delle operazioni degli incarichi dello studio
@@ -114,8 +117,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		    LOCALIZATION_PREFIX + "isProfessionalVacazione"));
 		JLabel dateLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "date"));
-		JLabel amountLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
 
 
 		JPanel headerPanel = new JPanel(new MigLayout());
@@ -134,7 +135,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 
 		headerPanel.add(dateLabel, "gap para");
 		headerPanel.add(getOperationDate());
-		headerPanel.add(amountLabel, "gap para");
+		headerPanel.add(getAmountLabel(), "gap para");
 		headerPanel.add(getAmountTextField(), "growx");
 
 		return headerPanel;
@@ -171,6 +172,17 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							  getTypeComboBox().getModel().setSelectedItem(operationType);
 							  getVacazioneCheckBox().setSelected(
 							    selectedOperation.getIsVacazione());
+							  if(selectedOperation.getIsVacazione())
+							  {
+								  getAmountLabel().setText(
+								    getResourceMap().getString(
+								      LOCALIZATION_PREFIX + "vacazioni"));
+							  }
+							  else
+							  {
+								  getAmountLabel().setText(
+								    getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
+							  }
 							  getProfessionalVacazioneCheckBox().setSelected(
 							    selectedOperation.getIsProfessionalVacazione());
 							  getOperationDate().setDate(
@@ -248,6 +260,21 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	}
 
 	/**
+	 * Restituisce l'etichetta del campo importo/vacazione.
+	 * 
+	 * @return l'etichetta del campo importo/vacazione
+	 */
+	public JLabel getAmountLabel()
+	{
+		if(amountLabel == null)
+		{
+			amountLabel =
+			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
+		}
+		return amountLabel;
+	}
+
+	/**
 	 * Restituisce il campo descrizione.
 	 * 
 	 * @return il campo descrizione
@@ -282,9 +309,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 
 					  private void toogleAction()
 					  {
-						  saveOperationAction
-						    .setSaveOperationActionEnabled(GreenToneUtilities
-						      .getText(descriptionTextField) != null);
+						  toggleSaveAction();
 					  }
 				  });
 		}
@@ -302,6 +327,14 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		{
 			jobComboBox = new JComboBox();
 			registerComponent(jobComboBox);
+			jobComboBox.addActionListener(new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						toggleSaveAction();
+					}
+				});
 		}
 		return jobComboBox;
 	}
@@ -332,6 +365,29 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		{
 			vacazioneCheckBox = new JCheckBox();
 			registerComponent(vacazioneCheckBox);
+			/*
+			 * Issue 33: alla selezione del flag On. a vacazione, la voce Importo deve
+			 * modificarsi in Vacazioni. Il campo Vacazioni, con flag On. a vacazione,
+			 * deve contenere numeri senza decimali
+			 */
+			vacazioneCheckBox.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						if(vacazioneCheckBox.isSelected())
+						{
+							getAmountLabel().setText(
+							  getResourceMap().getString(LOCALIZATION_PREFIX + "vacazioni"));
+						}
+						else
+						{
+							getAmountLabel().setText(
+							  getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
+						}
+					}
+				});
 		}
 		return vacazioneCheckBox;
 	}
@@ -377,11 +433,22 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		if(amountTextField == null)
 		{
 			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
-			decimalFormat.setMinimumFractionDigits(2);
+			decimalFormat.setMaximumFractionDigits(2);
 			amountTextField = new JFormattedTextField(decimalFormat);
 			amountTextField.setColumns(10);
 			registerComponent(amountTextField);
 		}
 		return amountTextField;
+	}
+
+	/**
+	 * Issue 32: Controlla che sia possibile abilitare l'azione di salvataggio di
+	 * un'operazione.
+	 */
+	private void toggleSaveAction()
+	{
+		saveOperationAction.setSaveOperationActionEnabled(GreenToneUtilities
+		  .getText(getDescriptionTextField()) != null
+		  && getJobComboBox().getSelectedItem() != null);
 	}
 }

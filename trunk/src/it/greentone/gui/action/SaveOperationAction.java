@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
@@ -9,9 +10,12 @@ import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,7 +33,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Salva un'operazione.
+ * Salva l'operazione di un incarico.
  * 
  * @author Giuseppe Caliendo
  */
@@ -40,13 +44,45 @@ public class SaveOperationAction extends AbstractBean
 	private OperationService operationService;
 	@Inject
 	private OperationsPanel operationsPanel;
+	private final ResourceMap resourceMap;
 	boolean saveOperationActionEnabled = false;
+
+	/**
+	 * Salva l'operazione di un incarico.
+	 */
+	public SaveOperationAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
 
 	/**
 	 * Salva un'operazione.
 	 */
 	@Action(enabledProperty = "saveOperationActionEnabled")
 	public void saveOperation()
+	{
+		/*
+		 * Issue 34: se il campo data rimane vuoto mostrare un popup che chiede
+		 * conferma del salvataggio
+		 */
+		if(GreenToneUtilities.getDateTime(operationsPanel.getOperationDate()) == null)
+		{
+			int confirmDialog =
+			  JOptionPane.showConfirmDialog(operationsPanel,
+			    resourceMap.getString("saveOperation.Action.dateMessage"));
+			if(confirmDialog == JOptionPane.OK_OPTION)
+			{
+				save();
+			}
+		}
+		else
+		{
+			save();
+		}
+	}
+
+	private void save()
 	{
 		/*
 		 * se si tratta di una nuova entry creo un nuova operazione altrimenti
@@ -56,18 +92,21 @@ public class SaveOperationAction extends AbstractBean
 		  operationsPanel.getStatus() == EStatus.EDIT? operationsPanel
 		    .getSelectedItem(): new Operation();
 		/* compilo il bean */
-		Double amount = 0.0;
 		Object value = operationsPanel.getAmountTextField().getValue();
-		if(value instanceof Double)
+		Double amount = null;
+		if(value != null)
 		{
-			amount = (Double) value;
+			amount = new Double(value.toString());
+		}
+		/* Issue 33: se si tratta di vacazioni allora il numero imputato è un intero */
+		if(operationsPanel.getVacazioneCheckBox().isSelected())
+		{
+			operation.setAmount(new Double(amount.intValue()));
 		}
 		else
-			if(value instanceof Long)
-			{
-				amount = ((Long) value).doubleValue();
-			}
-		operation.setAmount(amount != null? amount: null);
+		{
+			operation.setAmount(GreenToneUtilities.roundTwoDecimals(amount));
+		}
 		operation.setDescription(GreenToneUtilities.getText(operationsPanel
 		  .getDescriptionTextField()));
 		operation.setIsProfessionalVacazione(operationsPanel
