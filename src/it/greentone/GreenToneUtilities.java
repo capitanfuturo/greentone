@@ -191,4 +191,19 @@ public class GreenToneUtilities
 		}
 		return null;
 	}
+
+	/**
+	 * Arrotonda un Double a due cifre significative.
+	 * 
+	 * @param value
+	 *          valore da arrotondare
+	 * @return il valore arrotondato
+	 */
+	public static double roundTwoDecimals(double value)
+	{
+		double result = value * 100;
+		result = Math.round(result);
+		result = result / 100;
+		return result;
+	}
 }
