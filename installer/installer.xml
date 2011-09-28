@@ -8,7 +8,7 @@
 	  <appversion>@{major.version.number}.@{minor.version.number}.@{minus.version.number}</appversion>
 	  <authors>
 		 <author name="Giuseppe Caliendo" email="greentone.developers@gmail.com"/>
-		 <author name="Davide Marcolongo" email=""/>
+		 <author name="Davide Marcolongo" email="greentone.developers@gmail.com"/>
 	  </authors>
 	  <url>http://code.google.com/p/greentone/</url>
 	  <javaversion>1.6</javaversion>
@@ -44,14 +44,17 @@
 	  <variable name="tempDir" value="@{tempDir}" />
    </variables>
    
-   <resources>
-	  <res id="Heading.image" src="@{basedir}/logo_128x128.png" />
-   </resources>
+	<resources>
+		<res id="Heading.image" src="@{basedir}/logo_128x128.png" />
+		<res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+		<res id="Unix_shortcutSpec.xml" src="Unix_shortcutSpec.xml" />
+	</resources>
 
    <panels>
 	  <panel classname="HelloPanel" />
 	  <panel classname="TargetPanel" />
 	  <panel classname="InstallPanel" />
+	  <panel classname="ShortcutPanel" />
 	  <panel classname="SimpleFinishPanel" />
    </panels>
    
@@ -66,7 +69,12 @@
 	  <!-- Il core del programma -->
 	  <pack name="Base" required="yes" installGroups="Core" >
 		 <description>GreenTone core application</description>
+		 <!-- jar principale --> 
 		 <file src="@{tempDir}/greentone.jar" targetdir="$INSTALL_PATH"/>
+		 <!-- icone -->
+		 <fileset dir="@{basedir}/icons/" targetdir="$INSTALL_PATH">
+			<include name="*"/>
+		</fileset>
 	  </pack>
 	  
 	  <!-- Le librerie necessarie per l'installazione -->
