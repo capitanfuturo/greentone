@@ -69,6 +69,8 @@ public class ActionProvider
 	@Inject
 	SaveOperationAction saveOperation;
 	@Inject
+	SaveOptionsAction saveOptions;
+	@Inject
 	SavePersonAction savePerson;
 	@Inject
 	ViewDocumentsAction viewDocuments;
@@ -339,5 +341,15 @@ public class ActionProvider
 	{
 		return applicationContext.getActionMap(editOperationTypeTypology).get(
 		  "editOperationTypeTypology");
+	}
+
+	/**
+	 * Restituisce l'azione di salvataggio delle opzioni.
+	 * 
+	 * @return l'azione di salvataggio delle opzioni
+	 */
+	public Action getSaveOptions()
+	{
+		return applicationContext.getActionMap(saveOptions).get("saveOptions");
 	}
 }

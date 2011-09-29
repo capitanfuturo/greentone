@@ -2,14 +2,14 @@ package it.greentone.gui.panel;
 
 import it.greentone.ConfigurationProperties;
 import it.greentone.gui.ContextualPanel;
+import it.greentone.gui.action.ActionProvider;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -43,9 +43,13 @@ public class OptionsPanel extends ContextualPanel<Void>
 {
 	@Inject
 	private ConfigurationProperties properties;
+	@Inject
+	private ActionProvider actionProvider;
 	private final String panelBundle;
 	private JPanel systemPanel;
 	private JCheckBox checkUpdateCheckBox;
+	private JPanel appPanel;
+	private JFormattedTextField vacazioneTextField;
 
 	/**
 	 * Pannello delle configurazioni utente.
@@ -72,8 +76,9 @@ public class OptionsPanel extends ContextualPanel<Void>
 	@Override
 	protected JPanel createHeaderPanel()
 	{
-		JPanel headerPanel = new JPanel(new BorderLayout());
-		headerPanel.add(getSystemPanel(), BorderLayout.CENTER);
+		JPanel headerPanel = new JPanel(new MigLayout("flowy"));
+		headerPanel.add(getSystemPanel());
+		headerPanel.add(getAppPanel());
 		return headerPanel;
 	}
 
@@ -81,7 +86,14 @@ public class OptionsPanel extends ContextualPanel<Void>
 	public void setup()
 	{
 		super.setup();
+
+		/* pulisco e ricostruisco la toolbar */
+		getContextualToolBar().removeAll();
+		getContextualToolBar().add(actionProvider.getSaveOptions());
+
+		/* aggiorno il pannello */
 		getCheckUpdateCheckBox().setSelected(properties.isCheckUpdateActivated());
+		getVacazioneTextField().setText("" + properties.getVacazionePrice());
 	}
 
 	private JPanel getSystemPanel()
@@ -99,20 +111,49 @@ public class OptionsPanel extends ContextualPanel<Void>
 		return systemPanel;
 	}
 
-	private JCheckBox getCheckUpdateCheckBox()
+	/**
+	 * Restituisce il flag di abilitazione del controllo degli aggiornamenti.
+	 * 
+	 * @return il flag di abilitazione del controllo degli aggiornamenti
+	 */
+	public JCheckBox getCheckUpdateCheckBox()
 	{
 		if(checkUpdateCheckBox == null)
 		{
 			checkUpdateCheckBox = new JCheckBox();
-			checkUpdateCheckBox.addActionListener(new ActionListener()
-				{
-					@Override
-					public void actionPerformed(ActionEvent arg0)
-					{
-						properties.setCheckUpdateActivated(checkUpdateCheckBox.isSelected());
-					}
-				});
 		}
 		return checkUpdateCheckBox;
+	}
+
+	private JPanel getAppPanel()
+	{
+		if(appPanel == null)
+		{
+			appPanel = new JPanel(new MigLayout());
+			appPanel.setBorder(BorderFactory.createTitledBorder(getResourceMap()
+			  .getString("viewOptions.Panel.appTitle")));
+			JLabel vacazioneLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.vacazione"));
+			appPanel.add(vacazioneLabel);
+			appPanel.add(getVacazioneTextField());
+		}
+		return appPanel;
+	}
+
+	/**
+	 * Restituisce il campo dell'importo della vacazione del professionista.
+	 * 
+	 * @return il campo dell'importo della vacazione del professionista
+	 */
+	public JFormattedTextField getVacazioneTextField()
+	{
+		if(vacazioneTextField == null)
+		{
+			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			decimalFormat.setMaximumFractionDigits(2);
+			decimalFormat.setMinimumFractionDigits(2);
+			vacazioneTextField = new JFormattedTextField(decimalFormat);
+		}
+		return vacazioneTextField;
 	}
 }
