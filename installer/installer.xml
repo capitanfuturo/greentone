@@ -54,7 +54,7 @@
 	  <panel classname="TargetPanel" />
 	  <panel classname="InstallPanel" />
 	  <panel classname="ShortcutPanel" />
-	  <panel classname="SimpleFinishPanel" />
+	  <panel classname="FinishPanel" />
    </panels>
    
 	<native type="izpack" name="ShellLink.dll"><os family="windows" /></native>
