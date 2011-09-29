@@ -33,6 +33,9 @@ public class ConfigurationProperties
 	  + "/GreenTone/configuration.properties";
 	/** Identificativo per la property di controllo aggiornamento */
 	private static final String CONF_CHECK_UPDATE = "checkUpdate";
+	/** Identificativo per la property del prezzo della vacazione */
+	private static final String CONF_VAC_PRICE = "vacPrice";
+
 
 	/**
 	 * Configurazione utente del programma
@@ -98,5 +101,27 @@ public class ConfigurationProperties
 	public void setCheckUpdateActivated(boolean isActivated)
 	{
 		properties.setProperty(CONF_CHECK_UPDATE, "" + isActivated);
+	}
+
+	/**
+	 * Restituice il prezzo della vacazione professionale.
+	 * 
+	 * @return il prezzo della vacazione professionale
+	 */
+	public Double getVacazionePrice()
+	{
+		String value = properties.getProperty(CONF_VAC_PRICE, "44.93d");
+		return Double.valueOf(value);
+	}
+
+	/**
+	 * Imposta il prezzo della vacazione professionale.
+	 * 
+	 * @param price
+	 *          il prezzo della vacazione professionale
+	 */
+	public void setVacazionePrice(double price)
+	{
+		properties.setProperty(CONF_VAC_PRICE, "" + price);
 	}
 }

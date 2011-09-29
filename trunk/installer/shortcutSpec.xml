@@ -29,7 +29,7 @@
     	applications="no"
     	startMenu="no"
     	startup="no"
-    	commandLine="-jar &quot;$INSTALL_PATH\greentone.jar&quot;">
+    	commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;">
     	<createForPack name="Base" />     
    </shortcut>
    
