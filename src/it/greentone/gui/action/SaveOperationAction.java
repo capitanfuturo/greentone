@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
@@ -8,6 +9,8 @@ import it.greentone.persistence.Job;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
+
+import java.text.ParseException;
 
 import javax.inject.Inject;
 import javax.swing.JOptionPane;
@@ -44,6 +47,8 @@ public class SaveOperationAction extends AbstractBean
 	private OperationService operationService;
 	@Inject
 	private OperationsPanel operationsPanel;
+	@Inject
+	private ConfigurationProperties properties;
 	private final ResourceMap resourceMap;
 	boolean saveOperationActionEnabled = false;
 
@@ -62,52 +67,52 @@ public class SaveOperationAction extends AbstractBean
 	@Action(enabledProperty = "saveOperationActionEnabled")
 	public void saveOperation()
 	{
-		/*
-		 * Issue 34: se il campo data rimane vuoto mostrare un popup che chiede
-		 * conferma del salvataggio
-		 */
-		if(GreenToneUtilities.getDateTime(operationsPanel.getOperationDate()) == null)
+		try
 		{
-			int confirmDialog =
-			  JOptionPane.showConfirmDialog(operationsPanel,
-			    resourceMap.getString("saveOperation.Action.dateMessage"));
-			if(confirmDialog == JOptionPane.OK_OPTION)
+			/*
+			 * Issue 34: se il campo data rimane vuoto mostrare un popup che chiede
+			 * conferma del salvataggio
+			 */
+			if(GreenToneUtilities.getDateTime(operationsPanel.getOperationDate()) == null)
 			{
-				save();
-			}
-		}
-		else
-			if(operationsPanel.getVacazioneCheckBox().isSelected())
-			{
-				/*
-				 * Issue 36: se selezionato l'onorario a vacazione allora il valore deve
-				 * essere maggiore di 2
-				 */
-				Object value = operationsPanel.getAmountTextField().getValue();
-				Double amount = null;
-				if(value != null)
-				{
-					amount = new Double(value.toString());
-					if(amount.intValue() < 2)
-					{
-						JOptionPane.showMessageDialog(operationsPanel,
-						  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
-						  resourceMap.getString("ErrorDialog.title"),
-						  JOptionPane.ERROR_MESSAGE);
-					}
-					else
-					{
-						save();
-					}
-				}
+				int confirmDialog =
+				  JOptionPane.showConfirmDialog(operationsPanel,
+				    resourceMap.getString("saveOperation.Action.dateMessage"));
+				if(confirmDialog == JOptionPane.OK_OPTION)
+					save();
 			}
 			else
-			{
-				save();
-			}
+				if(operationsPanel.getVacazioneCheckBox().isSelected())
+				{
+					/*
+					 * Issue 36: se selezionato l'onorario a vacazione allora il valore
+					 * deve essere maggiore di 2
+					 */
+					Object value = operationsPanel.getAmountTextField().getValue();
+					Double amount = null;
+					if(value != null)
+					{
+						amount = new Double(value.toString());
+						if(amount.intValue() < 2)
+							JOptionPane.showMessageDialog(operationsPanel,
+							  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
+							  resourceMap.getString("ErrorDialog.title"),
+							  JOptionPane.ERROR_MESSAGE);
+						else
+							save();
+					}
+				}
+				else
+					save();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
-	private void save()
+	private void save() throws ParseException
 	{
 		/*
 		 * se si tratta di una nuova entry creo un nuova operazione altrimenti
@@ -117,22 +122,34 @@ public class SaveOperationAction extends AbstractBean
 		  operationsPanel.getStatus() == EStatus.EDIT? operationsPanel
 		    .getSelectedItem(): new Operation();
 		/* compilo il bean */
-		Object value = operationsPanel.getAmountTextField().getValue();
+		Object value = null;
+		if(GreenToneUtilities.getText(operationsPanel.getAmountTextField()) != null)
+		{
+			operationsPanel.getAmountTextField().commitEdit();
+			value = operationsPanel.getAmountTextField().getValue();
+		}
 		Double amount = null;
 		if(value != null)
 		{
 			amount = new Double(value.toString());
 		}
 		/* Issue 33: se si tratta di vacazioni allora il numero imputato è un intero */
-		if(operationsPanel.getVacazioneCheckBox().isSelected())
+		if(GreenToneUtilities.getText(operationsPanel.getNumVacazioniTextField()) != null)
 		{
-			operation.setAmount(amount != null? new Double(amount.intValue()): null);
+			operationsPanel.getNumVacazioniTextField().commitEdit();
+			value = operationsPanel.getNumVacazioniTextField().getValue();
 		}
-		else
+		Integer vacazioni = null;
+		if(value != null)
 		{
-			operation.setAmount(amount != null? GreenToneUtilities
-			  .roundTwoDecimals(amount): null);
+			vacazioni = new Integer(value.toString());
+			amount =
+			  vacazioni.intValue() * properties.getVacazionePrice().doubleValue();
 		}
+		operation.setNumVacazioni(vacazioni);
+		operation.setAmount(amount != null? GreenToneUtilities
+		  .roundTwoDecimals(amount): null);
+
 		operation.setDescription(GreenToneUtilities.getText(operationsPanel
 		  .getDescriptionTextField()));
 		operation.setIsProfessionalVacazione(operationsPanel

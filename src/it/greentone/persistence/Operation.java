@@ -35,6 +35,8 @@ public class Operation
 	private String description;
 	@Persistent
 	private Double amount;
+	@Persistent
+	private Integer numVacazioni;
 	@Persistent(defaultFetchGroup = "true")
 	private DateTime operationDate;
 	@Persistent
@@ -230,5 +232,26 @@ public class Operation
 	public void setOperationType(OperationType operationType)
 	{
 		this.operationType = operationType;
+	}
+
+	/**
+	 * Restituisce il numero di vacazioni per l'operazione.
+	 * 
+	 * @return il numero di vacazioni per l'operazione
+	 */
+	public Integer getNumVacazioni()
+	{
+		return numVacazioni;
+	}
+
+	/**
+	 * Imposta il numero di vacazioni per l'operazione.
+	 * 
+	 * @param numVacazioni
+	 *          il numero di vacazioni per l'operazione
+	 */
+	public void setNumVacazioni(Integer numVacazioni)
+	{
+		this.numVacazioni = numVacazioni;
 	}
 }

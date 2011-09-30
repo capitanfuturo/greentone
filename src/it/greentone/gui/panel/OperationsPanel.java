@@ -15,6 +15,7 @@ import it.greentone.persistence.OperationTypeService;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.inject.Inject;
 import javax.swing.JCheckBox;
@@ -85,10 +86,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private JCheckBox professionalVacazioneCheckBox;
 	private JXDatePicker operationDate;
 	private JFormattedTextField amountTextField;
+	private JFormattedTextField numVacazioniTextField;
 	private String[] tableProperties;
 	private String[] tableColumnsNames;
 	private boolean[] tableWritables;
-	private JLabel amountLabel;
 
 	/**
 	 * Pannello di gestione delle operazioni degli incarichi dello studio
@@ -117,6 +118,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		    LOCALIZATION_PREFIX + "isProfessionalVacazione"));
 		JLabel dateLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "date"));
+		JLabel numVacazioniLabel =
+		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "vacazioni"));
+		JLabel amountLabel =
+		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
 
 
 		JPanel headerPanel = new JPanel(new MigLayout());
@@ -135,7 +140,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 
 		headerPanel.add(dateLabel, "gap para");
 		headerPanel.add(getOperationDate());
-		headerPanel.add(getAmountLabel(), "gap para");
+		headerPanel.add(numVacazioniLabel, "gap para");
+		headerPanel.add(getNumVacazioniTextField());
+		headerPanel.add(amountLabel, "gap para");
 		headerPanel.add(getAmountTextField(), "growx");
 
 		return headerPanel;
@@ -172,26 +179,23 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							  getTypeComboBox().getModel().setSelectedItem(operationType);
 							  getVacazioneCheckBox().setSelected(
 							    selectedOperation.getIsVacazione());
-							  if(selectedOperation.getIsVacazione())
-							  {
-								  getAmountLabel().setText(
-								    getResourceMap().getString(
-								      LOCALIZATION_PREFIX + "vacazioni"));
-							  }
-							  else
-							  {
-								  getAmountLabel().setText(
-								    getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
-							  }
 							  getProfessionalVacazioneCheckBox().setSelected(
 							    selectedOperation.getIsProfessionalVacazione());
 							  getOperationDate().setDate(
 							    selectedOperation.getOperationDate() != null
 							      ? selectedOperation.getOperationDate().toDate()
 							      : null);
-							  getAmountTextField().setValue(
-							    selectedOperation.getAmount() != null? selectedOperation
-							      .getAmount(): null);
+							  getAmountTextField().setValue(selectedOperation.getAmount());
+							  getNumVacazioniTextField().setValue(
+							    selectedOperation.getNumVacazioni());
+							  /*
+								 * abilito i campi di importo e vacazione a seconda che il flag
+								 * sia abilitato
+								 */
+							  getAmountTextField().setEnabled(
+							    !selectedOperation.getIsVacazione());
+							  getNumVacazioniTextField().setEnabled(
+							    selectedOperation.getIsVacazione());
 
 							  /* abilito le azioni legate alla selezione */
 							  deleteOperationAction.setDeleteOperationActionEnabled(true);
@@ -232,7 +236,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 
 		tableProperties =
 		  new String[] {"description", "job", "operationType", "isVacazione",
-		    "isProfessionalVacazione", "operationDate", "amount"};
+		    "isProfessionalVacazione", "operationDate", "amount", "numVacazioni"};
 		tableColumnsNames =
 		  new String[] {
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
@@ -242,36 +246,25 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		    getResourceMap().getString(
 		      LOCALIZATION_PREFIX + "Table.isProfessionalVacazione"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount")};
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.numVacazioni")};
 		tableWritables =
-		  new boolean[] {false, false, false, false, false, false, false};
+		  new boolean[] {false, false, false, false, false, false, false, false};
 
 		tableModel =
 		  new EventJXTableModel<Operation>(operationService.getAllOperations(),
 		    new BeanTableFormat<Operation>(Operation.class, tableProperties,
 		      tableColumnsNames, tableWritables));
 		getContentTable().setModel(tableModel);
+
+		/* disabilito il campo delle vacazioni */
+		getNumVacazioniTextField().setEnabled(false);
 	}
 
 	@Override
 	public String getBundleName()
 	{
 		return BUNDLE_NAME;
-	}
-
-	/**
-	 * Restituisce l'etichetta del campo importo/vacazione.
-	 * 
-	 * @return l'etichetta del campo importo/vacazione
-	 */
-	public JLabel getAmountLabel()
-	{
-		if(amountLabel == null)
-		{
-			amountLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
-		}
-		return amountLabel;
 	}
 
 	/**
@@ -376,16 +369,12 @@ public class OperationsPanel extends ContextualPanel<Operation>
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						if(vacazioneCheckBox.isSelected())
-						{
-							getAmountLabel().setText(
-							  getResourceMap().getString(LOCALIZATION_PREFIX + "vacazioni"));
-						}
-						else
-						{
-							getAmountLabel().setText(
-							  getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
-						}
+						boolean isSelected = vacazioneCheckBox.isSelected();
+						getAmountTextField().setEnabled(!isSelected);
+						getNumVacazioniTextField().setEnabled(isSelected);
+						/* resetto i campi */
+						getAmountTextField().setText(null);
+						getNumVacazioniTextField().setText(null);
 					}
 				});
 		}
@@ -433,12 +422,31 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		if(amountTextField == null)
 		{
 			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			decimalFormat.setMinimumFractionDigits(2);
 			decimalFormat.setMaximumFractionDigits(2);
 			amountTextField = new JFormattedTextField(decimalFormat);
 			amountTextField.setColumns(10);
 			registerComponent(amountTextField);
 		}
 		return amountTextField;
+	}
+
+	/**
+	 * Restituisce il campo delle vacazioni per un'operazione.
+	 * 
+	 * @return il campo delle vacazioni per un'operazione
+	 */
+	public JFormattedTextField getNumVacazioniTextField()
+	{
+		if(numVacazioniTextField == null)
+		{
+			NumberFormat numberFormat = NumberFormat.getInstance();
+			numberFormat.setMaximumFractionDigits(0);
+			numVacazioniTextField = new JFormattedTextField(numberFormat);
+			numVacazioniTextField.setColumns(4);
+			registerComponent(numVacazioniTextField);
+		}
+		return numVacazioniTextField;
 	}
 
 	/**
