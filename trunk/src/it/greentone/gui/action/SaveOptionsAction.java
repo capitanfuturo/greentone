@@ -1,14 +1,19 @@
 package it.greentone.gui.action;
 
 import it.greentone.ConfigurationProperties;
+import it.greentone.GreenTone;
+import it.greentone.GreenToneUtilities;
 import it.greentone.gui.panel.OptionsPanel;
 
 import java.text.ParseException;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,6 +42,14 @@ public class SaveOptionsAction extends AbstractBean
 	private OptionsPanel optionsPanel;
 	@Inject
 	private ConfigurationProperties properties;
+	private final ResourceMap resourceMap;
+
+	public SaveOptionsAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
+
 
 	/**
 	 * Azione di salvataggio delle opzioni.
@@ -44,21 +57,35 @@ public class SaveOptionsAction extends AbstractBean
 	@Action
 	public void saveOptions()
 	{
-		try
+		String name =
+		  GreenToneUtilities.getText(optionsPanel.getVacazioneTextField());
+		/* la ragione sociale è obbligatoria */
+		if(name == null)
 		{
-			/* recupero i dati dal pannello e li salvo */
-			properties.setCheckUpdateActivated(optionsPanel.getCheckUpdateCheckBox()
-			  .isSelected());
-			optionsPanel.getVacazioneTextField().commitEdit();
-			Double value = new Double(optionsPanel.getVacazioneTextField().getText());
-			properties.setVacazionePrice(value);
-
-			/* salvo */
-			properties.store();
+			JOptionPane.showMessageDialog(optionsPanel,
+			  resourceMap.getString("saveOptions.Action.priceNotNull"),
+			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
+			optionsPanel.getVacazioneTextField().requestFocus();
 		}
-		catch(ParseException e)
+		else
 		{
-			e.printStackTrace();
+			try
+			{
+				/* recupero i dati dal pannello e li salvo */
+				properties.setCheckUpdateActivated(optionsPanel
+				  .getCheckUpdateCheckBox().isSelected());
+				optionsPanel.getVacazioneTextField().commitEdit();
+				Object value = optionsPanel.getVacazioneTextField().getValue();
+				properties.setVacazionePrice(GreenToneUtilities
+				  .roundTwoDecimals(new Double(value.toString())));
+
+				/* salvo */
+				properties.store();
+			}
+			catch(ParseException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }

@@ -28,7 +28,7 @@
 		startup="no" 
 		target="$JAVA_HOME/bin/java"
 		commandLine=" -jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
-		initialState="noShow" 
+		initialState="normal" 
 		iconFile="trashcan_full" 
 		iconIndex="0"
 		workingDirectory="" 

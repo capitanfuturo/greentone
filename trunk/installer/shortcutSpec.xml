@@ -7,7 +7,7 @@
     	workingDirectory="$INSTALL_PATH"
     	description="Gestionale per geometri"
     	iconFile="$INSTALL_PATH\logo_32x32.ico"
-    	initialState="normal"
+    	initialState="noShow"
     	programGroup="yes"
     	desktop="yes"
     	applications="no"

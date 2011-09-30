@@ -61,9 +61,9 @@ public class SavePersonAction extends AbstractBean
 	@Action(enabledProperty = "savePersonActionEnabled")
 	public void savePerson()
 	{
-		String name = personsPanel.getNameTextField().getText();
+		String name = GreenToneUtilities.getText(personsPanel.getNameTextField());
 		/* la ragione sociale è obbligatoria */
-		if(name == null || name.trim().equals(""))
+		if(name == null)
 		{
 			JOptionPane.showMessageDialog(personsPanel,
 			  resourceMap.getString("savePerson.Action.nameNotNull"),

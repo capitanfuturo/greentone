@@ -4,6 +4,8 @@ import it.greentone.ConfigurationProperties;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 
 import javax.inject.Inject;
@@ -153,6 +155,17 @@ public class OptionsPanel extends ContextualPanel<Void>
 			decimalFormat.setMaximumFractionDigits(2);
 			decimalFormat.setMinimumFractionDigits(2);
 			vacazioneTextField = new JFormattedTextField(decimalFormat);
+			vacazioneTextField.setColumns(4);
+			/* Issue 39: accettare anche il punto come punto separatore dei decimali */
+			vacazioneTextField.addKeyListener(new KeyAdapter()
+				{
+					@Override
+					public void keyReleased(KeyEvent e)
+					{
+						vacazioneTextField.setText(vacazioneTextField.getText().replace(
+						  '.', ','));
+					}
+				});
 		}
 		return vacazioneTextField;
 	}
