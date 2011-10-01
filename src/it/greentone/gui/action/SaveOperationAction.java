@@ -88,18 +88,34 @@ public class SaveOperationAction extends AbstractBean
 					 * Issue 36: se selezionato l'onorario a vacazione allora il valore
 					 * deve essere maggiore di 2
 					 */
-					Object value = operationsPanel.getAmountTextField().getValue();
-					Double amount = null;
-					if(value != null)
+					String vacazioniValue =
+					  GreenToneUtilities.getText(operationsPanel
+					    .getNumVacazioniTextField());
+					Integer numVacazioni = null;
+					if(vacazioniValue == null)
 					{
-						amount = new Double(value.toString());
-						if(amount.intValue() < 2)
+						JOptionPane.showMessageDialog(operationsPanel,
+						  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
+						  resourceMap.getString("ErrorDialog.title"),
+						  JOptionPane.ERROR_MESSAGE);
+					}
+					else
+					{
+						operationsPanel.getNumVacazioniTextField().commitEdit();
+						numVacazioni =
+						  new Integer(operationsPanel.getNumVacazioniTextField().getValue()
+						    .toString());
+						if(numVacazioni.intValue() < 2)
+						{
 							JOptionPane.showMessageDialog(operationsPanel,
 							  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
 							  resourceMap.getString("ErrorDialog.title"),
 							  JOptionPane.ERROR_MESSAGE);
+						}
 						else
+						{
 							save();
+						}
 					}
 				}
 				else
@@ -122,43 +138,76 @@ public class SaveOperationAction extends AbstractBean
 		  operationsPanel.getStatus() == EStatus.EDIT? operationsPanel
 		    .getSelectedItem(): new Operation();
 		/* compilo il bean */
-		Object value = null;
-		if(GreenToneUtilities.getText(operationsPanel.getAmountTextField()) != null)
+		if(operationsPanel.getVacazioneCheckBox().isSelected())
 		{
-			operationsPanel.getAmountTextField().commitEdit();
-			value = operationsPanel.getAmountTextField().getValue();
+			/* caso operazione con onorario a vacazione */
+			String vacazioniValue =
+			  GreenToneUtilities.getText(operationsPanel.getNumVacazioniTextField());
+			Integer numVacazioni = null;
+			if(vacazioniValue != null)
+			{
+				operationsPanel.getNumVacazioniTextField().commitEdit();
+				numVacazioni = new Integer(vacazioniValue);
+			}
+			/*
+			 * se ho un valore per le vacazioni allora calcolo anche l'importo
+			 * altrimenti lo imposto a null
+			 */
+			if(numVacazioni == null)
+			{
+				operation.setNumVacazioni(null);
+				operation.setAmount(null);
+			}
+			else
+			{
+				operation.setNumVacazioni(numVacazioni);
+				/* distinguo i casi di vacazione aiutante o no */
+				if(operationsPanel.getProfessionalVacazioneCheckBox().isSelected())
+				{
+					operation.setAmount(numVacazioni
+					  * properties.getVacazioneHelperPrice());
+				}
+				else
+				{
+					operation.setAmount(numVacazioni * properties.getVacazionePrice());
+				}
+			}
 		}
-		Double amount = null;
-		if(value != null)
+		else
 		{
-			amount = new Double(value.toString());
+			/* caso operazione con importo */
+			String amountValue =
+			  GreenToneUtilities.getText(operationsPanel.getAmountTextField());
+			Double amount = null;
+			if(amountValue != null)
+			{
+				operationsPanel.getAmountTextField().commitEdit();
+				amount =
+				  new Double(operationsPanel.getAmountTextField().getValue().toString());
+				operation.setAmount(GreenToneUtilities.roundTwoDecimals(amount));
+			}
+			else
+			{
+				operation.setAmount(null);
+			}
+			operation.setNumVacazioni(null);
 		}
-		/* Issue 33: se si tratta di vacazioni allora il numero imputato è un intero */
-		if(GreenToneUtilities.getText(operationsPanel.getNumVacazioniTextField()) != null)
-		{
-			operationsPanel.getNumVacazioniTextField().commitEdit();
-			value = operationsPanel.getNumVacazioniTextField().getValue();
-		}
-		Integer vacazioni = null;
-		if(value != null)
-		{
-			vacazioni = new Integer(value.toString());
-			amount =
-			  vacazioni.intValue() * properties.getVacazionePrice().doubleValue();
-		}
-		operation.setNumVacazioni(vacazioni);
-		operation.setAmount(amount != null? GreenToneUtilities
-		  .roundTwoDecimals(amount): null);
 
+		/* descrizione */
 		operation.setDescription(GreenToneUtilities.getText(operationsPanel
 		  .getDescriptionTextField()));
+		/* flag vacazione aiutante */
 		operation.setIsProfessionalVacazione(operationsPanel
 		  .getProfessionalVacazioneCheckBox().isSelected());
+		/* flag onorario a vacazione */
 		operation.setIsVacazione(operationsPanel.getVacazioneCheckBox()
 		  .isSelected());
+		/* incarico */
 		operation.setJob((Job) operationsPanel.getJobComboBox().getSelectedItem());
+		/* data operazione */
 		operation.setOperationDate(GreenToneUtilities.getDateTime(operationsPanel
 		  .getOperationDate()));
+		/* tipo di operazione */
 		operation.setOperationType((OperationType) operationsPanel
 		  .getTypeComboBox().getSelectedItem());
 		/* aggiorno la tabella */

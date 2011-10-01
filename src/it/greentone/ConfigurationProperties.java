@@ -33,8 +33,13 @@ public class ConfigurationProperties
 	  + "/GreenTone/configuration.properties";
 	/** Identificativo per la property di controllo aggiornamento */
 	private static final String CONF_CHECK_UPDATE = "checkUpdate";
-	/** Identificativo per la property del prezzo della vacazione */
+	/**
+	 * Identificativo per la property del prezzo della vacazione del
+	 * professionista
+	 */
 	private static final String CONF_VAC_PRICE = "vacPrice";
+	/** Identificativo per la property del prezzo della vacazione dell'aiutante */
+	private static final String CONF_VAC_HELPER_PRICE = "vacHelperPrice";
 
 
 	/**
@@ -104,9 +109,9 @@ public class ConfigurationProperties
 	}
 
 	/**
-	 * Restituice il prezzo della vacazione professionale.
+	 * Restituice il prezzo della vacazione del professionista.
 	 * 
-	 * @return il prezzo della vacazione professionale
+	 * @return il prezzo della vacazione del professionista
 	 */
 	public Double getVacazionePrice()
 	{
@@ -115,13 +120,35 @@ public class ConfigurationProperties
 	}
 
 	/**
-	 * Imposta il prezzo della vacazione professionale.
+	 * Imposta il prezzo della vacazione del professionista.
 	 * 
 	 * @param price
-	 *          il prezzo della vacazione professionale
+	 *          il prezzo della vacazione del professionista
 	 */
 	public void setVacazionePrice(double price)
 	{
 		properties.setProperty(CONF_VAC_PRICE, "" + price);
+	}
+
+	/**
+	 * Restituice il prezzo della vacazione dell'aiutante.
+	 * 
+	 * @return il prezzo della vacazione dell'aiutante
+	 */
+	public Double getVacazioneHelperPrice()
+	{
+		String value = properties.getProperty(CONF_VAC_HELPER_PRICE, "28.41d");
+		return Double.valueOf(value);
+	}
+
+	/**
+	 * Imposta il prezzo della vacazione dell'aiutante.
+	 * 
+	 * @param price
+	 *          il prezzo della vacazione dell'aiutante
+	 */
+	public void setVacazioneHelperPrice(double price)
+	{
+		properties.setProperty(CONF_VAC_HELPER_PRICE, "" + price);
 	}
 }

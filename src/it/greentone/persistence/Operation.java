@@ -157,10 +157,10 @@ public class Operation
 	}
 
 	/**
-	 * Imposta un'operazione come di vacazione.
+	 * Imposta un'operazione è di tipo onorario a vacazione.
 	 * 
 	 * @param isVacazione
-	 *          <code>true</code> se l'operazione è di tipo vacazione,
+	 *          <code>true</code> se l'operazione è di tipo onorario a vacazione,
 	 *          <code>false</code> altrimenti
 	 */
 	public void setIsVacazione(boolean isVacazione)
@@ -169,11 +169,13 @@ public class Operation
 	}
 
 	/**
-	 * Restituisce <code>true</code> se l'operazione è di tipo vacazione
-	 * professionale, <code>false</code> altrimenti
+	 * Restituisce <code>true</code> se l'operazione è di tipo onorario a
+	 * vacazione e la vacazione è da attribuirsi ad un aiutante,
+	 * <code>false</code> altrimenti.
 	 * 
-	 * @return <code>true</code> se l'operazione è di tipo vacazione
-	 *         professionale, <code>false</code> altrimenti
+	 * @return <code>true</code> se l'operazione è di tipo onorario a vacazione e
+	 *         la vacazione è da attribuirsi ad un aiutante, <code>false</code>
+	 *         altrimenti
 	 */
 	public boolean getIsProfessionalVacazione()
 	{

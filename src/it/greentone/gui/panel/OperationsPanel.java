@@ -196,6 +196,8 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							    !selectedOperation.getIsVacazione());
 							  getNumVacazioniTextField().setEnabled(
 							    selectedOperation.getIsVacazione());
+							  getProfessionalVacazioneCheckBox().setEnabled(
+							    selectedOperation.getIsVacazione());
 
 							  /* abilito le azioni legate alla selezione */
 							  deleteOperationAction.setDeleteOperationActionEnabled(true);
@@ -259,6 +261,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 
 		/* disabilito il campo delle vacazioni */
 		getNumVacazioniTextField().setEnabled(false);
+		getProfessionalVacazioneCheckBox().setEnabled(false);
+		/* abilito quello dell'importo */
+		getAmountTextField().setEnabled(true);
 	}
 
 	@Override
@@ -372,6 +377,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 						boolean isSelected = vacazioneCheckBox.isSelected();
 						getAmountTextField().setEnabled(!isSelected);
 						getNumVacazioniTextField().setEnabled(isSelected);
+						getProfessionalVacazioneCheckBox().setEnabled(isSelected);
+						if(!isSelected)
+						{
+							getProfessionalVacazioneCheckBox().setSelected(false);
+						}
 						/* resetto i campi */
 						getAmountTextField().setText(null);
 						getNumVacazioniTextField().setText(null);
@@ -382,10 +392,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	}
 
 	/**
-	 * Restituisce il flag che dichiara se l'operazione è a vacazione
-	 * professionale.
+	 * Restituisce il flag che dichiara se l'operazione è a vacazione di un
+	 * aiutante.
 	 * 
-	 * @return il flag che dichiara se l'operazione è a vacazione professionale
+	 * @return il flag che dichiara se l'operazione è a vacazione di un aiutante
 	 */
 	public JCheckBox getProfessionalVacazioneCheckBox()
 	{
@@ -458,5 +468,13 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		saveOperationAction.setSaveOperationActionEnabled(GreenToneUtilities
 		  .getText(getDescriptionTextField()) != null
 		  && getJobComboBox().getSelectedItem() != null);
+	}
+
+	@Override
+	public void clearForm()
+	{
+		super.clearForm();
+		getNumVacazioniTextField().setEnabled(false);
+		getAmountTextField().setEnabled(true);
 	}
 }

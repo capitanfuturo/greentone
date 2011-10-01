@@ -52,6 +52,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 	private JCheckBox checkUpdateCheckBox;
 	private JPanel appPanel;
 	private JFormattedTextField vacazioneTextField;
+	private JFormattedTextField vacazioneAiutanteTextField;
 
 	/**
 	 * Pannello delle configurazioni utente.
@@ -96,6 +97,8 @@ public class OptionsPanel extends ContextualPanel<Void>
 		/* aggiorno il pannello */
 		getCheckUpdateCheckBox().setSelected(properties.isCheckUpdateActivated());
 		getVacazioneTextField().setText("" + properties.getVacazionePrice());
+		getVacazioneAiutanteTextField().setText(
+		  "" + properties.getVacazioneHelperPrice());
 	}
 
 	private JPanel getSystemPanel()
@@ -136,8 +139,14 @@ public class OptionsPanel extends ContextualPanel<Void>
 			  .getString("viewOptions.Panel.appTitle")));
 			JLabel vacazioneLabel =
 			  new JLabel(getResourceMap().getString("viewOptions.Panel.vacazione"));
+			JLabel vacazioneAiutanteLabel =
+			  new JLabel(getResourceMap().getString(
+			    "viewOptions.Panel.vacazioneAiutante"));
+
 			appPanel.add(vacazioneLabel);
-			appPanel.add(getVacazioneTextField());
+			appPanel.add(getVacazioneTextField(), "wrap");
+			appPanel.add(vacazioneAiutanteLabel);
+			appPanel.add(getVacazioneAiutanteTextField());
 		}
 		return appPanel;
 	}
@@ -168,5 +177,32 @@ public class OptionsPanel extends ContextualPanel<Void>
 				});
 		}
 		return vacazioneTextField;
+	}
+
+	/**
+	 * Restituisce il campo dell'importo della vacazione dell'aiutante.
+	 * 
+	 * @return il campo dell'importo della vacazione dell'aiutante
+	 */
+	public JFormattedTextField getVacazioneAiutanteTextField()
+	{
+		if(vacazioneAiutanteTextField == null)
+		{
+			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			decimalFormat.setMaximumFractionDigits(2);
+			decimalFormat.setMinimumFractionDigits(2);
+			vacazioneAiutanteTextField = new JFormattedTextField(decimalFormat);
+			vacazioneAiutanteTextField.setColumns(4);
+			vacazioneAiutanteTextField.addKeyListener(new KeyAdapter()
+				{
+					@Override
+					public void keyReleased(KeyEvent e)
+					{
+						vacazioneAiutanteTextField.setText(vacazioneAiutanteTextField
+						  .getText().replace('.', ','));
+					}
+				});
+		}
+		return vacazioneAiutanteTextField;
 	}
 }
