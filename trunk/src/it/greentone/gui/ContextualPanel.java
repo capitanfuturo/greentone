@@ -201,6 +201,7 @@ public abstract class ContextualPanel<T> extends JPanel
 	public void setup()
 	{
 		setStatus(EStatus.NEW);
+		clearForm();
 	}
 
 	/**
