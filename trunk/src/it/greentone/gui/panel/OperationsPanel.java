@@ -10,7 +10,6 @@ import it.greentone.persistence.JobService;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
-import it.greentone.persistence.OperationTypeService;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -71,8 +70,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private ActionProvider actionProvider;
 	@Inject
 	private JobService jobService;
-	@Inject
-	OperationTypeService operationTypeService;
 	@Inject
 	DeleteOperationAction deleteOperationAction;
 	@Inject
@@ -174,9 +171,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							    selectedOperation.getDescription());
 							  Job job = selectedOperation.getJob();
 							  getJobComboBox().getModel().setSelectedItem(job);
-							  OperationType operationType =
-							    selectedOperation.getOperationType();
-							  getTypeComboBox().getModel().setSelectedItem(operationType);
+							  getTypeComboBox().setSelectedItem(
+							    selectedOperation.getOperationType() != null
+							      ? selectedOperation.getOperationType().getLocalizedName()
+							      : null);
 							  getVacazioneCheckBox().setSelected(
 							    selectedOperation.getIsVacazione());
 							  getProfessionalVacazioneCheckBox().setSelected(
@@ -223,18 +221,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		getContextualToolBar().add(actionProvider.getAddOperation());
 		getContextualToolBar().add(actionProvider.getSaveOperation());
 		getContextualToolBar().add(actionProvider.getDeleteOperation());
-		getContextualToolBar().addSeparator();
-		getContextualToolBar().add(actionProvider.getEditOperationType());
-		getContextualToolBar().add(actionProvider.getEditOperationTypeTypology());
 
 		/* aggiorno la lista degli incarichi */
 		getJobComboBox().setModel(
 		  new EventComboBoxModel<Job>(jobService.getAllJobs()));
-
-		/* aggiorno la lista dei tipi */
-		getTypeComboBox().setModel(
-		  new EventComboBoxModel<OperationType>(operationTypeService
-		    .getAllOperationTypes()));
 
 		tableProperties =
 		  new String[] {"description", "job", "operationType", "isVacazione",
@@ -348,6 +338,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		{
 			typeComboBox = new JComboBox();
 			registerComponent(typeComboBox);
+			OperationType[] typeArray = OperationType.values();
+			for(int i = 0; i < typeArray.length; i++)
+			{
+				typeComboBox.insertItemAt(typeArray[i].getLocalizedName(), i);
+			}
 		}
 		return typeComboBox;
 	}

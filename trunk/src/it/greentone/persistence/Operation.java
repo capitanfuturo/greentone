@@ -45,7 +45,7 @@ public class Operation
 	private boolean isProfessionalVacazione;
 	@Persistent(defaultFetchGroup = "true")
 	private Job job;
-	@Persistent(defaultFetchGroup = "true")
+	@Persistent
 	private OperationType operationType;
 
 	@Override

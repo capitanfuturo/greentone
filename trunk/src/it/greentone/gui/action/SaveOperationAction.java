@@ -208,8 +208,11 @@ public class SaveOperationAction extends AbstractBean
 		operation.setOperationDate(GreenToneUtilities.getDateTime(operationsPanel
 		  .getOperationDate()));
 		/* tipo di operazione */
-		operation.setOperationType((OperationType) operationsPanel
-		  .getTypeComboBox().getSelectedItem());
+		if(operationsPanel.getTypeComboBox().getSelectedIndex() > -1)
+		{
+			operation.setOperationType(OperationType.values()[operationsPanel
+			  .getTypeComboBox().getSelectedIndex()]);
+		}
 		/* aggiorno la tabella */
 		if(operationsPanel.getStatus() == EStatus.NEW)
 		{
