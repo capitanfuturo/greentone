@@ -2,10 +2,12 @@ package it.greentone.gui;
 
 import it.greentone.GreenTone;
 import it.greentone.persistence.JobStatus;
+import it.greentone.persistence.OperationType;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -137,6 +139,7 @@ public abstract class ContextualPanel<T> extends JPanel
 		JXTable table = new JXTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setColumnControlVisible(true);
+		/* status dell'incarico */
 		table.setDefaultRenderer(JobStatus.class, new DefaultTableCellRenderer()
 			{
 
@@ -151,6 +154,22 @@ public abstract class ContextualPanel<T> extends JPanel
 					  : null, isSelected, hasFocus, row, column);
 				}
 			});
+		/* tipo di operazione */
+		table.setDefaultRenderer(OperationType.class,
+		  new DefaultTableCellRenderer()
+			  {
+				  @Override
+				  public Component getTableCellRendererComponent(JTable table,
+				    Object value, boolean isSelected, boolean hasFocus, int row,
+				    int column)
+				  {
+					  OperationType type = (OperationType) value;
+					  return super.getTableCellRendererComponent(table, type != null
+					    ? type.getLocalizedName()
+					    : null, isSelected, hasFocus, row, column);
+				  }
+			  });
+		/* date */
 		table.setDefaultRenderer(DateTime.class, new DefaultTableCellRenderer()
 			{
 				@Override
@@ -168,6 +187,24 @@ public abstract class ContextualPanel<T> extends JPanel
 					}
 					return super.getTableCellRendererComponent(table, formatted,
 					  isSelected, hasFocus, row, column);
+				}
+			});
+		/* double */
+		table.setDefaultRenderer(Double.class, new DefaultTableCellRenderer()
+			{
+				@Override
+				public Component getTableCellRendererComponent(JTable table,
+				  Object value, boolean isSelected, boolean hasFocus, int row,
+				  int column)
+				{
+					Double amount = (Double) value;
+					DecimalFormat decimalFormat =
+					  (DecimalFormat) DecimalFormat.getInstance();
+					decimalFormat.setMinimumFractionDigits(2);
+					decimalFormat.setMaximumFractionDigits(2);
+					return super.getTableCellRendererComponent(table, amount != null
+					  ? decimalFormat.format(amount)
+					  : null, isSelected, hasFocus, row, column);
 				}
 			});
 		return table;

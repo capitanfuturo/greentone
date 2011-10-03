@@ -55,10 +55,6 @@ public class ActionProvider
 	@Inject
 	EditJobStakeholderAction editJobStakeholder;
 	@Inject
-	EditOperationTypeAction editOperationType;
-	@Inject
-	EditOperationTypeTypologyAction editOperationTypeTypology;
-	@Inject
 	EditUserAction editUser;
 	@Inject
 	ExitAction exitAction;
@@ -319,28 +315,6 @@ public class ActionProvider
 	public Action getSaveOperation()
 	{
 		return applicationContext.getActionMap(saveOperation).get("saveOperation");
-	}
-
-	/**
-	 * Restituisce l'azione di gestione dei tipi di operazione.
-	 * 
-	 * @return azione di gestione dei tipi di operazione
-	 */
-	public Action getEditOperationType()
-	{
-		return applicationContext.getActionMap(editOperationType).get(
-		  "editOperationType");
-	}
-
-	/**
-	 * Restituisce l'azione di gestione delle tipologie dei tipi di operazione.
-	 * 
-	 * @return azione di gestione delle tipologie dei tipi di operazione
-	 */
-	public Action getEditOperationTypeTypology()
-	{
-		return applicationContext.getActionMap(editOperationTypeTypology).get(
-		  "editOperationTypeTypology");
 	}
 
 	/**

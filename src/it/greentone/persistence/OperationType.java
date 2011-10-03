@@ -1,9 +1,10 @@
 package it.greentone.persistence;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import it.greentone.GreenTone;
+
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
+
 
 /**
  * <code>
@@ -20,149 +21,105 @@ import javax.jdo.annotations.PrimaryKey;
  * </code>
  * <br>
  * <br>
- * Tipo di operazione.
+ * Tipo di operazione:
+ * <ul>
+ * <li>Lavoro: Imponibile, Attivo, Imponibile</li>
+ * <li>Spesa: Imponibile, Non attivo, Imponibile</li>
+ * <li>Spesa non imponibile: Non imponibile, Non attivo, Non imponibile</li>
+ * <li>Acconto spese: Acconto, Non attivo, non imponibile</li>
+ * </ul>
  * 
  * @author Giuseppe Caliendo
  */
-@PersistenceCapable(table = "GT_OPERATIONTYPE", detachable = "true")
-public class OperationType
+public enum OperationType
 {
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
-	@Persistent(defaultFetchGroup = "true")
-	private OperationTypeTypology typology;
-	@Persistent
-	private String name;
-	@Persistent
-	private boolean isActive;
-	@Persistent
-	private boolean isTaxable;
-
-	@Override
-	public boolean equals(Object obj)
+	/** Lavoro */
+	TASK(true, true)
 	{
-		if(obj instanceof OperationType)
+		@Override
+		public String getLocalizationKey()
 		{
-			OperationType candidate = (OperationType) obj;
-			return id.equals(candidate.getId());
+			return "Enum.OperationType.Task";
 		}
-		else
-			return super.equals(obj);
-	}
-
-	/**
-	 * Restituisce l'identificativo dell'oggetto
-	 * 
-	 * @return l'identificativo dell'oggetto
-	 */
-	public Long getId()
+	},
+	/** Spesa */
+	EXPENSE(false, true)
 	{
-		return id;
-	}
-
-	/**
-	 * Imposta l'identificativo dell'oggetto
-	 * 
-	 * @param id
-	 *          l'identificativo dell'oggetto
-	 */
-	public void setId(Long id)
+		@Override
+		public String getLocalizationKey()
+		{
+			return "Enum.OperationType.Expense";
+		}
+	},
+	/** Spesa non imponibile */
+	NO_TAXABLE_EXPENSE(false, false)
 	{
-		this.id = id;
-	}
-
-	/**
-	 * Restituisce la tipologia del tipo di operazione.
-	 * 
-	 * @return la tipologia del tipo di operazione
-	 */
-	public OperationTypeTypology getTypology()
+		@Override
+		public String getLocalizationKey()
+		{
+			return "Enum.OperationType.NoTaxableExpense";
+		}
+	},
+	/** Acconto di spesa */
+	EXPENSE_DEPOSIT(false, false)
 	{
-		return typology;
-	}
+		@Override
+		public String getLocalizationKey()
+		{
+			return "Enum.OperationType.ExpenseDeposit";
+		}
+	};
 
-	/**
-	 * Imposta la tipologia del tipo di operazione.
-	 * 
-	 * @param typology
-	 *          la tipologia del tipo di operazione
-	 */
-	public void setTypology(OperationTypeTypology typology)
-	{
-		this.typology = typology;
-	}
+	ResourceMap resourceMap;
+	boolean isActive;
+	boolean isTaxable;
 
-	/**
-	 * Restituisce il nome.
-	 * 
-	 * @return il nome
-	 */
-	public String getName()
+	OperationType(boolean isActive, boolean isTaxable)
 	{
-		return name;
-	}
-
-	/**
-	 * Imposta il nome.
-	 * 
-	 * @param name
-	 *          il nome
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		this.isActive = isActive;
+		this.isTaxable = isTaxable;
 	}
 
 	/**
 	 * Restituisce <code>true</code> se il tipo di operazione è attivo,
-	 * <code>false</code> se passivo
+	 * <code>false</code> altrimenti.
 	 * 
 	 * @return <code>true</code> se il tipo di operazione è attivo,
-	 *         <code>false</code> se passivo
+	 *         <code>false</code> altrimenti
 	 */
-	public boolean getIsActive()
+	public boolean isActive()
 	{
 		return isActive;
 	}
 
 	/**
-	 * Imposta un tipo di operazione come attivo o passivo
+	 * Restituisce <code>true</code> se il tipo di operazione è imponibile,
+	 * <code>false</code> altrimenti.
 	 * 
-	 * @param isActive
-	 *          <code>true</code> se il tipo di operazione è attivo,
-	 *          <code>false</code> se passivo
+	 * @return <code>true</code> se il tipo di operazione è imponibile,
+	 *         <code>false</code> altrimenti
 	 */
-	public void setIsActive(boolean isActive)
-	{
-		this.isActive = isActive;
-	}
-
-	/**
-	 * Restituisce <code>true</code> se è imponibile, <code>false</code>
-	 * altrimenti.
-	 * 
-	 * @return <code>true</code> se è imponibile, <code>false</code> altrimenti
-	 */
-	public boolean getIsTaxable()
+	public boolean isTaxable()
 	{
 		return isTaxable;
 	}
 
 	/**
-	 * Imposta un tipo di operazione come imponibile.
+	 * Restituisce la chiave di localizzazione del valore dell'enumerato.
 	 * 
-	 * @param isTaxable
-	 *          <code>true</code> se è imponibile, <code>false</code> altrimenti
+	 * @return la chiave di localizzazione del valore dell'enumerato
 	 */
-	public void setIsTaxable(boolean isTaxable)
-	{
-		this.isTaxable = isTaxable;
-	}
+	public abstract String getLocalizationKey();
 
-	@Override
-	public String toString()
+	/**
+	 * Restituisce il nome localizzato del valore dell'enumerato.
+	 * 
+	 * @return il nome localizzato del valore dell'enumerato
+	 */
+	public String getLocalizedName()
 	{
-		return getName();
+		return resourceMap.getString(getLocalizationKey());
 	}
 }
