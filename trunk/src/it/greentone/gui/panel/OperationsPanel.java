@@ -365,6 +365,8 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							getProfessionalVacazioneCheckBox().setSelected(false);
 							getNumVacazioniTextField().setEnabled(false);
 							getAmountTextField().setEnabled(true);
+							/* Issue 60: abilitazione del tasto salva mancante */
+							toggleSaveAction();
 						}
 					}
 				});
