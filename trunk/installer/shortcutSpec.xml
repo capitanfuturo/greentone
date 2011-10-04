@@ -3,7 +3,7 @@
 <shortcuts>
 	<programGroup defaultName="Greentone" location="applications"/>
 	<shortcut name="GreenTone"
-    	target="java"
+    	target="$INSTALL_PATH\greentone.jar"
     	workingDirectory="$INSTALL_PATH"
     	description="Gestionale per geometri"
     	iconFile="$INSTALL_PATH\logo_32x32.ico"
@@ -13,8 +13,7 @@
     	applications="no"
     	startMenu="no"
     	startup="no"
-    	encoding="UTF-8"
-    	commandLine="-jar &quot;$INSTALL_PATH\greentone.jar&quot;">
+    	encoding="UTF-8">
     	<createForPack name="Base"/>
  	</shortcut>
   
