@@ -343,6 +343,31 @@ public class OperationsPanel extends ContextualPanel<Operation>
 			{
 				typeComboBox.insertItemAt(typeArray[i].getLocalizedName(), i);
 			}
+			typeComboBox.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						if(typeComboBox.getSelectedIndex() > -1)
+						{
+							/*
+							 * Issue 57: mostrare i seguenti campi solo se il tipo di
+							 * operazione è lavoro: On. a vacazione, Vacazione aiutante,
+							 * Vacazioni.
+							 */
+							boolean isTask =
+							  OperationType.values()[typeComboBox.getSelectedIndex()] == OperationType.TASK;
+							getVacazioneCheckBox().setVisible(isTask);
+							getProfessionalVacazioneCheckBox().setVisible(isTask);
+							getNumVacazioniTextField().setVisible(isTask);
+							getVacazioneCheckBox().setSelected(false);
+							getProfessionalVacazioneCheckBox().setSelected(false);
+							getNumVacazioniTextField().setEnabled(false);
+							getAmountTextField().setEnabled(true);
+						}
+					}
+				});
 		}
 		return typeComboBox;
 	}
@@ -456,13 +481,19 @@ public class OperationsPanel extends ContextualPanel<Operation>
 
 	/**
 	 * Issue 32: Controlla che sia possibile abilitare l'azione di salvataggio di
-	 * un'operazione.
+	 * un'operazione:
+	 * <ul>
+	 * <li>Deve essere assegnato un protocollo</li>
+	 * <li>Deve essere assegnato un incarico</li>
+	 * <li>Deve essere assegnato un tipo di operazione</li>
+	 * </ul>
 	 */
 	private void toggleSaveAction()
 	{
 		saveOperationAction.setSaveOperationActionEnabled(GreenToneUtilities
 		  .getText(getDescriptionTextField()) != null
-		  && getJobComboBox().getSelectedItem() != null);
+		  && getJobComboBox().getSelectedItem() != null
+		  && getTypeComboBox().getSelectedItem() != null);
 	}
 
 	@Override
