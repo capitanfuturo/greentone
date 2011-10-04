@@ -126,6 +126,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 		JLabel identityCardLabel =
 		  new JLabel(getResourceMap().getString(
 		    LOCALIZATION_PREFIX + "identityCard"));
+		JLabel requiredLabel =
+		  new JLabel(getResourceMap().getString(
+		    LOCALIZATION_PREFIX + "requiredField"));
 
 		JPanel headerPanel = new JPanel(new MigLayout());
 		headerPanel.add(isLegalLabel, "gap para");
@@ -153,7 +156,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 		headerPanel.add(faxLabel, "gap para");
 		headerPanel.add(getFaxTextField());
 		headerPanel.add(emailLabel, "gap para");
-		headerPanel.add(getEmailTextField(), "span, growx");
+		headerPanel.add(getEmailTextField(), "span, wrap");
+		headerPanel.add(requiredLabel);
 		return headerPanel;
 	}
 

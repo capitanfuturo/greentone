@@ -52,6 +52,8 @@ public class Job
 	Person customer;
 	@Persistent
 	String notes;
+	@Persistent
+	String city;
 
 	@Override
 	public boolean equals(Object obj)
@@ -294,6 +296,27 @@ public class Job
 	public void setCustomer(Person customer)
 	{
 		this.customer = customer;
+	}
+
+	/**
+	 * Restituisce il comune di competenza dell'incarico.
+	 * 
+	 * @return il comune di competenza dell'incarico
+	 */
+	public String getCity()
+	{
+		return city;
+	}
+
+	/**
+	 * Imposta il comune di competenza dell'incarico.
+	 * 
+	 * @param city
+	 *          il comune di competenza dell'incarico
+	 */
+	public void setCity(String city)
+	{
+		this.city = city;
 	}
 
 	@Override

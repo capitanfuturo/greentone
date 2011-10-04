@@ -87,6 +87,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private String[] tableProperties;
 	private String[] tableColumnsNames;
 	private boolean[] tableWritables;
+	private JLabel vacazioneLabel;
+	private JLabel professionalVacazioneLabel;
+	private JLabel numVacazioniLabel;
 
 	/**
 	 * Pannello di gestione delle operazioni degli incarichi dello studio
@@ -107,18 +110,21 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
 		JLabel typeLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "type"));
-		JLabel isVacazioneLabel =
+		vacazioneLabel =
 		  new JLabel(getResourceMap()
 		    .getString(LOCALIZATION_PREFIX + "isVacazione"));
-		JLabel isProfessionalVacazioneLabel =
+		professionalVacazioneLabel =
 		  new JLabel(getResourceMap().getString(
 		    LOCALIZATION_PREFIX + "isProfessionalVacazione"));
 		JLabel dateLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "date"));
-		JLabel numVacazioniLabel =
+		numVacazioniLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "vacazioni"));
 		JLabel amountLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
+		JLabel requiredLabel =
+		  new JLabel(getResourceMap().getString(
+		    LOCALIZATION_PREFIX + "requiredField"));
 
 
 		JPanel headerPanel = new JPanel(new MigLayout());
@@ -130,9 +136,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 
 		headerPanel.add(typeLabel, "gap para");
 		headerPanel.add(getTypeComboBox());
-		headerPanel.add(isVacazioneLabel, "gap para");
+		headerPanel.add(vacazioneLabel, "gap para");
 		headerPanel.add(getVacazioneCheckBox());
-		headerPanel.add(isProfessionalVacazioneLabel, "gap para");
+		headerPanel.add(professionalVacazioneLabel, "gap para");
 		headerPanel.add(getProfessionalVacazioneCheckBox(), "wrap");
 
 		headerPanel.add(dateLabel, "gap para");
@@ -140,7 +146,8 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		headerPanel.add(numVacazioniLabel, "gap para");
 		headerPanel.add(getNumVacazioniTextField());
 		headerPanel.add(amountLabel, "gap para");
-		headerPanel.add(getAmountTextField(), "growx");
+		headerPanel.add(getAmountTextField(), "growx, wrap");
+		headerPanel.add(requiredLabel);
 
 		return headerPanel;
 	}
@@ -359,8 +366,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							boolean isTask =
 							  OperationType.values()[typeComboBox.getSelectedIndex()] == OperationType.TASK;
 							getVacazioneCheckBox().setVisible(isTask);
+							vacazioneLabel.setVisible(isTask);
 							getProfessionalVacazioneCheckBox().setVisible(isTask);
+							professionalVacazioneLabel.setVisible(isTask);
 							getNumVacazioniTextField().setVisible(isTask);
+							numVacazioniLabel.setVisible(isTask);
 							getVacazioneCheckBox().setSelected(false);
 							getProfessionalVacazioneCheckBox().setSelected(false);
 							getNumVacazioniTextField().setEnabled(false);

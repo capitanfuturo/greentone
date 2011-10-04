@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
@@ -10,9 +11,12 @@ import it.greentone.persistence.JobStatus;
 import it.greentone.persistence.Person;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +46,17 @@ public class SaveJobAction extends AbstractBean
 	private JobsPanel jobsPanel;
 	@Inject
 	private JobService jobService;
+	private final ResourceMap resourceMap;
 	boolean saveJobActionEnabled = false;
+
+	/**
+	 * Azione di salvataggio di un incarico.
+	 */
+	public SaveJobAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
 
 	/**
 	 * Azione di salvataggio di un incarico.
@@ -50,6 +64,67 @@ public class SaveJobAction extends AbstractBean
 	@Action(enabledProperty = "saveJobActionEnabled")
 	public void saveJob()
 	{
+		/*
+		 * Issue 63, 64, 65: controllo la validità delle date.
+		 */
+		DateTime dueDate =
+		  GreenToneUtilities.getDateTime(jobsPanel.getDueDatePicker());
+		DateTime startDate =
+		  GreenToneUtilities.getDateTime(jobsPanel.getStartDatePicker());
+		DateTime finishDate =
+		  GreenToneUtilities.getDateTime(jobsPanel.getFinishDatePicker());
+		/* la scadenza non può essere precedente ad oggi */
+		if(dueDate != null)
+		{
+			if(dueDate.isBeforeNow())
+			{
+				JOptionPane
+				  .showMessageDialog(jobsPanel,
+				    resourceMap.getString("saveJob.Action.dueDateBeforeNow"),
+				    resourceMap.getString("ErrorDialog.title"),
+				    JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+		/* la data di inizio non può essere nel futuro */
+		if(startDate != null)
+		{
+			if(startDate.isAfterNow())
+			{
+				JOptionPane
+				  .showMessageDialog(jobsPanel,
+				    resourceMap.getString("saveJob.Action.startDateAfterNow"),
+				    resourceMap.getString("ErrorDialog.title"),
+				    JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+		/*
+		 * la data di fine non può essere antecedente la data di inizio e non può
+		 * essere posizionata nel futuro
+		 */
+		if(finishDate != null)
+		{
+			if(startDate != null && finishDate.isBefore(startDate))
+			{
+				JOptionPane
+				  .showMessageDialog(jobsPanel,
+				    resourceMap.getString("saveJob.Action.finishDateBeforeStartDate"),
+				    resourceMap.getString("ErrorDialog.title"),
+				    JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(finishDate.isAfterNow())
+			{
+				JOptionPane
+				  .showMessageDialog(jobsPanel,
+				    resourceMap.getString("saveJob.Action.finishDateAfterNow"),
+				    resourceMap.getString("ErrorDialog.title"),
+				    JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+
 		/*
 		 * se si tratta di una nuova entry creo un nuovo incarico altrimenti
 		 * modifico quella selezionato
@@ -65,17 +140,13 @@ public class SaveJobAction extends AbstractBean
 		job.setManager((Person) jobsPanel.getManagerComboBox().getSelectedItem());
 		job.setDescription(GreenToneUtilities.getText(jobsPanel
 		  .getDescriptionTextField()));
-		job
-		  .setDueDate(GreenToneUtilities.getDateTime(jobsPanel.getDueDatePicker()));
+		job.setDueDate(dueDate);
 		/*
 		 * Issue 26: la data di inizio deve essere sempre impostata, se non presente
 		 * viene assegnata automaticamente alla data odierna.
 		 */
-		DateTime dateTime =
-		  GreenToneUtilities.getDateTime(jobsPanel.getStartDatePicker());
-		job.setStartDate(dateTime != null? dateTime: new DateTime());
-		job.setFinishDate(GreenToneUtilities.getDateTime(jobsPanel
-		  .getFinishDatePicker()));
+		job.setStartDate(startDate != null? startDate: new DateTime());
+		job.setFinishDate(finishDate);
 		job.setCategory((JobCategory) jobsPanel.getCategoryComboBox()
 		  .getSelectedItem());
 		if(jobsPanel.getStatusComboBox().getSelectedIndex() > -1)
@@ -84,6 +155,7 @@ public class SaveJobAction extends AbstractBean
 			  .getSelectedIndex()]);
 		}
 		job.setNotes(jobsPanel.getNotesTextArea().getText());
+		job.setCity(GreenToneUtilities.getText(jobsPanel.getCityTextField()));
 		/* aggiorno la tabella */
 		if(jobsPanel.getStatus() == EStatus.NEW)
 		{
