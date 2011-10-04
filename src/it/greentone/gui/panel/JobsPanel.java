@@ -86,6 +86,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	private JComboBox customerComboBox;
 	private JComboBox managerComboBox;
 	private JTextArea notesTextArea;
+	private JTextField cityTextField;
 
 	/**
 	 * Pannello di gestione degli incarichi dello studio professionale.
@@ -120,15 +121,22 @@ public class JobsPanel extends ContextualPanel<Job>
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "customer"));
 		JLabel notesLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "notes"));
+		JLabel requiredLabel =
+		  new JLabel(getResourceMap().getString(
+		    LOCALIZATION_PREFIX + "requiredField"));
+		JLabel cityLabel =
+		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
 
 		JPanel headerPanel = new JPanel(new MigLayout());
 
 		headerPanel.add(protocolLabel, "gap para");
 		headerPanel.add(getProtocolTextField(), "growx, wrap");
 		headerPanel.add(customerLabel, "gap para");
-		headerPanel.add(getCustomerComboBox(), "wrap");
+		headerPanel.add(getCustomerComboBox());
 		headerPanel.add(managerLabel, "gap para");
 		headerPanel.add(getManagerComboBox(), "wrap");
+		headerPanel.add(cityLabel, "gap para");
+		headerPanel.add(getCityTextField(), "wrap");
 		headerPanel.add(descriptionLabel, "gap para");
 		headerPanel.add(getDescriptionTextField(), "wrap");
 		headerPanel.add(dueDateLabel, "gap para");
@@ -142,7 +150,8 @@ public class JobsPanel extends ContextualPanel<Job>
 		headerPanel.add(statusLabel, "gap para");
 		headerPanel.add(getStatusComboBox(), "wrap");
 		headerPanel.add(notesLabel, "gap para");
-		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx");
+		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx, wrap");
+		headerPanel.add(requiredLabel);
 
 		return headerPanel;
 	}
@@ -218,13 +227,14 @@ public class JobsPanel extends ContextualPanel<Job>
 
 		/* aggiorno la tabella degli incarichi */
 		String[] properties =
-		  new String[] {"protocol", "customer", "manager", "description",
+		  new String[] {"protocol", "customer", "manager", "city", "description",
 		    "dueDate", "startDate", "finishDate", "category", "status", "notes"};
 		String[] columnsName =
 		  new String[] {
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.customer"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.startDate"),
@@ -234,7 +244,7 @@ public class JobsPanel extends ContextualPanel<Job>
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
 		boolean[] writable =
 		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false, false};
+		    false, false, false};
 
 		tableModel =
 		  new EventJXTableModel<Job>(jobService.getAllJobs(),
@@ -441,5 +451,20 @@ public class JobsPanel extends ContextualPanel<Job>
 			registerComponent(managerComboBox);
 		}
 		return managerComboBox;
+	}
+
+	/**
+	 * Restituisce il campo comune di riferimento.
+	 * 
+	 * @return il campo comune di riferimento
+	 */
+	public JTextField getCityTextField()
+	{
+		if(cityTextField == null)
+		{
+			cityTextField = new JTextField();
+			cityTextField.setColumns(20);
+		}
+		return cityTextField;
 	}
 }

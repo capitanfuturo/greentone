@@ -19,6 +19,7 @@ import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -69,57 +70,72 @@ public class SaveOperationAction extends AbstractBean
 	{
 		try
 		{
+			/* controllo date */
+			DateTime operationDate =
+			  GreenToneUtilities.getDateTime(operationsPanel.getOperationDate());
 			/*
 			 * Issue 34: se il campo data rimane vuoto mostrare un popup che chiede
 			 * conferma del salvataggio
 			 */
-			if(GreenToneUtilities.getDateTime(operationsPanel.getOperationDate()) == null)
+			if(operationDate == null)
 			{
 				int confirmDialog =
 				  JOptionPane.showConfirmDialog(operationsPanel,
 				    resourceMap.getString("saveOperation.Action.dateMessage"));
-				if(confirmDialog == JOptionPane.OK_OPTION)
-					save();
+				if(confirmDialog != JOptionPane.OK_OPTION)
+					return;
 			}
 			else
-				if(operationsPanel.getVacazioneCheckBox().isSelected())
+			{
+				/* controllo che la data non sia successiva alla data odierna */
+				if(operationDate.isAfterNow())
 				{
-					/*
-					 * Issue 36: se selezionato l'onorario a vacazione allora il valore
-					 * deve essere maggiore di 2
-					 */
-					String vacazioniValue =
-					  GreenToneUtilities.getText(operationsPanel
-					    .getNumVacazioniTextField());
-					Integer numVacazioni = null;
-					if(vacazioniValue == null)
+					JOptionPane.showMessageDialog(operationsPanel,
+					  resourceMap.getString("saveOperation.Action.dateAfterNowMessage"),
+					  resourceMap.getString("ErrorDialog.title"),
+					  JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+			if(operationsPanel.getVacazioneCheckBox().isSelected())
+			{
+				/*
+				 * Issue 36: se selezionato l'onorario a vacazione allora il valore deve
+				 * essere maggiore di 2
+				 */
+				String vacazioniValue =
+				  GreenToneUtilities
+				    .getText(operationsPanel.getNumVacazioniTextField());
+				Integer numVacazioni = null;
+				if(vacazioniValue == null)
+				{
+					JOptionPane.showMessageDialog(operationsPanel,
+					  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
+					  resourceMap.getString("ErrorDialog.title"),
+					  JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				else
+				{
+					operationsPanel.getNumVacazioniTextField().commitEdit();
+					numVacazioni =
+					  new Integer(operationsPanel.getNumVacazioniTextField().getValue()
+					    .toString());
+					if(numVacazioni.intValue() < 2)
 					{
 						JOptionPane.showMessageDialog(operationsPanel,
 						  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
 						  resourceMap.getString("ErrorDialog.title"),
 						  JOptionPane.ERROR_MESSAGE);
-					}
-					else
-					{
-						operationsPanel.getNumVacazioniTextField().commitEdit();
-						numVacazioni =
-						  new Integer(operationsPanel.getNumVacazioniTextField().getValue()
-						    .toString());
-						if(numVacazioni.intValue() < 2)
-						{
-							JOptionPane.showMessageDialog(operationsPanel,
-							  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
-							  resourceMap.getString("ErrorDialog.title"),
-							  JOptionPane.ERROR_MESSAGE);
-						}
-						else
-						{
-							save();
-						}
+						return;
 					}
 				}
-				else
-					save();
+			}
+			/*
+			 * se arrivo qui allora tutta la validazione è passata correttamente e
+			 * posso salvare
+			 */
+			save();
 		}
 		catch(Exception e)
 		{
