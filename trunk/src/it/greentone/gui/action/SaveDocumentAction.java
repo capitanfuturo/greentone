@@ -1,5 +1,6 @@
 package it.greentone.gui.action;
 
+import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
@@ -9,9 +10,13 @@ import it.greentone.persistence.Job;
 import it.greentone.persistence.Person;
 
 import javax.inject.Inject;
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,7 +45,17 @@ public class SaveDocumentAction extends AbstractBean
 	private DocumentsPanel documentsPanel;
 	@Inject
 	private DocumentService documentService;
+	private final ResourceMap resourceMap;
 	boolean saveDocumentActionEnabled = false;
+
+	/**
+	 * Salva un documento.
+	 */
+	public SaveDocumentAction()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
 
 	/**
 	 * Salva un documento.
@@ -48,6 +63,17 @@ public class SaveDocumentAction extends AbstractBean
 	@Action(enabledProperty = "saveDocumentActionEnabled")
 	public void saveDocument()
 	{
+		/* controllo che la data inserita non sia nel futuro */
+		DateTime releaseDate =
+		  GreenToneUtilities.getDateTime(documentsPanel.getReleaseDateDatePicker());
+		if(releaseDate != null && releaseDate.isAfterNow())
+		{
+			JOptionPane.showMessageDialog(documentsPanel,
+			  resourceMap.getString("saveDocument.Action.dateAfterNowMessage"),
+			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 		/*
 		 * se si tratta di una nuova entry creo un nuovo documento altrimenti
 		 * modifico quella selezionata
@@ -59,15 +85,14 @@ public class SaveDocumentAction extends AbstractBean
 		document.setDescription(GreenToneUtilities.getText(documentsPanel
 		  .getDescriptionTextField()));
 		document.setIsDigital(documentsPanel.getIsDigitalCheckBox().isSelected());
-		document.setIsIncoming(documentsPanel.getIncomingCheckBox().isSelected());
+		document.setIsOutgoing(documentsPanel.getOtugoingCheckBox().isSelected());
 		document.setJob((Job) documentsPanel.getJobComboBox().getSelectedItem());
 		document.setNotes(documentsPanel.getNotesTextArea().getText());
 		document.setProtocol(GreenToneUtilities.getText(documentsPanel
 		  .getProtocolTextField()));
 		document.setRecipient((Person) documentsPanel.getRecipientComboBox()
 		  .getSelectedItem());
-		document.setReleaseDate(GreenToneUtilities.getDateTime(documentsPanel
-		  .getReleaseDateDatePicker()));
+		document.setReleaseDate(releaseDate);
 		document.setUri(GreenToneUtilities.getText(documentsPanel
 		  .getFileTextField()));
 		/* aggiorno la tabella */
