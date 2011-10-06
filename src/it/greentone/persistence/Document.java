@@ -41,7 +41,7 @@ public class Document
 	@Persistent
 	String protocol;
 	@Persistent
-	boolean incoming;
+	boolean outgoing;
 	@Persistent(defaultFetchGroup = "true")
 	DateTime releaseDate;
 	@Persistent(defaultFetchGroup = "true", dependent = "false")
@@ -172,27 +172,27 @@ public class Document
 	}
 
 	/**
-	 * Restituisce <code>true</code> se il documento è entrante nell'archivio
-	 * dello studio, <code>false</code> altrimenti.
+	 * Restituisce <code>true</code> se il documento è uscente nell'archivio dello
+	 * studio, <code>false</code> altrimenti.
 	 * 
-	 * @return <code>true</code> se il documento è entrante nell'archivio dello
+	 * @return <code>true</code> se il documento è uscente nell'archivio dello
 	 *         studio, <code>false</code> altrimenti
 	 */
-	public boolean getIsIncoming()
+	public boolean getIsOutgoing()
 	{
-		return incoming;
+		return outgoing;
 	}
 
 	/**
-	 * Indica se il documento è entrante nell'archivio dello studio.
+	 * Indica se il documento è uscente nell'archivio dello studio.
 	 * 
-	 * @param incoming
-	 *          <code>true</code> se il documento è entrante nell'archivio dello
+	 * @param outgoing
+	 *          <code>true</code> se il documento è uscente nell'archivio dello
 	 *          studio, <code>false</code> altrimenti
 	 */
-	public void setIsIncoming(boolean incoming)
+	public void setIsOutgoing(boolean outgoing)
 	{
-		this.incoming = incoming;
+		this.outgoing = outgoing;
 	}
 
 	/**

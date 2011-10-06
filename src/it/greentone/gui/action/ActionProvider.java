@@ -43,8 +43,6 @@ public class ActionProvider
 	@Inject
 	AddPersonAction addPerson;
 	@Inject
-	DeleteDocumentAction deleteDocument;
-	@Inject
 	DeleteJobAction deleteJob;
 	@Inject
 	DeleteOperationAction deleteOperation;
@@ -242,17 +240,6 @@ public class ActionProvider
 	public Action getAddDocument()
 	{
 		return applicationContext.getActionMap(addDocument).get("addDocument");
-	}
-
-	/**
-	 * Restituisce l'azione di rimozione di un documento.
-	 * 
-	 * @return azione di rimozione di un documento
-	 */
-	public Action getDeleteDocument()
-	{
-		return applicationContext.getActionMap(deleteDocument)
-		  .get("deleteDocument");
 	}
 
 	/**
