@@ -11,8 +11,8 @@ import it.greentone.persistence.PersonService;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.Comparator;
 
 import javax.inject.Inject;
@@ -79,7 +79,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private JTextField cityTextField;
 	private JTextField provinceTextField;
 	private JTextField capTextField;
-	private JTextField cfTextField;
+	private JFormattedTextField cfTextField;
 	private JTextField pivaTextField;
 	private JTextField telephone1TextField;
 	private JTextField telephone2TextField;
@@ -405,7 +405,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento del codice fiscale
 	 */
-	public JTextField getCfTexField()
+	public JFormattedTextField getCfTexField()
 	{
 		if(cfTextField == null)
 		{
@@ -417,22 +417,26 @@ public class PersonsPanel extends ContextualPanel<Person>
 			 * impostato, allora in caso di malformattazione del codice fiscale far
 			 * comparire un popup che spiega il problema
 			 */
-			cfTextField.addFocusListener(new FocusListener()
+			cfTextField.addFocusListener(new FocusAdapter()
 				{
 
 					@Override
 					public void focusLost(FocusEvent e)
 					{
-						if(!getIsLegalCheckBox().isSelected()
-						  && ((JFormattedTextField) cfTextField).getValue() == null)
+						try
 						{
-							showCFMessageDialog();
+							if(!getIsLegalCheckBox().isSelected())
+							{
+								if(mf.stringToValue(cfTextField.getText()) == null)
+								{
+									showCFMessageDialog();
+								}
+							}
 						}
-					}
-
-					@Override
-					public void focusGained(FocusEvent e)
-					{
+						catch(Exception e1)
+						{
+							e1.printStackTrace();
+						}
 					}
 				});
 

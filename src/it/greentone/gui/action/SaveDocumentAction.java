@@ -85,7 +85,7 @@ public class SaveDocumentAction extends AbstractBean
 		document.setDescription(GreenToneUtilities.getText(documentsPanel
 		  .getDescriptionTextField()));
 		document.setIsDigital(documentsPanel.getIsDigitalCheckBox().isSelected());
-		document.setIsOutgoing(documentsPanel.getOtugoingCheckBox().isSelected());
+		document.setIsOutgoing(documentsPanel.getOutgoingCheckBox().isSelected());
 		document.setJob((Job) documentsPanel.getJobComboBox().getSelectedItem());
 		document.setNotes(documentsPanel.getNotesTextArea().getText());
 		document.setProtocol(GreenToneUtilities.getText(documentsPanel

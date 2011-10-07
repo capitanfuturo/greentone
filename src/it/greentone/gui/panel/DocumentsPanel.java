@@ -31,6 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -93,6 +94,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private JButton fileChooserButton;
 
 	private EventJXTableModel<Document> tableModel;
+	private JLabel recipientLabel;
+	private JLabel fileLabel;
 
 	/**
 	 * Pannello di visualizzazione di tutti i documenti presenti in database.
@@ -112,12 +115,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		    .getString(LOCALIZATION_PREFIX + "description"));
 		JLabel jobLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
-		JLabel recipientLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "recipient"));
 		JLabel isDigitalLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isDigital"));
-		JLabel fileLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "file"));
 		JLabel incomingLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "outgoing"));
 		JLabel releaseDateLabel =
@@ -135,22 +134,52 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		headerPanel.add(getDescriptionTextField(), "growx, wrap");
 		headerPanel.add(jobLabel, "gap para");
 		headerPanel.add(getJobComboBox(), "growx, wrap");
-		headerPanel.add(recipientLabel, "gap para");
-		headerPanel.add(getRecipientComboBox(), "growx, wrap");
 		headerPanel.add(isDigitalLabel, "gap para");
 		headerPanel.add(getIsDigitalCheckBox());
-		headerPanel.add(fileLabel, "gap para");
+		headerPanel.add(getFileLabel(), "gap para");
 		headerPanel.add(getFileTextField());
 		headerPanel.add(getFileChooserButton(), "growx, wrap");
-		headerPanel.add(incomingLabel, "gap para");
-		headerPanel.add(getOtugoingCheckBox());
 		headerPanel.add(releaseDateLabel, "gap para");
 		headerPanel.add(getReleaseDateDatePicker(), "growx, wrap");
+		headerPanel.add(incomingLabel, "gap para");
+		headerPanel.add(getOutgoingCheckBox());
+		headerPanel.add(getRecipientLabel(), "gap para");
+		headerPanel.add(getRecipientComboBox(), "growx, wrap");
 		headerPanel.add(notesLabel, "gap para");
 		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx, wrap");
 		headerPanel.add(requiredLabel);
 
 		return headerPanel;
+	}
+
+	/**
+	 * Restituisce l'etichetta utilizzata per il destinatario e mittente.
+	 * 
+	 * @return l'etichetta utilizzata per il destinatario e mittente
+	 */
+	public JLabel getRecipientLabel()
+	{
+		if(recipientLabel == null)
+		{
+			recipientLabel =
+			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+		}
+		return recipientLabel;
+	}
+
+	/**
+	 * Restituisce l'etichetta del campo di scelta del file.
+	 * 
+	 * @return l'etichetta del campo di scelta del file
+	 */
+	public JLabel getFileLabel()
+	{
+		if(fileLabel == null)
+		{
+			fileLabel =
+			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "file"));
+		}
+		return fileLabel;
 	}
 
 	/**
@@ -287,6 +316,15 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		{
 			isDigitalCheckBox = new JCheckBox();
 			registerComponent(isDigitalCheckBox);
+			isDigitalCheckBox.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent arg0)
+					{
+						toggleFileSection();
+					}
+				});
 		}
 		return isDigitalCheckBox;
 	}
@@ -311,12 +349,30 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il flag che indica se il documento è in uscita
 	 */
-	public JCheckBox getOtugoingCheckBox()
+	public JCheckBox getOutgoingCheckBox()
 	{
 		if(outgoingCheckBox == null)
 		{
 			outgoingCheckBox = new JCheckBox();
 			registerComponent(outgoingCheckBox);
+			outgoingCheckBox.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						if(outgoingCheckBox.isSelected())
+						{
+							getRecipientLabel().setText(
+							  getResourceMap().getString(LOCALIZATION_PREFIX + "recipient"));
+						}
+						else
+						{
+							getRecipientLabel().setText(
+							  getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+						}
+					}
+				});
 		}
 		return outgoingCheckBox;
 	}
@@ -352,7 +408,17 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	}
 
 	/**
-	 * Restituisce un pulsante per navigare nel file system.
+	 * Restituisce un pulsante per navigare nel file system. I file accettatati
+	 * sono di tipo:
+	 * <ul>
+	 * <li>pdf</li>
+	 * <li>png</li>
+	 * <li>tif</li>
+	 * <li>zip</li>
+	 * <li>rar</li>
+	 * <li>7z</li>
+	 * <li>p7m</li>
+	 * </ul>
 	 * 
 	 * @return un pulsante per navigare nel file system
 	 */
@@ -367,6 +433,12 @@ public class DocumentsPanel extends ContextualPanel<Document>
 					public void actionPerformed(ActionEvent arg0)
 					{
 						JFileChooser fileChooser = new JFileChooser();
+						fileChooser.setFileHidingEnabled(true);
+						fileChooser.setAcceptAllFileFilterUsed(false);
+						fileChooser.setFileFilter(new FileNameExtensionFilter(
+						  "pdf, png, tif, zip, rar, 7z, p7m", "pdf", "png", "tif", "zip",
+						  "rar", "7z", "p7m"));
+
 						int returnVal = fileChooser.showOpenDialog(null);
 						if(returnVal == JFileChooser.APPROVE_OPTION)
 						{
@@ -464,12 +536,15 @@ public class DocumentsPanel extends ContextualPanel<Document>
 							  getIsDigitalCheckBox().setSelected(
 							    getSelectedItem().getIsDigital());
 							  getFileTextField().setText(getSelectedItem().getUri());
-							  getOtugoingCheckBox().setSelected(
+							  getOutgoingCheckBox().setSelected(
 							    getSelectedItem().getIsOutgoing());
 							  getReleaseDateDatePicker().setDate(
 							    getSelectedItem().getReleaseDate() != null? getSelectedItem()
 							      .getReleaseDate().toDate(): null);
 							  getNotesTextArea().setText(getSelectedItem().getNotes());
+
+							  /* calcolo visibilità della sezione del file */
+							  toggleFileSection();
 						  }
 					  }
 				  }
@@ -506,5 +581,20 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		super.clearForm();
 		/* Issue 69: di default impostare la data odierna */
 		getReleaseDateDatePicker().setDate(new DateTime().toDate());
+		/* Issue 70: di default l'etichetta è impostata a destinatario */
+		getRecipientLabel().setText(
+		  getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+		/* Issue 77: di default non viene mostrata la scelta del file */
+		toggleFileSection();
+	}
+
+	/**
+	 * Mostra / nasconde la parte relativa alla scelta del file del documento.
+	 */
+	private void toggleFileSection()
+	{
+		getFileLabel().setVisible(getIsDigitalCheckBox().isSelected());
+		getFileTextField().setVisible(getIsDigitalCheckBox().isSelected());
+		getFileChooserButton().setVisible(getIsDigitalCheckBox().isSelected());
 	}
 }
