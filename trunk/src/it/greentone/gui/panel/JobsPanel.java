@@ -30,6 +30,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
@@ -466,5 +467,13 @@ public class JobsPanel extends ContextualPanel<Job>
 			cityTextField.setColumns(20);
 		}
 		return cityTextField;
+	}
+
+	@Override
+	public void clearForm()
+	{
+		super.clearForm();
+		/* Issue 74: la data di inizio viene prepopolata con la data corrente */
+		getStartDatePicker().setDate(new DateTime().toDate());
 	}
 }
