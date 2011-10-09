@@ -44,6 +44,12 @@ public class GreenToneAppConfig
 	 */
 	public static final String DATANUCLEUS_CONFIG_LOCATION =
 	  "/it/greentone/resources/datanucleus.properties";
+	/**
+	 * Path del repository dove salvare la copia dei file associati a dei
+	 * documenti
+	 */
+	public static final String DOCUMENTS_REPOSITORY = System
+	  .getProperty("user.dir") + "/documents/";
 
 	/**
 	 * Resituisce la factory di gestione della persistenza.
@@ -67,9 +73,8 @@ public class GreenToneAppConfig
 		final Properties props = new Properties(defaults);
 		final StringBuilder connectionURL = new StringBuilder();
 		connectionURL.append("jdbc:h2:");
-		// TODO recuperare le impostazioni di configurazione
-		final String storageDirPath =
-		  System.getProperty("user.home") + "/GreenTone/db";
+		/* il db è posizionato nella cartella di esecuzione di greentone */
+		final String storageDirPath = System.getProperty("user.dir") + "/db";
 		if(storageDirPath != null && storageDirPath.length() > 0)
 		{
 			connectionURL.append(storageDirPath);

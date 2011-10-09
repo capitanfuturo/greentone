@@ -11,8 +11,13 @@ import it.greentone.persistence.JobService;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
+import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,6 +26,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -87,7 +93,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private JComboBox jobComboBox;
 	private JComboBox recipientComboBox;
 	private JCheckBox isDigitalCheckBox;
-	private JTextField fileTextField;
+	private JEditorPane filePathField;
 	private JCheckBox outgoingCheckBox;
 	private JXDatePicker releaseDateDatePicker;
 	private JTextArea notesTextArea;
@@ -96,6 +102,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private EventJXTableModel<Document> tableModel;
 	private JLabel recipientLabel;
 	private JLabel fileLabel;
+	private File file;
 
 	/**
 	 * Pannello di visualizzazione di tutti i documenti presenti in database.
@@ -137,7 +144,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		headerPanel.add(isDigitalLabel, "gap para");
 		headerPanel.add(getIsDigitalCheckBox());
 		headerPanel.add(getFileLabel(), "gap para");
-		headerPanel.add(getFileTextField());
+		headerPanel.add(getFilePathField());
 		headerPanel.add(getFileChooserButton(), "growx, wrap");
 		headerPanel.add(releaseDateLabel, "gap para");
 		headerPanel.add(getReleaseDateDatePicker(), "growx, wrap");
@@ -334,14 +341,15 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo file
 	 */
-	public JTextField getFileTextField()
+	public JEditorPane getFilePathField()
 	{
-		if(fileTextField == null)
+		if(filePathField == null)
 		{
-			fileTextField = new JTextField(25);
-			registerComponent(fileTextField);
+			filePathField = new JEditorPane();
+			filePathField.setForeground(Color.blue);
+			registerComponent(filePathField);
 		}
-		return fileTextField;
+		return filePathField;
 	}
 
 	/**
@@ -442,15 +450,9 @@ public class DocumentsPanel extends ContextualPanel<Document>
 						int returnVal = fileChooser.showOpenDialog(null);
 						if(returnVal == JFileChooser.APPROVE_OPTION)
 						{
-							File file = fileChooser.getSelectedFile();
-							try
-							{
-								getFileTextField().setText(file.getCanonicalPath().toString());
-							}
-							catch(IOException e)
-							{
-								e.printStackTrace();
-							}
+							final File file = fileChooser.getSelectedFile();
+							getFilePathField().setText(file.getName());
+							setFile(file);
 						}
 					}
 				});
@@ -535,7 +537,19 @@ public class DocumentsPanel extends ContextualPanel<Document>
 							    getSelectedItem().getRecipient());
 							  getIsDigitalCheckBox().setSelected(
 							    getSelectedItem().getIsDigital());
-							  getFileTextField().setText(getSelectedItem().getUri());
+
+							  String URI = getSelectedItem().getUri();
+							  if(URI != null)
+							  {
+								  final File file = new File(URI);
+								  getFilePathField().setText(file.getName());
+								  setFile(file);
+							  }
+							  else
+							  {
+								  getFilePathField().setText(null);
+							  }
+
 							  getOutgoingCheckBox().setSelected(
 							    getSelectedItem().getIsOutgoing());
 							  getReleaseDateDatePicker().setDate(
@@ -586,6 +600,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		  getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
 		/* Issue 77: di default non viene mostrata la scelta del file */
 		toggleFileSection();
+
+		file = null;
 	}
 
 	/**
@@ -594,7 +610,50 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private void toggleFileSection()
 	{
 		getFileLabel().setVisible(getIsDigitalCheckBox().isSelected());
-		getFileTextField().setVisible(getIsDigitalCheckBox().isSelected());
+		getFilePathField().setVisible(getIsDigitalCheckBox().isSelected());
 		getFileChooserButton().setVisible(getIsDigitalCheckBox().isSelected());
+	}
+
+	private void open(File file)
+	{
+		if(Desktop.isDesktopSupported())
+		{
+			Desktop desktop = Desktop.getDesktop();
+			try
+			{
+				desktop.open(file);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void setFile(final File file)
+	{
+		for(MouseListener listener : getFilePathField().getMouseListeners())
+		{
+			getFilePathField().removeMouseListener(listener);
+		}
+		getFilePathField().addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					open(file);
+				};
+			});
+		this.file = file;
+	}
+
+	/**
+	 * Restituisce il file del documento.
+	 * 
+	 * @return il file del documento
+	 */
+	public File getFile()
+	{
+		return file;
 	}
 }

@@ -1,6 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
+import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
@@ -8,6 +9,9 @@ import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.Person;
+
+import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.swing.JOptionPane;
@@ -93,8 +97,37 @@ public class SaveDocumentAction extends AbstractBean
 		document.setRecipient((Person) documentsPanel.getRecipientComboBox()
 		  .getSelectedItem());
 		document.setReleaseDate(releaseDate);
-		document.setUri(GreenToneUtilities.getText(documentsPanel
-		  .getFileTextField()));
+
+		String oldUri = document.getUri();
+		File file = documentsPanel.getFile();
+		String newUri = null;
+
+		try
+		{
+			/* caso nessun file precedentemente caricato */
+			if(oldUri == null)
+			{
+				if(file != null)
+					newUri = copyFile(file);
+			}
+			else
+			{
+				/* caso file precedentemente caricato */
+				File oldFile = new File(oldUri);
+				oldFile.delete();
+				if(file != null)
+				{
+					newUri = copyFile(file);
+				}
+			}
+			document.setUri(newUri);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+
 		/* aggiorno la tabella */
 		if(documentsPanel.getStatus() == EStatus.NEW)
 			documentService.addDocument(document);
@@ -129,5 +162,26 @@ public class SaveDocumentAction extends AbstractBean
 		this.saveDocumentActionEnabled = saveDocumentActionEnabled;
 		firePropertyChange("saveDocumentActionEnabled", oldValue,
 		  saveDocumentActionEnabled);
+	}
+
+	/**
+	 * Copia il nuovo file nel repository di GreenTone e restituisce l'URI del
+	 * nuovo file
+	 * 
+	 * @param inputFile
+	 *          file da copiare nel repository
+	 * @return l'URI del nuovo file copiato
+	 * @throws IOException
+	 */
+	private String copyFile(File inputFile) throws IOException
+	{
+		new File(GreenToneAppConfig.DOCUMENTS_REPOSITORY).mkdirs();
+
+		File copiedFile =
+		  new File(GreenToneAppConfig.DOCUMENTS_REPOSITORY + inputFile.getName());
+
+		GreenToneUtilities.copyFile(inputFile, copiedFile);
+
+		return copiedFile.getCanonicalPath().toString();
 	}
 }

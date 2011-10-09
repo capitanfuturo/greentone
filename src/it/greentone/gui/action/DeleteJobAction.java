@@ -5,6 +5,7 @@ import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.gui.panel.JobsPanel;
 import it.greentone.gui.panel.OperationsPanel;
+import it.greentone.persistence.DocumentService;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 
@@ -47,6 +48,8 @@ public class DeleteJobAction extends AbstractBean
 	OperationsPanel operationsPanel;
 	@Inject
 	JobService jobService;
+	@Inject
+	DocumentService documentService;
 	boolean deleteJobActionEnabled = false;
 	private final ResourceMap resourceMap;
 
@@ -65,12 +68,24 @@ public class DeleteJobAction extends AbstractBean
 	@Action(enabledProperty = "deleteJobActionEnabled")
 	public void deleteJob()
 	{
+		Job job = jobsPanel.getSelectedItem();
+		/*
+		 * Issue 82: Non è possibile eliminare un incarico se ci sono dei documenti
+		 * collegati
+		 */
+		if(documentService.getDocumentsJob(job).size() > 0)
+		{
+			JOptionPane.showMessageDialog(jobsPanel,
+			  resourceMap.getString("deleteJob.Action.errorMessage"),
+			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 		int confirmDialog =
 		  JOptionPane.showConfirmDialog(jobsPanel,
 		    resourceMap.getString("deleteJob.Action.confirmMessage"));
 		if(confirmDialog == JOptionPane.OK_OPTION)
 		{
-			Job job = jobsPanel.getSelectedItem();
 			jobService.deleteJob(job);
 			jobsPanel.clearForm();
 			jobsPanel.setStatus(EStatus.NEW);

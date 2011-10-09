@@ -32,6 +32,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
@@ -514,5 +515,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		super.clearForm();
 		getNumVacazioniTextField().setEnabled(false);
 		getAmountTextField().setEnabled(true);
+		getOperationDate().setDate(new DateTime().toDate());
 	}
 }
