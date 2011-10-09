@@ -76,8 +76,8 @@ public class MainPanel extends JPanel
 			mainToolBar.add(actionProvider.getViewOperations());
 			mainToolBar.add(actionProvider.getViewDocuments());
 			mainToolBar.add(actionProvider.getViewPersons());
-			mainToolBar.add(actionProvider.getExit());
 			mainToolBar.add(actionProvider.getViewOptions());
+			mainToolBar.add(actionProvider.getExit());
 			mainToolBar.add(actionProvider.getViewAbout());
 			mainToolBar.setOrientation(SwingConstants.VERTICAL);
 		}

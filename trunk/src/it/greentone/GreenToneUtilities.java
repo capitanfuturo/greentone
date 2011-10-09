@@ -2,6 +2,12 @@ package it.greentone;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.text.ParseException;
@@ -205,5 +211,30 @@ public class GreenToneUtilities
 		result = Math.round(result);
 		result = result / 100;
 		return result;
+	}
+
+	/**
+	 * Copia il contenuto di un file in un altro file.
+	 * 
+	 * @param input
+	 *          file di origine
+	 * @param output
+	 *          file di destinazione
+	 * @throws IOException
+	 *           eccezione in caso di errore
+	 */
+	public static void copyFile(File input, File output) throws IOException
+	{
+		InputStream in = new FileInputStream(input);
+		OutputStream out = new FileOutputStream(output);
+
+		byte[] buf = new byte[1024];
+		int len;
+		while((len = in.read(buf)) > 0)
+		{
+			out.write(buf, 0, len);
+		}
+		in.close();
+		out.close();
 	}
 }
