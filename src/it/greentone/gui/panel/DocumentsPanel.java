@@ -3,6 +3,7 @@ package it.greentone.gui.panel;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
+import it.greentone.gui.action.DeleteDocumentAction;
 import it.greentone.gui.action.SaveDocumentAction;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
@@ -46,8 +47,6 @@ import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
@@ -85,6 +84,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private DocumentService documentService;
 	@Inject
 	private JobService jobService;
+	@Inject
+	private DeleteDocumentAction deleteDocumentAction;
 	@Inject
 	private SaveDocumentAction saveDocumentAction;
 
@@ -470,12 +471,11 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddDocument());
 		getContextualToolBar().add(actionProvider.getSaveDocument());
+		getContextualToolBar().add(actionProvider.getDeleteDocument());
 
 		/* carico destinatari */
-		EventList<Person> allPersonsEventList = new BasicEventList<Person>();
-		allPersonsEventList.addAll(personService.getAllPersons());
 		EventComboBoxModel<Person> recipientComboBoxModel =
-		  new EventComboBoxModel<Person>(allPersonsEventList);
+		  new EventComboBoxModel<Person>(personService.getAllPersons());
 		getRecipientComboBox().setModel(recipientComboBoxModel);
 
 		/* carico gli incarichi */
@@ -559,6 +559,13 @@ public class DocumentsPanel extends ContextualPanel<Document>
 
 							  /* calcolo visibilità della sezione del file */
 							  toggleFileSection();
+							  /* abilito le azioni legate alla selezione */
+							  deleteDocumentAction.setDeleteDocumentActionEnabled(true);
+						  }
+						  else
+						  {
+							  /* disabilito le azioni legate alla selezione */
+							  deleteDocumentAction.setDeleteDocumentActionEnabled(false);
 						  }
 					  }
 				  }
