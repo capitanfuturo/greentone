@@ -37,6 +37,8 @@ public class ActionProvider
 	@Inject
 	AddDocumentAction addDocument;
 	@Inject
+	DeleteDocumentAction deleteDocument;
+	@Inject
 	AddJobAction addJob;
 	@Inject
 	AddOperationAction addOperation;
@@ -312,5 +314,16 @@ public class ActionProvider
 	public Action getSaveOptions()
 	{
 		return applicationContext.getActionMap(saveOptions).get("saveOptions");
+	}
+
+	/**
+	 * Restituisce l'azione di rimozione di un documento.
+	 * 
+	 * @return azione di rimozione di un documento
+	 */
+	public Action getDeleteDocument()
+	{
+		return applicationContext.getActionMap(deleteDocument)
+		  .get("deleteDocument");
 	}
 }
