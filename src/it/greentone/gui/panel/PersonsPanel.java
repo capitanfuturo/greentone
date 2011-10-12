@@ -198,6 +198,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 							  /* abilito le azioni legate alla selezione */
 							  deletePersonAction.setDeletePersonActionEnabled(true);
 							  editUserAction.setEditUserActionEnabled(true);
+							  /* aggiorno l'etichetta del nome/ragione sociale */
+							  toggleNameLabel();
 						  }
 						  else
 						  {
@@ -539,18 +541,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						if(isLegalCheckBox.isSelected())
-						{
-							getNameLabel().setText(
-							  getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
-						}
-						else
-						{
-							getNameLabel()
-							  .setText(
-							    getResourceMap().getString(
-							      LOCALIZATION_PREFIX + "surnameName"));
-						}
+						toggleNameLabel();
 					}
 				});
 			registerComponent(isLegalCheckBox);
@@ -594,5 +585,26 @@ public class PersonsPanel extends ContextualPanel<Person>
 		  getResourceMap().getString(LOCALIZATION_PREFIX + "cfMessage"),
 		  getResourceMap().getString(LOCALIZATION_PREFIX + "infoTitle"),
 		  JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	@Override
+	public void clearForm()
+	{
+		super.clearForm();
+		toggleNameLabel();
+	}
+
+	private void toggleNameLabel()
+	{
+		if(getIsLegalCheckBox().isSelected())
+		{
+			getNameLabel().setText(
+			  getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
+		}
+		else
+		{
+			getNameLabel().setText(
+			  getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
+		}
 	}
 }
