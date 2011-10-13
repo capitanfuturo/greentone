@@ -155,7 +155,10 @@ public class SaveJobAction extends AbstractBean
 			  .getSelectedIndex()]);
 		}
 		job.setNotes(jobsPanel.getNotesTextArea().getText());
-		job.setCity(GreenToneUtilities.getText(jobsPanel.getCityTextField()));
+		String city =
+		  jobsPanel.getCityField().getSelectedItem() != null? jobsPanel
+		    .getCityField().getSelectedItem().toString(): null;
+		job.setCity(city);
 		/* aggiorno la tabella */
 		if(jobsPanel.getStatus() == EStatus.NEW)
 		{
