@@ -150,4 +150,16 @@ public class JobService
 	{
 		return jobDAO.getJobsAsManager(manager);
 	}
+
+	/**
+	 * Restituisce l'insieme dei comuni di riferimento presenti nella tabella
+	 * degli incarichi.
+	 * 
+	 * @return l'insieme dei comuni di riferimento presenti nella tabella degli
+	 *         incarichi
+	 */
+	public Collection<String> getAllCities()
+	{
+		return jobDAO.getAllCities();
+	}
 }

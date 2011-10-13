@@ -4,6 +4,7 @@ import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.FontProvider;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,7 +62,7 @@ public class AboutPanel extends ContextualPanel<Void>
 	@Override
 	protected JPanel createHeaderPanel()
 	{
-		JPanel headerPanel = new JPanel(new MigLayout());
+		JPanel headerPanel = new JPanel(new MigLayout("", "[]5[grow,fill]"));
 		JLabel logoLabel =
 		  new JLabel(getResourceMap().getIcon("viewAbout.Panel.logo"));
 		headerPanel.add(logoLabel, "spany 2");
@@ -149,24 +150,25 @@ public class AboutPanel extends ContextualPanel<Void>
 		JLabel licenseLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
 		headerPanel.add(licenseLabel);
-		JTextArea licenceTextArea = new JTextArea(50, 100);
-		licenceTextArea.setEditable(false);
-		licenceTextArea.setFont(FontProvider.CODE);
-		licenceTextArea.setLineWrap(true);
-		licenceTextArea.setWrapStyleWord(true);
+
+		final JTextArea licenseTextArea = new JTextArea(200, 450);
+		licenseTextArea.setEditable(false);
+		licenseTextArea.setFont(FontProvider.CODE);
 		try
 		{
 			String licenceURL =
 			  "/" + getResourceMap().getResourcesDir() + "license.txt";
 			InputStream inputStream = getClass().getResourceAsStream(licenceURL);
-			licenceTextArea.read(new InputStreamReader(inputStream), null);
+			licenseTextArea.read(new InputStreamReader(inputStream), null);
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		headerPanel.add(new JScrollPane(licenceTextArea), "shrinkx");
+		final JScrollPane scrollPane = new JScrollPane(licenseTextArea);
+		scrollPane.setPreferredSize(new Dimension(200, 450));
+		headerPanel.add(scrollPane);
 		return headerPanel;
 	}
 

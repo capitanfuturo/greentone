@@ -1,6 +1,8 @@
 package it.greentone.persistence;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
@@ -144,5 +146,26 @@ public class JobDAO extends JdoDaoSupport
 		  getPersistenceManager().detachCopyAll(
 		    (Collection<Job>) query.execute(customer));
 		return result;
+	}
+
+	/**
+	 * Restituisce l'insieme dei comuni di riferimento presenti nella tabella
+	 * degli incarichi.
+	 * 
+	 * @return l'insieme dei comuni di riferimento presenti nella tabella degli
+	 *         incarichi
+	 */
+	public Collection<String> getAllCities()
+	{
+		Query query = getPersistenceManager().newQuery(Job.class);
+		@SuppressWarnings("unchecked")
+		Collection<Job> result =
+		  getPersistenceManager().detachCopyAll((Collection<Job>) query.execute());
+		Set<String> cities = new HashSet<String>();
+		for(Job job : result)
+		{
+			cities.add(job.getCity());
+		}
+		return cities;
 	}
 }

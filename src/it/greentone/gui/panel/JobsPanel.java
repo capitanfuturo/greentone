@@ -33,7 +33,10 @@ import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
+import ca.odell.glazedlists.swing.AutoCompleteSupport;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
@@ -87,7 +90,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	private JComboBox customerComboBox;
 	private JComboBox managerComboBox;
 	private JTextArea notesTextArea;
-	private JTextField cityTextField;
+	private JComboBox cityField;
+	private EventList<String> cities;
 
 	/**
 	 * Pannello di gestione degli incarichi dello studio professionale.
@@ -137,7 +141,7 @@ public class JobsPanel extends ContextualPanel<Job>
 		headerPanel.add(managerLabel, "gap para");
 		headerPanel.add(getManagerComboBox(), "wrap");
 		headerPanel.add(cityLabel, "gap para");
-		headerPanel.add(getCityTextField(), "wrap");
+		headerPanel.add(getCityField(), "wrap");
 		headerPanel.add(descriptionLabel, "gap para");
 		headerPanel.add(getDescriptionTextField(), "wrap");
 		headerPanel.add(dueDateLabel, "gap para");
@@ -198,6 +202,7 @@ public class JobsPanel extends ContextualPanel<Job>
 							  Person manager = selectedJob.getManager();
 							  getManagerComboBox().getModel().setSelectedItem(manager);
 							  getNotesTextArea().setText(selectedJob.getNotes());
+							  getCityField().setSelectedItem(selectedJob.getCity());
 							  /* abilito le azioni legate alla selezione */
 							  deleteJobAction.setDeleteJobActionEnabled(true);
 						  }
@@ -263,6 +268,20 @@ public class JobsPanel extends ContextualPanel<Job>
 		  new EventComboBoxModel<JobCategory>(
 		    jobCategoryService.getAllJobCategories());
 		categoryComboBox.setModel(model);
+	}
+
+	/**
+	 * Restituisce la lista dei comuni di riferimento.
+	 * 
+	 * @return la lista dei comuni di riferimento
+	 */
+	public EventList<String> getCities()
+	{
+		if(cities == null)
+		{
+			cities = new BasicEventList<String>();
+		}
+		return cities;
 	}
 
 	@Override
@@ -459,14 +478,15 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo comune di riferimento
 	 */
-	public JTextField getCityTextField()
+	public JComboBox getCityField()
 	{
-		if(cityTextField == null)
+		if(cityField == null)
 		{
-			cityTextField = new JTextField();
-			cityTextField.setColumns(20);
+			cityField = new JComboBox();
+			registerComponent(cityField);
+			AutoCompleteSupport.install(cityField, getCities());
 		}
-		return cityTextField;
+		return cityField;
 	}
 
 	@Override
@@ -475,5 +495,8 @@ public class JobsPanel extends ContextualPanel<Job>
 		super.clearForm();
 		/* Issue 74: la data di inizio viene prepopolata con la data corrente */
 		getStartDatePicker().setDate(new DateTime().toDate());
+		/* Issue 89: autocompletion */
+		getCities().clear();
+		getCities().addAll(jobService.getAllCities());
 	}
 }
