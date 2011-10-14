@@ -4,7 +4,6 @@ import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.FontProvider;
 
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -62,34 +61,29 @@ public class AboutPanel extends ContextualPanel<Void>
 	@Override
 	protected JPanel createHeaderPanel()
 	{
-		JPanel headerPanel = new JPanel(new MigLayout("", "[]5[grow,fill]"));
+		JPanel headerPanel = new JPanel(new MigLayout("", "", "[][][][][][90%]"));
+
 		JLabel logoLabel =
 		  new JLabel(getResourceMap().getIcon("viewAbout.Panel.logo"));
-		headerPanel.add(logoLabel, "spany 2");
 		JLabel titleLabel =
 		  new JLabel(getResourceMap().getString("Application.title") + " v."
 		    + getResourceMap().getString("Application.version"));
 		titleLabel.setFont(FontProvider.TITLE_BIG);
-		headerPanel.add(titleLabel, "span");
 		JLabel subtitleLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.description"));
 		subtitleLabel.setFont(FontProvider.TITLE_SMALL);
-		headerPanel.add(subtitleLabel, "wrap");
 
 		JLabel authorsLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.authors"));
-		headerPanel.add(authorsLabel);
 		JTextArea authorsTextArea =
 		  new JTextArea(getResourceMap()
 		    .getString("viewAbout.Panel.authorsContent"));
 		authorsTextArea.setOpaque(false);
 		authorsTextArea.setEditable(false);
-		headerPanel.add(authorsTextArea, "wrap");
 
 		/* Indirizzo web */
 		JLabel webLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.web"));
-		headerPanel.add(webLabel);
 		String web = getResourceMap().getString("Application.homepage");
 		JEditorPane webContent =
 		  new JEditorPane("text/html", "<a href='" + web + "'>" + web + "</a>");
@@ -113,12 +107,10 @@ public class AboutPanel extends ContextualPanel<Void>
 					}
 				}
 			});
-		headerPanel.add(webContent, "wrap");
 
 		/* Indirizzo mail */
 		JLabel mailLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.mail"));
-		headerPanel.add(mailLabel);
 		String mail = getResourceMap().getString("Application.email");
 		JEditorPane mailContent =
 		  new JEditorPane("text/html", "<a href='mailto:" + mail
@@ -145,13 +137,10 @@ public class AboutPanel extends ContextualPanel<Void>
 					}
 				}
 			});
-		headerPanel.add(mailContent, "wrap");
 
 		JLabel licenseLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
-		headerPanel.add(licenseLabel);
-
-		final JTextArea licenseTextArea = new JTextArea(200, 450);
+		final JTextArea licenseTextArea = new JTextArea();
 		licenseTextArea.setEditable(false);
 		licenseTextArea.setFont(FontProvider.CODE);
 		try
@@ -165,10 +154,25 @@ public class AboutPanel extends ContextualPanel<Void>
 		{
 			e.printStackTrace();
 		}
-
 		final JScrollPane scrollPane = new JScrollPane(licenseTextArea);
-		scrollPane.setPreferredSize(new Dimension(200, 450));
-		headerPanel.add(scrollPane);
+
+		/* assemblo il pannello */
+		headerPanel.add(logoLabel, "spany 2");
+		headerPanel.add(titleLabel, "span");
+		headerPanel.add(subtitleLabel, "wrap");
+
+		headerPanel.add(authorsLabel);
+		headerPanel.add(authorsTextArea, "wrap");
+
+		headerPanel.add(webLabel);
+		headerPanel.add(webContent, "wrap");
+
+		headerPanel.add(mailLabel);
+		headerPanel.add(mailContent, "wrap");
+
+		headerPanel.add(licenseLabel);
+		headerPanel.add(scrollPane, "grow");
+
 		return headerPanel;
 	}
 

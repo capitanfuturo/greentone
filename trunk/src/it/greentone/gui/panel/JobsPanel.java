@@ -132,30 +132,37 @@ public class JobsPanel extends ContextualPanel<Job>
 		JLabel cityLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
 
-		JPanel headerPanel = new JPanel(new MigLayout());
+		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%]"));
 
 		headerPanel.add(protocolLabel, "gap para");
 		headerPanel.add(getProtocolTextField(), "growx, wrap");
+
 		headerPanel.add(customerLabel, "gap para");
-		headerPanel.add(getCustomerComboBox());
+		headerPanel.add(getCustomerComboBox(), "growx");
 		headerPanel.add(managerLabel, "gap para");
-		headerPanel.add(getManagerComboBox(), "wrap");
+		headerPanel.add(getManagerComboBox(), "growx, wrap");
+
 		headerPanel.add(cityLabel, "gap para");
-		headerPanel.add(getCityField(), "wrap");
+		headerPanel.add(getCityField(), "growx,wrap");
+
 		headerPanel.add(descriptionLabel, "gap para");
-		headerPanel.add(getDescriptionTextField(), "wrap");
+		headerPanel.add(getDescriptionTextField(), "span, growx, wrap");
+
 		headerPanel.add(dueDateLabel, "gap para");
-		headerPanel.add(getDueDatePicker());
+		headerPanel.add(getDueDatePicker(), "growx");
 		headerPanel.add(startDateLabel, "gap para");
-		headerPanel.add(getStartDatePicker());
+		headerPanel.add(getStartDatePicker(), "growx");
 		headerPanel.add(finishDateLabel, "gap para");
-		headerPanel.add(getFinishDatePicker(), "wrap");
+		headerPanel.add(getFinishDatePicker(), "growx, wrap");
+
 		headerPanel.add(categoryLabel, "gap para");
-		headerPanel.add(getCategoryComboBox());
+		headerPanel.add(getCategoryComboBox(), "growx");
 		headerPanel.add(statusLabel, "gap para");
-		headerPanel.add(getStatusComboBox(), "wrap");
+		headerPanel.add(getStatusComboBox(), "growx, wrap");
+
 		headerPanel.add(notesLabel, "gap para");
 		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx, wrap");
+
 		headerPanel.add(requiredLabel);
 
 		return headerPanel;
@@ -299,7 +306,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		if(protocolTextField == null)
 		{
-			protocolTextField = new JTextField(25);
+			protocolTextField = new JTextField();
 			registerComponent(protocolTextField);
 			protocolTextField.getDocument().addDocumentListener(
 			  new DocumentListener()
@@ -422,7 +429,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		if(descriptionTextField == null)
 		{
-			descriptionTextField = new JTextField(30);
+			descriptionTextField = new JTextField();
 			registerComponent(descriptionTextField);
 		}
 		return descriptionTextField;

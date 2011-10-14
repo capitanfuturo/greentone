@@ -128,24 +128,24 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		    LOCALIZATION_PREFIX + "requiredField"));
 
 
-		JPanel headerPanel = new JPanel(new MigLayout());
+		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%]"));
 		headerPanel.add(descriptionLabel, "gap para");
-		headerPanel.add(getDescriptionTextField(), "growx, wrap");
+		headerPanel.add(getDescriptionTextField(), "span 3, growx, wrap");
 
 		headerPanel.add(jobLabel, "gap para");
-		headerPanel.add(getJobComboBox(), "wrap");
+		headerPanel.add(getJobComboBox(), "growx, wrap");
 
 		headerPanel.add(typeLabel, "gap para");
-		headerPanel.add(getTypeComboBox());
+		headerPanel.add(getTypeComboBox(), "growx");
 		headerPanel.add(vacazioneLabel, "gap para");
-		headerPanel.add(getVacazioneCheckBox());
+		headerPanel.add(getVacazioneCheckBox(), "growx");
 		headerPanel.add(professionalVacazioneLabel, "gap para");
-		headerPanel.add(getProfessionalVacazioneCheckBox(), "wrap");
+		headerPanel.add(getProfessionalVacazioneCheckBox(), "growx, wrap");
 
 		headerPanel.add(dateLabel, "gap para");
-		headerPanel.add(getOperationDate());
+		headerPanel.add(getOperationDate(), "growx");
 		headerPanel.add(numVacazioniLabel, "gap para");
-		headerPanel.add(getNumVacazioniTextField());
+		headerPanel.add(getNumVacazioniTextField(), "growx");
 		headerPanel.add(amountLabel, "gap para");
 		headerPanel.add(getAmountTextField(), "growx, wrap");
 		headerPanel.add(requiredLabel);
@@ -279,7 +279,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	{
 		if(descriptionTextField == null)
 		{
-			descriptionTextField = new JTextField(20);
+			descriptionTextField = new JTextField();
 			registerComponent(descriptionTextField);
 			descriptionTextField.getDocument().addDocumentListener(
 			  new DocumentListener()
@@ -468,7 +468,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 			decimalFormat.setMinimumFractionDigits(2);
 			decimalFormat.setMaximumFractionDigits(2);
 			amountTextField = new JFormattedTextField(decimalFormat);
-			amountTextField.setColumns(10);
 			registerComponent(amountTextField);
 		}
 		return amountTextField;
@@ -486,7 +485,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 			NumberFormat numberFormat = NumberFormat.getInstance();
 			numberFormat.setMaximumFractionDigits(0);
 			numVacazioniTextField = new JFormattedTextField(numberFormat);
-			numVacazioniTextField.setColumns(4);
 			registerComponent(numVacazioniTextField);
 		}
 		return numVacazioniTextField;

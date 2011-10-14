@@ -135,24 +135,31 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		  new JLabel(getResourceMap().getString(
 		    LOCALIZATION_PREFIX + "requiredField"));
 
-		JPanel headerPanel = new JPanel(new MigLayout());
+		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][20%][]"));
+
 		headerPanel.add(protocolLabel, "gap para");
 		headerPanel.add(getProtocolTextField(), "growx, wrap");
+
 		headerPanel.add(descriptionLabel, "gap para");
-		headerPanel.add(getDescriptionTextField(), "growx, wrap");
+		headerPanel.add(getDescriptionTextField(), "span 2, growx, wrap");
+
 		headerPanel.add(jobLabel, "gap para");
 		headerPanel.add(getJobComboBox(), "growx, wrap");
+
 		headerPanel.add(isDigitalLabel, "gap para");
 		headerPanel.add(getIsDigitalCheckBox());
 		headerPanel.add(getFileLabel(), "gap para");
-		headerPanel.add(getFilePathField());
+		headerPanel.add(getFilePathField(), "growx");
 		headerPanel.add(getFileChooserButton(), "growx, wrap");
+
 		headerPanel.add(releaseDateLabel, "gap para");
 		headerPanel.add(getReleaseDateDatePicker(), "growx, wrap");
+
 		headerPanel.add(incomingLabel, "gap para");
 		headerPanel.add(getOutgoingCheckBox());
 		headerPanel.add(getRecipientLabel(), "gap para");
 		headerPanel.add(getRecipientComboBox(), "growx, wrap");
+
 		headerPanel.add(notesLabel, "gap para");
 		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx, wrap");
 		headerPanel.add(requiredLabel);
@@ -199,7 +206,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	{
 		if(protocolTextField == null)
 		{
-			protocolTextField = new JTextField(15);
+			protocolTextField = new JTextField();
 			registerComponent(protocolTextField);
 			protocolTextField.getDocument().addDocumentListener(
 			  new DocumentListener()
@@ -241,7 +248,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	{
 		if(descriptionTextField == null)
 		{
-			descriptionTextField = new JTextField(20);
+			descriptionTextField = new JTextField();
 			registerComponent(descriptionTextField);
 			descriptionTextField.getDocument().addDocumentListener(
 			  new DocumentListener()
