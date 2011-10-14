@@ -130,33 +130,39 @@ public class PersonsPanel extends ContextualPanel<Person>
 		  new JLabel(getResourceMap().getString(
 		    LOCALIZATION_PREFIX + "requiredField"));
 
-		JPanel headerPanel = new JPanel(new MigLayout());
+		JPanel headerPanel =
+		  new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]"));
+
 		headerPanel.add(isLegalLabel, "gap para");
-		headerPanel.add(getIsLegalCheckBox(), "growx, wrap");
+		headerPanel.add(getIsLegalCheckBox(), "wrap");
+
 		headerPanel.add(getNameLabel(), "gap para");
-		headerPanel.add(getNameTextField(), "growx, wrap");
+		headerPanel.add(getNameTextField(), "span 2, growx, wrap");
+
 		headerPanel.add(addressLabel, "gap para");
-		headerPanel.add(getAddressTextField());
+		headerPanel.add(getAddressTextField(), "growx");
 		headerPanel.add(cityLabel, "gap para");
-		headerPanel.add(getCityTextField());
+		headerPanel.add(getCityTextField(), "growx");
 		headerPanel.add(provinceLabel, "gap para");
-		headerPanel.add(getProvinceTextField());
+		headerPanel.add(getProvinceTextField(), "growx");
 		headerPanel.add(capLabel, "gap para");
-		headerPanel.add(getCapTextField(), "wrap");
+		headerPanel.add(getCapTextField(), "growx, wrap");
+
 		headerPanel.add(cfLabel, "gap para");
-		headerPanel.add(getCfTexField());
+		headerPanel.add(getCfTexField(), "growx");
 		headerPanel.add(pivaLabel, "gap para");
-		headerPanel.add(getPivaTextField(), "wrap");
+		headerPanel.add(getPivaTextField(), "growx");
 		headerPanel.add(identityCardLabel, "gap para");
-		headerPanel.add(getIdentityCardTextField(), "wrap");
+		headerPanel.add(getIdentityCardTextField(), "growx, wrap");
+
 		headerPanel.add(telephone1Label, "gap para");
-		headerPanel.add(getTelephone1TextField());
+		headerPanel.add(getTelephone1TextField(), "growx");
 		headerPanel.add(telephone2Label, "gap para");
-		headerPanel.add(getTelephone2TextField());
+		headerPanel.add(getTelephone2TextField(), "growx");
 		headerPanel.add(faxLabel, "gap para");
-		headerPanel.add(getFaxTextField());
+		headerPanel.add(getFaxTextField(), "growx");
 		headerPanel.add(emailLabel, "gap para");
-		headerPanel.add(getEmailTextField(), "span, wrap");
+		headerPanel.add(getEmailTextField(), "growx, wrap");
 		headerPanel.add(requiredLabel);
 		return headerPanel;
 	}
@@ -292,7 +298,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(nameTextField == null)
 		{
-			nameTextField = new JTextField(20);
+			nameTextField = new JTextField();
 			registerComponent(nameTextField);
 			nameTextField.getDocument().addDocumentListener(new DocumentListener()
 				{
@@ -334,7 +340,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(addressTextField == null)
 		{
-			addressTextField = new JTextField(20);
+			addressTextField = new JTextField();
 			registerComponent(addressTextField);
 		}
 		return addressTextField;
@@ -349,7 +355,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(cityTextField == null)
 		{
-			cityTextField = new JTextField(20);
+			cityTextField = new JTextField();
 			registerComponent(cityTextField);
 		}
 		return cityTextField;
@@ -367,7 +373,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		{
 			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("UU");
 			provinceTextField = new JFormattedTextField(mf);
-			provinceTextField.setColumns(4);
 			registerComponent(provinceTextField);
 		}
 		return provinceTextField;
@@ -385,7 +390,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		{
 			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("#####");
 			capTextField = new JFormattedTextField(mf);
-			capTextField.setColumns(10);
 			registerComponent(capTextField);
 		}
 		return capTextField;
@@ -441,8 +445,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 						}
 					}
 				});
-
-			cfTextField.setColumns(15);
 			registerComponent(cfTextField);
 		}
 		return cfTextField;
@@ -460,7 +462,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		{
 			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("###########");
 			pivaTextField = new JFormattedTextField(mf);
-			pivaTextField.setColumns(20);
 			registerComponent(pivaTextField);
 		}
 		return pivaTextField;
@@ -475,7 +476,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(telephone1TextField == null)
 		{
-			telephone1TextField = new JTextField(12);
+			telephone1TextField = new JTextField();
 			registerComponent(telephone1TextField);
 		}
 		return telephone1TextField;
@@ -490,7 +491,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(telephone2TextField == null)
 		{
-			telephone2TextField = new JTextField(12);
+			telephone2TextField = new JTextField();
 			registerComponent(telephone2TextField);
 		}
 		return telephone2TextField;
@@ -505,7 +506,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(faxTextField == null)
 		{
-			faxTextField = new JTextField(9);
+			faxTextField = new JTextField();
 			registerComponent(faxTextField);
 		}
 		return faxTextField;
@@ -520,7 +521,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(emailTextField == null)
 		{
-			emailTextField = new JTextField(20);
+			emailTextField = new JTextField();
 			registerComponent(emailTextField);
 		}
 		return emailTextField;
@@ -558,7 +559,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		if(identityCardTextField == null)
 		{
-			identityCardTextField = new JTextField(9);
+			identityCardTextField = new JTextField();
 			registerComponent(identityCardTextField);
 		}
 		return identityCardTextField;

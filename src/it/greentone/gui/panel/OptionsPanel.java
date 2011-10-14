@@ -79,9 +79,9 @@ public class OptionsPanel extends ContextualPanel<Void>
 	@Override
 	protected JPanel createHeaderPanel()
 	{
-		JPanel headerPanel = new JPanel(new MigLayout("flowy"));
-		headerPanel.add(getSystemPanel());
-		headerPanel.add(getAppPanel());
+		JPanel headerPanel = new JPanel(new MigLayout("", "[100%]"));
+		headerPanel.add(getSystemPanel(), "growx,wrap");
+		headerPanel.add(getAppPanel(), "growx");
 		return headerPanel;
 	}
 
@@ -134,7 +134,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 	{
 		if(appPanel == null)
 		{
-			appPanel = new JPanel(new MigLayout());
+			appPanel = new JPanel(new MigLayout("", "[][10%]"));
 			appPanel.setBorder(BorderFactory.createTitledBorder(getResourceMap()
 			  .getString("viewOptions.Panel.appTitle")));
 			JLabel vacazioneLabel =
@@ -144,9 +144,9 @@ public class OptionsPanel extends ContextualPanel<Void>
 			    "viewOptions.Panel.vacazioneAiutante"));
 
 			appPanel.add(vacazioneLabel);
-			appPanel.add(getVacazioneTextField(), "wrap");
+			appPanel.add(getVacazioneTextField(), "growx,wrap");
 			appPanel.add(vacazioneAiutanteLabel);
-			appPanel.add(getVacazioneAiutanteTextField());
+			appPanel.add(getVacazioneAiutanteTextField(), "growx");
 		}
 		return appPanel;
 	}
@@ -164,7 +164,6 @@ public class OptionsPanel extends ContextualPanel<Void>
 			decimalFormat.setMaximumFractionDigits(2);
 			decimalFormat.setMinimumFractionDigits(2);
 			vacazioneTextField = new JFormattedTextField(decimalFormat);
-			vacazioneTextField.setColumns(4);
 			/* Issue 39: accettare anche il punto come punto separatore dei decimali */
 			vacazioneTextField.addKeyListener(new KeyAdapter()
 				{
@@ -192,7 +191,6 @@ public class OptionsPanel extends ContextualPanel<Void>
 			decimalFormat.setMaximumFractionDigits(2);
 			decimalFormat.setMinimumFractionDigits(2);
 			vacazioneAiutanteTextField = new JFormattedTextField(decimalFormat);
-			vacazioneAiutanteTextField.setColumns(4);
 			vacazioneAiutanteTextField.addKeyListener(new KeyAdapter()
 				{
 					@Override
