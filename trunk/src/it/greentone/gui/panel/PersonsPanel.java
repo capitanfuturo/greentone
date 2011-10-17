@@ -196,7 +196,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	@Override
 	protected JXTable createContentTable()
 	{
-		JXTable personTable = super.createContentTable();
+		final JXTable personTable = super.createContentTable();
 		personTable.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
@@ -209,7 +209,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 						  if(selectedRow > -1)
 						  {
 							  setStatus(EStatus.EDIT);
-							  setSelectedItem(getSortedPersonEventList().get(selectedRow));
+							  int rowIndexToModel =
+							    personTable.convertRowIndexToModel(selectedRow);
+							  setSelectedItem(getSortedPersonEventList().get(rowIndexToModel));
 							  getNameTextField().setText(getSelectedItem().getName());
 							  getAddressTextField().setText(getSelectedItem().getAddress());
 							  getCityTextField().setText(getSelectedItem().getCity());

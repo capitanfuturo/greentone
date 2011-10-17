@@ -520,7 +520,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	@Override
 	protected JXTable createContentTable()
 	{
-		JXTable documentTable = super.createContentTable();
+		final JXTable documentTable = super.createContentTable();
 		documentTable.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
@@ -533,8 +533,10 @@ public class DocumentsPanel extends ContextualPanel<Document>
 						  if(selectedRow > -1)
 						  {
 							  setStatus(EStatus.EDIT);
+							  int rowIndexToModel =
+							    documentTable.convertRowIndexToModel(selectedRow);
 							  setSelectedItem(documentService.getAllDocuments().get(
-							    selectedRow));
+							    rowIndexToModel));
 							  /* aggiorno il pannello */
 							  getProtocolTextField().setText(getSelectedItem().getProtocol());
 							  getDescriptionTextField().setText(

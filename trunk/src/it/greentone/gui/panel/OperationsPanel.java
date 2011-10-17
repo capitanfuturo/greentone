@@ -173,7 +173,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	@Override
 	protected JXTable createContentTable()
 	{
-		JXTable table = super.createContentTable();
+		final JXTable table = super.createContentTable();
 		table.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
@@ -187,8 +187,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 						  if(selectedRow > -1)
 						  {
 							  setStatus(EStatus.EDIT);
+							  int rowIndexToModel = table.convertRowIndexToModel(selectedRow);
 							  Operation selectedOperation =
-							    operationService.getAllOperations().get(selectedRow);
+							    operationService.getAllOperations().get(rowIndexToModel);
 							  setSelectedItem(selectedOperation);
 
 							  /* aggiorno il pannello */

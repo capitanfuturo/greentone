@@ -194,7 +194,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	@Override
 	protected JXTable createContentTable()
 	{
-		JXTable table = super.createContentTable();
+		final JXTable table = super.createContentTable();
 		table.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
@@ -208,7 +208,8 @@ public class JobsPanel extends ContextualPanel<Job>
 						  if(selectedRow > -1)
 						  {
 							  setStatus(EStatus.EDIT);
-							  Job selectedJob = jobService.getAllJobs().get(selectedRow);
+							  int rowIndexToModel = table.convertRowIndexToModel(selectedRow);
+							  Job selectedJob = jobService.getAllJobs().get(rowIndexToModel);
 							  setSelectedItem(selectedJob);
 							  /* aggiorno il pannello */
 							  getProtocolTextField().setText(selectedJob.getProtocol());
