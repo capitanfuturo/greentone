@@ -88,6 +88,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private JCheckBox isLegalCheckBox;
 	private JTextField identityCardTextField;
 	private JLabel nameLabel;
+	private final String[] properties;
+	private final String[] columnsNames;
+	private final boolean[] writables;
 
 	/**
 	 * Pannello di gestione delle persone in anagrafica.
@@ -96,6 +99,29 @@ public class PersonsPanel extends ContextualPanel<Person>
 	{
 		super();
 		panelBundle = "viewPersons";
+
+		properties =
+		  new String[] {"name", "address", "city", "province", "cap", "isLegal",
+		    "cf", "piva", "identityCard", "telephone1", "telephone2", "fax",
+		    "email"};
+		columnsNames =
+		  new String[] {
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.name"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.address"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.province"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cap"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isLegal"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cf"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.piva"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.identityCard"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone1"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone2"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.fax"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.email")};
+		writables =
+		  new boolean[] {false, false, false, false, false, false, false, false,
+		    false, false, false, false, false};
 	}
 
 	@Override
@@ -225,7 +251,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		super.setup();
 
 		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddPerson());
 		getContextualToolBar().add(actionProvider.getSavePerson());
 		getContextualToolBar().add(actionProvider.getDeletePerson());
@@ -243,33 +268,11 @@ public class PersonsPanel extends ContextualPanel<Person>
 					    return o1.getName().compareToIgnoreCase(o2.getName());
 				    }
 			    });
-		String[] properties =
-		  new String[] {"name", "address", "city", "province", "cap", "isLegal",
-		    "cf", "piva", "identityCard", "telephone1", "telephone2", "fax",
-		    "email"};
-		String[] columnsName =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.name"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.address"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.province"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cap"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isLegal"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cf"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.piva"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.identityCard"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone1"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone2"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.fax"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.email")};
-		boolean[] writable =
-		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false, false, false, false, false};
 
 		tableModel =
 		  new EventJXTableModel<Person>(sortedPersonEventList,
-		    new BeanTableFormat<Person>(Person.class, properties, columnsName,
-		      writable));
+		    new BeanTableFormat<Person>(Person.class, properties, columnsNames,
+		      writables));
 		getContentTable().setModel(tableModel);
 	}
 

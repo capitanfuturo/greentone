@@ -92,6 +92,9 @@ public class JobsPanel extends ContextualPanel<Job>
 	private JTextArea notesTextArea;
 	private JComboBox cityField;
 	private EventList<String> cities;
+	private final String[] properties;
+	private final String[] columnsNames;
+	private final boolean[] writables;
 
 	/**
 	 * Pannello di gestione degli incarichi dello studio professionale.
@@ -100,6 +103,26 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		super();
 		panelBundle = "viewJobs";
+
+		properties =
+		  new String[] {"protocol", "customer", "manager", "city", "description",
+		    "dueDate", "startDate", "finishDate", "category", "status", "notes"};
+		columnsNames =
+		  new String[] {
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.customer"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.startDate"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.finishDate"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.category"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.status"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
+		writables =
+		  new boolean[] {false, false, false, false, false, false, false, false,
+		    false, false, false};
 	}
 
 	@Override
@@ -229,7 +252,6 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		super.setup();
 		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddJob());
 		getContextualToolBar().add(actionProvider.getSaveJob());
 		getContextualToolBar().add(actionProvider.getDeleteJob());
@@ -238,30 +260,10 @@ public class JobsPanel extends ContextualPanel<Job>
 		// getContextualToolBar().add(actionProvider.getEditJobStakeholder());
 		getContextualToolBar().add(actionProvider.getEditJobCategory());
 
-		/* aggiorno la tabella degli incarichi */
-		String[] properties =
-		  new String[] {"protocol", "customer", "manager", "city", "description",
-		    "dueDate", "startDate", "finishDate", "category", "status", "notes"};
-		String[] columnsName =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.customer"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.startDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.finishDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.category"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.status"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
-		boolean[] writable =
-		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false, false, false};
-
 		tableModel =
-		  new EventJXTableModel<Job>(jobService.getAllJobs(),
-		    new BeanTableFormat<Job>(Job.class, properties, columnsName, writable));
+		  new EventJXTableModel<Job>(
+		    jobService.getAllJobs(),
+		    new BeanTableFormat<Job>(Job.class, properties, columnsNames, writables));
 		getContentTable().setModel(tableModel);
 
 		/* carico responsabili e committenti */

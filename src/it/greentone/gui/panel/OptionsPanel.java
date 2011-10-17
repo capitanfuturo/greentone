@@ -91,7 +91,6 @@ public class OptionsPanel extends ContextualPanel<Void>
 		super.setup();
 
 		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getSaveOptions());
 
 		/* aggiorno il pannello */

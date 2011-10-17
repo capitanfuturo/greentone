@@ -44,6 +44,9 @@ public class SaveOptionsAction extends AbstractBean
 	private ConfigurationProperties properties;
 	private final ResourceMap resourceMap;
 
+	/**
+	 * Azione di salvataggio delle opzioni.
+	 */
 	public SaveOptionsAction()
 	{
 		resourceMap =
