@@ -85,9 +85,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private JXDatePicker operationDate;
 	private JFormattedTextField amountTextField;
 	private JFormattedTextField numVacazioniTextField;
-	private String[] tableProperties;
-	private String[] tableColumnsNames;
-	private boolean[] tableWritables;
+	private final String[] tableProperties;
+	private final String[] tableColumnsNames;
+	private final boolean[] tableWritables;
 	private JLabel vacazioneLabel;
 	private JLabel professionalVacazioneLabel;
 	private JLabel numVacazioniLabel;
@@ -99,6 +99,23 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	public OperationsPanel()
 	{
 		super();
+
+		tableProperties =
+		  new String[] {"description", "job", "operationType", "isVacazione",
+		    "isProfessionalVacazione", "operationDate", "amount", "numVacazioni"};
+		tableColumnsNames =
+		  new String[] {
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.type"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isVacazione"),
+		    getResourceMap().getString(
+		      LOCALIZATION_PREFIX + "Table.isProfessionalVacazione"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.numVacazioni")};
+		tableWritables =
+		  new boolean[] {false, false, false, false, false, false, false, false};
 	}
 
 	@Override
@@ -225,7 +242,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		super.setup();
 
 		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddOperation());
 		getContextualToolBar().add(actionProvider.getSaveOperation());
 		getContextualToolBar().add(actionProvider.getDeleteOperation());
@@ -233,23 +249,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		/* aggiorno la lista degli incarichi */
 		getJobComboBox().setModel(
 		  new EventComboBoxModel<Job>(jobService.getAllJobs()));
-
-		tableProperties =
-		  new String[] {"description", "job", "operationType", "isVacazione",
-		    "isProfessionalVacazione", "operationDate", "amount", "numVacazioni"};
-		tableColumnsNames =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.type"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isVacazione"),
-		    getResourceMap().getString(
-		      LOCALIZATION_PREFIX + "Table.isProfessionalVacazione"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.numVacazioni")};
-		tableWritables =
-		  new boolean[] {false, false, false, false, false, false, false, false};
 
 		tableModel =
 		  new EventJXTableModel<Operation>(operationService.getAllOperations(),
@@ -513,6 +512,9 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		super.clearForm();
 		getNumVacazioniTextField().setEnabled(false);
 		getAmountTextField().setEnabled(true);
+		/* Imposto di default la data odierna */
 		getOperationDate().setDate(new DateTime().toDate());
+		/* Imposto il tipo a lavoro */
+		getTypeComboBox().setSelectedItem(OperationType.TASK.getLocalizedName());
 	}
 }

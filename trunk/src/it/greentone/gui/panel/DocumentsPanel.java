@@ -104,6 +104,9 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private JLabel recipientLabel;
 	private JLabel fileLabel;
 	private File file;
+	private final String[] properties;
+	private final String[] columnsNames;
+	private final boolean[] writables;
 
 	/**
 	 * Pannello di visualizzazione di tutti i documenti presenti in database.
@@ -111,6 +114,24 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	public DocumentsPanel()
 	{
 		super();
+
+		properties =
+		  new String[] {"protocol", "description", "job", "recipient", "isDigital",
+		    "uri", "isOutgoing", "releaseDate", "notes"};
+		columnsNames =
+		  new String[] {
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.recipient"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isDigital"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.outgoing"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
+		writables =
+		  new boolean[] {false, false, false, false, false, false, false, false,
+		    false};
 	}
 
 	@Override
@@ -475,7 +496,6 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	{
 		super.setup();
 		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getAddDocument());
 		getContextualToolBar().add(actionProvider.getSaveDocument());
 		getContextualToolBar().add(actionProvider.getDeleteDocument());
@@ -490,29 +510,10 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		  new EventComboBoxModel<Job>(jobService.getAllJobs());
 		getJobComboBox().setModel(jobComboBoxModel);
 
-		/* aggiorno la tabella dei documenti */
-		String[] properties =
-		  new String[] {"protocol", "description", "job", "recipient", "isDigital",
-		    "uri", "isOutgoing", "releaseDate", "notes"};
-		String[] columnsName =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.recipient"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isDigital"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.outgoing"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
-		boolean[] writable =
-		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false};
-
 		tableModel =
 		  new EventJXTableModel<Document>(documentService.getAllDocuments(),
-		    new BeanTableFormat<Document>(Document.class, properties, columnsName,
-		      writable));
+		    new BeanTableFormat<Document>(Document.class, properties, columnsNames,
+		      writables));
 		getContentTable().setModel(tableModel);
 	}
 

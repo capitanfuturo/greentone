@@ -92,7 +92,9 @@ public class MainPanel extends JPanel
 	public JTabbedPane getMainTabbedPane()
 	{
 		if(mainTabbedPane == null)
-			mainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		{
+			mainTabbedPane = new DnDTabbedPane();
+		}
 		return mainTabbedPane;
 	}
 
