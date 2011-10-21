@@ -324,6 +324,6 @@ public class Job
 	{
 		String protocol = getProtocol();
 		String description = getDescription() != null? getDescription(): "";
-		return protocol + "-" + description;
+		return protocol + " - " + description;
 	}
 }
