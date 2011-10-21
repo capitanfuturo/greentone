@@ -82,6 +82,10 @@ public class SaveOptionsAction extends AbstractBean
 				properties.setVacazionePrice(GreenToneUtilities
 				  .roundTwoDecimals(new Double(value.toString())));
 
+				value = optionsPanel.getVacazioneAiutanteTextField().getValue();
+				properties.setVacazioneHelperPrice(GreenToneUtilities
+				  .roundTwoDecimals(new Double(value.toString())));
+
 				/* salvo */
 				properties.store();
 			}
