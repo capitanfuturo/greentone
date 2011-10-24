@@ -7,8 +7,8 @@
 	  <appname>@{application.name}</appname>
 	  <appversion>@{major.version.number}.@{minor.version.number}.@{minus.version.number}</appversion>
 	  <authors>
-		 <author name="Giuseppe Caliendo" email="greentone.developers@gmail.com"/>
-		 <author name="Davide Marcolongo" email="greentone.developers@gmail.com"/>
+		 <author name="Giuseppe Caliendo (capitanfuturo)" email="greentone.developers@gmail.com"/>
+		 <author name="Davide Marcolongo (dade.may)" email="greentone.developers@gmail.com"/>
 	  </authors>
 	  <url>http://code.google.com/p/greentone/</url>
 	  <javaversion>1.6</javaversion>
