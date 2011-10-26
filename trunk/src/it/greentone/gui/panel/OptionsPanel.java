@@ -4,9 +4,10 @@ import it.greentone.ConfigurationProperties;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
+import java.util.Currency;
 
 import javax.inject.Inject;
 import javax.swing.BorderFactory;
@@ -95,9 +96,9 @@ public class OptionsPanel extends ContextualPanel<Void>
 
 		/* aggiorno il pannello */
 		getCheckUpdateCheckBox().setSelected(properties.isCheckUpdateActivated());
-		getVacazioneTextField().setText("" + properties.getVacazionePrice());
-		getVacazioneAiutanteTextField().setText(
-		  "" + properties.getVacazioneHelperPrice());
+		getVacazioneTextField().setValue(properties.getVacazionePrice());
+		getVacazioneAiutanteTextField().setValue(
+		  properties.getVacazioneHelperPrice());
 	}
 
 	private JPanel getSystemPanel()
@@ -160,14 +161,16 @@ public class OptionsPanel extends ContextualPanel<Void>
 		if(vacazioneTextField == null)
 		{
 			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			decimalFormat.setCurrency(Currency.getInstance("EUR"));
 			decimalFormat.setMaximumFractionDigits(2);
 			decimalFormat.setMinimumFractionDigits(2);
+			decimalFormat.setGroupingUsed(false);
 			vacazioneTextField = new JFormattedTextField(decimalFormat);
 			/* Issue 39: accettare anche il punto come punto separatore dei decimali */
-			vacazioneTextField.addKeyListener(new KeyAdapter()
+			vacazioneTextField.addFocusListener(new FocusAdapter()
 				{
 					@Override
-					public void keyReleased(KeyEvent e)
+					public void focusLost(FocusEvent e)
 					{
 						vacazioneTextField.setText(vacazioneTextField.getText().replace(
 						  '.', ','));
@@ -187,13 +190,15 @@ public class OptionsPanel extends ContextualPanel<Void>
 		if(vacazioneAiutanteTextField == null)
 		{
 			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			decimalFormat.setCurrency(Currency.getInstance("EUR"));
 			decimalFormat.setMaximumFractionDigits(2);
 			decimalFormat.setMinimumFractionDigits(2);
+			decimalFormat.setGroupingUsed(false);
 			vacazioneAiutanteTextField = new JFormattedTextField(decimalFormat);
-			vacazioneAiutanteTextField.addKeyListener(new KeyAdapter()
+			vacazioneAiutanteTextField.addFocusListener(new FocusAdapter()
 				{
 					@Override
-					public void keyReleased(KeyEvent e)
+					public void focusLost(FocusEvent e)
 					{
 						vacazioneAiutanteTextField.setText(vacazioneAiutanteTextField
 						  .getText().replace('.', ','));

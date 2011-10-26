@@ -17,6 +17,7 @@ import java.awt.Font;
  * </code>
  * <br>
  * <br>
+ * Provider dei font dell'applicazione
  * 
  * @author Giuseppe Caliendo
  */
@@ -28,4 +29,6 @@ public class FontProvider
 	public static final Font TITLE_SMALL = new Font("SansSerif", Font.ITALIC, 20);
 	/** Font per visualizzare codice */
 	public static final Font CODE = new Font("Monospaced", Font.PLAIN, 12);
+	/** Font per la visualizzazione di codice grande */
+	public static final Font CODE_BIG = new Font("Monospaced", Font.PLAIN, 20);
 }
