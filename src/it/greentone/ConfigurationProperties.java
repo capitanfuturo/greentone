@@ -1,7 +1,9 @@
 package it.greentone;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.springframework.stereotype.Component;
@@ -57,7 +59,11 @@ public class ConfigurationProperties
 			properties.load(in);
 			in.close();
 		}
-		catch(Exception e)
+		catch(FileNotFoundException fnfe)
+		{
+			System.out.println("File di configurazione non presente");
+		}
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -77,7 +83,11 @@ public class ConfigurationProperties
 			    "Greentone - file autogenerato, non cancellare o modificare manualmente");
 			out.close();
 		}
-		catch(Exception e)
+		catch(FileNotFoundException e)
+		{
+			System.out.println("File di configurazione creato");
+		}
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -116,7 +126,7 @@ public class ConfigurationProperties
 	public Double getVacazionePrice()
 	{
 		String value = properties.getProperty(CONF_VAC_PRICE, "44.93d");
-		return Double.valueOf(value);
+		return Double.parseDouble(value);
 	}
 
 	/**
@@ -138,7 +148,7 @@ public class ConfigurationProperties
 	public Double getVacazioneHelperPrice()
 	{
 		String value = properties.getProperty(CONF_VAC_HELPER_PRICE, "28.41d");
-		return Double.valueOf(value);
+		return Double.parseDouble(value);
 	}
 
 	/**

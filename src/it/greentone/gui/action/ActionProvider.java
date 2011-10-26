@@ -80,6 +80,8 @@ public class ActionProvider
 	ViewPersonsAction viewPersons;
 	@Inject
 	ViewAboutAction viewAbout;
+	@Inject
+	ViewCalcAction viewCalc;
 
 	/**
 	 * Oggetto di convenienza contenente tutte le azioni disponibili
@@ -325,5 +327,15 @@ public class ActionProvider
 	{
 		return applicationContext.getActionMap(deleteDocument)
 		  .get("deleteDocument");
+	}
+
+	/**
+	 * Restituisce l'azione che visualizza la calcolatrice.
+	 * 
+	 * @return azione che visualizza la calcolatrice
+	 */
+	public Action getViewCalc()
+	{
+		return applicationContext.getActionMap(viewCalc).get("viewCalc");
 	}
 }

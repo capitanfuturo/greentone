@@ -1,13 +1,11 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.FontProvider;
 
-import java.awt.Desktop;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.swing.JEditorPane;
@@ -98,7 +96,7 @@ public class AboutPanel extends ContextualPanel<Void>
 					{
 						try
 						{
-							open(hle.getURL().toURI());
+							GreenToneUtilities.browse(hle.getURL().toURI());
 						}
 						catch(URISyntaxException e)
 						{
@@ -128,7 +126,7 @@ public class AboutPanel extends ContextualPanel<Void>
 					{
 						try
 						{
-							open(hle.getURL().toURI());
+							GreenToneUtilities.browse(hle.getURL().toURI());
 						}
 						catch(URISyntaxException e)
 						{
@@ -192,28 +190,6 @@ public class AboutPanel extends ContextualPanel<Void>
 	public String getBundleName()
 	{
 		return panelBundle;
-	}
-
-	/**
-	 * Apre un indirizzo di risorsa.
-	 * 
-	 * @param uri
-	 *          indirizzo di risorsa
-	 */
-	private static void open(URI uri)
-	{
-		if(Desktop.isDesktopSupported())
-		{
-			Desktop desktop = Desktop.getDesktop();
-			try
-			{
-				desktop.browse(uri);
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
 	}
 
 }

@@ -84,7 +84,7 @@ public class GreenToneAppConfig
 			}
 		}
 		new File(storageDirPath).mkdirs();
-		connectionURL.append("GT_CAT" + ";DB_CLOSE_ON_EXIT=TRUE");
+		connectionURL.append("GT_CAT;DB_CLOSE_ON_EXIT=TRUE");
 		props.put("javax.jdo.option.ConnectionURL", connectionURL.toString());
 		props.put("javax.jdo.option.ConnectionUserName", "user");
 		props.put("javax.jdo.option.ConnectionPassword", "");

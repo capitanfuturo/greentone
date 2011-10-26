@@ -1,5 +1,6 @@
 package it.greentone;
 
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
@@ -236,5 +238,50 @@ public class GreenToneUtilities
 		}
 		in.close();
 		out.close();
+	}
+
+	/**
+	 * Cera di aprire il contenuto di un file con il visualizzatore indicato nel
+	 * sistema operativo corrente.
+	 * 
+	 * @param file
+	 *          il file da visualizzare
+	 */
+	public static void open(File file)
+	{
+		if(Desktop.isDesktopSupported())
+		{
+			Desktop desktop = Desktop.getDesktop();
+			try
+			{
+				desktop.open(file);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Apre un indirizzo di risorsa.
+	 * 
+	 * @param uri
+	 *          indirizzo di risorsa
+	 */
+	public static void browse(URI uri)
+	{
+		if(Desktop.isDesktopSupported())
+		{
+			Desktop desktop = Desktop.getDesktop();
+			try
+			{
+				desktop.browse(uri);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 }

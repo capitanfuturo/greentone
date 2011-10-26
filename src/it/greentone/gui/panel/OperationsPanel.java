@@ -13,10 +13,14 @@ import it.greentone.persistence.OperationType;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Currency;
 
 import javax.inject.Inject;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -91,6 +95,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	private JLabel vacazioneLabel;
 	private JLabel professionalVacazioneLabel;
 	private JLabel numVacazioniLabel;
+	private JButton calcButton;
 
 	/**
 	 * Pannello di gestione delle operazioni degli incarichi dello studio
@@ -164,7 +169,8 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		headerPanel.add(numVacazioniLabel, "gap para");
 		headerPanel.add(getNumVacazioniTextField(), "growx");
 		headerPanel.add(amountLabel, "gap para");
-		headerPanel.add(getAmountTextField(), "growx, wrap");
+		headerPanel.add(getAmountTextField(), "growx");
+		headerPanel.add(getCalcButton(), "growx, wrap");
 		headerPanel.add(requiredLabel);
 
 		return headerPanel;
@@ -218,6 +224,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 								 */
 							  getAmountTextField().setEnabled(
 							    !selectedOperation.getIsVacazione());
+							  getCalcButton().setEnabled(!selectedOperation.getIsVacazione());
 							  getNumVacazioniTextField().setEnabled(
 							    selectedOperation.getIsVacazione());
 							  getProfessionalVacazioneCheckBox().setEnabled(
@@ -242,6 +249,8 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	{
 		super.setup();
 
+		getCalcButton().setAction(actionProvider.getViewCalc());
+
 		/* pulisco e ricostruisco la toolbar */
 		getContextualToolBar().add(actionProvider.getAddOperation());
 		getContextualToolBar().add(actionProvider.getSaveOperation());
@@ -262,12 +271,27 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		getProfessionalVacazioneCheckBox().setEnabled(false);
 		/* abilito quello dell'importo */
 		getAmountTextField().setEnabled(true);
+		getCalcButton().setEnabled(true);
 	}
 
 	@Override
 	public String getBundleName()
 	{
 		return BUNDLE_NAME;
+	}
+
+	/**
+	 * Restituisce il pulsante di visualizzazione della calcolatrice.
+	 * 
+	 * @return il pulsante di visualizzazione della calcolatrice
+	 */
+	public JButton getCalcButton()
+	{
+		if(calcButton == null)
+		{
+			calcButton = new JButton();
+		}
+		return calcButton;
 	}
 
 	/**
@@ -376,6 +400,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 							getProfessionalVacazioneCheckBox().setSelected(false);
 							getNumVacazioniTextField().setEnabled(false);
 							getAmountTextField().setEnabled(true);
+							getCalcButton().setEnabled(true);
 							/* Issue 60: abilitazione del tasto salva mancante */
 							toggleSaveAction();
 						}
@@ -409,6 +434,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 					{
 						boolean isSelected = vacazioneCheckBox.isSelected();
 						getAmountTextField().setEnabled(!isSelected);
+						getCalcButton().setEnabled(!isSelected);
 						getNumVacazioniTextField().setEnabled(isSelected);
 						getProfessionalVacazioneCheckBox().setEnabled(isSelected);
 						if(!isSelected)
@@ -465,9 +491,21 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		if(amountTextField == null)
 		{
 			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			decimalFormat.setCurrency(Currency.getInstance("EUR"));
 			decimalFormat.setMinimumFractionDigits(2);
 			decimalFormat.setMaximumFractionDigits(2);
+			decimalFormat.setGroupingUsed(false);
 			amountTextField = new JFormattedTextField(decimalFormat);
+			amountTextField.addFocusListener(new FocusAdapter()
+				{
+					@Override
+					public void focusLost(FocusEvent e)
+					{
+						amountTextField
+						  .setText(amountTextField.getText().replace('.', ','));
+					}
+				});
+
 			registerComponent(amountTextField);
 		}
 		return amountTextField;
@@ -489,6 +527,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		}
 		return numVacazioniTextField;
 	}
+
 
 	/**
 	 * Issue 32: Controlla che sia possibile abilitare l'azione di salvataggio di
@@ -513,6 +552,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		super.clearForm();
 		getNumVacazioniTextField().setEnabled(false);
 		getAmountTextField().setEnabled(true);
+		getCalcButton().setEnabled(true);
 		/* Imposto di default la data odierna */
 		getOperationDate().setDate(new DateTime().toDate());
 		/* Imposto il tipo a lavoro */

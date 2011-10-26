@@ -13,14 +13,12 @@ import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
@@ -631,22 +629,6 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		getFileChooserButton().setVisible(getIsDigitalCheckBox().isSelected());
 	}
 
-	private void open(File file)
-	{
-		if(Desktop.isDesktopSupported())
-		{
-			Desktop desktop = Desktop.getDesktop();
-			try
-			{
-				desktop.open(file);
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
 	private void setFile(final File file)
 	{
 		for(MouseListener listener : getFilePathField().getMouseListeners())
@@ -658,7 +640,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 				@Override
 				public void mouseClicked(MouseEvent e)
 				{
-					open(file);
+					GreenToneUtilities.open(file);
 				};
 			});
 		this.file = file;
