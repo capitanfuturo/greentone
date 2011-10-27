@@ -27,6 +27,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -265,6 +266,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		    new BeanTableFormat<Operation>(Operation.class, tableProperties,
 		      tableColumnsNames, tableWritables));
 		getContentTable().setModel(tableModel);
+		getContentTable().setSortOrder(1, SortOrder.DESCENDING);
 
 		/* disabilito il campo delle vacazioni */
 		getNumVacazioniTextField().setEnabled(false);

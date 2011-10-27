@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Comparator;
 
 import javax.inject.Inject;
 import javax.swing.JCheckBox;
@@ -22,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -33,7 +33,6 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
@@ -71,7 +70,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private SavePersonAction savePersonAction;
 	@Inject
 	private PersonService personService;
-	private SortedList<Person> sortedPersonEventList;
 	private EventJXTableModel<Person> tableModel;
 	private final String panelBundle;
 	private JTextField nameTextField;
@@ -211,7 +209,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 							  setStatus(EStatus.EDIT);
 							  int rowIndexToModel =
 							    personTable.convertRowIndexToModel(selectedRow);
-							  setSelectedItem(getSortedPersonEventList().get(rowIndexToModel));
+							  setSelectedItem(personService.getAllPersons().get(
+							    rowIndexToModel));
 							  getNameTextField().setText(getSelectedItem().getName());
 							  getAddressTextField().setText(getSelectedItem().getAddress());
 							  getCityTextField().setText(getSelectedItem().getCity());
@@ -260,22 +259,12 @@ public class PersonsPanel extends ContextualPanel<Person>
 		// getContextualToolBar().add(actionProvider.getEditUser());
 
 		/* aggiorno la tabella delle persone in anagrafica */
-		sortedPersonEventList =
-		  new SortedList<Person>(personService.getAllPersons(),
-		    new Comparator<Person>()
-			    {
-				    @Override
-				    public int compare(Person o1, Person o2)
-				    {
-					    return o1.getName().compareToIgnoreCase(o2.getName());
-				    }
-			    });
-
 		tableModel =
-		  new EventJXTableModel<Person>(sortedPersonEventList,
+		  new EventJXTableModel<Person>(personService.getAllPersons(),
 		    new BeanTableFormat<Person>(Person.class, properties, columnsNames,
 		      writables));
 		getContentTable().setModel(tableModel);
+		getContentTable().setSortOrder(0, SortOrder.ASCENDING);
 	}
 
 	/**
@@ -568,11 +557,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 			registerComponent(identityCardTextField);
 		}
 		return identityCardTextField;
-	}
-
-	protected SortedList<Person> getSortedPersonEventList()
-	{
-		return sortedPersonEventList;
 	}
 
 	@Override
