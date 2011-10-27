@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -513,6 +514,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		    new BeanTableFormat<Document>(Document.class, properties, columnsNames,
 		      writables));
 		getContentTable().setModel(tableModel);
+		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
 	}
 
 	@Override
