@@ -6,6 +6,7 @@ import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Job;
+import it.greentone.persistence.JobStatus;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
@@ -97,12 +98,12 @@ public class SaveOperationAction extends AbstractBean
 					return;
 				}
 			}
+			/*
+			 * Issue 36: se selezionato l'onorario a vacazione allora il valore deve
+			 * essere maggiore di 2
+			 */
 			if(operationsPanel.getVacazioneCheckBox().isSelected())
 			{
-				/*
-				 * Issue 36: se selezionato l'onorario a vacazione allora il valore deve
-				 * essere maggiore di 2
-				 */
 				String vacazioniValue =
 				  GreenToneUtilities
 				    .getText(operationsPanel.getNumVacazioniTextField());
@@ -131,6 +132,25 @@ public class SaveOperationAction extends AbstractBean
 					}
 				}
 			}
+			/*
+			 * Issue 97: se l'incarico selezionato è in stato sospeso allora posso
+			 * inserire solo operazioni di tipo "Acconto"
+			 */
+			if(operationsPanel.getTypeComboBox().getSelectedIndex() > -1
+			  && operationsPanel.getJobComboBox().getSelectedItem() != null)
+			{
+				Job selectedJob =
+				  (Job) operationsPanel.getJobComboBox().getSelectedItem();
+				OperationType operationType =
+				  OperationType.values()[operationsPanel.getTypeComboBox()
+				    .getSelectedIndex()];
+				if(selectedJob.getStatus() == JobStatus.SUSPEND
+				  && operationType != OperationType.EXPENSE_DEPOSIT)
+				{
+					// TODO errore
+				}
+			}
+
 			/*
 			 * se arrivo qui allora tutta la validazione è passata correttamente e
 			 * posso salvare

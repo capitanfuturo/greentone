@@ -29,5 +29,10 @@
 	<classpathentry kind="lib" path="lib/bin/miglayout-4.0-swing.jar"/>
 	<classpathentry kind="lib" path="lib/bin/glazedlists-1.8.0_java15.jar"/>
 	<classpathentry kind="lib" path="lib/bin/jasperreports-4.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/bin/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/bin/commons-digester-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/bin/iText-2.1.7.jar"/>
+	<classpathentry kind="lib" path="lib/bin/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/bin/groovy-all-1.7.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

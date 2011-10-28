@@ -8,6 +8,7 @@ import it.greentone.gui.action.EditUserAction;
 import it.greentone.gui.action.SavePersonAction;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
+import it.greentone.report.ReportManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 import javax.inject.Inject;
+import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -70,6 +72,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private SavePersonAction savePersonAction;
 	@Inject
 	private PersonService personService;
+	@Inject
+	private ReportManager reportManager;
 	private EventJXTableModel<Person> tableModel;
 	private final String panelBundle;
 	private JTextField nameTextField;
@@ -255,7 +259,20 @@ public class PersonsPanel extends ContextualPanel<Person>
 		getContextualToolBar().add(actionProvider.getAddPerson());
 		getContextualToolBar().add(actionProvider.getSavePerson());
 		getContextualToolBar().add(actionProvider.getDeletePerson());
-		// getContextualToolBar().addSeparator();
+
+		// TODO
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(
+		  new AbstractAction("", getResourceMap().getIcon(
+		    "viewReports.Action.largeIcon"))
+			  {
+
+				  @Override
+				  public void actionPerformed(ActionEvent arg0)
+				  {
+					  reportManager.generate();
+				  }
+			  });
 		// getContextualToolBar().add(actionProvider.getEditUser());
 
 		/* aggiorno la tabella delle persone in anagrafica */

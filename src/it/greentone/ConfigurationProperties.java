@@ -61,7 +61,7 @@ public class ConfigurationProperties
 		}
 		catch(FileNotFoundException fnfe)
 		{
-			System.out.println("File di configurazione non presente");
+			// fnfe.printStackTrace();
 		}
 		catch(IOException e)
 		{
@@ -85,7 +85,7 @@ public class ConfigurationProperties
 		}
 		catch(FileNotFoundException e)
 		{
-			System.out.println("File di configurazione creato");
+			// e.printStackTrace();
 		}
 		catch(IOException e)
 		{
