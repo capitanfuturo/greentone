@@ -155,11 +155,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		headerPanel.add(descriptionLabel, "gap para");
 		headerPanel.add(getDescriptionTextField(), "span 3, growx, wrap");
 
-		headerPanel.add(jobLabel, "gap para");
-		headerPanel.add(getJobComboBox(), "growx, wrap");
-
 		headerPanel.add(typeLabel, "gap para");
-		headerPanel.add(getTypeComboBox(), "growx");
+		headerPanel.add(getTypeComboBox(), "growx, wrap");
+
+		headerPanel.add(jobLabel, "gap para");
+		headerPanel.add(getJobComboBox(), "growx");
 		headerPanel.add(vacazioneLabel, "gap para");
 		headerPanel.add(getVacazioneCheckBox(), "growx");
 		headerPanel.add(professionalVacazioneLabel, "gap para");
