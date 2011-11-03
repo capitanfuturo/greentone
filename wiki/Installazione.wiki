@@ -1,0 +1,28 @@
+#summary Installazione.
+
+= Introduzione =
+GreenTone è scritto in Java, per questo motivo si è pensato di utilizzare come sistema di installazione un progetto scritto in Java [http://izpack.org/ izPack]. In questa pagina vedremo come installare passo passo il nostro programma.
+
+= Requisiti di sistema =
+  * Java Virtual Machine 1.6 o superiore installata (http://www.java.com/it/)
+  * Un lettore PDF, per visualizzare correttamente i report
+  * Un browser, per visualizzare correttamente i link
+  * 30 MB di spazio disponibile sul disco fisso
+
+= Procedura =
+== Controllare la presenza di una JRE ==
+Per prima cosa è necessario verificare che nel vostro sistema sia installata una Java Virtual Machine. Da questa pagina http://java.com/it/download/installed.jsp è possibile usare un'utility di Oracle che vi dirà la versione correntemente utilizzata. Nel caso venga suggerito sarà possibile scaricare la versione di Java aggiornata.
+== Scaricare l'ultima versione di GreenTone ==
+Nella sezione download potrete scaricare l'ultima verdione dell'applicazione che sarà in formato jar. Una volta scaricato il pacchetto basterà lanciare l'installer con un doppio click. Se non dovesse funzionare è necessario eseguire l'installer da linea di comando.
+Aprite un terminale e posizionatevi nella cartella dove avete scaricato l'installer. Eseguite l'installer con il comando
+{{{
+java -jar GreenTone_<versione>-installer.jar
+}}}
+L'installazione procede con 4 passi:
+  # Cliccare su avanti sulla schermata di presentazione, potete leggere delle informazioni generali sul programma
+  # Confermare o modificare la directory di installazione e cliccare su avanti
+  # Confermare l'eventuale creazione della cartella
+  # Attendere l'avanzamento dell'installazione
+  # Se si desidera è possibile creare delle icone sul desktop
+  # Cliccare su fine per terminare.
+Ora è possibile utilizzare GreenTone.
