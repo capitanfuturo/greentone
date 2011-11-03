@@ -1,4 +1,5 @@
 #summary Come installare GreenTone
+#labels Featured
 
 = Introduzione =
 GreenTone è scritto in Java, per questo motivo si è pensato di utilizzare come sistema di installazione un progetto scritto in Java [http://izpack.org/ izPack]. In questa pagina vedremo come installare passo passo il nostro programma.
