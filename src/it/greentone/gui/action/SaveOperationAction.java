@@ -71,6 +71,7 @@ public class SaveOperationAction extends AbstractBean
 	{
 		try
 		{
+			String errorTitle = resourceMap.getString("ErrorDialog.title");
 			/* controllo date */
 			DateTime operationDate =
 			  GreenToneUtilities.getDateTime(operationsPanel.getOperationDate());
@@ -93,8 +94,7 @@ public class SaveOperationAction extends AbstractBean
 				{
 					JOptionPane.showMessageDialog(operationsPanel,
 					  resourceMap.getString("saveOperation.Action.dateAfterNowMessage"),
-					  resourceMap.getString("ErrorDialog.title"),
-					  JOptionPane.ERROR_MESSAGE);
+					  errorTitle, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
@@ -112,8 +112,7 @@ public class SaveOperationAction extends AbstractBean
 				{
 					JOptionPane.showMessageDialog(operationsPanel,
 					  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
-					  resourceMap.getString("ErrorDialog.title"),
-					  JOptionPane.ERROR_MESSAGE);
+					  errorTitle, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				else
@@ -126,31 +125,44 @@ public class SaveOperationAction extends AbstractBean
 					{
 						JOptionPane.showMessageDialog(operationsPanel,
 						  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
-						  resourceMap.getString("ErrorDialog.title"),
-						  JOptionPane.ERROR_MESSAGE);
+						  errorTitle, JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 				}
 			}
 			/*
-			 * Issue 97: se l'incarico selezionato è in stato sospeso allora posso
-			 * inserire solo operazioni di tipo "Acconto"
+			 * Issue 97: se l'incarico selezionato è in stato chiuso non si possono
+			 * modificare le operazioni, se lo stato dell'incarico è sospeso allora
+			 * posso inserire solo operazioni di tipo "Acconto"
 			 */
-			if(operationsPanel.getTypeComboBox().getSelectedIndex() > -1
-			  && operationsPanel.getJobComboBox().getSelectedItem() != null)
+			if(operationsPanel.getJobComboBox().getSelectedItem() != null)
 			{
 				Job selectedJob =
 				  (Job) operationsPanel.getJobComboBox().getSelectedItem();
+				if(selectedJob.getStatus() == JobStatus.CLOSED)
+				{
+					/* non si possono modificare le operazioni per un incarico chiuso */
+					JOptionPane.showMessageDialog(operationsPanel,
+					  resourceMap.getString("saveOperation.Action.closedJobMessage"),
+					  errorTitle, JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				OperationType operationType =
 				  OperationType.values()[operationsPanel.getTypeComboBox()
 				    .getSelectedIndex()];
 				if(selectedJob.getStatus() == JobStatus.SUSPEND
 				  && operationType != OperationType.EXPENSE_DEPOSIT)
 				{
-					// TODO errore
+					/*
+					 * si possono aggiungere solo operazioni di acconto per l'incarico in
+					 * stato sospeso
+					 */
+					JOptionPane.showMessageDialog(operationsPanel,
+					  resourceMap.getString("saveOperation.Action.suspendJobMessage"),
+					  errorTitle, JOptionPane.ERROR_MESSAGE);
+					return;
 				}
 			}
-
 			/*
 			 * se arrivo qui allora tutta la validazione è passata correttamente e
 			 * posso salvare

@@ -77,6 +77,7 @@ public class SaveOptionsAction extends AbstractBean
 				/* recupero i dati dal pannello e li salvo */
 				properties.setCheckUpdateActivated(optionsPanel
 				  .getCheckUpdateCheckBox().isSelected());
+
 				optionsPanel.getVacazioneTextField().commitEdit();
 				Object value = optionsPanel.getVacazioneTextField().getValue();
 				properties.setVacazionePrice(GreenToneUtilities
@@ -85,6 +86,9 @@ public class SaveOptionsAction extends AbstractBean
 				value = optionsPanel.getVacazioneAiutanteTextField().getValue();
 				properties.setVacazioneHelperPrice(GreenToneUtilities
 				  .roundTwoDecimals(new Double(value.toString())));
+
+				properties.useYearsInJobsProtocol(optionsPanel
+				  .getUseYearInJobProtocolCheckBox().isSelected());
 
 				/* salvo */
 				properties.store();

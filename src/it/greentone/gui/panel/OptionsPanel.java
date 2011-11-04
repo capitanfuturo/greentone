@@ -54,6 +54,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 	private JPanel appPanel;
 	private JFormattedTextField vacazioneTextField;
 	private JFormattedTextField vacazioneAiutanteTextField;
+	private JCheckBox useYearInJobProtocolCheckBox;
 
 	/**
 	 * Pannello delle configurazioni utente.
@@ -99,6 +100,8 @@ public class OptionsPanel extends ContextualPanel<Void>
 		getVacazioneTextField().setValue(properties.getVacazionePrice());
 		getVacazioneAiutanteTextField().setValue(
 		  properties.getVacazioneHelperPrice());
+		getUseYearInJobProtocolCheckBox().setSelected(
+		  properties.getUseYearsInJobsProtocol());
 	}
 
 	private JPanel getSystemPanel()
@@ -142,11 +145,16 @@ public class OptionsPanel extends ContextualPanel<Void>
 			JLabel vacazioneAiutanteLabel =
 			  new JLabel(getResourceMap().getString(
 			    "viewOptions.Panel.vacazioneAiutante"));
+			JLabel useYearInJobsProtocolLabel =
+			  new JLabel(getResourceMap().getString(
+			    "viewOptions.Panel.useYearInJobsProtocol"));
 
 			appPanel.add(vacazioneLabel);
 			appPanel.add(getVacazioneTextField(), "growx,wrap");
 			appPanel.add(vacazioneAiutanteLabel);
-			appPanel.add(getVacazioneAiutanteTextField(), "growx");
+			appPanel.add(getVacazioneAiutanteTextField(), "growx,wrap");
+			appPanel.add(useYearInJobsProtocolLabel);
+			appPanel.add(getUseYearInJobProtocolCheckBox(), "growx");
 		}
 		return appPanel;
 	}
@@ -206,5 +214,21 @@ public class OptionsPanel extends ContextualPanel<Void>
 				});
 		}
 		return vacazioneAiutanteTextField;
+	}
+
+	/**
+	 * Restituisce il flag per l'uso dell'anno nella composizione del protocollo
+	 * di un incarico.
+	 * 
+	 * @return il flag per l'uso dell'anno nella composizione del protocollo di un
+	 *         incarico
+	 */
+	public JCheckBox getUseYearInJobProtocolCheckBox()
+	{
+		if(useYearInJobProtocolCheckBox == null)
+		{
+			useYearInJobProtocolCheckBox = new JCheckBox();
+		}
+		return useYearInJobProtocolCheckBox;
 	}
 }

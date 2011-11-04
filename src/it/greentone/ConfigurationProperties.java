@@ -42,6 +42,11 @@ public class ConfigurationProperties
 	private static final String CONF_VAC_PRICE = "vacPrice";
 	/** Identificativo per la property del prezzo della vacazione dell'aiutante */
 	private static final String CONF_VAC_HELPER_PRICE = "vacHelperPrice";
+	/**
+	 * Identificativo per la property sulla modalità di generazione dei protocolli
+	 * per gli incarichi
+	 */
+	private static final String CONF_JOB_PROT_STYLE = "useYearsInJobProtocol";
 
 
 	/**
@@ -97,7 +102,7 @@ public class ConfigurationProperties
 	 * Restituisce <code>true</code> se è attivato il controllo degli
 	 * aggiornamenti, <code>false</code> altrimenti.
 	 * 
-	 * @return <code>true</code> se è attovato il controllo degli aggiornamenti,
+	 * @return <code>true</code> se è attivato il controllo degli aggiornamenti,
 	 *         <code>false</code> altrimenti
 	 */
 	public boolean isCheckUpdateActivated()
@@ -110,7 +115,7 @@ public class ConfigurationProperties
 	 * Imposta l'attivazione del controllo degli aggiornamenti.
 	 * 
 	 * @param isActivated
-	 *          <code>true</code> se è attovato il controllo degli aggiornamenti,
+	 *          <code>true</code> se è attivato il controllo degli aggiornamenti,
 	 *          <code>false</code> altrimenti
 	 */
 	public void setCheckUpdateActivated(boolean isActivated)
@@ -160,5 +165,30 @@ public class ConfigurationProperties
 	public void setVacazioneHelperPrice(double price)
 	{
 		properties.setProperty(CONF_VAC_HELPER_PRICE, "" + price);
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è attivato l'uso dell'annata nel
+	 * protocollo, <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è attivato l'uso dell'annata nel protocollo,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean getUseYearsInJobsProtocol()
+	{
+		String value = properties.getProperty(CONF_JOB_PROT_STYLE, "true");
+		return Boolean.valueOf(value).booleanValue();
+	}
+
+	/**
+	 * Imposta l'attivazione del controllo degli aggiornamenti.
+	 * 
+	 * @param isActivated
+	 *          <code>true</code> se è attivato l'uso dell'annata nel protocollo,
+	 *          <code>false</code> altrimenti.
+	 */
+	public void useYearsInJobsProtocol(boolean isActivated)
+	{
+		properties.setProperty(CONF_JOB_PROT_STYLE, "" + isActivated);
 	}
 }
