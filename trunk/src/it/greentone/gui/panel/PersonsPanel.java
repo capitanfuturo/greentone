@@ -270,7 +270,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 				  @Override
 				  public void actionPerformed(ActionEvent arg0)
 				  {
-					  reportManager.generate();
+					  reportManager.generateTest();
 				  }
 			  });
 		// getContextualToolBar().add(actionProvider.getEditUser());

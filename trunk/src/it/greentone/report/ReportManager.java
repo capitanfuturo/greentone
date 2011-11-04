@@ -3,6 +3,7 @@ package it.greentone.report;
 import it.greentone.GreenToneUtilities;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
+import it.greentone.report.ReportDescriptor.ExtensionType;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class ReportManager
 	/**
 	 * Genera un report
 	 */
-	public void generate()
+	public void generateTest()
 	{
 		try
 		{
@@ -83,4 +84,60 @@ public class ReportManager
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Genera un report a partire da un descrittore di report
+	 * 
+	 * @param reportDescriptor
+	 *          descrittore di report
+	 */
+	public void generate(ReportDescriptor reportDescriptor)
+	{
+		try
+		{
+			final JRBeanCollectionDataSource dataSource =
+			  new JRBeanCollectionDataSource(reportDescriptor.getDataSet());
+			final JasperPrint print =
+			  JasperFillManager.fillReport(reportDescriptor.getReportInputStream(),
+			    reportDescriptor.getParams(), dataSource);
+			File tempFile = null;
+			try
+			{
+				tempFile =
+				  File.createTempFile(print.getName(), reportDescriptor
+				    .getExtensionType().getExtension());
+				if(tempFile != null)
+				{
+					final File fileToOpen = tempFile;
+					if(reportDescriptor.getExtensionType() == ExtensionType.PDF)
+					{
+						JasperExportManager.exportReportToPdfFile(print,
+						  fileToOpen.getPath());
+					}
+					else
+						if(reportDescriptor.getExtensionType() == ExtensionType.XML)
+						{
+							JasperExportManager.exportReportToXmlFile(print,
+							  fileToOpen.getPath(), false);
+						}
+						else
+							if(reportDescriptor.getExtensionType() == ExtensionType.HTML)
+							{
+								JasperExportManager.exportReportToHtmlFile(print,
+								  fileToOpen.getPath());
+							}
+					GreenToneUtilities.open(fileToOpen);
+				}
+			}
+			catch(IOException ex)
+			{
+				ex.printStackTrace();
+			}
+		}
+		catch(final Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 }

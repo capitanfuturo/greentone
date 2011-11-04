@@ -510,5 +510,7 @@ public class JobsPanel extends ContextualPanel<Job>
 		/* Issue 89: autocompletion */
 		getCities().clear();
 		getCities().addAll(jobService.getAllCities());
+		/* Issue 100: lo stato iniziale di un incarico è "In pianificazione" */
+		getStatusComboBox().setSelectedItem(JobStatus.PLANNING.getLocalizedName());
 	}
 }
