@@ -1,6 +1,11 @@
 package it.greentone.persistence;
 
+import it.greentone.ConfigurationProperties;
+import it.greentone.GreenToneUtilities;
+
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Comparator;
 
 import javax.inject.Inject;
 
@@ -11,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.SortedList;
 
 /**
  * <code>
@@ -41,7 +47,10 @@ public class JobService
 	private OperationService operationService;
 	@Inject
 	private DocumentService documentService;
+	@Inject
+	private ConfigurationProperties configurationProperties;
 	private final EventList<Job> allJobs = new BasicEventList<Job>();
+	public final Character PROTOCOL_PADDING_CHAR = '0';
 
 	/**
 	 * Restitusice l'oggetto di identificativo passato in ingresso.
@@ -161,5 +170,153 @@ public class JobService
 	public Collection<String> getAllCities()
 	{
 		return jobDAO.getAllCities();
+	}
+
+	/**
+	 * Restituisce il prossimo protocollo utile da utilizzare.
+	 * 
+	 * @return il prossimo protocollo utile da utilizzare
+	 */
+	public String getNextProtocol()
+	{
+		/* calcolo l'ultimo protocollo usato */
+		String protocol = "";
+		for(Job job : getAllJobs())
+		{
+			if(protocol.compareToIgnoreCase(job.getProtocol()) < 0)
+			{
+				protocol = job.getProtocol();
+			}
+		}
+		/*
+		 * costruisco il nuovo protocollo, se è usato l'anno allora lo elimino dal
+		 * calcolo
+		 */
+		boolean yearsEnabled = configurationProperties.getUseYearsInJobsProtocol();
+		if(!protocol.isEmpty())
+		{
+			if(yearsEnabled)
+			{
+				protocol = protocol.substring(5);
+			}
+			/* tolgo il padding iniziale di 0 */
+			int i = 0;
+			while(protocol.charAt(i) == PROTOCOL_PADDING_CHAR)
+			{
+				i++;
+			}
+			protocol = protocol.substring(i);
+			protocol = (Integer.valueOf(protocol) + 1) + "";
+		}
+		else
+		{
+			protocol = "1";
+		}
+		/* ora procedo con il padding e l'eventuale anno */
+		protocol =
+		  GreenToneUtilities.leftPadding(protocol, PROTOCOL_PADDING_CHAR,
+		    ConfigurationProperties.JOB_PROTOCOL_NUMERIC_LENGTH);
+		if(yearsEnabled)
+		{
+			int year = Calendar.getInstance().get(Calendar.YEAR);
+			protocol =
+			  year + ConfigurationProperties.JOB_PROTOCOL_SEPARATOR + protocol;
+		}
+		return protocol;
+	}
+
+	/**
+	 * Aggiunge a tutti i protocolli come prefisso l'anno
+	 */
+	public void addYearToAllJobProtocols()
+	{
+		if(getAllJobs().size() == 0)
+		{
+			return;
+		}
+		/* ordino per protocollo tutti gli incarichi in ordine crescente */
+		SortedList<Job> sortedJobs =
+		  new SortedList<Job>(getAllJobs(), new Comparator<Job>()
+			  {
+				  @Override
+				  public int compare(Job o1, Job o2)
+				  {
+					  return o1.getProtocol().compareToIgnoreCase(o2.getProtocol());
+				  }
+			  });
+		/*
+		 * Considera il caso [0001,0002] con 0001 iniziato nel 2011 e 0002 nel 2012
+		 * che deve diventare [2011-0001,2012-0001]
+		 */
+		int year = 0;
+		int counter = 1;
+		for(Job job : sortedJobs)
+		{
+			if(year != job.getStartDate().getYear())
+			{
+				year = job.getStartDate().getYear();
+				counter = 1;
+			}
+			else
+			{
+				counter++;
+			}
+			String protocol =
+			  year
+			    + ConfigurationProperties.JOB_PROTOCOL_SEPARATOR
+			    + GreenToneUtilities.leftPadding("" + counter, PROTOCOL_PADDING_CHAR,
+			      ConfigurationProperties.JOB_PROTOCOL_NUMERIC_LENGTH);
+			job.setProtocol(protocol);
+			storeJob(job);
+		}
+	}
+
+	/**
+	 * Rimuove a tutti i protocolli come prefisso l'anno
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *           eccezione in caso in cui si venga a superare il limite di
+	 *           incarichi gestibili
+	 */
+	public void removeYearToAllJobProtocols() throws IndexOutOfBoundsException
+	{
+		if(getAllJobs().size() == 0)
+		{
+			return;
+		}
+		/* calcolo il limite numerico di protocolli gestiti */
+		int limit =
+		  (int) Math.pow(10d, new Integer(
+		    ConfigurationProperties.JOB_PROTOCOL_NUMERIC_LENGTH).doubleValue());
+		if(getAllJobs().size() > limit)
+		{
+			throw new IndexOutOfBoundsException("Too many job protocols to migrate!");
+		}
+		/* ordino per protocollo tutti gli incarichi in ordine crescente */
+		SortedList<Job> sortedJobs =
+		  new SortedList<Job>(getAllJobs(), new Comparator<Job>()
+			  {
+				  @Override
+				  public int compare(Job o1, Job o2)
+				  {
+					  return o1.getProtocol().compareToIgnoreCase(o2.getProtocol());
+				  }
+			  });
+		/*
+		 * rinumero tutti gli incarichi in questo modo il caso [2011-0001,
+		 * 2012-0001] in [0001,0002]
+		 */
+		for(int i = 0; i < sortedJobs.size(); i++)
+		{
+			Job job = sortedJobs.get(i);
+			int protocolNumber = i + 1;
+			/* eseguo il padding */
+			String protocol = protocolNumber + "";
+			protocol =
+			  GreenToneUtilities.leftPadding(protocol, PROTOCOL_PADDING_CHAR,
+			    ConfigurationProperties.JOB_PROTOCOL_NUMERIC_LENGTH);
+			job.setProtocol("" + protocol);
+			storeJob(job);
+		}
 	}
 }

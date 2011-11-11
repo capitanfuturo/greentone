@@ -4,13 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/bin/bsaf-1.9.1.jar" sourcepath="lib/src/bsaf-1.9.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/bin/asm-3.3.jar"/>
-	<classpathentry kind="lib" path="lib/bin/datanucleus-core-3.0.0-m5.jar"/>
-	<classpathentry kind="lib" path="lib/bin/datanucleus-enhancer-3.0.0-m5.jar"/>
-	<classpathentry kind="lib" path="lib/bin/datanucleus-rdbms-3.0.0-m5.jar"/>
 	<classpathentry kind="lib" path="lib/bin/jdo-api-3.1-SNAPSHOT-20110319.jar"/>
-	<classpathentry kind="lib" path="lib/bin/datanucleus-api-jdo-3.0.0-m5.jar"/>
-	<classpathentry kind="lib" path="lib/bin/joda-time-1.6.2.jar" sourcepath="lib/src/joda-time-1.6.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/bin/datanucleus-jodatime-3.0.0-m2.jar"/>
 	<classpathentry kind="lib" path="lib/bin/h2-1.3.160.jar" sourcepath="lib/src/glazedlists-1.8.0-source_java15.zip"/>
 	<classpathentry kind="lib" path="lib/bin/com.springsource.javax.inject-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/bin/com.springsource.net.sf.cglib-2.2.0.jar"/>
@@ -34,5 +28,11 @@
 	<classpathentry kind="lib" path="lib/bin/iText-2.1.7.jar"/>
 	<classpathentry kind="lib" path="lib/bin/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/bin/groovy-all-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/bin/datanucleus-api-jdo-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/bin/datanucleus-core-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/bin/datanucleus-enhancer-3.0.0-release.jar"/>
+	<classpathentry kind="lib" path="lib/bin/datanucleus-jodatime-3.0.0-release.jar"/>
+	<classpathentry kind="lib" path="lib/bin/datanucleus-rdbms-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/bin/joda-time-2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

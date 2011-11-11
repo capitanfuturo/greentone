@@ -284,4 +284,27 @@ public class GreenToneUtilities
 			}
 		}
 	}
+
+	/**
+	 * Restituisce una stringa lunga lenght con il padding a sinistra del
+	 * carattere paddingChar.
+	 * 
+	 * @param toPad
+	 *          stringa senza padding
+	 * @param paddingChar
+	 *          carattere di padding
+	 * @param length
+	 *          lunghezza della stringa voluta
+	 * @return una stringa lunga lenght con il padding a sinistra del carattere
+	 *         paddingChar
+	 */
+	public static String leftPadding(String toPad, char paddingChar, int length)
+	{
+		int toPadLength = toPad.length();
+		for(int y = 0; y < length - toPadLength; y++)
+		{
+			toPad = paddingChar + toPad;
+		}
+		return toPad;
+	}
 }
