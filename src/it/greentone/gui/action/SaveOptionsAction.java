@@ -4,6 +4,7 @@ import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.panel.OptionsPanel;
+import it.greentone.persistence.JobService;
 
 import java.text.ParseException;
 
@@ -42,6 +43,8 @@ public class SaveOptionsAction extends AbstractBean
 	private OptionsPanel optionsPanel;
 	@Inject
 	private ConfigurationProperties properties;
+	@Inject
+	private JobService jobService;
 	private final ResourceMap resourceMap;
 
 	/**
@@ -87,6 +90,39 @@ public class SaveOptionsAction extends AbstractBean
 				properties.setVacazioneHelperPrice(GreenToneUtilities
 				  .roundTwoDecimals(new Double(value.toString())));
 
+				boolean useYears = properties.getUseYearsInJobsProtocol();
+				if((optionsPanel.getUseYearInJobProtocolCheckBox().isSelected() && !useYears)
+				  || (!optionsPanel.getUseYearInJobProtocolCheckBox().isSelected() && useYears))
+				{
+					/*
+					 * se l'utente è sicuro di voler migrare i protocolli degli incarichi
+					 * allora procedo
+					 */
+					int confirm =
+					  JOptionPane.showConfirmDialog(optionsPanel, resourceMap
+					    .getString("saveOptions.Action.jobProtocolMigrationMessage"));
+					if(confirm == JOptionPane.OK_OPTION)
+					{
+						if(optionsPanel.getUseYearInJobProtocolCheckBox().isSelected())
+						{
+							jobService.addYearToAllJobProtocols();
+						}
+						else
+						{
+							try
+							{
+								jobService.removeYearToAllJobProtocols();
+							}
+							catch(Exception e)
+							{
+								JOptionPane.showMessageDialog(optionsPanel,
+								  resourceMap.getString("saveOptions.Action.tooJobs"),
+								  resourceMap.getString("ErrorDialog.title"),
+								  JOptionPane.ERROR_MESSAGE);
+							}
+						}
+					}
+				}
 				properties.useYearsInJobsProtocol(optionsPanel
 				  .getUseYearInJobProtocolCheckBox().isSelected());
 

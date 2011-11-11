@@ -2,6 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
+import it.greentone.persistence.JobService;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,8 @@ public class AddJobAction
 {
 	@Inject
 	private JobsPanel jobsPanel;
+	@Inject
+	private JobService jobService;
 
 	/**
 	 * Aggiunge un incarico.
@@ -41,5 +44,7 @@ public class AddJobAction
 	{
 		jobsPanel.clearForm();
 		jobsPanel.setStatus(EStatus.NEW);
+		/* calcolo il protocollo da impostare nell'incarico */
+		jobsPanel.getProtocolTextField().setText(jobService.getNextProtocol());
 	}
 }

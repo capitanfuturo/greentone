@@ -47,7 +47,16 @@ public class ConfigurationProperties
 	 * per gli incarichi
 	 */
 	private static final String CONF_JOB_PROT_STYLE = "useYearsInJobProtocol";
-
+	/**
+	 * Carattere utilizzato come separatore per la costruzione del protocollo di
+	 * un incarico
+	 */
+	public static final String JOB_PROTOCOL_SEPARATOR = "-";
+	/**
+	 * Numero di caratteri da utilizzare come padding di 0 nel codice del
+	 * protocollo parte numerica
+	 */
+	public static final int JOB_PROTOCOL_NUMERIC_LENGTH = 4;
 
 	/**
 	 * Configurazione utente del programma

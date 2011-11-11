@@ -313,6 +313,8 @@ public class JobsPanel extends ContextualPanel<Job>
 		{
 			protocolTextField = new JTextField();
 			registerComponent(protocolTextField);
+			protocolTextField.setEnabled(false);
+
 			protocolTextField.getDocument().addDocumentListener(
 			  new DocumentListener()
 				  {
