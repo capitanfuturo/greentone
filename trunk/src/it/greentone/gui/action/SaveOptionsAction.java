@@ -123,7 +123,7 @@ public class SaveOptionsAction extends AbstractBean
 						}
 					}
 				}
-				properties.useYearsInJobsProtocol(optionsPanel
+				properties.setUseYearsInJobsProtocol(optionsPanel
 				  .getUseYearInJobProtocolCheckBox().isSelected());
 
 				/* salvo */

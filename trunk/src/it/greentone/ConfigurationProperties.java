@@ -1,5 +1,6 @@
 package it.greentone;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,9 +31,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfigurationProperties
 {
+	private boolean firstLaunch;
 	final Properties properties;
 	private final String PROPERTY_FILE_PATH = System.getProperty("user.home")
-	  + "/GreenTone/configuration.properties";
+	  + "/GreenTone/";
+	private final String PROPERTY_FILE_NAME = "configuration.properties";
 	/** Identificativo per la property di controllo aggiornamento */
 	private static final String CONF_CHECK_UPDATE = "checkUpdate";
 	/**
@@ -65,11 +68,23 @@ public class ConfigurationProperties
 	{
 		/* carico la configurazione del programma */
 		properties = new Properties();
+		firstLaunch = false;
 
 		FileInputStream in;
 		try
 		{
-			in = new FileInputStream(PROPERTY_FILE_PATH);
+			File filePath = new File(PROPERTY_FILE_PATH);
+			if(!filePath.exists())
+			{
+				filePath.mkdirs();
+			}
+			File fileProperty = new File(PROPERTY_FILE_PATH + PROPERTY_FILE_NAME);
+			if(!fileProperty.exists())
+			{
+				fileProperty.createNewFile();
+				firstLaunch = true;
+			}
+			in = new FileInputStream(PROPERTY_FILE_PATH + PROPERTY_FILE_NAME);
 			properties.load(in);
 			in.close();
 		}
@@ -91,7 +106,7 @@ public class ConfigurationProperties
 		FileOutputStream out;
 		try
 		{
-			out = new FileOutputStream(PROPERTY_FILE_PATH);
+			out = new FileOutputStream(PROPERTY_FILE_PATH + PROPERTY_FILE_NAME);
 			properties
 			  .store(out,
 			    "Greentone - file autogenerato, non cancellare o modificare manualmente");
@@ -196,8 +211,20 @@ public class ConfigurationProperties
 	 *          <code>true</code> se è attivato l'uso dell'annata nel protocollo,
 	 *          <code>false</code> altrimenti.
 	 */
-	public void useYearsInJobsProtocol(boolean isActivated)
+	public void setUseYearsInJobsProtocol(boolean isActivated)
 	{
 		properties.setProperty(CONF_JOB_PROT_STYLE, "" + isActivated);
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è la prima volta che viene eseguito il
+	 * programma, <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è la prima volta che viene eseguito il
+	 *         programma, <code>false</code> altrimenti
+	 */
+	public boolean isFirstLaunch()
+	{
+		return firstLaunch;
 	}
 }

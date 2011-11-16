@@ -67,8 +67,9 @@ public class GreenTone extends SingleFrameApplication
 	@Override
 	protected void startup()
 	{
-		getMainFrame().setTitle(
-		  getContext().getResourceMap().getString("Application.title"));
+		final String applicationTitle =
+		  getContext().getResourceMap().getString("Application.title");
+		getMainFrame().setTitle(applicationTitle);
 		final MainPanel mainPanel = springBeansHolder.getMainPanel();
 		mainPanel.initialize();
 		/* aggiungo un listener per la chiusura dell'applicazione */
@@ -86,11 +87,24 @@ public class GreenTone extends SingleFrameApplication
 				{
 					int confirmDialog =
 					  JOptionPane.showConfirmDialog(mainPanel, getContext()
-					    .getResourceMap().getString("exit.Action.confirmMessage"));
+					    .getResourceMap().getString("exit.Action.confirmMessage"),
+					    applicationTitle, JOptionPane.YES_NO_OPTION);
 					return confirmDialog == JOptionPane.OK_OPTION;
 				}
 			});
 		show(mainPanel);
+
+		/* se è il primo avvio allora va gestito l'uso dell'annno del protocollo */
+		if(springBeansHolder.getConfigurationProperties().isFirstLaunch())
+		{
+			int answer =
+			  JOptionPane.showConfirmDialog(mainPanel, getContext().getResourceMap()
+			    .getString("Application.firstLaunch"), applicationTitle,
+			    JOptionPane.YES_NO_OPTION);
+			springBeansHolder.getConfigurationProperties().setUseYearsInJobsProtocol(
+			  answer == JOptionPane.YES_OPTION);
+			springBeansHolder.getConfigurationProperties().store();
+		}
 
 		/*
 		 * processo in background per verificare l'esistenza di una nuova versione
