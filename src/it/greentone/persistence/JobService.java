@@ -50,6 +50,7 @@ public class JobService
 	@Inject
 	private ConfigurationProperties configurationProperties;
 	private final EventList<Job> allJobs = new BasicEventList<Job>();
+	/** Carattere di padding per il protocollo dell'incarico */
 	public final Character PROTOCOL_PADDING_CHAR = '0';
 
 	/**

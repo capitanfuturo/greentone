@@ -227,17 +227,28 @@ public class GreenToneUtilities
 	 */
 	public static void copyFile(File input, File output) throws IOException
 	{
-		InputStream in = new FileInputStream(input);
-		OutputStream out = new FileOutputStream(output);
-
-		byte[] buf = new byte[1024];
-		int len;
-		while((len = in.read(buf)) > 0)
+		InputStream in = null;
+		OutputStream out = null;
+		try
 		{
-			out.write(buf, 0, len);
+			in = new FileInputStream(input);
+			out = new FileOutputStream(output);
+			byte[] buf = new byte[1024];
+			int len;
+			while((len = in.read(buf)) > 0)
+			{
+				out.write(buf, 0, len);
+			}
 		}
-		in.close();
-		out.close();
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			in.close();
+			out.close();
+		}
 	}
 
 	/**

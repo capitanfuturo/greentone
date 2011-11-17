@@ -318,29 +318,15 @@ public class DnDTabbedPane extends JTabbedPane
 	}
 
 	/**
-	 * @return
+	 * Return <code>true</code> if the tabbed pane has a ghost, <code>false</code>
+	 * otherwise.
+	 * 
+	 * @return <code>true</code> if the tabbed pane has a ghost,
+	 *         <code>false</code> otherwise
 	 */
 	public boolean hasGhost()
 	{
 		return hasGhost;
-	}
-
-	private boolean isPaintScrollArea = true;
-
-	/**
-	 * @param flag
-	 */
-	public void setPaintScrollArea(boolean flag)
-	{
-		isPaintScrollArea = flag;
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isPaintScrollArea()
-	{
-		return isPaintScrollArea;
 	}
 
 	private int getTargetTabIndex(Point glassPt)
@@ -527,7 +513,7 @@ public class DnDTabbedPane extends JTabbedPane
 		{
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setComposite(composite);
-			if(isPaintScrollArea() && getTabLayoutPolicy() == SCROLL_TAB_LAYOUT)
+			if(getTabLayoutPolicy() == SCROLL_TAB_LAYOUT)
 			{
 				g2.setPaint(Color.RED);
 				g2.fill(rBackward);

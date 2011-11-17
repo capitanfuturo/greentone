@@ -33,8 +33,6 @@ public class ConfigurationProperties
 {
 	private boolean firstLaunch;
 	final Properties properties;
-	private final String PROPERTY_FILE_PATH = System.getProperty("user.home")
-	  + "/GreenTone/";
 	private final String PROPERTY_FILE_NAME = "configuration.properties";
 	/** Identificativo per la property di controllo aggiornamento */
 	private static final String CONF_CHECK_UPDATE = "checkUpdate";
@@ -73,18 +71,15 @@ public class ConfigurationProperties
 		FileInputStream in;
 		try
 		{
-			File filePath = new File(PROPERTY_FILE_PATH);
-			if(!filePath.exists())
-			{
-				filePath.mkdirs();
-			}
-			File fileProperty = new File(PROPERTY_FILE_PATH + PROPERTY_FILE_NAME);
+			File fileProperty =
+			  new File(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
 			if(!fileProperty.exists())
 			{
 				fileProperty.createNewFile();
 				firstLaunch = true;
 			}
-			in = new FileInputStream(PROPERTY_FILE_PATH + PROPERTY_FILE_NAME);
+			in =
+			  new FileInputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
 			properties.load(in);
 			in.close();
 		}
@@ -106,7 +101,8 @@ public class ConfigurationProperties
 		FileOutputStream out;
 		try
 		{
-			out = new FileOutputStream(PROPERTY_FILE_PATH + PROPERTY_FILE_NAME);
+			out =
+			  new FileOutputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
 			properties
 			  .store(out,
 			    "Greentone - file autogenerato, non cancellare o modificare manualmente");
