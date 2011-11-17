@@ -33,6 +33,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SortOrder;
+import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -642,7 +643,16 @@ public class DocumentsPanel extends ContextualPanel<Document>
 				@Override
 				public void mouseClicked(MouseEvent e)
 				{
-					GreenToneUtilities.open(file);
+					new SwingWorker<Void, Void>()
+						{
+
+							@Override
+							protected Void doInBackground() throws Exception
+							{
+								GreenToneUtilities.open(file);
+								return null;
+							}
+						}.execute();
 				};
 			});
 		this.file = file;

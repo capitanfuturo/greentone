@@ -35,6 +35,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class GreenToneAppConfig
 {
 	/**
+	 * Path di base dove salavare i dati di GreenTone
+	 */
+	public static final String BASE_PATH = System.getProperty("user.home")
+	  + "/GreenTone/";
+	/**
 	 * Path del file di configurazione di Spring Framework
 	 */
 	public static final String SPRING_CONFIG_LOCATION =
@@ -48,8 +53,7 @@ public class GreenToneAppConfig
 	 * Path del repository dove salvare la copia dei file associati a dei
 	 * documenti
 	 */
-	public static final String DOCUMENTS_REPOSITORY = System
-	  .getProperty("user.dir") + "/documents/";
+	public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents/";
 
 	/**
 	 * Resituisce la factory di gestione della persistenza.
@@ -74,7 +78,7 @@ public class GreenToneAppConfig
 		final StringBuilder connectionURL = new StringBuilder();
 		connectionURL.append("jdbc:h2:");
 		/* il db è posizionato nella cartella di esecuzione di greentone */
-		final String storageDirPath = System.getProperty("user.dir") + "/db";
+		final String storageDirPath = BASE_PATH + "db";
 		if(storageDirPath != null && storageDirPath.length() > 0)
 		{
 			connectionURL.append(storageDirPath);

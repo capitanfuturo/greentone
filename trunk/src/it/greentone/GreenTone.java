@@ -2,6 +2,7 @@ package it.greentone;
 
 import it.greentone.gui.MainPanel;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.EventObject;
 
@@ -55,13 +56,24 @@ public class GreenTone extends SingleFrameApplication
 	protected void initialize(String[] args)
 	{
 		super.initialize(args);
+		/*
+		 * Imposto come directory di salvataggio delle proprietà grafiche del
+		 * programma
+		 */
+		File filePath = new File(GreenToneAppConfig.BASE_PATH);
+		if(!filePath.exists())
+		{
+			filePath.mkdirs();
+		}
+		getContext().getLocalStorage().setDirectory(filePath);
+
 		/* carico il contesto creato da Spring Framework */
 		ApplicationContext applicationContext =
 		  new ClassPathXmlApplicationContext(
 		    GreenToneAppConfig.SPRING_CONFIG_LOCATION);
 		/* recupero il wrapper che contiene i bean creati da Spring Framework */
 		springBeansHolder = applicationContext.getBean(SpringBeansHolder.class);
-		// TODO PasswordDialog passwordDialog = new PasswordDialog();
+		// TODO JXLoginDialog PasswordDialog passwordDialog = new PasswordDialog();
 	}
 
 	@Override

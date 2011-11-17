@@ -62,7 +62,6 @@ public class OptionsPanel extends ContextualPanel<Void>
 	public OptionsPanel()
 	{
 		super();
-		remove(getContextualToolBar());
 		panelBundle = "viewOptions";
 	}
 
@@ -93,6 +92,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 		super.setup();
 
 		/* pulisco e ricostruisco la toolbar */
+		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getSaveOptions());
 
 		/* aggiorno il pannello */
