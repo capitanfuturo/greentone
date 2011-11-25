@@ -43,7 +43,7 @@ public class GreenToneLogger
 		{
 			FileHandler fileHandler =
 			  new FileHandler(GreenToneAppConfig.BASE_PATH + LOG_FILENAME, true);
-			fileHandler.setLevel(Level.WARNING);
+			fileHandler.setLevel(Level.ALL);
 			fileHandler.setFormatter(new SimpleFormatter());
 			logger.addHandler(fileHandler);
 		}

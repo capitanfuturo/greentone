@@ -7,6 +7,7 @@ import it.greentone.persistence.JobCategoryService;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
@@ -60,6 +61,7 @@ public class EditJobCategoryDialog extends JDialog
 	private JList jobCategoryJList;
 	private JButton addButton;
 	private JButton deleteButton;
+	private JButton okButton;
 
 	/**
 	 * Finestra di dialogo per la gestione delle categorie degli incarichi.
@@ -86,8 +88,13 @@ public class EditJobCategoryDialog extends JDialog
 		inputPanel.add(getInputTextField());
 		dataPanel.add(inputPanel, BorderLayout.NORTH);
 		dataPanel.add(new JScrollPane(getJobCategoryJList()), BorderLayout.CENTER);
+
+		JPanel southPanel = new JPanel(new MigLayout("righttoleft"));
+		southPanel.add(getOkButton(), "tag ok");
+
 		getContentPane().add(dataPanel, BorderLayout.CENTER);
 		getContentPane().add(controlPanel, BorderLayout.EAST);
+		getContentPane().add(southPanel, BorderLayout.SOUTH);
 
 		setLocationRelativeTo(null);
 		pack();
@@ -170,6 +177,24 @@ public class EditJobCategoryDialog extends JDialog
 			  + "deleteIcon"));
 		}
 		return deleteButton;
+	}
+
+	private JButton getOkButton()
+	{
+		if(okButton == null)
+		{
+			okButton =
+			  new JButton(resourceMap.getString("editJobCategory.Dialog.okButton"));
+			okButton.addActionListener(new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						setVisible(false);
+					}
+				});
+		}
+		return okButton;
 	}
 
 	/**

@@ -6,7 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
+import javax.inject.Inject;
+
+import org.jdesktop.application.Application;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,6 +35,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfigurationProperties
 {
+	@Inject
+	private GreenToneLogger logger;
 	private boolean firstLaunch;
 	final Properties properties;
 	private final String PROPERTY_FILE_NAME = "configuration.properties";
@@ -54,10 +60,24 @@ public class ConfigurationProperties
 	 */
 	public static final String JOB_PROTOCOL_SEPARATOR = "-";
 	/**
+	 * Carattere utilizzato come separatore per la costruzione del protocollo di
+	 * un documento
+	 */
+	public static final String DOCUMENT_PROTOCOL_SEPARATOR = "-";
+	/**
 	 * Numero di caratteri da utilizzare come padding di 0 nel codice del
-	 * protocollo parte numerica
+	 * protocollo incarico parte numerica
 	 */
 	public static final int JOB_PROTOCOL_NUMERIC_LENGTH = 4;
+	/**
+	 * Numero di caratteri da utilizzare come padding di 0 nel codice del
+	 * protocollo documento parte numerica
+	 */
+	public static final int DOCUMENT_PROTOCOL_NUMERIC_LENGHT = 5;
+	/** Carattere di padding per il protocollo dell'incarico */
+	public static final Character PROTOCOL_PADDING_CHAR = '0';
+	/** Carattere di padding per il protocollo del documento */
+	public static final Character DOCUMENT_PADDING_CHAR = '0';
 
 	/**
 	 * Configurazione utente del programma
@@ -85,11 +105,16 @@ public class ConfigurationProperties
 		}
 		catch(FileNotFoundException fnfe)
 		{
-			// fnfe.printStackTrace();
+			logger.getLogger().info(
+			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
+			    .getString("ErrorMessage.configurationNotFound"));
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			logger.getLogger().log(
+			  Level.SEVERE,
+			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
+			    .getString("ErrorMessage.loadConfiguration"), e);
 		}
 	}
 
@@ -110,11 +135,16 @@ public class ConfigurationProperties
 		}
 		catch(FileNotFoundException e)
 		{
-			// e.printStackTrace();
+			logger.getLogger().warning(
+			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
+			    .getString("ErrorMessage.configurationNotFound"));
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			logger.getLogger().log(
+			  Level.SEVERE,
+			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
+			    .getString("ErrorMessage.storeConfiguration"), e);
 		}
 	}
 

@@ -278,6 +278,4 @@ public class Document
 	{
 		this.job = job;
 	}
-
-
 }

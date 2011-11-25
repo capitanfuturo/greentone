@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.jdo.support.JdoDaoSupport;
@@ -24,21 +25,21 @@ import org.springframework.stereotype.Repository;
  * </code>
  * <br>
  * <br>
- * Classe di accesso alla tabella {@link JobCategory}
+ * Classe di accesso alla tabella {@link Metadata}
  * 
  * @author Giuseppe Caliendo
  */
-@Repository("jobCategoryDAO")
-public class JobCategoryDAO extends JdoDaoSupport
+@Repository("metadataDAO")
+public class MetadataDAO extends JdoDaoSupport
 {
 	/**
-	 * Classe di accesso alla tabella {@link JobCategoryDAO}
+	 * Classe di accesso alla tabella {@link Metadata}
 	 * 
 	 * @param pmf
 	 *          manager della persistenza
 	 */
 	@Inject
-	public JobCategoryDAO(final PersistenceManagerFactory pmf)
+	public MetadataDAO(final PersistenceManagerFactory pmf)
 	{
 		setPersistenceManagerFactory(pmf);
 	}
@@ -51,42 +52,41 @@ public class JobCategoryDAO extends JdoDaoSupport
 	 * @return l'oggetto di identificativo passato in ingresso
 	 * @throws DataAccessException
 	 */
-	public JobCategory loadJobCategory(final long id) throws DataAccessException
+	public Metadata loadMetadata(final long id) throws DataAccessException
 	{
-		final JobCategory jobCategory =
-		  getJdoTemplate().getObjectById(JobCategory.class, Long.valueOf(id));
-		if(jobCategory == null)
-			throw new RuntimeException("Job category " + id + " not found");
-		return getPersistenceManager().detachCopy(jobCategory);
+		final Metadata metadata =
+		  getJdoTemplate().getObjectById(Metadata.class, Long.valueOf(id));
+		if(metadata == null)
+			throw new RuntimeException("Metadata category " + id + " not found");
+		return getPersistenceManager().detachCopy(metadata);
 	}
 
 	/**
 	 * Rende persistente l'oggetto passato come parametro.
 	 * 
-	 * @param jobCategory
+	 * @param metadata
 	 *          l'oggetto da rendere persistente
 	 * @throws DataAccessException
 	 */
-	public void storeJobCategory(final JobCategory jobCategory)
-	  throws DataAccessException
+	public void storeMetadata(final Metadata metadata) throws DataAccessException
 	{
-		getJdoTemplate().makePersistent(jobCategory);
+		getJdoTemplate().makePersistent(metadata);
 	}
 
 	/**
 	 * Elimina l'oggetto passato in ingresso.
 	 * 
-	 * @param jobCategory
+	 * @param metadata
 	 *          l'oggetto da eliminare
 	 * @throws DataAccessException
 	 */
-	public void deleteJobCategory(final JobCategory jobCategory)
+	public void deleteMetadata(final JobCategory metadata)
 	  throws DataAccessException
 	{
-		if(jobCategory == null || jobCategory.getId() == null)
-			throw new RuntimeException("Job category is not persistent");
+		if(metadata == null || metadata.getId() == null)
+			throw new RuntimeException("Metadata is not persistent");
 		else
-			getPersistenceManager().deletePersistent(jobCategory);
+			getPersistenceManager().deletePersistent(metadata);
 	}
 
 	/**
@@ -97,10 +97,29 @@ public class JobCategoryDAO extends JdoDaoSupport
 	 *         tabella
 	 * @throws DataAccessException
 	 */
-	public Collection<JobCategory> getAllJobCategories()
-	  throws DataAccessException
+	public Collection<Metadata> getAllMetadata() throws DataAccessException
 	{
 		return getPersistenceManager().detachCopyAll(
-		  getJdoTemplate().find(JobCategory.class));
+		  getJdoTemplate().find(Metadata.class));
+	}
+
+	/**
+	 * Restituisce il metadato a partire dal nome univoco della property.
+	 * 
+	 * @param name
+	 *          il nome della property da cercare
+	 * @return il metadato a partire dal nome univoco della property
+	 */
+	public Metadata getMetadataFromName(String name)
+	{
+		Query query =
+		  getPersistenceManager()
+		    .newQuery(
+		      "SELECT FROM it.greentone.persistence.Metadata WHERE name == n PARAMETERS String n");
+		@SuppressWarnings("unchecked")
+		Collection<Metadata> result =
+		  getPersistenceManager().detachCopyAll(
+		    (Collection<Metadata>) query.execute(name));
+		return result != null && !result.isEmpty()? result.iterator().next(): null;
 	}
 }

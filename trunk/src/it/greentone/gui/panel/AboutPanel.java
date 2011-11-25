@@ -1,5 +1,6 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneLogger;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.FontProvider;
@@ -7,7 +8,9 @@ import it.greentone.gui.FontProvider;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 
+import javax.inject.Inject;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,6 +47,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AboutPanel extends ContextualPanel<Void>
 {
+	@Inject
+	private GreenToneLogger logger;
+	@Inject
+	private GreenToneUtilities utilities;
 	private final String panelBundle;
 
 	/**
@@ -96,11 +103,12 @@ public class AboutPanel extends ContextualPanel<Void>
 					{
 						try
 						{
-							GreenToneUtilities.browse(hle.getURL().toURI());
+							utilities.browse(hle.getURL().toURI());
 						}
 						catch(URISyntaxException e)
 						{
-							e.printStackTrace();
+							logger.getLogger().log(Level.WARNING,
+							  getResourceMap().getString("ErrorMessage.cannotOpenURL"), e);
 						}
 					}
 				}
@@ -126,11 +134,12 @@ public class AboutPanel extends ContextualPanel<Void>
 					{
 						try
 						{
-							GreenToneUtilities.browse(hle.getURL().toURI());
+							utilities.browse(hle.getURL().toURI());
 						}
 						catch(URISyntaxException e)
 						{
-							e.printStackTrace();
+							logger.getLogger().log(Level.WARNING,
+							  getResourceMap().getString("ErrorMessage.cannotOpenURL"), e);
 						}
 					}
 				}
@@ -141,16 +150,19 @@ public class AboutPanel extends ContextualPanel<Void>
 		final JTextArea licenseTextArea = new JTextArea();
 		licenseTextArea.setEditable(false);
 		licenseTextArea.setFont(FontProvider.CODE);
+		String licenceURL =
+		  "/" + getResourceMap().getResourcesDir() + "license.txt";
 		try
 		{
-			String licenceURL =
-			  "/" + getResourceMap().getResourcesDir() + "license.txt";
 			InputStream inputStream = getClass().getResourceAsStream(licenceURL);
 			licenseTextArea.read(new InputStreamReader(inputStream), null);
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			logger.getLogger().log(
+			  Level.WARNING,
+			  getResourceMap().getString("ErrorMessage.cannotOpenURL") + " "
+			    + licenceURL, e);
 		}
 		final JScrollPane scrollPane = new JScrollPane(licenseTextArea);
 

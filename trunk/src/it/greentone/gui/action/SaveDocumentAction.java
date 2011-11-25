@@ -2,6 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneAppConfig;
+import it.greentone.GreenToneLogger;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
@@ -12,6 +13,7 @@ import it.greentone.persistence.Person;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.inject.Inject;
 import javax.swing.JOptionPane;
@@ -49,6 +51,10 @@ public class SaveDocumentAction extends AbstractBean
 	private DocumentsPanel documentsPanel;
 	@Inject
 	private DocumentService documentService;
+	@Inject
+	private GreenToneLogger logger;
+	@Inject
+	private GreenToneUtilities utilities;
 	private final ResourceMap resourceMap;
 	boolean saveDocumentActionEnabled = false;
 
@@ -74,7 +80,7 @@ public class SaveDocumentAction extends AbstractBean
 		{
 			JOptionPane.showMessageDialog(documentsPanel,
 			  resourceMap.getString("saveDocument.Action.dateAfterNowMessage"),
-			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
+			  resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -124,7 +130,8 @@ public class SaveDocumentAction extends AbstractBean
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			logger.getLogger().log(Level.WARNING,
+			  resourceMap.getString("ErrorMessage.copyingFile") + file.getPath(), e);
 		}
 
 
@@ -176,12 +183,9 @@ public class SaveDocumentAction extends AbstractBean
 	private String copyFile(File inputFile) throws IOException
 	{
 		new File(GreenToneAppConfig.DOCUMENTS_REPOSITORY).mkdirs();
-
 		File copiedFile =
 		  new File(GreenToneAppConfig.DOCUMENTS_REPOSITORY + inputFile.getName());
-
-		GreenToneUtilities.copyFile(inputFile, copiedFile);
-
+		utilities.copyFile(inputFile, copiedFile);
 		return copiedFile.getCanonicalPath().toString();
 	}
 }

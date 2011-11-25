@@ -127,11 +127,12 @@ public class DocumentDAO extends JdoDaoSupport
 	}
 
 	/**
-	 * Restituisce la lista dei documenti dell'incarico passato in ingresso.
+	 * Restituisce la lista di tutti i documenti dell'incarico passato in
+	 * ingresso.
 	 * 
 	 * @param job
 	 *          incarico
-	 * @return la lista dei documenti dell'incarico passato in ingresso
+	 * @return la lista di tutti i documenti dell'incarico passato in ingresso
 	 * @throws DataAccessException
 	 */
 	public Collection<Document> getDocumentsJob(Job job)

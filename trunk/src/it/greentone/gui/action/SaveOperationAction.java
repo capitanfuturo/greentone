@@ -2,6 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
+import it.greentone.GreenToneLogger;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
@@ -12,6 +13,7 @@ import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
 
 import java.text.ParseException;
+import java.util.logging.Level;
 
 import javax.inject.Inject;
 import javax.swing.JOptionPane;
@@ -51,6 +53,8 @@ public class SaveOperationAction extends AbstractBean
 	private OperationsPanel operationsPanel;
 	@Inject
 	private ConfigurationProperties properties;
+	@Inject
+	private GreenToneLogger logger;
 	private final ResourceMap resourceMap;
 	boolean saveOperationActionEnabled = false;
 
@@ -71,7 +75,7 @@ public class SaveOperationAction extends AbstractBean
 	{
 		try
 		{
-			String errorTitle = resourceMap.getString("ErrorDialog.title");
+			String errorTitle = resourceMap.getString("ErrorMessage.title");
 			/* controllo date */
 			DateTime operationDate =
 			  GreenToneUtilities.getDateTime(operationsPanel.getOperationDate());
@@ -171,7 +175,8 @@ public class SaveOperationAction extends AbstractBean
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			logger.getLogger().log(Level.SEVERE,
+			  resourceMap.getString("ErrorMessage.saveOperation"), e);
 		}
 
 	}

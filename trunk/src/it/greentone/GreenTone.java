@@ -128,7 +128,8 @@ public class GreenTone extends SingleFrameApplication
 				@Override
 				protected Void doInBackground() throws Exception
 				{
-					String remoteVersion = GreenToneUtilities.checkUpdates();
+					String remoteVersion =
+					  springBeansHolder.getUtilities().checkUpdates();
 					if(remoteVersion != null)
 					{
 						String currentVersion =
@@ -163,7 +164,6 @@ public class GreenTone extends SingleFrameApplication
 		springBeansHolder.getConfigurationProperties().store();
 	}
 
-
 	/**
 	 * Bean di comunicazione tra la classe di lancio dell'applicazione (framework
 	 * BSAF) e il framework di Spring.
@@ -179,6 +179,8 @@ public class GreenTone extends SingleFrameApplication
 		private MainPanel mainPanel;
 		@Inject
 		private ConfigurationProperties configurationProperties;
+		@Inject
+		private GreenToneUtilities utilities;
 
 		/**
 		 * Restituisce la factory del manager della persistenza di JDO.
@@ -242,6 +244,27 @@ public class GreenTone extends SingleFrameApplication
 		  ConfigurationProperties configurationProperties)
 		{
 			this.configurationProperties = configurationProperties;
+		}
+
+		/**
+		 * Restituisce l'oggetto di utilità dell'applicazione.
+		 * 
+		 * @return l'oggetto di utilità dell'applicazione
+		 */
+		public GreenToneUtilities getUtilities()
+		{
+			return utilities;
+		}
+
+		/**
+		 * Imposta l'oggetto di utilità dell'applicazione.
+		 * 
+		 * @param utilities
+		 *          l'oggetto di utilità dell'applicazione
+		 */
+		public void setUtilities(GreenToneUtilities utilities)
+		{
+			this.utilities = utilities;
 		}
 	}
 }

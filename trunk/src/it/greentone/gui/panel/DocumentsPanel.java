@@ -88,6 +88,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private DeleteDocumentAction deleteDocumentAction;
 	@Inject
 	private SaveDocumentAction saveDocumentAction;
+	@Inject
+	private GreenToneUtilities utilities;
 
 	private JTextField protocolTextField;
 	private JTextField descriptionTextField;
@@ -229,6 +231,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		{
 			protocolTextField = new JTextField();
 			registerComponent(protocolTextField);
+			protocolTextField.setEnabled(false);
+
 			protocolTextField.getDocument().addDocumentListener(
 			  new DocumentListener()
 				  {
@@ -649,7 +653,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 							@Override
 							protected Void doInBackground() throws Exception
 							{
-								GreenToneUtilities.open(file);
+								utilities.open(file);
 								return null;
 							}
 						}.execute();

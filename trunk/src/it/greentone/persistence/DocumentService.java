@@ -1,5 +1,9 @@
 package it.greentone.persistence;
 
+import it.greentone.ConfigurationProperties;
+import it.greentone.GreenToneUtilities;
+
+import java.util.Calendar;
 import java.util.Collection;
 
 import javax.inject.Inject;
@@ -37,8 +41,13 @@ public class DocumentService
 {
 	@Inject
 	private DocumentDAO documentDAO;
+	@Inject
+	private MetadataService metadataService;
+
 	private final EventList<Document> allDocuments =
 	  new BasicEventList<Document>();
+	/** Carattere di padding per il protocollo dell'incarico */
+	public final Character PROTOCOL_PADDING_CHAR = '0';
 
 	/**
 	 * Rende persistente un oggetto nel database.
@@ -59,7 +68,25 @@ public class DocumentService
 	 */
 	public void addDocument(Document document)
 	{
+		/* rendo persistente il documento */
 		storeDocument(document);
+		/* aggiorno come metadato l'ultimo protocollo usato */
+		Metadata metadata =
+		  metadataService
+		    .getMetadataFromName(MetadataService.DOCUMENT_LAST_PROTOCOL);
+		if(metadata != null)
+		{
+			metadata.setValue(document.getProtocol());
+		}
+		else
+		{
+			metadata = new Metadata();
+			metadata.setName(MetadataService.DOCUMENT_LAST_PROTOCOL);
+			metadata.setValue(document.getProtocol());
+			metadata.setType(MetadataType.STRING);
+		}
+		metadataService.storeMetadata(metadata);
+		/* aggiungo nella lista interna il documento */
 		allDocuments.add(document);
 	}
 
@@ -111,5 +138,66 @@ public class DocumentService
 	public Collection<Document> getDocumentsAsRecipient(Person person)
 	{
 		return documentDAO.getDocumentsAsRecipient(person);
+	}
+
+	/**
+	 * Restituisce il prossimo protocollo utile da utilizzare. Il protocollo per i
+	 * documenti è del tipo 00001-2011
+	 * 
+	 * @return il prossimo protocollo utile da utilizzare
+	 */
+	public String getNextProtocol()
+	{
+		String counter = "";
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+
+		/* recupero il metadato dell'ultimo protocollo usato */
+		Metadata metadata =
+		  metadataService
+		    .getMetadataFromName(MetadataService.DOCUMENT_LAST_PROTOCOL);
+		if(metadata != null)
+		{
+			String lastProtocol = metadata.getValue();
+			/* recupero l'anno */
+			String protocolYear =
+			  lastProtocol
+			    .substring(ConfigurationProperties.DOCUMENT_PROTOCOL_NUMERIC_LENGHT
+			      + ConfigurationProperties.DOCUMENT_PROTOCOL_SEPARATOR.length());
+
+			/* se siamo nello stesso anno */
+			if(protocolYear.equals(year + ""))
+			{
+				/* recupero la parte del contatore */
+				int endIndex = ConfigurationProperties.DOCUMENT_PROTOCOL_NUMERIC_LENGHT;
+				counter = lastProtocol.substring(0, endIndex);
+				/* tolgo il padding iniziale di 0 */
+				int i = 0;
+				while(counter.charAt(i) == ConfigurationProperties.PROTOCOL_PADDING_CHAR)
+				{
+					i++;
+				}
+				counter = counter.substring(i);
+				counter = (Integer.valueOf(counter) + 1) + "";
+			}
+			else
+			{
+				/* caso primo protocollo dell'anno */
+				counter = "1";
+			}
+		}
+		else
+		{
+			/* caso primo protocollo del sistema */
+			counter = "1";
+		}
+
+		/* costruisco il protocollo nella versione nnnnn-yyyy */
+		String protocol =
+		  GreenToneUtilities.leftPadding(counter,
+		    ConfigurationProperties.DOCUMENT_PADDING_CHAR,
+		    ConfigurationProperties.DOCUMENT_PROTOCOL_NUMERIC_LENGHT);
+		protocol =
+		  protocol + ConfigurationProperties.DOCUMENT_PROTOCOL_SEPARATOR + year;
+		return protocol;
 	}
 }
