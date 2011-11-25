@@ -1,13 +1,4 @@
-package it.greentone.gui.action;
-
-import it.greentone.gui.ContextualPanel.EStatus;
-import it.greentone.gui.panel.DocumentsPanel;
-import it.greentone.persistence.DocumentService;
-
-import javax.inject.Inject;
-
-import org.jdesktop.application.Action;
-import org.springframework.stereotype.Component;
+package it.greentone.persistence;
 
 /**
  * <code>
@@ -24,28 +15,13 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Aggiunge un documento.
+ * Tipo di dato salvato in una riga della tabella dei metadati
+ * dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
-@Component
-public class AddDocumentAction
+public enum MetadataType
 {
-	@Inject
-	private DocumentsPanel documentsPanel;
-	@Inject
-	private DocumentService documentService;
-
-	/**
-	 * Aggiunge un documento.
-	 */
-	@Action
-	public void addDocument()
-	{
-		documentsPanel.clearForm();
-		documentsPanel.setStatus(EStatus.NEW);
-		/* calcolo il protocollo da impostare */
-		documentsPanel.getProtocolTextField().setText(
-		  documentService.getNextProtocol());
-	}
+	/** Stringa */
+	STRING;
 }

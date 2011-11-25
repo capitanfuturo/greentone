@@ -14,7 +14,9 @@ import java.net.URI;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Level;
 
+import javax.inject.Inject;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 
@@ -22,6 +24,7 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXDatePicker;
 import org.joda.time.DateTime;
+import org.springframework.stereotype.Component;
 
 /**
  * <code>
@@ -42,9 +45,11 @@ import org.joda.time.DateTime;
  * 
  * @author Giuseppe Caliendo
  */
+@Component
 public class GreenToneUtilities
 {
-
+	@Inject
+	private GreenToneLogger logger;
 	private static final String UPDATE_URL =
 	  "http://greentone.googlecode.com/svn/trunk/installer/release.properties";
 	private static final String COMMENTS_CHAR = "#";
@@ -136,7 +141,7 @@ public class GreenToneUtilities
 	 * @return la stringa della nuova versione disponibile, <code>null</code>
 	 *         altrimenti
 	 */
-	public static String checkUpdates()
+	public String checkUpdates()
 	{
 		ResourceMap resourceMap =
 		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
@@ -191,7 +196,9 @@ public class GreenToneUtilities
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			logger.getLogger().info(
+			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
+			    .getString("ErrorMessage.checkUpdate"));
 		}
 		if(remoteVersion.length() > 0)
 		{
@@ -225,7 +232,7 @@ public class GreenToneUtilities
 	 * @throws IOException
 	 *           eccezione in caso di errore
 	 */
-	public static void copyFile(File input, File output) throws IOException
+	public void copyFile(File input, File output) throws IOException
 	{
 		InputStream in = null;
 		OutputStream out = null;
@@ -242,7 +249,11 @@ public class GreenToneUtilities
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			logger.getLogger().log(
+			  Level.WARNING,
+			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
+			    .getString("ErrorMessage.copyingFile")
+			    + " " + input.getPath(), e);
 		}
 		finally
 		{
@@ -258,7 +269,7 @@ public class GreenToneUtilities
 	 * @param file
 	 *          il file da visualizzare
 	 */
-	public static void open(File file)
+	public void open(File file)
 	{
 		if(Desktop.isDesktopSupported())
 		{
@@ -269,7 +280,11 @@ public class GreenToneUtilities
 			}
 			catch(IOException e)
 			{
-				e.printStackTrace();
+				logger.getLogger().log(
+				  Level.WARNING,
+				  Application.getInstance(GreenTone.class).getContext()
+				    .getResourceMap().getString("ErrorMessage.cannotOpenURL")
+				    + " " + file.getPath(), e);
 			}
 		}
 	}
@@ -280,7 +295,7 @@ public class GreenToneUtilities
 	 * @param uri
 	 *          indirizzo di risorsa
 	 */
-	public static void browse(URI uri)
+	public void browse(URI uri)
 	{
 		if(Desktop.isDesktopSupported())
 		{
@@ -291,7 +306,11 @@ public class GreenToneUtilities
 			}
 			catch(IOException e)
 			{
-				e.printStackTrace();
+				logger.getLogger().log(
+				  Level.WARNING,
+				  Application.getInstance(GreenTone.class).getContext()
+				    .getResourceMap().getString("ErrorMessage.cannotOpenURL")
+				    + " " + uri.getPath(), e);
 			}
 		}
 	}

@@ -45,6 +45,8 @@ public class ReportManager
 {
 	@Inject
 	PersonService personService;
+	@Inject
+	GreenToneUtilities utilities;
 
 	/**
 	 * Genera un report
@@ -71,7 +73,7 @@ public class ReportManager
 					final File fileToOpen = tempFile;
 					JasperExportManager
 					  .exportReportToPdfFile(print, fileToOpen.getPath());
-					GreenToneUtilities.open(fileToOpen);
+					utilities.open(fileToOpen);
 				}
 			}
 			catch(IOException ex)
@@ -126,7 +128,7 @@ public class ReportManager
 								JasperExportManager.exportReportToHtmlFile(print,
 								  fileToOpen.getPath());
 							}
-					GreenToneUtilities.open(fileToOpen);
+					utilities.open(fileToOpen);
 				}
 			}
 			catch(IOException ex)

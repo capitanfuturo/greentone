@@ -78,11 +78,10 @@ public class SaveJobAction extends AbstractBean
 		{
 			if(dueDate.isBeforeNow())
 			{
-				JOptionPane
-				  .showMessageDialog(jobsPanel,
-				    resourceMap.getString("saveJob.Action.dueDateBeforeNow"),
-				    resourceMap.getString("ErrorDialog.title"),
-				    JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(jobsPanel,
+				  resourceMap.getString("saveJob.Action.dueDateBeforeNow"),
+				  resourceMap.getString("ErrorMessage.title"),
+				  JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}
@@ -91,11 +90,10 @@ public class SaveJobAction extends AbstractBean
 		{
 			if(startDate.isAfterNow())
 			{
-				JOptionPane
-				  .showMessageDialog(jobsPanel,
-				    resourceMap.getString("saveJob.Action.startDateAfterNow"),
-				    resourceMap.getString("ErrorDialog.title"),
-				    JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(jobsPanel,
+				  resourceMap.getString("saveJob.Action.startDateAfterNow"),
+				  resourceMap.getString("ErrorMessage.title"),
+				  JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}
@@ -107,20 +105,18 @@ public class SaveJobAction extends AbstractBean
 		{
 			if(startDate != null && finishDate.isBefore(startDate))
 			{
-				JOptionPane
-				  .showMessageDialog(jobsPanel,
-				    resourceMap.getString("saveJob.Action.finishDateBeforeStartDate"),
-				    resourceMap.getString("ErrorDialog.title"),
-				    JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(jobsPanel,
+				  resourceMap.getString("saveJob.Action.finishDateBeforeStartDate"),
+				  resourceMap.getString("ErrorMessage.title"),
+				  JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			if(finishDate.isAfterNow())
 			{
-				JOptionPane
-				  .showMessageDialog(jobsPanel,
-				    resourceMap.getString("saveJob.Action.finishDateAfterNow"),
-				    resourceMap.getString("ErrorDialog.title"),
-				    JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(jobsPanel,
+				  resourceMap.getString("saveJob.Action.finishDateAfterNow"),
+				  resourceMap.getString("ErrorMessage.title"),
+				  JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		}

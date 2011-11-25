@@ -2,11 +2,13 @@ package it.greentone.gui.action;
 
 import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
+import it.greentone.GreenToneLogger;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.panel.OptionsPanel;
 import it.greentone.persistence.JobService;
 
 import java.text.ParseException;
+import java.util.logging.Level;
 
 import javax.inject.Inject;
 import javax.swing.JOptionPane;
@@ -45,6 +47,8 @@ public class SaveOptionsAction extends AbstractBean
 	private ConfigurationProperties properties;
 	@Inject
 	private JobService jobService;
+	@Inject
+	private GreenToneLogger logger;
 	private final ResourceMap resourceMap;
 
 	/**
@@ -70,7 +74,7 @@ public class SaveOptionsAction extends AbstractBean
 		{
 			JOptionPane.showMessageDialog(optionsPanel,
 			  resourceMap.getString("saveOptions.Action.priceNotNull"),
-			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
+			  resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 			optionsPanel.getVacazioneTextField().requestFocus();
 		}
 		else
@@ -117,7 +121,7 @@ public class SaveOptionsAction extends AbstractBean
 							{
 								JOptionPane.showMessageDialog(optionsPanel,
 								  resourceMap.getString("saveOptions.Action.tooJobs"),
-								  resourceMap.getString("ErrorDialog.title"),
+								  resourceMap.getString("ErrorMessage.title"),
 								  JOptionPane.ERROR_MESSAGE);
 							}
 						}
@@ -131,7 +135,8 @@ public class SaveOptionsAction extends AbstractBean
 			}
 			catch(ParseException e)
 			{
-				e.printStackTrace();
+				logger.getLogger().log(Level.SEVERE,
+				  resourceMap.getString("ErrorMessage.saveOptions"), e);
 			}
 		}
 	}

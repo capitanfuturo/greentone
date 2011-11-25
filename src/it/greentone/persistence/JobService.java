@@ -50,8 +50,6 @@ public class JobService
 	@Inject
 	private ConfigurationProperties configurationProperties;
 	private final EventList<Job> allJobs = new BasicEventList<Job>();
-	/** Carattere di padding per il protocollo dell'incarico */
-	public final Character PROTOCOL_PADDING_CHAR = '0';
 
 	/**
 	 * Restitusice l'oggetto di identificativo passato in ingresso.
@@ -202,7 +200,7 @@ public class JobService
 			}
 			/* tolgo il padding iniziale di 0 */
 			int i = 0;
-			while(protocol.charAt(i) == PROTOCOL_PADDING_CHAR)
+			while(protocol.charAt(i) == ConfigurationProperties.PROTOCOL_PADDING_CHAR)
 			{
 				i++;
 			}
@@ -215,7 +213,8 @@ public class JobService
 		}
 		/* ora procedo con il padding e l'eventuale anno */
 		protocol =
-		  GreenToneUtilities.leftPadding(protocol, PROTOCOL_PADDING_CHAR,
+		  GreenToneUtilities.leftPadding(protocol,
+		    ConfigurationProperties.PROTOCOL_PADDING_CHAR,
 		    ConfigurationProperties.JOB_PROTOCOL_NUMERIC_LENGTH);
 		if(yearsEnabled)
 		{
@@ -265,7 +264,8 @@ public class JobService
 			String protocol =
 			  year
 			    + ConfigurationProperties.JOB_PROTOCOL_SEPARATOR
-			    + GreenToneUtilities.leftPadding("" + counter, PROTOCOL_PADDING_CHAR,
+			    + GreenToneUtilities.leftPadding("" + counter,
+			      ConfigurationProperties.PROTOCOL_PADDING_CHAR,
 			      ConfigurationProperties.JOB_PROTOCOL_NUMERIC_LENGTH);
 			job.setProtocol(protocol);
 			storeJob(job);
@@ -314,7 +314,8 @@ public class JobService
 			/* eseguo il padding */
 			String protocol = protocolNumber + "";
 			protocol =
-			  GreenToneUtilities.leftPadding(protocol, PROTOCOL_PADDING_CHAR,
+			  GreenToneUtilities.leftPadding(protocol,
+			    ConfigurationProperties.PROTOCOL_PADDING_CHAR,
 			    ConfigurationProperties.JOB_PROTOCOL_NUMERIC_LENGTH);
 			job.setProtocol("" + protocol);
 			storeJob(job);

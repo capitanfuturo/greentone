@@ -67,7 +67,7 @@ public class SavePersonAction extends AbstractBean
 		{
 			JOptionPane.showMessageDialog(personsPanel,
 			  resourceMap.getString("savePerson.Action.nameNotNull"),
-			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
+			  resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 			personsPanel.getNameTextField().requestFocus();
 		}
 		else
@@ -112,7 +112,7 @@ public class SavePersonAction extends AbstractBean
 				{
 					JOptionPane.showMessageDialog(personsPanel,
 					  resourceMap.getString("savePerson.Action.pivaNotNull"),
-					  resourceMap.getString("ErrorDialog.title"),
+					  resourceMap.getString("ErrorMessage.title"),
 					  JOptionPane.ERROR_MESSAGE);
 					personsPanel.getNameTextField().requestFocus();
 					return;
@@ -124,7 +124,7 @@ public class SavePersonAction extends AbstractBean
 				{
 					JOptionPane.showMessageDialog(personsPanel,
 					  resourceMap.getString("savePerson.Action.cfNotNull"),
-					  resourceMap.getString("ErrorDialog.title"),
+					  resourceMap.getString("ErrorMessage.title"),
 					  JOptionPane.ERROR_MESSAGE);
 					personsPanel.getNameTextField().requestFocus();
 					return;

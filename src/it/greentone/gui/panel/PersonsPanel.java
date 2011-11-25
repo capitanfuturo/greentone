@@ -1,5 +1,6 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneLogger;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
@@ -74,6 +75,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private PersonService personService;
 	@Inject
 	private ReportManager reportManager;
+	@Inject
+	private GreenToneLogger logger;
 	private EventJXTableModel<Person> tableModel;
 	private final String panelBundle;
 	private JTextField nameTextField;
@@ -452,7 +455,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 						}
 						catch(Exception e1)
 						{
-							e1.printStackTrace();
+							logger.getLogger().info(
+							  getResourceMap().getString("ErrorMessage.parsingValue"));
 						}
 					}
 				});

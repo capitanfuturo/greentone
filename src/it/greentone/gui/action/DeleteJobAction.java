@@ -77,7 +77,7 @@ public class DeleteJobAction extends AbstractBean
 		{
 			JOptionPane.showMessageDialog(jobsPanel,
 			  resourceMap.getString("deleteJob.Action.errorMessage"),
-			  resourceMap.getString("ErrorDialog.title"), JOptionPane.ERROR_MESSAGE);
+			  resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
