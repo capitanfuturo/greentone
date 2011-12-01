@@ -82,6 +82,12 @@
 		 <description>GreenTone libraries set</description>
 		 <file src="@{basedir}/../lib/bin" targetdir="$INSTALL_PATH"/>
 	  </pack>
+	  
+	  <!-- Manuale utente -->
+	  <pack name="Help" required="yes" installGroups="Core" >
+		 <description>GreenTone manuals set</description>
+		 <file src="@{basedir}/manual" targetdir="$INSTALL_PATH"/>
+	  </pack>
    </packs>
    
 </installation>

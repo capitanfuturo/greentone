@@ -1,10 +1,15 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneLogger;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.FontProvider;
 
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
@@ -16,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingWorker;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -66,7 +72,7 @@ public class AboutPanel extends ContextualPanel<Void>
 	@Override
 	protected JPanel createHeaderPanel()
 	{
-		JPanel headerPanel = new JPanel(new MigLayout("", "", "[][][][][][90%]"));
+		JPanel headerPanel = new JPanel(new MigLayout("", "", "[][][][][][][85%]"));
 
 		JLabel logoLabel =
 		  new JLabel(getResourceMap().getIcon("viewAbout.Panel.logo"));
@@ -145,6 +151,34 @@ public class AboutPanel extends ContextualPanel<Void>
 				}
 			});
 
+		/* Manuale utente */
+		JLabel manualLabel =
+		  new JLabel(getResourceMap().getString("viewAbout.Panel.manual"));
+		final File manualFile =
+		  new File(GreenToneAppConfig.MANUAL_REPOSITORY
+		    + "GreenTone-ManualeUtente.pdf");
+		JEditorPane manualPathField = new JEditorPane();
+		manualPathField.setText(manualFile.getName());
+		manualPathField.setForeground(Color.blue);
+
+		manualPathField.addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					new SwingWorker<Void, Void>()
+						{
+
+							@Override
+							protected Void doInBackground() throws Exception
+							{
+								utilities.open(manualFile);
+								return null;
+							}
+						}.execute();
+				};
+			});
+
 		JLabel licenseLabel =
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
 		final JTextArea licenseTextArea = new JTextArea();
@@ -179,6 +213,9 @@ public class AboutPanel extends ContextualPanel<Void>
 
 		headerPanel.add(mailLabel);
 		headerPanel.add(mailContent, "wrap");
+
+		headerPanel.add(manualLabel);
+		headerPanel.add(manualPathField, "grow, wrap");
 
 		headerPanel.add(licenseLabel);
 		headerPanel.add(scrollPane, "grow");
