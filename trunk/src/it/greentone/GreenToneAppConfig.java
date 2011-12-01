@@ -54,6 +54,10 @@ public class GreenToneAppConfig
 	 * documenti
 	 */
 	public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents/";
+	/**
+	 * Path dove risiede il manuale utente
+	 */
+	public static final String MANUAL_REPOSITORY = BASE_PATH + "manual/";
 
 	/**
 	 * Resituisce la factory di gestione della persistenza.
