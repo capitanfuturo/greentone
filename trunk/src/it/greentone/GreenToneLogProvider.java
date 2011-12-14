@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class GreenToneLogger
+public class GreenToneLogProvider
 {
 	Logger logger;
 	private static final String LOG_FILENAME = "log.txt";
@@ -36,7 +36,7 @@ public class GreenToneLogger
 	/**
 	 * Crea e configura il sistema di logging dell'applicazione.
 	 */
-	public GreenToneLogger()
+	public GreenToneLogProvider()
 	{
 		logger = Logger.getLogger("it.greentone");
 		try

@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 public class ConfigurationProperties
 {
 	@Inject
-	private GreenToneLogger logger;
+	private GreenToneLogProvider logger;
 	private boolean firstLaunch;
 	final Properties properties;
 	private final String PROPERTY_FILE_NAME = "configuration.properties";

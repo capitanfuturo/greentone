@@ -74,6 +74,7 @@ public class GreenTone extends SingleFrameApplication
 		/* recupero il wrapper che contiene i bean creati da Spring Framework */
 		springBeansHolder = applicationContext.getBean(SpringBeansHolder.class);
 		// TODO JXLoginDialog PasswordDialog passwordDialog = new PasswordDialog();
+		springBeansHolder.getLogProvider().getLogger().info("Avvio Greentone");
 	}
 
 	@Override
@@ -83,6 +84,8 @@ public class GreenTone extends SingleFrameApplication
 		  getContext().getResourceMap().getString("Application.title");
 		getMainFrame().setTitle(applicationTitle);
 		final MainPanel mainPanel = springBeansHolder.getMainPanel();
+		springBeansHolder.getLogProvider().getLogger()
+		  .info("Inizializzazione pannello principale");
 		mainPanel.initialize();
 		/* aggiungo un listener per la chiusura dell'applicazione */
 		addExitListener(new ExitListener()
@@ -105,10 +108,14 @@ public class GreenTone extends SingleFrameApplication
 				}
 			});
 		show(mainPanel);
+		springBeansHolder.getLogProvider().getLogger()
+		  .info("Interfaccia grafica avviata");
 
 		/* se è il primo avvio allora va gestito l'uso dell'annno del protocollo */
 		if(springBeansHolder.getConfigurationProperties().isFirstLaunch())
 		{
+			springBeansHolder.getLogProvider().getLogger()
+			  .info("Rilevato primo avvio");
 			int answer =
 			  JOptionPane.showConfirmDialog(mainPanel, getContext().getResourceMap()
 			    .getString("Application.firstLaunch"), applicationTitle,
@@ -153,6 +160,8 @@ public class GreenTone extends SingleFrameApplication
 		 */
 		if(springBeansHolder.getConfigurationProperties().isCheckUpdateActivated())
 		{
+			springBeansHolder.getLogProvider().getLogger()
+			  .info("Controllo aggiornamenti");
 			worker.execute();
 		}
 	}
@@ -162,6 +171,7 @@ public class GreenTone extends SingleFrameApplication
 	{
 		super.shutdown();
 		springBeansHolder.getConfigurationProperties().store();
+		springBeansHolder.getLogProvider().getLogger().info("Esco");
 	}
 
 	/**
@@ -181,6 +191,8 @@ public class GreenTone extends SingleFrameApplication
 		private ConfigurationProperties configurationProperties;
 		@Inject
 		private GreenToneUtilities utilities;
+		@Inject
+		private GreenToneLogProvider logProvider;
 
 		/**
 		 * Restituisce la factory del manager della persistenza di JDO.
@@ -265,6 +277,27 @@ public class GreenTone extends SingleFrameApplication
 		public void setUtilities(GreenToneUtilities utilities)
 		{
 			this.utilities = utilities;
+		}
+
+		/**
+		 * Restituisce il provider del logger.
+		 * 
+		 * @return il provider del logger
+		 */
+		public GreenToneLogProvider getLogProvider()
+		{
+			return logProvider;
+		}
+
+		/**
+		 * Imposta il provider del logger.
+		 * 
+		 * @param logProvider
+		 *          il provider del logger
+		 */
+		public void setLogProvider(GreenToneLogProvider logProvider)
+		{
+			this.logProvider = logProvider;
 		}
 	}
 }

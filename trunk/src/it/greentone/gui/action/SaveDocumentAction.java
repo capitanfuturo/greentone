@@ -2,7 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneAppConfig;
-import it.greentone.GreenToneLogger;
+import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
@@ -52,7 +52,7 @@ public class SaveDocumentAction extends AbstractBean
 	@Inject
 	private DocumentService documentService;
 	@Inject
-	private GreenToneLogger logger;
+	private GreenToneLogProvider logger;
 	@Inject
 	private GreenToneUtilities utilities;
 	private final ResourceMap resourceMap;

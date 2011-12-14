@@ -2,7 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
-import it.greentone.GreenToneLogger;
+import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
@@ -54,7 +54,7 @@ public class SaveOperationAction extends AbstractBean
 	@Inject
 	private ConfigurationProperties properties;
 	@Inject
-	private GreenToneLogger logger;
+	private GreenToneLogProvider logger;
 	private final ResourceMap resourceMap;
 	boolean saveOperationActionEnabled = false;
 

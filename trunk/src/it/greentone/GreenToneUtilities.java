@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
 public class GreenToneUtilities
 {
 	@Inject
-	private GreenToneLogger logger;
+	private GreenToneLogProvider logger;
 	private static final String UPDATE_URL =
 	  "http://greentone.googlecode.com/svn/trunk/installer/release.properties";
 	private static final String COMMENTS_CHAR = "#";
