@@ -1,6 +1,6 @@
 package it.greentone.gui.panel;
 
-import it.greentone.GreenToneLogger;
+import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
@@ -76,7 +76,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	@Inject
 	private ReportManager reportManager;
 	@Inject
-	private GreenToneLogger logger;
+	private GreenToneLogProvider logger;
 	private EventJXTableModel<Person> tableModel;
 	private final String panelBundle;
 	private JTextField nameTextField;

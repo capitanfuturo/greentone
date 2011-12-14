@@ -2,7 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
-import it.greentone.GreenToneLogger;
+import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.panel.OptionsPanel;
 import it.greentone.persistence.JobService;
@@ -48,7 +48,7 @@ public class SaveOptionsAction extends AbstractBean
 	@Inject
 	private JobService jobService;
 	@Inject
-	private GreenToneLogger logger;
+	private GreenToneLogProvider logger;
 	private final ResourceMap resourceMap;
 
 	/**

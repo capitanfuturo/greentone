@@ -1,7 +1,7 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneAppConfig;
-import it.greentone.GreenToneLogger;
+import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.FontProvider;
@@ -54,7 +54,7 @@ import org.springframework.stereotype.Component;
 public class AboutPanel extends ContextualPanel<Void>
 {
 	@Inject
-	private GreenToneLogger logger;
+	private GreenToneLogProvider logger;
 	@Inject
 	private GreenToneUtilities utilities;
 	private final String panelBundle;
