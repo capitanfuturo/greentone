@@ -7,7 +7,6 @@ import it.greentone.persistence.JobCategoryService;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
@@ -80,6 +79,7 @@ public class EditJobCategoryDialog extends JDialog
 		JPanel controlPanel = new JPanel(new MigLayout("flowy, fillx"));
 		controlPanel.add(getAddButton(), "growx");
 		controlPanel.add(getDeleteButton(), "growx");
+		controlPanel.add(getOkButton(), "growx");
 
 		JPanel dataPanel = new JPanel(new BorderLayout());
 		JPanel inputPanel = new JPanel(new MigLayout());
@@ -89,12 +89,8 @@ public class EditJobCategoryDialog extends JDialog
 		dataPanel.add(inputPanel, BorderLayout.NORTH);
 		dataPanel.add(new JScrollPane(getJobCategoryJList()), BorderLayout.CENTER);
 
-		JPanel southPanel = new JPanel(new MigLayout("righttoleft"));
-		southPanel.add(getOkButton(), "tag ok");
-
 		getContentPane().add(dataPanel, BorderLayout.CENTER);
 		getContentPane().add(controlPanel, BorderLayout.EAST);
-		getContentPane().add(southPanel, BorderLayout.SOUTH);
 
 		setLocationRelativeTo(null);
 		pack();
@@ -183,16 +179,17 @@ public class EditJobCategoryDialog extends JDialog
 	{
 		if(okButton == null)
 		{
-			okButton =
-			  new JButton(resourceMap.getString("editJobCategory.Dialog.okButton"));
-			okButton.addActionListener(new ActionListener()
+			okButton = new JButton(new AbstractAction()
 				{
 					@Override
-					public void actionPerformed(ActionEvent e)
+					public void actionPerformed(ActionEvent arg0)
 					{
 						setVisible(false);
 					}
 				});
+			okButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
+			  + "okButton"));
+			okButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "okIcon"));
 		}
 		return okButton;
 	}
