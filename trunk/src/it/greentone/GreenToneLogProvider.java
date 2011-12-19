@@ -1,5 +1,6 @@
 package it.greentone;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -32,6 +33,7 @@ public class GreenToneLogProvider
 {
 	Logger logger;
 	private static final String LOG_FILENAME = "log.txt";
+	private FileHandler fileHandler;
 
 	/**
 	 * Crea e configura il sistema di logging dell'applicazione.
@@ -41,7 +43,7 @@ public class GreenToneLogProvider
 		logger = Logger.getLogger("it.greentone");
 		try
 		{
-			FileHandler fileHandler =
+			fileHandler =
 			  new FileHandler(GreenToneAppConfig.BASE_PATH + LOG_FILENAME, true);
 			fileHandler.setLevel(Level.ALL);
 			fileHandler.setFormatter(new SimpleFormatter());
@@ -61,5 +63,16 @@ public class GreenToneLogProvider
 	public Logger getLogger()
 	{
 		return logger;
+	}
+
+	/**
+	 * Elimina i log del programma.
+	 */
+	public void deleteLogs()
+	{
+		logger.removeHandler(fileHandler);
+		File logFile = new File(GreenToneAppConfig.BASE_PATH + LOG_FILENAME);
+		if(logFile.exists() && logFile.canWrite())
+			logFile.delete();
 	}
 }
