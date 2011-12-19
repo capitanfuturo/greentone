@@ -1,16 +1,20 @@
 package it.greentone.gui.panel;
 
 import it.greentone.ConfigurationProperties;
+import it.greentone.GreenToneLogProvider;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 import java.util.Currency;
 
 import javax.inject.Inject;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -48,6 +52,8 @@ public class OptionsPanel extends ContextualPanel<Void>
 	private ConfigurationProperties properties;
 	@Inject
 	private ActionProvider actionProvider;
+	@Inject
+	private GreenToneLogProvider logProvider;
 	private final String panelBundle;
 	private JPanel systemPanel;
 	private JCheckBox checkUpdateCheckBox;
@@ -55,6 +61,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 	private JFormattedTextField vacazioneTextField;
 	private JFormattedTextField vacazioneAiutanteTextField;
 	private JCheckBox useYearInJobProtocolCheckBox;
+	private JButton deleteLogsButton;
 
 	/**
 	 * Pannello delle configurazioni utente.
@@ -111,10 +118,16 @@ public class OptionsPanel extends ContextualPanel<Void>
 			systemPanel = new JPanel(new MigLayout());
 			systemPanel.setBorder(BorderFactory.createTitledBorder(getResourceMap()
 			  .getString("viewOptions.Panel.systemTitle")));
+
 			JLabel checkUpdateLabel =
 			  new JLabel(getResourceMap().getString("viewOptions.Panel.checkUpdate"));
+			JLabel deleteLogsLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.deleteLogs"));
+
 			systemPanel.add(checkUpdateLabel);
-			systemPanel.add(getCheckUpdateCheckBox());
+			systemPanel.add(getCheckUpdateCheckBox(), "wrap");
+			systemPanel.add(deleteLogsLabel);
+			systemPanel.add(getDeleteLogsButton());
 		}
 		return systemPanel;
 	}
@@ -230,5 +243,31 @@ public class OptionsPanel extends ContextualPanel<Void>
 			useYearInJobProtocolCheckBox = new JCheckBox();
 		}
 		return useYearInJobProtocolCheckBox;
+	}
+
+	/**
+	 * Restituisce il bottone adebito all'eliminazione dei log del programma.
+	 * 
+	 * @return il bottone adebito all'eliminazione dei log del programma
+	 */
+	public JButton getDeleteLogsButton()
+	{
+		if(deleteLogsButton == null)
+		{
+			deleteLogsButton = new JButton(new AbstractAction()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent arg0)
+					{
+						logProvider.deleteLogs();
+					}
+				});
+			deleteLogsButton.setIcon(getResourceMap().getIcon(
+			  "viewOptions.Panel.deleteLogsIcon"));
+			deleteLogsButton.setText(getResourceMap().getString(
+			  "viewOptions.Panel.deleteLogsText"));
+		}
+		return deleteLogsButton;
 	}
 }
