@@ -6,6 +6,8 @@ import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.panel.OptionsPanel;
 import it.greentone.persistence.JobService;
+import it.greentone.persistence.Office;
+import it.greentone.persistence.OfficeService;
 
 import java.text.ParseException;
 import java.util.logging.Level;
@@ -48,6 +50,8 @@ public class SaveOptionsAction extends AbstractBean
 	@Inject
 	private JobService jobService;
 	@Inject
+	private OfficeService officeService;
+	@Inject
 	private GreenToneLogProvider logger;
 	private final ResourceMap resourceMap;
 
@@ -67,10 +71,9 @@ public class SaveOptionsAction extends AbstractBean
 	@Action
 	public void saveOptions()
 	{
-		String name =
+		String vacazione =
 		  GreenToneUtilities.getText(optionsPanel.getVacazioneTextField());
-		/* la ragione sociale è obbligatoria */
-		if(name == null)
+		if(vacazione == null)
 		{
 			JOptionPane.showMessageDialog(optionsPanel,
 			  resourceMap.getString("saveOptions.Action.priceNotNull"),
@@ -81,6 +84,36 @@ public class SaveOptionsAction extends AbstractBean
 		{
 			try
 			{
+				/* salvo i dati relativi allo studio professionale */
+				Office office = officeService.loadOffice();
+				office.setAddress(GreenToneUtilities.getText(optionsPanel
+				  .getAddressTextField()));
+				office
+				  .setCap(GreenToneUtilities.getText(optionsPanel.getCapTextField()));
+				office.setCf(GreenToneUtilities.getText(optionsPanel.getCfTextField()));
+				office.setCity(GreenToneUtilities.getText(optionsPanel
+				  .getCityTextField()));
+				office.setEmail(GreenToneUtilities.getText(optionsPanel
+				  .getEmailTextField()));
+				office
+				  .setFax(GreenToneUtilities.getText(optionsPanel.getFaxTextField()));
+				office.setName(GreenToneUtilities.getText(optionsPanel
+				  .getNameTextField()));
+				office.setPiva(GreenToneUtilities.getText(optionsPanel
+				  .getPivaTextField()));
+				office.setProvince(GreenToneUtilities.getText(optionsPanel
+				  .getProvinceTextField()));
+				office.setTelephone1(GreenToneUtilities.getText(optionsPanel
+				  .getTelephone1TextField()));
+				office.setTelephone2(GreenToneUtilities.getText(optionsPanel
+				  .getTelephone2TextField()));
+				if(optionsPanel.getLogoPreviewPanel().getImage() != null)
+				{
+					office.setLogo(GreenToneUtilities.toBufferedImage(optionsPanel
+					  .getLogoPreviewPanel().getImage()));
+				}
+				officeService.storeOffice(office);
+
 				/* recupero i dati dal pannello e li salvo */
 				properties.setCheckUpdateActivated(optionsPanel
 				  .getCheckUpdateCheckBox().isSelected());

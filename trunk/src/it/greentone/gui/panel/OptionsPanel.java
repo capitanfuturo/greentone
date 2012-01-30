@@ -4,10 +4,14 @@ import it.greentone.ConfigurationProperties;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
+import it.greentone.persistence.Office;
+import it.greentone.persistence.OfficeService;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Currency;
 
@@ -16,9 +20,12 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -54,6 +61,8 @@ public class OptionsPanel extends ContextualPanel<Void>
 	private ActionProvider actionProvider;
 	@Inject
 	private GreenToneLogProvider logProvider;
+	@Inject
+	private OfficeService officeService;
 	private final String panelBundle;
 	private JPanel systemPanel;
 	private JCheckBox checkUpdateCheckBox;
@@ -62,6 +71,19 @@ public class OptionsPanel extends ContextualPanel<Void>
 	private JFormattedTextField vacazioneAiutanteTextField;
 	private JCheckBox useYearInJobProtocolCheckBox;
 	private JButton deleteLogsButton;
+	private JTextField nameTextField;
+	private JTextField addressTextField;
+	private JTextField cityTextField;
+	private JTextField provinceTextField;
+	private JTextField capTextField;
+	private JTextField cfTextField;
+	private JTextField pivaTextField;
+	private JTextField telephone1TextField;
+	private JTextField telephone2TextField;
+	private JTextField faxTextField;
+	private JTextField emailTextField;
+	private ImagePreviewPanel logoPreviewPanel;
+	private JButton logoButton;
 
 	/**
 	 * Pannello delle configurazioni utente.
@@ -88,8 +110,8 @@ public class OptionsPanel extends ContextualPanel<Void>
 	protected JPanel createHeaderPanel()
 	{
 		JPanel headerPanel = new JPanel(new MigLayout("", "[100%]"));
-		headerPanel.add(getSystemPanel(), "growx,wrap");
-		headerPanel.add(getAppPanel(), "growx");
+		headerPanel.add(getAppPanel(), "growx,wrap");
+		headerPanel.add(getSystemPanel(), "growx");
 		return headerPanel;
 	}
 
@@ -102,7 +124,23 @@ public class OptionsPanel extends ContextualPanel<Void>
 		getContextualToolBar().removeAll();
 		getContextualToolBar().add(actionProvider.getSaveOptions());
 
-		/* aggiorno il pannello */
+		/* aggiorno il pannello con le informazioni dello studio */
+		Office office = officeService.loadOffice();
+		getNameTextField().setText(office.getName());
+		getAddressTextField().setText(office.getAddress());
+		getCityTextField().setText(office.getCity());
+		getProvinceTextField().setText(office.getProvince());
+		getCapTextField().setText(office.getCap());
+		getCfTextField().setText(office.getCf());
+		getPivaTextField().setText(office.getPiva());
+		getTelephone1TextField().setText(office.getTelephone1());
+		getTelephone2TextField().setText(office.getTelephone2());
+		getFaxTextField().setText(office.getFax());
+		getEmailTextField().setText(office.getEmail());
+		if(office.getLogo() != null)
+			getLogoPreviewPanel().setImage(office.getLogo());
+
+		/* altre impostazioni */
 		getCheckUpdateCheckBox().setSelected(properties.isCheckUpdateActivated());
 		getVacazioneTextField().setValue(properties.getVacazionePrice());
 		getVacazioneAiutanteTextField().setValue(
@@ -124,9 +162,9 @@ public class OptionsPanel extends ContextualPanel<Void>
 			JLabel deleteLogsLabel =
 			  new JLabel(getResourceMap().getString("viewOptions.Panel.deleteLogs"));
 
-			systemPanel.add(checkUpdateLabel);
+			systemPanel.add(checkUpdateLabel, "gap para");
 			systemPanel.add(getCheckUpdateCheckBox(), "wrap");
-			systemPanel.add(deleteLogsLabel);
+			systemPanel.add(deleteLogsLabel, "gap para");
 			systemPanel.add(getDeleteLogsButton());
 		}
 		return systemPanel;
@@ -150,7 +188,9 @@ public class OptionsPanel extends ContextualPanel<Void>
 	{
 		if(appPanel == null)
 		{
-			appPanel = new JPanel(new MigLayout("", "[][10%]"));
+			appPanel =
+			  new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]",
+			    "[][][][][30%][][][]"));
 			appPanel.setBorder(BorderFactory.createTitledBorder(getResourceMap()
 			  .getString("viewOptions.Panel.appTitle")));
 			JLabel vacazioneLabel =
@@ -161,15 +201,120 @@ public class OptionsPanel extends ContextualPanel<Void>
 			JLabel useYearInJobsProtocolLabel =
 			  new JLabel(getResourceMap().getString(
 			    "viewOptions.Panel.useYearInJobsProtocol"));
+			JLabel nameLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeName"));
+			JLabel addressLabel =
+			  new JLabel(getResourceMap()
+			    .getString("viewOptions.Panel.officeAddress"));
+			JLabel cityLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeCity"));
+			JLabel provinceLabel =
+			  new JLabel(getResourceMap().getString(
+			    "viewOptions.Panel.officeProvince"));
+			JLabel capLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeCAP"));
+			JLabel pivaLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officePIVA"));
+			JLabel cfLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeCF"));
+			JLabel tel1Label =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeTel1"));
+			JLabel tel2Label =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeTel2"));
+			JLabel faxLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeFax"));
+			JLabel emailLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeEmail"));
+			JLabel logoLabel =
+			  new JLabel(getResourceMap().getString("viewOptions.Panel.officeLogo"));
 
-			appPanel.add(vacazioneLabel);
+			// dati relativi allo studio professionale
+			appPanel.add(nameLabel, "gap para");
+			appPanel.add(getNameTextField(), "span 2, growx, wrap");
+
+			appPanel.add(addressLabel, "gap para");
+			appPanel.add(getAddressTextField(), "growx");
+			appPanel.add(cityLabel, "gap para");
+			appPanel.add(getCityTextField(), "growx");
+			appPanel.add(provinceLabel, "gap para");
+			appPanel.add(getProvinceTextField(), "growx");
+			appPanel.add(capLabel, "gap para");
+			appPanel.add(getCapTextField(), "growx, wrap");
+
+			appPanel.add(pivaLabel, "gap para");
+			appPanel.add(getPivaTextField(), "growx");
+			appPanel.add(cfLabel, "gap para");
+			appPanel.add(getCfTextField(), "growx, wrap");
+
+			appPanel.add(tel1Label, "gap para");
+			appPanel.add(getTelephone1TextField(), "growx");
+			appPanel.add(tel2Label, "gap para");
+			appPanel.add(getTelephone2TextField(), "growx");
+			appPanel.add(faxLabel, "gap para");
+			appPanel.add(getFaxTextField(), "growx");
+			appPanel.add(emailLabel, "gap para");
+			appPanel.add(getEmailTextField(), "growx, wrap");
+
+			appPanel.add(logoLabel, "gap para");
+			appPanel.add(getLogoPreviewPanel(), "grow");
+			appPanel.add(getLogoButton(), "growx, wrap");
+
+			// dati relativi agli importi di vacazione
+			appPanel.add(vacazioneLabel, "gap para");
 			appPanel.add(getVacazioneTextField(), "growx,wrap");
-			appPanel.add(vacazioneAiutanteLabel);
+			appPanel.add(vacazioneAiutanteLabel, "gap para");
 			appPanel.add(getVacazioneAiutanteTextField(), "growx,wrap");
-			appPanel.add(useYearInJobsProtocolLabel);
+			appPanel.add(useYearInJobsProtocolLabel, "gap para");
 			appPanel.add(getUseYearInJobProtocolCheckBox(), "growx");
 		}
 		return appPanel;
+	}
+
+	/**
+	 * Restituisce il pannello contenente il logo dello studio.
+	 * 
+	 * @return il pannello contenente il logo dello studio
+	 */
+	public ImagePreviewPanel getLogoPreviewPanel()
+	{
+		if(logoPreviewPanel == null)
+		{
+			logoPreviewPanel = new ImagePreviewPanel();
+		}
+		return logoPreviewPanel;
+	}
+
+	/**
+	 * Restituisce il bottone per la scelta del logo dello studio.
+	 * 
+	 * @return il bottone per la scelta del logo dello studio
+	 */
+	public JButton getLogoButton()
+	{
+		if(logoButton == null)
+		{
+			logoButton =
+			  new JButton(getResourceMap().getString("viewOptions.Panel.open"));
+			logoButton.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent arg0)
+					{
+						JFileChooser chooser = new JFileChooser();
+						ImagePreviewPanel preview = new ImagePreviewPanel();
+						chooser.setAccessory(preview);
+						chooser.addPropertyChangeListener(preview);
+						int returnVal = chooser.showOpenDialog(OptionsPanel.this);
+						if(returnVal == JFileChooser.APPROVE_OPTION)
+						{
+							final File file = chooser.getSelectedFile();
+							getLogoPreviewPanel().setImage(file);
+						}
+					}
+				});
+		}
+		return logoButton;
 	}
 
 	/**
@@ -260,7 +405,17 @@ public class OptionsPanel extends ContextualPanel<Void>
 					@Override
 					public void actionPerformed(ActionEvent arg0)
 					{
-						logProvider.deleteLogs();
+						boolean result = logProvider.deleteLogs();
+						if(result)
+							JOptionPane.showMessageDialog(getParent(), getResourceMap()
+							  .getString("viewOptions.Panel.logsDeleted"), getResourceMap()
+							  .getString("Application.title"),
+							  JOptionPane.INFORMATION_MESSAGE);
+						else
+							JOptionPane.showMessageDialog(getParent(), getResourceMap()
+							  .getString("viewOptions.Panel.logsNotDeleted"),
+							  getResourceMap().getString("Application.title"),
+							  JOptionPane.WARNING_MESSAGE);
 					}
 				});
 			deleteLogsButton.setIcon(getResourceMap().getIcon(
@@ -269,5 +424,138 @@ public class OptionsPanel extends ContextualPanel<Void>
 			  "viewOptions.Panel.deleteLogsText"));
 		}
 		return deleteLogsButton;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento del nome.
+	 * 
+	 * @return il campo di inserimento del nome
+	 */
+	public JTextField getNameTextField()
+	{
+		if(nameTextField == null)
+			nameTextField = new JTextField();
+		return nameTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento del telefono principale.
+	 * 
+	 * @return il campo di inserimento del telefono principale
+	 */
+	public JTextField getTelephone1TextField()
+	{
+		if(telephone1TextField == null)
+			telephone1TextField = new JTextField();
+		return telephone1TextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento del telefono secondario.
+	 * 
+	 * @return il campo di inserimento del telefono secondario
+	 */
+	public JTextField getTelephone2TextField()
+	{
+		if(telephone2TextField == null)
+			telephone2TextField = new JTextField();
+		return telephone2TextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento della descrizione.
+	 * 
+	 * @return il campo di inserimento della descrizione
+	 */
+	public JTextField getAddressTextField()
+	{
+		if(addressTextField == null)
+			addressTextField = new JTextField();
+		return addressTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento della città.
+	 * 
+	 * @return il campo di inserimento della città
+	 */
+	public JTextField getCityTextField()
+	{
+		if(cityTextField == null)
+			cityTextField = new JTextField();
+		return cityTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento della provincia.
+	 * 
+	 * @return il campo di inserimento della provincia
+	 */
+	public JTextField getProvinceTextField()
+	{
+		if(provinceTextField == null)
+			provinceTextField = new JTextField();
+		return provinceTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento del codice di avviamento postale.
+	 * 
+	 * @return il campo di inserimento del codice di avviamento postale
+	 */
+	public JTextField getCapTextField()
+	{
+		if(capTextField == null)
+			capTextField = new JTextField();
+		return capTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento del codice fiscale.
+	 * 
+	 * @return il campo di inserimento del codice fiscale
+	 */
+	public JTextField getCfTextField()
+	{
+		if(cfTextField == null)
+			cfTextField = new JTextField();
+		return cfTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento della partita IVA.<br>
+	 * Accetta solo 11 cifre
+	 * 
+	 * @return il campo di inserimento della partita IVA
+	 */
+	public JTextField getPivaTextField()
+	{
+		if(pivaTextField == null)
+			pivaTextField = new JTextField();
+		return pivaTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento del fax.
+	 * 
+	 * @return il campo di inserimento del fax
+	 */
+	public JTextField getFaxTextField()
+	{
+		if(faxTextField == null)
+			faxTextField = new JTextField();
+		return faxTextField;
+	}
+
+	/**
+	 * Restituisce il campo di inserimento dell'indirizzo mail.
+	 * 
+	 * @return il campo di inserimento dell'indirizzo mail
+	 */
+	public JTextField getEmailTextField()
+	{
+		if(emailTextField == null)
+			emailTextField = new JTextField();
+		return emailTextField;
 	}
 }

@@ -67,12 +67,32 @@ public class GreenToneLogProvider
 
 	/**
 	 * Elimina i log del programma.
+	 * 
+	 * @return <code>true</code> se i log sono stati eliminati, <code>false</code>
+	 *         altrimenti
 	 */
-	public void deleteLogs()
+	public boolean deleteLogs()
 	{
 		logger.removeHandler(fileHandler);
-		File logFile = new File(GreenToneAppConfig.BASE_PATH + LOG_FILENAME);
+		logger.info("Removing log file handler");
+		String logPath = GreenToneAppConfig.BASE_PATH + LOG_FILENAME;
+		File logFile = new File(logPath);
+		logger.info("Log file to delete: " + logPath);
+		logger.info("Log file exists? : " + logFile.exists());
+		logger.info("Can write log file? : " + logFile.canWrite());
+		boolean result = false;
 		if(logFile.exists() && logFile.canWrite())
-			logFile.delete();
+		{
+			result = logFile.delete();
+			if(result)
+			{
+				logger.info("Log file deleted");
+			}
+			else
+			{
+				logger.info("Can't delete log file");
+			}
+		}
+		return result;
 	}
 }
