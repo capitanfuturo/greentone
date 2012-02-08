@@ -1,8 +1,8 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
+import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.ButtonTabComponent;
-import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.MainPanel;
 
 import java.awt.Component;
@@ -70,7 +70,7 @@ public abstract class ContextualAction
 		return mainPanel;
 	}
 
-	protected void addTab(ContextualPanel<?> panel)
+	protected void addTab(AbstractPanel panel)
 	{
 		/* controllo che il tab non sia già presente */
 		JTabbedPane tabbedPane = getMainPanel().getMainTabbedPane();

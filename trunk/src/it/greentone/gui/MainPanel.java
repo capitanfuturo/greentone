@@ -72,6 +72,7 @@ public class MainPanel extends JPanel
 		{
 			mainToolBar = new JToolBar();
 			mainToolBar.setFloatable(false);
+			mainToolBar.add(actionProvider.getViewHome());
 			mainToolBar.add(actionProvider.getViewJobs());
 			mainToolBar.add(actionProvider.getViewOperations());
 			mainToolBar.add(actionProvider.getViewDocuments());

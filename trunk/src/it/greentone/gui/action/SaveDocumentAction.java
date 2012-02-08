@@ -4,7 +4,7 @@ import it.greentone.GreenTone;
 import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;

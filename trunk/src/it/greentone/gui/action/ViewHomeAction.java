@@ -1,7 +1,7 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.AbstractPanel.EStatus;
-import it.greentone.gui.panel.PersonsPanel;
+import it.greentone.gui.MainPanel;
+import it.greentone.gui.panel.HomePanel;
 
 import javax.inject.Inject;
 
@@ -23,23 +23,35 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Aggiunge una persona in anagrafica.
+ * Visualizza la pagina iniziale del programma.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class AddPersonAction
+public class ViewHomeAction extends ContextualAction
 {
 	@Inject
-	private PersonsPanel personsPanel;
+	private HomePanel homePanel;
 
 	/**
-	 * Aggiunge una persona in anagrafica.
+	 * Visualizza la configurazione utente.
+	 * 
+	 * @param mainPanel
+	 *          pannello principale
+	 */
+	@Inject
+	public ViewHomeAction(MainPanel mainPanel)
+	{
+		super(mainPanel);
+	}
+
+	/**
+	 * Visualizza le persone presenti nel database.
 	 */
 	@Action
-	public void addPerson()
+	public void viewHome()
 	{
-		personsPanel.clearForm();
-		personsPanel.setStatus(EStatus.NEW);
+		homePanel.setup();
+		addTab(homePanel);
 	}
 }

@@ -1,6 +1,5 @@
 package it.greentone.gui;
 
-import it.greentone.GreenTone;
 import it.greentone.persistence.JobStatus;
 import it.greentone.persistence.OperationType;
 
@@ -22,8 +21,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.JTextComponent;
 
-import org.jdesktop.application.Application;
-import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
@@ -52,14 +49,12 @@ import org.joda.time.DateTime;
  *          Oggetto base del pannello contestuale
  */
 @SuppressWarnings("serial")
-public abstract class ContextualPanel<T> extends JPanel
+public abstract class ContextualPanel<T> extends AbstractPanel
 {
 	private JXTable contentTable;
 	private JToolBar contextualToolBar;
 	private JPanel headerPanel;
-	private final ResourceMap resourceMap;
 	private T selectedItem;
-	private EStatus status;
 	Set<JComponent> registeredComponents;
 
 
@@ -71,8 +66,7 @@ public abstract class ContextualPanel<T> extends JPanel
 	 */
 	public ContextualPanel()
 	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		super();
 		registeredComponents = new HashSet<JComponent>();
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(getContextualToolBar(), BorderLayout.NORTH);
@@ -227,17 +221,13 @@ public abstract class ContextualPanel<T> extends JPanel
 		return contextualToolBar;
 	}
 
-	protected ResourceMap getResourceMap()
-	{
-		return resourceMap;
-	}
-
 	/**
 	 * Inizializza o re-inizializza il pannello intero
 	 */
+	@Override
 	public void setup()
 	{
-		setStatus(EStatus.NEW);
+		super.setup();
 		getContextualToolBar().removeAll();
 		clearForm();
 	}
@@ -302,6 +292,7 @@ public abstract class ContextualPanel<T> extends JPanel
 	 * 
 	 * @return il nome del bundle del pannello
 	 */
+	@Override
 	public abstract String getBundleName();
 
 	/**
@@ -325,43 +316,5 @@ public abstract class ContextualPanel<T> extends JPanel
 	public void setSelectedItem(T selectedItem)
 	{
 		this.selectedItem = selectedItem;
-	}
-
-	/**
-	 * Restituisce lo stato attuale del pannello contestuale.
-	 * 
-	 * @return lo stato attuale del pannello contestuale
-	 */
-	public EStatus getStatus()
-	{
-		return status;
-	}
-
-	/**
-	 * Imposta lo stato attuale del pannello contestuale.
-	 * 
-	 * @param status
-	 *          lo stato attuale del pannello contestuale
-	 */
-	public void setStatus(EStatus status)
-	{
-		this.status = status;
-	}
-
-	/**
-	 * Stato di un pannello contestuale.
-	 * 
-	 * @author Giuseppe Caliendo
-	 */
-	public enum EStatus
-	{
-		/**
-		 * Modalità modifica.
-		 */
-		EDIT,
-		/**
-		 * Modalità nuovo inserimento.
-		 */
-		NEW;
 	}
 }

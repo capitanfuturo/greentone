@@ -2,7 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobCategory;
