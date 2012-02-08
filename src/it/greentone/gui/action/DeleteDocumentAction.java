@@ -1,7 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;

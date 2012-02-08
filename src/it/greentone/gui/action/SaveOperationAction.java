@@ -4,7 +4,7 @@ import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobStatus;

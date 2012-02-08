@@ -71,6 +71,8 @@ public class ActionProvider
 	@Inject
 	ViewDocumentsAction viewDocuments;
 	@Inject
+	ViewHomeAction viewHome;
+	@Inject
 	ViewJobsAction viewJobs;
 	@Inject
 	ViewOperationsAction viewOperations;
@@ -337,5 +339,15 @@ public class ActionProvider
 	public Action getViewCalc()
 	{
 		return applicationContext.getActionMap(viewCalc).get("viewCalc");
+	}
+
+	/**
+	 * Restituisce l'azione che visualizza la schermata iniziale.
+	 * 
+	 * @return azione che visualizza la schermata iniziale
+	 */
+	public Action getViewHome()
+	{
+		return applicationContext.getActionMap(viewHome).get("viewHome");
 	}
 }

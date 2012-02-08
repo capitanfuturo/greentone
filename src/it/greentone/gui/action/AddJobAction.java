@@ -1,6 +1,6 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.JobsPanel;
 import it.greentone.persistence.JobService;
 

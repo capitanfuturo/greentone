@@ -1,6 +1,7 @@
 package it.greentone;
 
 import it.greentone.gui.MainPanel;
+import it.greentone.gui.action.ViewHomeAction;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -164,6 +165,8 @@ public class GreenTone extends SingleFrameApplication
 			  .info("Controllo aggiornamenti");
 			worker.execute();
 		}
+		/* mostro la schermata iniziale */
+		springBeansHolder.getViewHomeAction().viewHome();
 	}
 
 	@Override
@@ -193,6 +196,8 @@ public class GreenTone extends SingleFrameApplication
 		private GreenToneUtilities utilities;
 		@Inject
 		private GreenToneLogProvider logProvider;
+		@Inject
+		private ViewHomeAction viewHomeAction;
 
 		/**
 		 * Restituisce la factory del manager della persistenza di JDO.
@@ -298,6 +303,27 @@ public class GreenTone extends SingleFrameApplication
 		public void setLogProvider(GreenToneLogProvider logProvider)
 		{
 			this.logProvider = logProvider;
+		}
+
+		/**
+		 * Restituisce il provider delle azioni.
+		 * 
+		 * @return il provider delle azioni
+		 */
+		public ViewHomeAction getViewHomeAction()
+		{
+			return viewHomeAction;
+		}
+
+		/**
+		 * Imposta il provider delle azioni.
+		 * 
+		 * @param viewHomeAction
+		 *          il provider delle azioni
+		 */
+		public void setViewHomeAction(ViewHomeAction viewHomeAction)
+		{
+			this.viewHomeAction = viewHomeAction;
 		}
 	}
 }

@@ -114,9 +114,9 @@ public class JobDAO extends JdoDaoSupport
 	  throws DataAccessException
 	{
 		Query query =
-		  getPersistenceManager()
-		    .newQuery(
-		      "SELECT FROM it.greentone.persistence.Job WHERE manager == m PARAMETERS it.greentone.persistence.Person m");
+		  getPersistenceManager().newQuery(
+		    "SELECT FROM it.greentone.persistence.Job "
+		      + "WHERE manager == m PARAMETERS it.greentone.persistence.Person m");
 		@SuppressWarnings("unchecked")
 		Collection<Job> result =
 		  getPersistenceManager().detachCopyAll(
@@ -138,9 +138,9 @@ public class JobDAO extends JdoDaoSupport
 	  throws DataAccessException
 	{
 		Query query =
-		  getPersistenceManager()
-		    .newQuery(
-		      "SELECT FROM it.greentone.persistence.Job WHERE customer == m PARAMETERS it.greentone.persistence.Person m");
+		  getPersistenceManager().newQuery(
+		    "SELECT FROM it.greentone.persistence.Job "
+		      + "WHERE customer == m PARAMETERS it.greentone.persistence.Person m");
 		@SuppressWarnings("unchecked")
 		Collection<Job> result =
 		  getPersistenceManager().detachCopyAll(

@@ -1,7 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.ContextualPanel.EStatus;
+import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;

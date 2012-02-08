@@ -9,6 +9,7 @@ import java.util.Comparator;
 
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.matchers.Matcher;
 
 /**
  * <code>
@@ -320,5 +323,94 @@ public class JobService
 			job.setProtocol("" + protocol);
 			storeJob(job);
 		}
+	}
+
+	/**
+	 * Restituisce la lista degli incarichi scaduti, per i quali non è ancora
+	 * stata impostata una data di fine.
+	 * 
+	 * @return la lista degli incarichi scaduti, per i quali non è ancora stata
+	 *         impostata una data di fine
+	 */
+	public Collection<Job> getExpiredJobs()
+	{
+		FilterList<Job> expiredJobs =
+		  new FilterList<Job>(allJobs, new Matcher<Job>()
+			  {
+				  @Override
+				  public boolean matches(Job arg0)
+				  {
+					  if(arg0.getDueDate() != null && arg0.getFinishDate() == null
+					    && arg0.getDueDate().isBeforeNow())
+					  {
+						  return true;
+					  }
+					  return false;
+				  }
+			  });
+		return expiredJobs;
+	}
+
+	/**
+	 * Restituisce la lista degli incarichi in scadenza nei prossimi giorni
+	 * passati in ingresso.
+	 * 
+	 * @param daysInterval
+	 * @return la lista degli incarichi in scadenza nei prossimi giorni passati in
+	 *         ingresso
+	 */
+	public Collection<Job> getNextExpiringJobs(int daysInterval)
+	{
+		final DateTime trigger = new DateTime().plusDays(daysInterval);
+
+		FilterList<Job> nextExpiringJobs =
+		  new FilterList<Job>(allJobs, new Matcher<Job>()
+			  {
+				  @Override
+				  public boolean matches(Job arg0)
+				  {
+					  if(arg0.getDueDate() != null && arg0.getFinishDate() == null
+					    && arg0.getDueDate().isBefore(trigger.getMillis()))
+					  {
+						  return true;
+					  }
+					  return false;
+				  }
+			  });
+		return nextExpiringJobs;
+	}
+
+	/**
+	 * Restituisce la lista degli incarichi che nella descrizione contengono la
+	 * stringa passata come parametro.
+	 * 
+	 * @param str
+	 *          la stringa da cercare nelle descrizioni degli incarichi
+	 * @return la lista degli incarichi che nella descrizione contengono la
+	 *         stringa passata come parametro
+	 */
+	public Collection<Job> getJobsContainingDescription(final String str)
+	{
+		FilterList<Job> filterList =
+		  new FilterList<Job>(allJobs, new Matcher<Job>()
+			  {
+
+				  @Override
+				  public boolean matches(Job arg0)
+				  {
+					  if(arg0.getDescription() == null || str == null)
+					  {
+						  return false;
+					  }
+					  String descr = arg0.getDescription().toLowerCase();
+					  String tmp = str.toLowerCase();
+					  if(descr.indexOf(tmp) > -1)
+					  {
+						  return true;
+					  }
+					  return false;
+				  }
+			  });
+		return filterList;
 	}
 }

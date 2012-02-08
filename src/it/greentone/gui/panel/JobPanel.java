@@ -1,12 +1,7 @@
-package it.greentone.gui.action;
+package it.greentone.gui.panel;
 
-import it.greentone.gui.AbstractPanel.EStatus;
-import it.greentone.gui.panel.PersonsPanel;
+import it.greentone.gui.AbstractPanel;
 
-import javax.inject.Inject;
-
-import org.jdesktop.application.Action;
-import org.springframework.stereotype.Component;
 
 /**
  * <code>
@@ -23,23 +18,19 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Aggiunge una persona in anagrafica.
+ * Pannello di riepilogo di un incarico. Mostra i dati di testata, le operazioni
+ * e i documenti coninvolti nell'incarico oggetto del pannello.
  * 
  * @author Giuseppe Caliendo
  */
-@Component
-public class AddPersonAction
+@SuppressWarnings("serial")
+public class JobPanel extends AbstractPanel
 {
-	@Inject
-	private PersonsPanel personsPanel;
 
-	/**
-	 * Aggiunge una persona in anagrafica.
-	 */
-	@Action
-	public void addPerson()
+	@Override
+	public String getBundleName()
 	{
-		personsPanel.clearForm();
-		personsPanel.setStatus(EStatus.NEW);
+		return null;
 	}
+
 }
