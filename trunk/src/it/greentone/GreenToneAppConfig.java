@@ -35,10 +35,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class GreenToneAppConfig
 {
 	/**
+	 * Separatore di path di sistema
+	 */
+	public static final String FILE_SEPARATOR = System
+	  .getProperty("file.separator");
+	/**
 	 * Path di base dove salavare i dati di GreenTone
 	 */
 	public static final String BASE_PATH = System.getProperty("user.home")
-	  + "/GreenTone/";
+	  + FILE_SEPARATOR + "GreenTone" + FILE_SEPARATOR;
 	/**
 	 * Path del file di configurazione di Spring Framework
 	 */
@@ -53,11 +58,13 @@ public class GreenToneAppConfig
 	 * Path del repository dove salvare la copia dei file associati a dei
 	 * documenti
 	 */
-	public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents/";
+	public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents"
+	  + FILE_SEPARATOR;
 	/**
 	 * Path dove risiede il manuale utente
 	 */
-	public static final String MANUAL_REPOSITORY = BASE_PATH + "manual/";
+	public static final String MANUAL_REPOSITORY = BASE_PATH + "manual"
+	  + FILE_SEPARATOR;
 
 	/**
 	 * Resituisce la factory di gestione della persistenza.
