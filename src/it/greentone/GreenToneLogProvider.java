@@ -83,14 +83,21 @@ public class GreenToneLogProvider
 		boolean result = false;
 		if(logFile.exists() && logFile.canWrite())
 		{
-			result = logFile.delete();
-			if(result)
+			try
 			{
-				logger.info("Log file deleted");
+				result = logFile.delete();
+				if(result)
+				{
+					logger.info("Log file deleted");
+				}
+				else
+				{
+					logger.info("Can't delete log file");
+				}
 			}
-			else
+			catch(Exception e)
 			{
-				logger.info("Can't delete log file");
+				logger.info("Exception " + e.getStackTrace());
 			}
 		}
 		return result;
