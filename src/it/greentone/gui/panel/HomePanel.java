@@ -3,6 +3,7 @@ package it.greentone.gui.panel;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.FontProvider;
+import it.greentone.gui.MainPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 
@@ -58,6 +59,11 @@ public class HomePanel extends AbstractPanel
 
 	@Inject
 	private JobService jobService;
+	@Inject
+	private JobPanel jobPanel;
+	@Inject
+	private MainPanel mainPanel;
+
 	ResourceMap resourceMap;
 	JPanel centralPanel;
 	private JPanel searchPanel;
@@ -260,7 +266,7 @@ public class HomePanel extends AbstractPanel
 
 		JLabel titleLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobList"));
-		titleLabel.setFont(FontProvider.TITLE_BIG);
+		titleLabel.setFont(FontProvider.TITLE_SMALL);
 		getCentralPanel().add(titleLabel, "wrap");
 
 		/*
@@ -269,7 +275,8 @@ public class HomePanel extends AbstractPanel
 		 */
 		for(Job job : allJobsStartDate)
 		{
-			JobDetailsPanel jobDetailsPanel = new JobDetailsPanel(job);
+			JobDetailsPanel jobDetailsPanel =
+			  new JobDetailsPanel(job, jobPanel, mainPanel, getResourceMap());
 			getCentralPanel().add(jobDetailsPanel, "wrap");
 		}
 

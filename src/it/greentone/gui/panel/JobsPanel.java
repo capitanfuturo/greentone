@@ -5,6 +5,7 @@ import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteJobAction;
 import it.greentone.gui.action.SaveJobAction;
+import it.greentone.gui.action.ViewJobAction;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobCategory;
 import it.greentone.persistence.JobCategoryService;
@@ -76,6 +77,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	private SaveJobAction saveJobAction;
 	@Inject
 	private DeleteJobAction deleteJobAction;
+	@Inject
+	private ViewJobAction viewJobAction;
 
 	private static final String LOCALIZATION_PREFIX = "viewJobs.Panel.";
 	private final String panelBundle;
@@ -237,11 +240,15 @@ public class JobsPanel extends ContextualPanel<Job>
 							  getCityField().setSelectedItem(selectedJob.getCity());
 							  /* abilito le azioni legate alla selezione */
 							  deleteJobAction.setDeleteJobActionEnabled(true);
+							  viewJobAction.setJob(selectedJob);
+							  viewJobAction.setViewJobActionEnabled(true);
 						  }
 						  else
 						  {
 							  /* disabilito le azioni legate alla selezione */
 							  deleteJobAction.setDeleteJobActionEnabled(false);
+							  viewJobAction.setJob(null);
+							  viewJobAction.setViewJobActionEnabled(false);
 						  }
 					  }
 				  }
@@ -257,6 +264,7 @@ public class JobsPanel extends ContextualPanel<Job>
 		getContextualToolBar().add(actionProvider.getAddJob());
 		getContextualToolBar().add(actionProvider.getSaveJob());
 		getContextualToolBar().add(actionProvider.getDeleteJob());
+		getContextualToolBar().add(actionProvider.getViewJob());
 		getContextualToolBar().addSeparator();
 		// TODO
 		// getContextualToolBar().add(actionProvider.getEditJobStakeholder());

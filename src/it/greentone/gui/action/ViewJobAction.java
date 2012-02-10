@@ -1,24 +1,20 @@
-package it.greentone.gui.panel;
+package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.GreenToneUtilities;
 import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.ButtonTabComponent;
 import it.greentone.gui.MainPanel;
+import it.greentone.gui.panel.JobPanel;
 import it.greentone.persistence.Job;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.inject.Inject;
 import javax.swing.JTabbedPane;
 
-import net.miginfocom.swing.MigLayout;
-
+import org.jdesktop.application.AbstractBean;
+import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
+import org.springframework.stereotype.Component;
 
 /**
  * <code>
@@ -35,69 +31,105 @@ import org.jdesktop.application.ResourceMap;
  * </code>
  * <br>
  * <br>
- * Pannello di dettaglio di un incarico.
+ * Mostra un incarico e i suoi dettagli nel pannello principale
+ * dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
-@SuppressWarnings("serial")
-public class JobDetailsPanel extends JPanel
+@Component
+public class ViewJobAction extends AbstractBean
 {
-	private final MainPanel mainPanel;
-	private final ResourceMap resourceMap;
-	private final String applicationName;
+	@Inject
+	private JobPanel jobPanel;
+	private Job job;
+	boolean viewJobActionEnabled = false;
+
+
 	private static final String PANEL_TITLE_SUFFIX = ".Panel.title";
 	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
 	private static final String ACTION_TOOLTIP_SUFFIX =
 	  ".Action.shortDescription";
+	private final MainPanel mainPanel;
+	private final ResourceMap resourceMap;
+	private final String applicationName;
 
 	/**
-	 * Pannello di dettaglio di un incarico.
+	 * Mostra gli incarichi nel pannello principale dell'applicazione.
 	 * 
-	 * @param job
-	 *          incarico di cui mostrare i dettagli
-	 * @param jobPanel
 	 * @param mainPanel
-	 * @param resourceMap
+	 *          pannello principale
 	 */
-	public JobDetailsPanel(final Job job, final JobPanel jobPanel,
-	  MainPanel mainPanel, ResourceMap resourceMap)
+	@Inject
+	public ViewJobAction(MainPanel mainPanel)
 	{
 		this.mainPanel = mainPanel;
-		this.resourceMap = resourceMap;
-		this.applicationName = resourceMap.getString("Application.name");
+		this.resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		this.applicationName = resourceMap.getString("Application.title");
+	}
 
-		JButton viewDetailsButton = new JButton(new AbstractAction()
-			{
+	/**
+	 * Imposta l'incarico da visualizzare.
+	 * 
+	 * @param job
+	 *          l'incarico da visualizzare
+	 */
+	public void setJob(Job job)
+	{
+		this.job = job;
+	}
 
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					jobPanel.setJob(job);
-					jobPanel.setup();
-					addTab(jobPanel);
-				}
-			});
-		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
-		  + ACTION_SMALL_ICON_SUFFIX));
-		JLabel protocolFieldLabel = new JLabel(job.getProtocol());
-		JLabel descriptionFieldLabel = new JLabel(job.getDescription());
-		JLabel dueDateFieldLabel =
-		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
-		JLabel customerFieldLabel =
-		  new JLabel(job.getCustomer() != null? job.getCustomer().toString(): null);
+	/**
+	 * Mostra gli incarichi nel pannello principale dell'applicazione.
+	 */
+	@Action(enabledProperty = "viewJobActionEnabled")
+	public void viewJob()
+	{
+		jobPanel.setJob(job);
+		jobPanel.setup();
+		addTab(jobPanel);
+	}
 
-		setLayout(new MigLayout());
-		add(viewDetailsButton);
-		add(protocolFieldLabel);
-		add(descriptionFieldLabel);
-		add(dueDateFieldLabel);
-		add(customerFieldLabel);
+	/**
+	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
+	 * <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è possibile abilitare l'azione,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isViewJobActionEnabled()
+	{
+		return viewJobActionEnabled;
+	}
+
+	/**
+	 * Imposta l'abilitazione dell'azione.
+	 * 
+	 * @param viewJobActionEnabled
+	 *          <code>true</code> se si vuole abilitare l'azione,
+	 *          <code>false</code> altrimenti
+	 */
+	public void setViewJobActionEnabled(boolean viewJobActionEnabled)
+	{
+		final boolean oldValue = this.viewJobActionEnabled;
+		this.viewJobActionEnabled = viewJobActionEnabled;
+		firePropertyChange("viewJobActionEnabled", oldValue, viewJobActionEnabled);
+	}
+
+	protected ResourceMap getResourceMap()
+	{
+		return resourceMap;
+	}
+
+	protected MainPanel getMainPanel()
+	{
+		return mainPanel;
 	}
 
 	protected void addTab(AbstractPanel panel)
 	{
 		/* controllo che il tab non sia già presente */
-		JTabbedPane tabbedPane = mainPanel.getMainTabbedPane();
+		JTabbedPane tabbedPane = getMainPanel().getMainTabbedPane();
 		boolean tabInserted = false;
 		for(int i = 0; i < tabbedPane.getTabCount(); i++)
 		{

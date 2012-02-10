@@ -84,6 +84,8 @@ public class ActionProvider
 	ViewAboutAction viewAbout;
 	@Inject
 	ViewCalcAction viewCalc;
+	@Inject
+	ViewJobAction viewJob;
 
 	/**
 	 * Oggetto di convenienza contenente tutte le azioni disponibili
@@ -349,5 +351,15 @@ public class ActionProvider
 	public Action getViewHome()
 	{
 		return applicationContext.getActionMap(viewHome).get("viewHome");
+	}
+
+	/**
+	 * Restituisce l'azione di visualizzazione di un incarico e dei suoi dettagli.
+	 * 
+	 * @return l'azione di visualizzazione di un incarico e dei suoi dettagli
+	 */
+	public Action getViewJob()
+	{
+		return applicationContext.getActionMap(viewJob).get("viewJob");
 	}
 }

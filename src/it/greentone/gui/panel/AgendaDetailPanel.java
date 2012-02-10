@@ -1,13 +1,12 @@
 package it.greentone.gui.panel;
 
+import it.greentone.GreenToneUtilities;
 import it.greentone.persistence.Job;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-
-import org.joda.time.DateTime;
 
 /**
  * <code>
@@ -40,16 +39,8 @@ public class AgendaDetailPanel extends JPanel
 	public AgendaDetailPanel(Job job)
 	{
 		JLabel protocolFieldLabel = new JLabel(job.getProtocol());
-
-		String formattedDate = "";
-		DateTime date = job.getDueDate();
-		if(date != null)
-		{
-			formattedDate =
-			  date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/"
-			    + date.getYear();
-		}
-		JLabel dueDateFieldLabel = new JLabel(formattedDate);
+		JLabel dueDateFieldLabel =
+		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
 		JLabel descriptionLabel = new JLabel(job.getDescription());
 
 		setLayout(new MigLayout());
