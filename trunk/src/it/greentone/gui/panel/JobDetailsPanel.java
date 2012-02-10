@@ -10,6 +10,7 @@ import it.greentone.persistence.Job;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -79,17 +80,17 @@ public class JobDetailsPanel extends JPanel
 			});
 		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
 		  + ACTION_SMALL_ICON_SUFFIX));
-		JLabel protocolFieldLabel = new JLabel(job.getProtocol());
 		JLabel descriptionFieldLabel = new JLabel(job.getDescription());
 		JLabel dueDateFieldLabel =
 		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
 		JLabel customerFieldLabel =
 		  new JLabel(job.getCustomer() != null? job.getCustomer().toString(): null);
 
+		setBorder(BorderFactory.createTitledBorder(job.getProtocol()));
 		setLayout(new MigLayout());
 		add(viewDetailsButton);
-		add(protocolFieldLabel);
-		add(descriptionFieldLabel);
+		add(descriptionFieldLabel, "wrap");
+		add(new JLabel(" "));
 		add(dueDateFieldLabel);
 		add(customerFieldLabel);
 	}

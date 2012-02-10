@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 
 import net.miginfocom.swing.MigLayout;
@@ -417,7 +416,6 @@ public class JobPanel extends AbstractPanel
 		if(operationsTable == null)
 		{
 			operationsTable = GreenToneUtilities.createJXTable();
-			operationsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
 		return operationsTable;
 	}
@@ -453,8 +451,10 @@ public class JobPanel extends AbstractPanel
 
 		/* informazioni di testata */
 		getProtocolLabel().setText(job.getProtocol());
-		getCustomerLabel().setText(job.getCustomer().toString());
-		getManagerLabel().setText(job.getManager().toString());
+		getCustomerLabel().setText(
+		  job.getCustomer() != null? job.getCustomer().toString(): null);
+		getManagerLabel().setText(
+		  job.getManager() != null? job.getManager().toString(): null);
 		getCityLabel().setText(job.getCity());
 		getDescriptionLabel().setText(job.getDescription());
 		getDueDateLabel().setText(

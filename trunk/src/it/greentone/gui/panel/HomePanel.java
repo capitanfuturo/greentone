@@ -6,6 +6,7 @@ import it.greentone.gui.FontProvider;
 import it.greentone.gui.MainPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
+import it.greentone.persistence.JobStatus;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -28,7 +29,9 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.matchers.Matcher;
 
 /**
  * <code>
@@ -68,8 +71,6 @@ public class HomePanel extends AbstractPanel
 	JPanel centralPanel;
 	private JPanel searchPanel;
 	private JPanel agendaPanel;
-	private EventList<Job> allJobs;
-	private SortedList<Job> allJobsStartDate;
 	private JButton searchButton;
 	private JTextField searchTextField;
 	private JPanel resultPanel;
@@ -98,7 +99,7 @@ public class HomePanel extends AbstractPanel
 	{
 		if(centralPanel == null)
 		{
-			centralPanel = new JPanel(new MigLayout());
+			centralPanel = new JPanel(new MigLayout("", "[100%]"));
 		}
 		return centralPanel;
 	}
@@ -240,29 +241,45 @@ public class HomePanel extends AbstractPanel
 		getAgendaPanel().removeAll();
 
 		/* aggiorno i pannelli */
-		allJobs = jobService.getAllJobs();
-		allJobsStartDate = new SortedList<Job>(allJobs, new Comparator<Job>()
-			{
+		EventList<Job> allJobs = jobService.getAllJobs();
+		FilterList<Job> fileteredJobs =
+		  new FilterList<Job>(allJobs, new Matcher<Job>()
+			  {
 
-				@Override
-				public int compare(Job o1, Job o2)
-				{
-					DateTime o1StartDate = o1.getStartDate();
-					DateTime o2StartDate = o2.getStartDate();
+				  @Override
+				  public boolean matches(Job job)
+				  {
+					  if(job.getStatus() == JobStatus.PLANNING
+					    || job.getStatus() == JobStatus.WORKING)
+					  {
+						  return true;
+					  }
+					  return false;
+				  }
+			  });
+		SortedList<Job> allJobsStartDate =
+		  new SortedList<Job>(fileteredJobs, new Comparator<Job>()
+			  {
 
-					if(o1StartDate != null)
-					{
-						return o1StartDate.compareTo(o2StartDate);
-					}
-					else
-						if(o2StartDate != null)
-						{
-							return -(o2StartDate.compareTo(o1StartDate));
-						}
-						else
-							return o1.getProtocol().compareToIgnoreCase(o2.getProtocol());
-				}
-			});
+				  @Override
+				  public int compare(Job o1, Job o2)
+				  {
+					  DateTime o1StartDate = o1.getStartDate();
+					  DateTime o2StartDate = o2.getStartDate();
+
+					  if(o1StartDate != null)
+					  {
+						  return o1StartDate.compareTo(o2StartDate);
+					  }
+					  else
+						  if(o2StartDate != null)
+						  {
+							  return -(o2StartDate.compareTo(o1StartDate));
+						  }
+						  else
+							  return o1.getProtocol().compareToIgnoreCase(o2.getProtocol());
+				  }
+			  });
 
 		JLabel titleLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobList"));
@@ -277,7 +294,7 @@ public class HomePanel extends AbstractPanel
 		{
 			JobDetailsPanel jobDetailsPanel =
 			  new JobDetailsPanel(job, jobPanel, mainPanel, getResourceMap());
-			getCentralPanel().add(jobDetailsPanel, "wrap");
+			getCentralPanel().add(jobDetailsPanel, "growx, wrap");
 		}
 
 		/*
