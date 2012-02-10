@@ -7,6 +7,7 @@ import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeletePersonAction;
 import it.greentone.gui.action.EditUserAction;
 import it.greentone.gui.action.SavePersonAction;
+import it.greentone.gui.action.ViewPersonAction;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 import it.greentone.report.ReportManager;
@@ -65,6 +66,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private static final String LOCALIZATION_PREFIX = "viewPersons.Panel.";
 	@Inject
 	private ActionProvider actionProvider;
+	@Inject
+	private ViewPersonAction viewPersonAction;
 	@Inject
 	private EditUserAction editUserAction;
 	@Inject
@@ -238,6 +241,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 							  /* abilito le azioni legate alla selezione */
 							  deletePersonAction.setDeletePersonActionEnabled(true);
 							  editUserAction.setEditUserActionEnabled(true);
+							  viewPersonAction.setPerson(getSelectedItem());
+							  viewPersonAction.setViewPersonActionEnabled(true);
 							  /* aggiorno l'etichetta del nome/ragione sociale */
 							  toggleNameLabel();
 						  }
@@ -246,6 +251,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 							  /* disabilito le azioni legate alla selezione */
 							  deletePersonAction.setDeletePersonActionEnabled(false);
 							  editUserAction.setEditUserActionEnabled(false);
+							  viewPersonAction.setPerson(null);
+							  viewPersonAction.setViewPersonActionEnabled(false);
 						  }
 					  }
 				  }
@@ -262,8 +269,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 		getContextualToolBar().add(actionProvider.getAddPerson());
 		getContextualToolBar().add(actionProvider.getSavePerson());
 		getContextualToolBar().add(actionProvider.getDeletePerson());
-
-		// TODO
+		getContextualToolBar().add(actionProvider.getViewPerson());
 		getContextualToolBar().addSeparator();
 		getContextualToolBar().add(
 		  new AbstractAction("", getResourceMap().getIcon(
