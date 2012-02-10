@@ -1,12 +1,9 @@
 package it.greentone.gui;
 
-import it.greentone.persistence.JobStatus;
-import it.greentone.persistence.OperationType;
+import it.greentone.GreenToneUtilities;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,15 +12,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.JTextComponent;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
-import org.joda.time.DateTime;
 
 /**
  * <code>
@@ -130,77 +124,8 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 */
 	protected JXTable createContentTable()
 	{
-		JXTable table = new JXTable();
+		JXTable table = GreenToneUtilities.createJXTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setColumnControlVisible(true);
-		/* status dell'incarico */
-		table.setDefaultRenderer(JobStatus.class, new DefaultTableCellRenderer()
-			{
-
-				@Override
-				public Component getTableCellRendererComponent(JTable table,
-				  Object value, boolean isSelected, boolean hasFocus, int row,
-				  int column)
-				{
-					JobStatus status = (JobStatus) value;
-					return super.getTableCellRendererComponent(table, status != null
-					  ? status.getLocalizedName()
-					  : null, isSelected, hasFocus, row, column);
-				}
-			});
-		/* tipo di operazione */
-		table.setDefaultRenderer(OperationType.class,
-		  new DefaultTableCellRenderer()
-			  {
-				  @Override
-				  public Component getTableCellRendererComponent(JTable table,
-				    Object value, boolean isSelected, boolean hasFocus, int row,
-				    int column)
-				  {
-					  OperationType type = (OperationType) value;
-					  return super.getTableCellRendererComponent(table, type != null
-					    ? type.getLocalizedName()
-					    : null, isSelected, hasFocus, row, column);
-				  }
-			  });
-		/* date */
-		table.setDefaultRenderer(DateTime.class, new DefaultTableCellRenderer()
-			{
-				@Override
-				public Component getTableCellRendererComponent(JTable table,
-				  Object value, boolean isSelected, boolean hasFocus, int row,
-				  int column)
-				{
-					String formatted = "";
-					DateTime date = (DateTime) value;
-					if(date != null)
-					{
-						formatted =
-						  date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/"
-						    + date.getYear();
-					}
-					return super.getTableCellRendererComponent(table, formatted,
-					  isSelected, hasFocus, row, column);
-				}
-			});
-		/* double */
-		table.setDefaultRenderer(Double.class, new DefaultTableCellRenderer()
-			{
-				@Override
-				public Component getTableCellRendererComponent(JTable table,
-				  Object value, boolean isSelected, boolean hasFocus, int row,
-				  int column)
-				{
-					Double amount = (Double) value;
-					DecimalFormat decimalFormat =
-					  (DecimalFormat) DecimalFormat.getInstance();
-					decimalFormat.setMinimumFractionDigits(2);
-					decimalFormat.setMaximumFractionDigits(2);
-					return super.getTableCellRendererComponent(table, amount != null
-					  ? decimalFormat.format(amount)
-					  : null, isSelected, hasFocus, row, column);
-				}
-			});
 		return table;
 	}
 

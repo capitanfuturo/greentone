@@ -33,6 +33,6 @@
 	<classpathentry kind="lib" path="lib/bin/datanucleus-enhancer-3.0.0-release.jar"/>
 	<classpathentry kind="lib" path="lib/bin/datanucleus-jodatime-3.0.0-release.jar"/>
 	<classpathentry kind="lib" path="lib/bin/datanucleus-rdbms-3.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/bin/joda-time-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/bin/joda-time-2.0.jar" sourcepath="lib/src/joda-time-1.6.2-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,5 +1,8 @@
 package it.greentone;
 
+import it.greentone.persistence.JobStatus;
+import it.greentone.persistence.OperationType;
+
 import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
@@ -21,19 +24,25 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 
 import javax.inject.Inject;
 import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -68,6 +77,8 @@ public class GreenToneUtilities
 	private static final String APP_MAJOR_VERSION = "major.version.number";
 	private static final String APP_MINOR_VERSION = "minor.version.number";
 	private static final String APP_MINUS_VERSION = "minus.version.number";
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat
+	  .forPattern("dd/MM/yyyy");
 
 	/**
 	 * Restituisce il testo contenuto nel campo di testo passato in ingresso. Tale
@@ -442,5 +453,141 @@ public class GreenToneUtilities
 
 		// Get the image's color model
 		return pg.getColorModel().hasAlpha();
+	}
+
+	/**
+	 * Restituisce una data formattata.
+	 * 
+	 * @param date
+	 *          la data da formattare
+	 * @return un formatter per le date in Joda Time
+	 */
+	public static String formatDateTime(DateTime date)
+	{
+		if(date != null)
+		{
+			return dateTimeFormatter.print(date);
+		}
+		return "";
+	}
+
+	/**
+	 * Restituisce un renderer per lo status dell'incarico.
+	 * 
+	 * @return un renderer per lo status dell'incarico
+	 */
+	@SuppressWarnings("serial")
+	public static DefaultTableCellRenderer getJobStatusTableCellRenderer()
+	{
+		return new DefaultTableCellRenderer()
+			{
+
+				@Override
+				public java.awt.Component getTableCellRendererComponent(JTable table,
+				  Object value, boolean isSelected, boolean hasFocus, int row,
+				  int column)
+				{
+					JobStatus status = (JobStatus) value;
+					return super.getTableCellRendererComponent(table, status != null
+					  ? status.getLocalizedName()
+					  : null, isSelected, hasFocus, row, column);
+				}
+			};
+	}
+
+	/**
+	 * Restituisce un renderer per il tipo di operazione.
+	 * 
+	 * @return un renderer per il tipo di operazione
+	 */
+	@SuppressWarnings("serial")
+	public static DefaultTableCellRenderer getOperationTypeTableCellRenderer()
+	{
+		return new DefaultTableCellRenderer()
+			{
+				@Override
+				public java.awt.Component getTableCellRendererComponent(JTable table,
+				  Object value, boolean isSelected, boolean hasFocus, int row,
+				  int column)
+				{
+					OperationType type = (OperationType) value;
+					return super.getTableCellRendererComponent(table,
+					  type != null? type.getLocalizedName(): null, isSelected, hasFocus,
+					  row, column);
+				}
+			};
+	}
+
+
+	/**
+	 * Restituisce un renderer per le date.
+	 * 
+	 * @return un renderer per le date
+	 */
+	@SuppressWarnings("serial")
+	public static DefaultTableCellRenderer getDateTableCellRenderer()
+	{
+		return new DefaultTableCellRenderer()
+			{
+
+				@Override
+				public java.awt.Component getTableCellRendererComponent(JTable table,
+				  Object value, boolean isSelected, boolean hasFocus, int row,
+				  int column)
+				{
+					DateTime date = (DateTime) value;
+					return super.getTableCellRendererComponent(table,
+					  formatDateTime(date), isSelected, hasFocus, row, column);
+				}
+			};
+	}
+
+	/**
+	 * Restituisce un renderer per i double.
+	 * 
+	 * @return un renderer per i double
+	 */
+	@SuppressWarnings("serial")
+	public static DefaultTableCellRenderer getDoubleTableCellRenderer()
+	{
+		return new DefaultTableCellRenderer()
+			{
+				@Override
+				public java.awt.Component getTableCellRendererComponent(JTable table,
+				  Object value, boolean isSelected, boolean hasFocus, int row,
+				  int column)
+				{
+					Double amount = (Double) value;
+					DecimalFormat decimalFormat =
+					  (DecimalFormat) DecimalFormat.getInstance();
+					decimalFormat.setMinimumFractionDigits(2);
+					decimalFormat.setMaximumFractionDigits(2);
+					return super.getTableCellRendererComponent(table, amount != null
+					  ? decimalFormat.format(amount)
+					  : null, isSelected, hasFocus, row, column);
+				}
+			};
+	}
+
+	/**
+	 * Crea una tabella secondo alcune convenzioni utili per tutta l'applicazione.
+	 * 
+	 * @return una tabella secondo alcune convenzioni utili per tutta
+	 *         l'applicazione
+	 */
+	public static JXTable createJXTable()
+	{
+		JXTable table = new JXTable();
+		table.setColumnControlVisible(true);
+		/* status dell'incarico */
+		table.setDefaultRenderer(JobStatus.class, getJobStatusTableCellRenderer());
+		/* tipo di operazione */
+		table.setDefaultRenderer(OperationType.class,
+		  getOperationTypeTableCellRenderer());
+		/* date */
+		table.setDefaultRenderer(DateTime.class, getDateTableCellRenderer());
+		/* double */
+		table.setDefaultRenderer(Double.class, getDoubleTableCellRenderer());
+		return table;
 	}
 }
