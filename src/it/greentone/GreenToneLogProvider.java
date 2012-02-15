@@ -75,6 +75,8 @@ public class GreenToneLogProvider
 	{
 		logger.removeHandler(fileHandler);
 		logger.info("Removing log file handler");
+		fileHandler.flush();
+		fileHandler.close();
 		String logPath = GreenToneAppConfig.BASE_PATH + LOG_FILENAME;
 		File logFile = new File(logPath);
 		logger.info("Log file to delete: " + logPath);
