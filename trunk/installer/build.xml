@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<project name="z build installer" default="mkInstaller" basedir=".">
+<project name="greentone build installer" default="mkInstaller" basedir=".">
 	<description>Installer script for GreenTone</description>
 
 	<!-- Source directory -->
 	<property name="src" location="${basedir}/../src"/>
 	<!-- Temp directory for building the installer -->
 	<property name="tempDir"  location="${user.home}/GreenToneDist"/>
-	<!-- The base directory for all libraries (jar) files -->
-	<property name="lib.home" value="${basedir}/../lib/bin" />
-	<!-- Classh path for building GreenTone-->
-	<path id="libs">
+	<!-- Runtime libraries -->
+	<property name="runtime.libs" value="${basedir}/../lib/bin" />
+	<!-- Compile time libraries -->
+	<property name="compile.libs" value="${basedir}/../lib/compile" />
+	<!-- All libraries -->
+	<path id="all.libs">
 		<fileset dir="../lib/bin">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="../lib/compile">
 			<include name="*.jar"/>
 		</fileset>
 	</path>
@@ -20,7 +25,7 @@
 		<mkdir dir="${tempDir}"/>
 		<javac destdir="${tempDir}">
 			<src path="${src}"/>
-			<classpath refid="libs"/>
+			<classpath refid="all.libs"/>
 			<compilerarg value="-Xlint:unchecked"/>
 		</javac>
 		<copy todir="${tempDir}">
@@ -38,7 +43,7 @@
 	<target name="enhance" depends="compile">
 		<!-- define the task enhancer -->
 			<taskdef name="datanucleus"
-	                 classpathref="libs"
+	                 classpathref="all.libs"
 	                 classname="org.datanucleus.enhancer.tools.EnhancerTask"  />
 		<!-- enhance -->
 		<datanucleus>
@@ -46,7 +51,7 @@
 				<include name="**/*.class"/>
 			</fileset>
 			<classpath>
-				<path refid="libs" />
+				<path refid="all.libs" />
 				<path location="${tempDir}"/>
 			</classpath>
 		</datanucleus>
@@ -68,8 +73,7 @@
 		      	</chainedmapper>
 		    </mapper>
 		    <path>
-		      <!-- lib.home contains all jar files, in several subdirectories -->
-		      <fileset dir="${lib.home}">
+		      <fileset dir="${runtime.libs}">
 		        <include name="**/*.jar" />
 		      </fileset>
 		    </path>
