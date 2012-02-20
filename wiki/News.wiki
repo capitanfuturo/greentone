@@ -1,0 +1,19 @@
+= News =
+* Cosa aspettarsi dalla 0.0.6:*
+  * aggiunto un sistema di logging su file per permettere una migliore stesura delle issue.
+  * aggiunta la gestione delle informazioni sullo studio professionale
+  * è disponibile il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.0.6+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog] completo, buona visione
+*01 Dicembre 2011:* rilasciato *GreenTone 0.0.5* questa versione aggiunge delle caratteristiche importanti che aprono la strada a molti altri sviluppi interessanti e personalizzazioni:
+  * è stato integrato [http://www.jaspersoft.com/jasperreports JasperReports] come motore per la generazione di stampe. Nelle prossime versioni saranno progettati dei report ad-hoc per le varie sezioni del programma.
+  * miglioramenti alla user experience: introdotta una calcolatrice per il campo importo delle operazioni, ordinamento di default delle tabelle principali del programma.
+  * introdotto sistema di auto-generazione dei protocolli degli incarichi configurabile dalle opzioni del programma
+  * Aggiunto il manuale utente nella scheda delle informazioni sul prodotto
+  * è disponibile il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.0.5+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog] completo, buona visione
+
+*24 Ottobre 2011:* rilasciato *GreenTone 0.0.4*, miglioramenti alla sezione documentale. Aggiunti controlli in fase di salvataggio e modifiche varie al database. Vedi il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.0.4+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog] completo
+
+*05 Ottobre 2011:* rilasciato *GreenTone 0.0.3*, miglioramenti alla sezione incarichi e operazioni, aggiunto supporto al controllo dell'aggiornamento automatico e alle opzioni di sitema, aggiunto supporto alle vacazioni. Vedi il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.0.3+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog] completo
+
+*22 Settembre 2011:* rilasciato *GreenTone 0.0.2*, vedi il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.0.2+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog]
+
+*29 Agosto 2011:* rilasciato *GreenTone 0.0.1*, lo trovate nella sezione dei Download.
