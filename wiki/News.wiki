@@ -1,3 +1,4 @@
+#labels Featured
 = News =
 * Cosa aspettarsi dalla 0.0.6:*
   * aggiunto un sistema di logging su file per permettere una migliore stesura delle issue.
