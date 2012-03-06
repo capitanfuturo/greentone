@@ -6,7 +6,9 @@
   * aggiunta scheda riepilogativa per un singola anagrafica
   * aggiunto un sistema di logging su file per permettere una migliore stesura delle issue.
   * aggiunta la gestione delle informazioni sullo studio professionale
-  * è disponibile il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.1.0+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog] completo, buona visione
+  * è disponibile il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.1.0+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog 0.1.0] completo
+  * è disponibile il [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.0.6+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles changelog 0.0.6] completo
+
 
 *01 Dicembre 2011:* rilasciato *GreenTone 0.0.5* questa versione aggiunge delle caratteristiche importanti che aprono la strada a molti altri sviluppi interessanti e personalizzazioni:
   * è stato integrato [http://www.jaspersoft.com/jasperreports JasperReports] come motore per la generazione di stampe. Nelle prossime versioni saranno progettati dei report ad-hoc per le varie sezioni del programma.
