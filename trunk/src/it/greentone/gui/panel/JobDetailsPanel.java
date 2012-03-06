@@ -80,6 +80,9 @@ public class JobDetailsPanel extends JPanel
 			});
 		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
 		  + ACTION_SMALL_ICON_SUFFIX));
+		viewDetailsButton.setToolTipText(resourceMap
+		  .getString("JobDetailsPanel.jobDetails"));
+
 		JLabel descriptionFieldLabel = new JLabel(job.getDescription());
 		JLabel dueDateFieldLabel =
 		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
