@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project name="greentone build installer" default="mkInstaller" basedir=".">
+	<description>Installer script for GreenTone</description>
+
+	<!-- Source directory -->
+	<property name="src" location="${basedir}/../src"/>
+	<!-- Temp directory for building the installer -->
+	<property name="tempDir"  location="${user.home}/GreenToneDist"/>
+	<!-- Runtime libraries -->
+	<property name="runtime.libs" value="${basedir}/../lib/bin" />
+	<!-- Compile time libraries -->
+	<property name="compile.libs" value="${basedir}/../lib/compile" />
+	<!-- All libraries -->
+	<path id="all.libs">
+		<fileset dir="../lib/bin">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="../lib/compile">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<!-- Compilation task -->
+	<target name="compile">
+		<mkdir dir="${tempDir}"/>
+		<javac destdir="${tempDir}">
+			<src path="${src}"/>
+			<classpath refid="all.libs"/>
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac>
+		<copy todir="${tempDir}">
+			<fileset dir="${src}">
+				<include name="**/*.properties"/>
+				<include name="**/*.txt"/>
+				<include name="**/*.png"/>
+				<include name="**/*.xml"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<!-- JDO enhancer -->
+	<target name="enhance" depends="compile">
+		<!-- define the task enhancer -->
+			<taskdef name="datanucleus"
+	                 classpathref="all.libs"
+	                 classname="org.datanucleus.enhancer.tools.EnhancerTask"  />
+		<!-- enhance -->
+		<datanucleus>
+			<fileset dir="${tempDir}">
+				<include name="**/*.class"/>
+			</fileset>
+			<classpath>
+				<path refid="all.libs" />
+				<path location="${tempDir}"/>
+			</classpath>
+		</datanucleus>
+	</target>
+	
+	
+	<!-- Jar creation task -->
+	<target name="jar" depends="enhance">
+		<!-- Release information. -->
+		<property file="./release.properties"/>
+		<!-- create a property containing all .jar files, prefix lib/, and seperated with a space -->
+		<pathconvert property="libs.project" pathsep=" ">
+			<mapper>
+				<chainedmapper>
+					<!-- remove absolute path -->
+		        	<flattenmapper />
+		        	<!-- add lib/ prefix -->
+		        	<globmapper from="*" to="bin/*" />
+		      	</chainedmapper>
+		    </mapper>
+		    <path>
+		      <fileset dir="${runtime.libs}">
+		        <include name="**/*.jar" />
+		      </fileset>
+		    </path>
+		</pathconvert>
+		<echo message="List of needed libraries: ${libs.project}" />
+		<!-- MANIFEST file -->
+		<manifest file="MANIFEST.MF">
+			<attribute name="Built-By" value="GreenTone team developer"/>
+		    <attribute name="Main-Class" value="it.greentone.GreenTone"/>
+			<attribute name="Implementation-Version" value="${major.version.number}.${minor.version.number}.${minus.version.number}"/>
+			<attribute name="Class-Path" value="${libs.project}"/>
+		</manifest>
+		<!-- jar generation -->
+		<jar destfile="${tempDir}/greentone.jar"
+			 basedir="${tempDir}"
+		     includes="**/*.class"
+			 manifest="MANIFEST.MF">
+			<!-- resources -->
+			<fileset dir="${src}">
+	    		<include name="**/*.properties"/>
+				<include name="**/*.png"/>
+				<include name="**/*.xml"/>
+				<include name="**/*.txt"/>
+	    		<exclude name="**/*.java"/>
+			</fileset>
+		</jar>
+		<delete file="MANIFEST.MF"/>
+	</target>
+
+	<!-- Installer task -->
+	<target name="mkInstaller" depends="jar">
+		<!-- Release information. -->
+		<property file="./release.properties"/>
+		<!-- Allows us to use the IzPack Ant task, standalone-compiler.jar added to Ant lib -->
+		<taskdef name="izpack" classpath="${basedir}/lib/standalone-compiler.jar"
+			   classname="com.izforge.izpack.ant.IzPackTask"/>
+		<!-- Run installer build -->
+		<izpack input="${basedir}/installer.xml"
+			  output="${user.home}/${application.name}_${major.version.number}.${minor.version.number}.${minus.version.number}-installer.jar"
+			  installerType="standard"
+			  inheritAll="true"
+			  basedir="${basedir}"
+			  compression="deflate"
+			  compressionlevel="9"/>
+		<!-- Clean working directory -->
+		<delete dir="${tempDir}"/>
+		<echo message="Installer created. Try java -jar ${user.home}/${application.name}_${major.version.number}.${minor.version.number}.${minus.version.number}-installer.jar" />
+	</target>
+
+</project>
