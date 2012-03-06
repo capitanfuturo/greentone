@@ -1,6 +1,7 @@
 package it.greentone.gui;
 
 import it.greentone.GreenTone;
+import it.greentone.GreenToneUtilities;
 import it.greentone.gui.action.ActionProvider;
 
 import java.awt.BorderLayout;
@@ -14,6 +15,7 @@ import javax.swing.SwingConstants;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -57,7 +59,15 @@ public class MainPanel extends JPanel
 		setLayout(new BorderLayout());
 		add(getMainToolBar(), BorderLayout.WEST);
 		add(getMainTabbedPane(), BorderLayout.CENTER);
-		statusLabel = new JLabel(resourceMap.getString("MainPanel.statusBarReady"));
+
+		DateTime now = new DateTime();
+		String today = GreenToneUtilities.formatDateTime(now);
+		String appName = resourceMap.getString("Application.name");
+		String version = resourceMap.getString("Application.version");
+		String ready = resourceMap.getString("MainPanel.statusBarReady");
+
+		statusLabel =
+		  new JLabel(appName + " " + version + " - " + today + " " + ready);
 		add(statusLabel, BorderLayout.PAGE_END);
 	}
 
