@@ -4,6 +4,7 @@ import it.greentone.GreenToneUtilities;
 import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.FontProvider;
 import it.greentone.gui.MainPanel;
+import it.greentone.gui.action.ActionProvider;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.JobStatus;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -61,6 +63,8 @@ public class HomePanel extends AbstractPanel
 	private static final int NEXT_EXPIRING_JOB_DAYS_INTERVAL = 30;
 
 	@Inject
+	private ActionProvider actionProvider;
+	@Inject
 	private JobService jobService;
 	@Inject
 	private JobPanel jobPanel;
@@ -74,6 +78,7 @@ public class HomePanel extends AbstractPanel
 	private JButton searchButton;
 	private JTextField searchTextField;
 	private JPanel resultPanel;
+	private JToolBar contextualToolBar;
 
 	/**
 	 * Pannello di inizio dell'applicazione.
@@ -86,6 +91,7 @@ public class HomePanel extends AbstractPanel
 		sidePanel.add(getSearchPanel(), BorderLayout.NORTH);
 		sidePanel.add(getAgendaPanel(), BorderLayout.CENTER);
 
+		add(getContextualToolBar(), BorderLayout.NORTH);
 		add(getCentralPanel(), BorderLayout.CENTER);
 		add(sidePanel, BorderLayout.EAST);
 	}
@@ -236,6 +242,10 @@ public class HomePanel extends AbstractPanel
 	public void setup()
 	{
 		super.setup();
+		/* toolbar */
+		getContextualToolBar().removeAll();
+		getContextualToolBar().add(actionProvider.getViewHelp());
+
 		/* pulisco i pannelli */
 		getCentralPanel().removeAll();
 		getAgendaPanel().removeAll();
@@ -326,5 +336,22 @@ public class HomePanel extends AbstractPanel
 	public String getBundleName()
 	{
 		return PANEL_BUNDLE;
+	}
+
+	/**
+	 * Restituisce la barra degli strumenti delle azioni disponibili per il
+	 * pannello corrente.
+	 * 
+	 * @return la barra degli strumenti delle azioni disponibili per il pannello
+	 *         corrente
+	 */
+	public JToolBar getContextualToolBar()
+	{
+		if(contextualToolBar == null)
+		{
+			contextualToolBar = new JToolBar();
+			contextualToolBar.setFloatable(false);
+		}
+		return contextualToolBar;
 	}
 }

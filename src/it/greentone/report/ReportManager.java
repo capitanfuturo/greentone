@@ -1,18 +1,15 @@
 package it.greentone.report;
 
+import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
-import it.greentone.report.ReportDescriptor.ExtensionType;
+import it.greentone.report.ReportDescriptorInterface.ExtensionType;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
+import javax.swing.SwingWorker;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -47,45 +44,10 @@ public class ReportManager
 	PersonService personService;
 	@Inject
 	GreenToneUtilities utilities;
-
-	/**
-	 * Genera un report
-	 */
-	public void generateTest()
-	{
-		try
-		{
-			Collection<Person> data = personService.getAllPersons();
-			InputStream reportDescriptor =
-			  getClass().getResourceAsStream("report.jasper");
-			Map<String, Object> params = new HashMap<String, Object>();
-
-			final JRBeanCollectionDataSource dataSource =
-			  new JRBeanCollectionDataSource(data);
-			final JasperPrint print =
-			  JasperFillManager.fillReport(reportDescriptor, params, dataSource);
-			File tempFile = null;
-			try
-			{
-				tempFile = File.createTempFile(print.getName(), ".pdf");
-				if(tempFile != null)
-				{
-					final File fileToOpen = tempFile;
-					JasperExportManager
-					  .exportReportToPdfFile(print, fileToOpen.getPath());
-					utilities.open(fileToOpen);
-				}
-			}
-			catch(IOException ex)
-			{
-				ex.printStackTrace();
-			}
-		}
-		catch(final Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+	@Inject
+	ReportsListDialog reportsListDialog;
+	@Inject
+	GreenToneLogProvider logProvider;
 
 	/**
 	 * Genera un report a partire da un descrittore di report
@@ -93,7 +55,7 @@ public class ReportManager
 	 * @param reportDescriptor
 	 *          descrittore di report
 	 */
-	public void generate(ReportDescriptor reportDescriptor)
+	public void generate(ReportDescriptorInterface reportDescriptor)
 	{
 		try
 		{
@@ -142,4 +104,45 @@ public class ReportManager
 		}
 	}
 
+	/**
+	 * Mostra il pannello di dialogo per la selezione del report
+	 * 
+	 * @param category
+	 *          categoria dei report
+	 */
+	public void showDialog(ReportsCategoryInterface category)
+	{
+		/* imposta la lista di report sul pannello di selezione delle stampe */
+		logProvider.getLogger().info("Report dialog setup");
+		reportsListDialog.setup(category);
+		/* mostra il pannello di selezione */
+		reportsListDialog.setVisible(true);
+		/* recupera il report selezionato */
+		final ReportDescriptorInterface selectedReportDescriptor =
+		  reportsListDialog.getSelectedReportDescriptor();
+		if(selectedReportDescriptor != null)
+		{
+			/* imposta i parametri comuni della categoria */
+			logProvider.getLogger().info("Report common parameters setup");
+			selectedReportDescriptor.setup(category.getCommonParameters());
+			/*
+			 * TODO chiama il metodo di impostazione dei parametri di lancio
+			 * attraverso una dialog
+			 */
+			/* TODO recupera i parametri immessi dall'utente */
+			/* esegue il report in un processo ad-hoc */
+			new SwingWorker<Void, Void>()
+				{
+
+					@Override
+					protected Void doInBackground() throws Exception
+					{
+						logProvider.getLogger().info(
+						  "Generating: " + selectedReportDescriptor);
+						generate(selectedReportDescriptor);
+						return null;
+					}
+				}.execute();
+		}
+	}
 }

@@ -71,6 +71,8 @@ public class ActionProvider
 	@Inject
 	ViewDocumentsAction viewDocuments;
 	@Inject
+	ViewHelpAction viewHelp;
+	@Inject
 	ViewHomeAction viewHome;
 	@Inject
 	ViewJobsAction viewJobs;
@@ -88,6 +90,8 @@ public class ActionProvider
 	ViewJobAction viewJob;
 	@Inject
 	ViewPersonAction viewPerson;
+	@Inject
+	ViewReportsAction viewReports;
 
 	/**
 	 * Oggetto di convenienza contenente tutte le azioni disponibili
@@ -373,5 +377,25 @@ public class ActionProvider
 	public Action getViewPerson()
 	{
 		return applicationContext.getActionMap(viewPerson).get("viewPerson");
+	}
+
+	/**
+	 * Restituisce l'azione di visualizzazione del manuale utente.
+	 * 
+	 * @return l'azione di visualizzazione del manuale utente
+	 */
+	public Action getViewHelp()
+	{
+		return applicationContext.getActionMap(viewHelp).get("viewHelp");
+	}
+
+	/**
+	 * Restituisce l'azione di lancio del componente di stampa.
+	 * 
+	 * @return l'azione di lancio del componente di stampa
+	 */
+	public Action getViewReports()
+	{
+		return applicationContext.getActionMap(viewReports).get("viewReports");
 	}
 }

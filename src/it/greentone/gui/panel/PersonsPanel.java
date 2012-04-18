@@ -8,9 +8,10 @@ import it.greentone.gui.action.DeletePersonAction;
 import it.greentone.gui.action.EditUserAction;
 import it.greentone.gui.action.SavePersonAction;
 import it.greentone.gui.action.ViewPersonAction;
+import it.greentone.gui.action.ViewReportsAction;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
-import it.greentone.report.ReportManager;
+import it.greentone.report.PersonReportsCategory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +19,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 import javax.inject.Inject;
-import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -77,9 +77,11 @@ public class PersonsPanel extends ContextualPanel<Person>
 	@Inject
 	private PersonService personService;
 	@Inject
-	private ReportManager reportManager;
-	@Inject
 	private GreenToneLogProvider logger;
+	@Inject
+	private ViewReportsAction viewReportsAction;
+	@Inject
+	private PersonReportsCategory personReportsCategory;
 	private EventJXTableModel<Person> tableModel;
 	private final String panelBundle;
 	private JTextField nameTextField;
@@ -99,6 +101,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	private final String[] properties;
 	private final String[] columnsNames;
 	private final boolean[] writables;
+	private JLabel cfLabel;
+	private JLabel pivaLabel;
 
 	/**
 	 * Pannello di gestione delle persone in anagrafica.
@@ -143,10 +147,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
 		JLabel capLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cap"));
-		JLabel cfLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cf"));
-		JLabel pivaLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva"));
 		JLabel telephone1Label =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone1"));
 		JLabel telephone2Label =
@@ -182,9 +182,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 		headerPanel.add(capLabel, "gap para");
 		headerPanel.add(getCapTextField(), "growx, wrap");
 
-		headerPanel.add(cfLabel, "gap para");
+		headerPanel.add(getCfLabel(), "gap para");
 		headerPanel.add(getCfTexField(), "growx");
-		headerPanel.add(pivaLabel, "gap para");
+		headerPanel.add(getPivaLabel(), "gap para");
 		headerPanel.add(getPivaTextField(), "growx");
 		headerPanel.add(identityCardLabel, "gap para");
 		headerPanel.add(getIdentityCardTextField(), "growx, wrap");
@@ -264,6 +264,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	public void setup()
 	{
 		super.setup();
+		viewReportsAction.setup(personReportsCategory);
 
 		/* pulisco e ricostruisco la toolbar */
 		getContextualToolBar().add(actionProvider.getAddPerson());
@@ -271,17 +272,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 		getContextualToolBar().add(actionProvider.getDeletePerson());
 		getContextualToolBar().add(actionProvider.getViewPerson());
 		getContextualToolBar().addSeparator();
-		getContextualToolBar().add(
-		  new AbstractAction("", getResourceMap().getIcon(
-		    "viewReports.Action.largeIcon"))
-			  {
-
-				  @Override
-				  public void actionPerformed(ActionEvent arg0)
-				  {
-					  reportManager.generateTest();
-				  }
-			  });
+		getContextualToolBar().add(actionProvider.getViewReports());
 		// getContextualToolBar().add(actionProvider.getEditUser());
 
 		/* aggiorno la tabella delle persone in anagrafica */
@@ -617,11 +608,37 @@ public class PersonsPanel extends ContextualPanel<Person>
 		{
 			getNameLabel().setText(
 			  getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
+			getCfLabel().setText(
+			  getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + ":");
+			getPivaLabel().setText(
+			  getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + " *:");
 		}
 		else
 		{
 			getNameLabel().setText(
 			  getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
+			getCfLabel().setText(
+			  getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + " *:");
+			getPivaLabel().setText(
+			  getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + ":");
 		}
+	}
+
+	private JLabel getCfLabel()
+	{
+		if(cfLabel == null)
+			cfLabel =
+			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cf")
+			    + " *:");
+		return cfLabel;
+	}
+
+	private JLabel getPivaLabel()
+	{
+		if(pivaLabel == null)
+			pivaLabel =
+			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva")
+			    + ":");
+		return pivaLabel;
 	}
 }

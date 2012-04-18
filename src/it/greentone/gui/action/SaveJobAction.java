@@ -3,6 +3,7 @@ package it.greentone.gui.action;
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.AbstractPanel.EStatus;
+import it.greentone.gui.panel.HomePanel;
 import it.greentone.gui.panel.JobsPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobCategory;
@@ -44,6 +45,8 @@ public class SaveJobAction extends AbstractBean
 {
 	@Inject
 	private JobsPanel jobsPanel;
+	@Inject
+	private HomePanel homePanel;
 	@Inject
 	private JobService jobService;
 	private final ResourceMap resourceMap;
@@ -166,6 +169,8 @@ public class SaveJobAction extends AbstractBean
 		}
 		jobsPanel.clearForm();
 		jobsPanel.getContentTable().clearSelection();
+
+		homePanel.setup();
 	}
 
 	/**

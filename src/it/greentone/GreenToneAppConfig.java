@@ -65,6 +65,10 @@ public class GreenToneAppConfig
 	 */
 	public static final String MANUAL_REPOSITORY = BASE_PATH + "manual"
 	  + FILE_SEPARATOR;
+	/**
+	 * Nome del file del manuale utente
+	 */
+	public static final String MANUAL_FILE_NAME = "GreenTone-ManualeUtente.pdf";
 
 	/**
 	 * Resituisce la factory di gestione della persistenza.

@@ -23,8 +23,16 @@ import java.util.Map;
  * 
  * @author Giuseppe Caliendo
  */
-public interface ReportDescriptor
+public interface ReportDescriptorInterface
 {
+
+	/**
+	 * Esegue l'inizializzazione del report prima che venga eseguito.
+	 * 
+	 * @param commonParameters
+	 *          input da passare al report
+	 */
+	public void setup(Map<String, Object> commonParameters);
 
 	/**
 	 * Restituisce l'insieme dei dati da lavorare.
