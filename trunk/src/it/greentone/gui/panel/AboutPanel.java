@@ -156,7 +156,7 @@ public class AboutPanel extends ContextualPanel<Void>
 		  new JLabel(getResourceMap().getString("viewAbout.Panel.manual"));
 		final File manualFile =
 		  new File(GreenToneAppConfig.MANUAL_REPOSITORY
-		    + "GreenTone-ManualeUtente.pdf");
+		    + GreenToneAppConfig.MANUAL_FILE_NAME);
 		JEditorPane manualPathField = new JEditorPane();
 		manualPathField.setText(manualFile.getName());
 		manualPathField.setForeground(Color.blue);
