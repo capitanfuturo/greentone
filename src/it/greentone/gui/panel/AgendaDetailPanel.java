@@ -4,6 +4,7 @@ import it.greentone.GreenToneUtilities;
 import it.greentone.gui.action.ViewJobsAction;
 import it.greentone.persistence.Job;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -51,6 +52,8 @@ public class AgendaDetailPanel extends JPanel
 	public AgendaDetailPanel(final Job job, final JobPanel jobPanel,
 	  final ViewJobsAction viewJobsAction, ResourceMap resourceMap)
 	{
+		setBackground(Color.WHITE);
+
 		JButton viewDetailsButton = new JButton(new AbstractAction()
 			{
 

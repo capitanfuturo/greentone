@@ -249,7 +249,7 @@ public class HomePanel extends AbstractPanel
 										{
 											getResultPanel().add(
 											  new AgendaDetailPanel(job, jobPanel, viewJobsAction,
-											    getResourceMap()), "wrap");
+											    getResourceMap()), "growx, wrap");
 											getSplitPane().validate();
 										}
 									}
@@ -279,7 +279,7 @@ public class HomePanel extends AbstractPanel
 	{
 		if(resultPanel == null)
 		{
-			resultPanel = new JPanel(new MigLayout());
+			resultPanel = new JPanel(new MigLayout("fillx"));
 		}
 		return resultPanel;
 	}
@@ -297,7 +297,7 @@ public class HomePanel extends AbstractPanel
 	{
 		if(agendaPanel == null)
 		{
-			agendaPanel = new JPanel(new MigLayout());
+			agendaPanel = new JPanel(new MigLayout("fillx"));
 		}
 		return agendaPanel;
 	}
@@ -403,13 +403,13 @@ public class HomePanel extends AbstractPanel
 		{
 			AgendaDetailPanel panel =
 			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap());
-			getAgendaPanel().add(panel, "wrap");
+			getAgendaPanel().add(panel, "growx, wrap");
 		}
 		for(Job job : expiredJob)
 		{
 			AgendaDetailPanel panel =
 			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap());
-			getAgendaPanel().add(panel, "wrap");
+			getAgendaPanel().add(panel, "growx, wrap");
 		}
 		if(nextExpiringJob.isEmpty() && expiredJob.isEmpty())
 		{
