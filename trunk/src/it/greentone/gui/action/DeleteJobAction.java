@@ -3,6 +3,7 @@ package it.greentone.gui.action;
 import it.greentone.GreenTone;
 import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
+import it.greentone.gui.panel.HomePanel;
 import it.greentone.gui.panel.JobsPanel;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.DocumentService;
@@ -50,6 +51,8 @@ public class DeleteJobAction extends AbstractBean
 	JobService jobService;
 	@Inject
 	DocumentService documentService;
+	@Inject
+	private HomePanel homePanel;
 	boolean deleteJobActionEnabled = false;
 	private final ResourceMap resourceMap;
 
@@ -90,6 +93,8 @@ public class DeleteJobAction extends AbstractBean
 			jobsPanel.clearForm();
 			jobsPanel.setStatus(EStatus.NEW);
 		}
+
+		homePanel.refresh();
 	}
 
 	/**

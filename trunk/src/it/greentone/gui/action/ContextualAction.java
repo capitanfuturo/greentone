@@ -71,7 +71,13 @@ public abstract class ContextualAction
 		return mainPanel;
 	}
 
-	protected void addTab(AbstractPanel panel)
+	/**
+	 * Aggiunge una scheda alla finestra principale.
+	 * 
+	 * @param panel
+	 *          contenuto della scheda
+	 */
+	public void addTab(AbstractPanel panel)
 	{
 		/* controllo che il tab non sia già presente */
 		JTabbedPane tabbedPane = getMainPanel().getMainTabbedPane();

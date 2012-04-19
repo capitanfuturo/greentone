@@ -3,9 +3,10 @@ package it.greentone.gui.panel;
 import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel;
+import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.FontProvider;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,13 +22,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -51,7 +52,7 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("serial")
 @Component
-public class AboutPanel extends ContextualPanel<Void>
+public class AboutPanel extends AbstractPanel
 {
 	@Inject
 	private GreenToneLogProvider logger;
@@ -65,14 +66,16 @@ public class AboutPanel extends ContextualPanel<Void>
 	public AboutPanel()
 	{
 		super();
-		remove(getContextualToolBar());
 		panelBundle = "viewAbout";
+		setLayout(new BorderLayout(5, 5));
+
+		add(createHeaderPanel(), BorderLayout.NORTH);
+		add(createLicencePanel(), BorderLayout.CENTER);
 	}
 
-	@Override
-	protected JPanel createHeaderPanel()
+	private JPanel createHeaderPanel()
 	{
-		JPanel headerPanel = new JPanel(new MigLayout("", "", "[][][][][][][85%]"));
+		JPanel headerPanel = new JPanel(new MigLayout());
 
 		JLabel logoLabel =
 		  new JLabel(getResourceMap().getIcon("viewAbout.Panel.logo"));
@@ -179,28 +182,6 @@ public class AboutPanel extends ContextualPanel<Void>
 				};
 			});
 
-		JLabel licenseLabel =
-		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
-		final JTextArea licenseTextArea = new JTextArea();
-		licenseTextArea.setEditable(false);
-		licenseTextArea.setFont(FontProvider.CODE);
-		String licenceURL =
-		  "/" + getResourceMap().getResourcesDir() + "license.txt";
-		try
-		{
-			InputStream inputStream = getClass().getResourceAsStream(licenceURL);
-			licenseTextArea.read(new InputStreamReader(inputStream), null);
-		}
-		catch(Exception e)
-		{
-			logger.getLogger().log(
-			  Level.WARNING,
-			  getResourceMap().getString("ErrorMessage.cannotOpenURL") + " "
-			    + licenceURL, e);
-		}
-		final JScrollPane scrollPane = new JScrollPane(licenseTextArea);
-
-		/* assemblo il pannello */
 		headerPanel.add(logoLabel, "spany 2");
 		headerPanel.add(titleLabel, "span");
 		headerPanel.add(subtitleLabel, "wrap");
@@ -217,22 +198,37 @@ public class AboutPanel extends ContextualPanel<Void>
 		headerPanel.add(manualLabel);
 		headerPanel.add(manualPathField, "grow, wrap");
 
-		headerPanel.add(licenseLabel);
-		headerPanel.add(scrollPane, "grow");
-
 		return headerPanel;
 	}
 
-	@Override
-	protected JXTable createContentTable()
+	private JPanel createLicencePanel()
 	{
-		return null;
-	}
+		JLabel licenseLabel =
+		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
 
-	@Override
-	public void setup()
-	{
-		return;
+		final JTextPane licenseText = new JTextPane();
+		licenseText.setEditable(false);
+		licenseText.setFont(FontProvider.CODE);
+		String licenceURL =
+		  "/" + getResourceMap().getResourcesDir() + "license.txt";
+		try
+		{
+			InputStream inputStream = getClass().getResourceAsStream(licenceURL);
+			licenseText.read(new InputStreamReader(inputStream), null);
+		}
+		catch(Exception e)
+		{
+			logger.getLogger().log(
+			  Level.WARNING,
+			  getResourceMap().getString("ErrorMessage.cannotOpenURL") + " "
+			    + licenceURL, e);
+		}
+		final JScrollPane scrollPane = new JScrollPane(licenseText);
+
+		JPanel licencePanel = new JPanel(new BorderLayout());
+		licencePanel.add(licenseLabel, BorderLayout.NORTH);
+		licencePanel.add(scrollPane, BorderLayout.CENTER);
+		return licencePanel;
 	}
 
 	@Override

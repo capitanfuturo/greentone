@@ -1,10 +1,7 @@
 package it.greentone.gui.panel;
 
-import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.AbstractPanel;
-import it.greentone.gui.ButtonTabComponent;
-import it.greentone.gui.MainPanel;
+import it.greentone.gui.action.ViewJobsAction;
 import it.greentone.persistence.Job;
 
 import java.awt.event.ActionEvent;
@@ -14,11 +11,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 
 /**
@@ -43,13 +38,7 @@ import org.jdesktop.application.ResourceMap;
 @SuppressWarnings("serial")
 public class JobDetailsPanel extends JPanel
 {
-	private final MainPanel mainPanel;
-	private final ResourceMap resourceMap;
-	private final String applicationName;
-	private static final String PANEL_TITLE_SUFFIX = ".Panel.title";
 	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
-	private static final String ACTION_TOOLTIP_SUFFIX =
-	  ".Action.shortDescription";
 
 	/**
 	 * Pannello di dettaglio di un incarico.
@@ -57,16 +46,12 @@ public class JobDetailsPanel extends JPanel
 	 * @param job
 	 *          incarico di cui mostrare i dettagli
 	 * @param jobPanel
-	 * @param mainPanel
+	 * @param viewJobsAction
 	 * @param resourceMap
 	 */
 	public JobDetailsPanel(final Job job, final JobPanel jobPanel,
-	  MainPanel mainPanel, ResourceMap resourceMap)
+	  final ViewJobsAction viewJobsAction, ResourceMap resourceMap)
 	{
-		this.mainPanel = mainPanel;
-		this.resourceMap = resourceMap;
-		this.applicationName = resourceMap.getString("Application.name");
-
 		JButton viewDetailsButton = new JButton(new AbstractAction()
 			{
 
@@ -75,7 +60,7 @@ public class JobDetailsPanel extends JPanel
 				{
 					jobPanel.setJob(job);
 					jobPanel.setup();
-					addTab(jobPanel);
+					viewJobsAction.addTab(jobPanel);
 				}
 			});
 		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
@@ -96,39 +81,5 @@ public class JobDetailsPanel extends JPanel
 		add(new JLabel(" "));
 		add(dueDateFieldLabel);
 		add(customerFieldLabel);
-	}
-
-	protected void addTab(AbstractPanel panel)
-	{
-		/* controllo che il tab non sia già presente */
-		JTabbedPane tabbedPane = mainPanel.getMainTabbedPane();
-		boolean tabInserted = false;
-		for(int i = 0; i < tabbedPane.getTabCount(); i++)
-		{
-			java.awt.Component componentAt = tabbedPane.getComponentAt(i);
-			if(componentAt.equals(panel))
-			{
-				tabInserted = true;
-			}
-		}
-		if(!tabInserted)
-		{
-			String title =
-			  resourceMap.getString(panel.getBundleName() + PANEL_TITLE_SUFFIX);
-			/* aggiorno il titolo dell'applicazione */
-			Application.getInstance(GreenTone.class).getMainFrame()
-			  .setTitle(title + " - " + applicationName);
-			/* configuro e aggiungo il tab */
-			panel.setup();
-			tabbedPane
-			  .insertTab(
-			    title,
-			    resourceMap.getIcon(panel.getBundleName() + ACTION_SMALL_ICON_SUFFIX),
-			    panel,
-			    resourceMap.getString(panel.getBundleName() + ACTION_TOOLTIP_SUFFIX),
-			    0);
-			tabbedPane.setTabComponentAt(0, new ButtonTabComponent(tabbedPane));
-		}
-		tabbedPane.setSelectedComponent(panel);
 	}
 }
