@@ -4,6 +4,7 @@ import it.greentone.GreenTone;
 import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.ButtonTabComponent;
 import it.greentone.gui.MainPanel;
+import it.greentone.gui.panel.HomePanel;
 
 import java.awt.Component;
 
@@ -35,9 +36,9 @@ import org.jdesktop.application.ResourceMap;
  */
 public abstract class ContextualAction
 {
-	private static final String PANEL_TITLE_SUFFIX = ".Panel.title";
-	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
-	private static final String ACTION_TOOLTIP_SUFFIX =
+	protected static final String PANEL_TITLE_SUFFIX = ".Panel.title";
+	protected static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
+	protected static final String ACTION_TOOLTIP_SUFFIX =
 	  ".Action.shortDescription";
 
 	private final MainPanel mainPanel;
@@ -92,15 +93,36 @@ public abstract class ContextualAction
 			  .setTitle(title + " - " + applicationName);
 			/* configuro e aggiungo il tab */
 			panel.setup();
-			tabbedPane
-			  .insertTab(
-			    title,
-			    resourceMap.getIcon(panel.getBundleName() + ACTION_SMALL_ICON_SUFFIX),
-			    panel,
-			    resourceMap.getString(panel.getBundleName() + ACTION_TOOLTIP_SUFFIX),
-			    0);
-			tabbedPane.setTabComponentAt(0, new ButtonTabComponent(tabbedPane));
+			/*
+			 * Issue 126: la pagina iniziale deve rimanere in prima posizione e non si
+			 * può chiudere
+			 */
+			if(panel instanceof HomePanel)
+			{
+				tabbedPane
+				  .insertTab(title, resourceMap.getIcon(panel.getBundleName()
+				    + ACTION_SMALL_ICON_SUFFIX), panel, resourceMap.getString(panel
+				    .getBundleName() + ACTION_TOOLTIP_SUFFIX), 0);
+			}
+			else
+			{
+				tabbedPane
+				  .insertTab(title, resourceMap.getIcon(panel.getBundleName()
+				    + ACTION_SMALL_ICON_SUFFIX), panel, resourceMap.getString(panel
+				    .getBundleName() + ACTION_TOOLTIP_SUFFIX), 1);
+				tabbedPane.setTabComponentAt(1, new ButtonTabComponent(tabbedPane));
+			}
 		}
 		tabbedPane.setSelectedComponent(panel);
+	}
+
+	/**
+	 * Restituisce il nome dell'applicazione.
+	 * 
+	 * @return il nome dell'applicazione
+	 */
+	public String getApplicationName()
+	{
+		return applicationName;
 	}
 }
