@@ -306,6 +306,15 @@ public class HomePanel extends AbstractPanel
 			  new JobDetailsPanel(job, jobPanel, mainPanel, getResourceMap());
 			getCentralPanel().add(jobDetailsPanel, "growx, wrap");
 		}
+		/*
+		 * Issue 127: se non c'è nessun incarico da visualizzare lo segnalo con un
+		 * messaggio all'utente
+		 */
+		if(allJobsStartDate.isEmpty())
+		{
+			getCentralPanel().add(
+			  new JLabel(getResourceMap().getString("viewHome.Panel.noJobs")));
+		}
 
 		/*
 		 * popolo il pannello laterale con con in testa gli incarichi "scaduti"
