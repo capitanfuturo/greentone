@@ -1,12 +1,19 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.action.ViewJobsAction;
 import it.greentone.persistence.Job;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+
+import org.jdesktop.application.ResourceMap;
 
 /**
  * <code>
@@ -30,20 +37,44 @@ import net.miginfocom.swing.MigLayout;
 @SuppressWarnings("serial")
 public class AgendaDetailPanel extends JPanel
 {
+	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
+
 	/**
 	 * Pannello di dettaglio di un incarico nell'agenda della schermata iniziale.
 	 * 
 	 * @param job
 	 *          incarico di cui mostrare il dettaglio
+	 * @param jobPanel
+	 * @param viewJobsAction
+	 * @param resourceMap
 	 */
-	public AgendaDetailPanel(Job job)
+	public AgendaDetailPanel(final Job job, final JobPanel jobPanel,
+	  final ViewJobsAction viewJobsAction, ResourceMap resourceMap)
 	{
+		JButton viewDetailsButton = new JButton(new AbstractAction()
+			{
+
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					jobPanel.setJob(job);
+					jobPanel.setup();
+					viewJobsAction.addTab(jobPanel);
+				}
+			});
+		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
+		  + ACTION_SMALL_ICON_SUFFIX));
+		viewDetailsButton.setToolTipText(resourceMap
+		  .getString("JobDetailsPanel.jobDetails"));
+
 		JLabel protocolFieldLabel = new JLabel(job.getProtocol());
 		JLabel dueDateFieldLabel =
 		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
 		JLabel descriptionLabel = new JLabel(job.getDescription());
 
+
 		setLayout(new MigLayout());
+		add(viewDetailsButton);
 		add(dueDateFieldLabel);
 		add(protocolFieldLabel);
 		add(descriptionLabel);

@@ -170,7 +170,7 @@ public class SaveJobAction extends AbstractBean
 		jobsPanel.clearForm();
 		jobsPanel.getContentTable().clearSelection();
 
-		homePanel.setup();
+		homePanel.refresh();
 	}
 
 	/**
