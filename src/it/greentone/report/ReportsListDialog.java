@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -65,13 +66,14 @@ public class ReportsListDialog extends JDialog
 
 		setLayout(new BorderLayout());
 
-		JPanel listContent = new JPanel(new BorderLayout());
-		listContent.add(new JScrollPane(getReportsList()), BorderLayout.CENTER);
+		JPanel listContent = new JPanel(new MigLayout());
+		listContent.add(
+		  new JLabel(resourceMap.getString("viewReports.Dialog.reports")), "wrap");
+		listContent.add(new JScrollPane(getReportsList()), "grow");
 
 		JPanel buttonPanel = new JPanel(new MigLayout("rtl"));
-		buttonPanel.add(getCancelButton());
 		buttonPanel.add(getOkButton());
-
+		buttonPanel.add(getCancelButton());
 
 		getContentPane().add(listContent, BorderLayout.CENTER);
 		getContentPane().add(buttonPanel, BorderLayout.SOUTH);

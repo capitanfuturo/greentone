@@ -6,6 +6,7 @@ import it.greentone.gui.FontProvider;
 import it.greentone.gui.MainPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.ViewJobsAction;
+import it.greentone.gui.panel.AgendaDetailPanel.TimeStatus;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.JobStatus;
@@ -249,7 +250,7 @@ public class HomePanel extends AbstractPanel
 										{
 											getResultPanel().add(
 											  new AgendaDetailPanel(job, jobPanel, viewJobsAction,
-											    getResourceMap()), "growx, wrap");
+											    getResourceMap(), TimeStatus.ON_TIME), "growx, wrap");
 											getSplitPane().validate();
 										}
 									}
@@ -402,13 +403,15 @@ public class HomePanel extends AbstractPanel
 		for(Job job : nextExpiringJob)
 		{
 			AgendaDetailPanel panel =
-			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap());
+			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap(),
+			    TimeStatus.EXPIRING);
 			getAgendaPanel().add(panel, "growx, wrap");
 		}
 		for(Job job : expiredJob)
 		{
 			AgendaDetailPanel panel =
-			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap());
+			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap(),
+			    TimeStatus.EXPIRED);
 			getAgendaPanel().add(panel, "growx, wrap");
 		}
 		if(nextExpiringJob.isEmpty() && expiredJob.isEmpty())

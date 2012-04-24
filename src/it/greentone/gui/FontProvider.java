@@ -27,6 +27,8 @@ public class FontProvider
 	public static final Font TITLE_BIG = new Font("SansSerif", Font.BOLD, 30);
 	/** Font per titoletti */
 	public static final Font TITLE_SMALL = new Font("SansSerif", Font.ITALIC, 20);
+	/** Font per paragrafo */
+	public static final Font PARAGRAPH_BIG = new Font("SansSerif", Font.BOLD, 15);
 	/** Font per visualizzare codice */
 	public static final Font CODE = new Font("Monospaced", Font.PLAIN, 12);
 	/** Font per la visualizzazione di codice grande */

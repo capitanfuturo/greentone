@@ -1,14 +1,13 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.FontProvider;
 import it.greentone.gui.action.ViewJobsAction;
 import it.greentone.persistence.Job;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -53,8 +52,6 @@ public class JobDetailsPanel extends JPanel
 	public JobDetailsPanel(final Job job, final JobPanel jobPanel,
 	  final ViewJobsAction viewJobsAction, ResourceMap resourceMap)
 	{
-		setBackground(Color.WHITE);
-
 		JButton viewDetailsButton = new JButton(new AbstractAction()
 			{
 
@@ -71,18 +68,22 @@ public class JobDetailsPanel extends JPanel
 		viewDetailsButton.setToolTipText(resourceMap
 		  .getString("JobDetailsPanel.jobDetails"));
 
+		JLabel protocolLabel = new JLabel(job.getProtocol());
+		protocolLabel.setFont(FontProvider.TITLE_SMALL);
 		JLabel descriptionFieldLabel = new JLabel(job.getDescription());
+		descriptionFieldLabel.setFont(FontProvider.PARAGRAPH_BIG);
 		JLabel dueDateFieldLabel =
 		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
 		JLabel customerFieldLabel =
 		  new JLabel(job.getCustomer() != null? job.getCustomer().toString(): null);
 
-		setBorder(BorderFactory.createTitledBorder(job.getProtocol()));
 		setLayout(new MigLayout());
-		add(viewDetailsButton);
+		add(viewDetailsButton, "span 1 2");
+		add(protocolLabel);
 		add(descriptionFieldLabel, "wrap");
-		add(new JLabel(" "));
+		add(new JLabel(resourceMap.getString("JobDetailsPanel.duedate")));
 		add(dueDateFieldLabel);
-		add(customerFieldLabel);
+		add(new JLabel(resourceMap.getString("JobDetailsPanel.customer")));
+		add(customerFieldLabel, "wrap");
 	}
 }

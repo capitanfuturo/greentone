@@ -1,6 +1,7 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.FontProvider;
 import it.greentone.gui.action.ViewJobsAction;
 import it.greentone.persistence.Job;
 
@@ -48,12 +49,12 @@ public class AgendaDetailPanel extends JPanel
 	 * @param jobPanel
 	 * @param viewJobsAction
 	 * @param resourceMap
+	 * @param status
 	 */
 	public AgendaDetailPanel(final Job job, final JobPanel jobPanel,
-	  final ViewJobsAction viewJobsAction, ResourceMap resourceMap)
+	  final ViewJobsAction viewJobsAction, ResourceMap resourceMap,
+	  TimeStatus status)
 	{
-		setBackground(Color.WHITE);
-
 		JButton viewDetailsButton = new JButton(new AbstractAction()
 			{
 
@@ -71,10 +72,16 @@ public class AgendaDetailPanel extends JPanel
 		  .getString("JobDetailsPanel.jobDetails"));
 
 		JLabel protocolFieldLabel = new JLabel(job.getProtocol());
+		protocolFieldLabel.setFont(FontProvider.PARAGRAPH_BIG);
 		JLabel dueDateFieldLabel =
 		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
 		JLabel descriptionLabel = new JLabel(job.getDescription());
 
+		if(status.getColor() != null)
+		{
+			dueDateFieldLabel.setOpaque(true);
+			dueDateFieldLabel.setBackground(status.getColor());
+		}
 
 		setLayout(new MigLayout());
 		add(viewDetailsButton);
@@ -83,4 +90,46 @@ public class AgendaDetailPanel extends JPanel
 		add(descriptionLabel);
 	}
 
+	/**
+	 * Stato temporale dell'incarico
+	 * 
+	 * @author Giuseppe Caliendo
+	 */
+	public enum TimeStatus
+	{
+		/** Incarico nelle tempistiche */
+		ON_TIME
+		{
+			@Override
+			public Color getColor()
+			{
+				return null;
+			}
+		},
+		/** Incarico in scadenza */
+		EXPIRING
+		{
+			@Override
+			public Color getColor()
+			{
+				return new Color(245, 230, 90);
+			}
+		},
+		/** Incarico scaduto */
+		EXPIRED
+		{
+			@Override
+			public Color getColor()
+			{
+				return new Color(220, 55, 20);
+			}
+		};
+
+		/**
+		 * Restituisce il colore con sui segnalare l'incarico.
+		 * 
+		 * @return il colore con sui segnalare l'incarico
+		 */
+		public abstract Color getColor();
+	}
 }
