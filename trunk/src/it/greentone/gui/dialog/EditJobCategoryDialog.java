@@ -20,6 +20,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -76,21 +80,26 @@ public class EditJobCategoryDialog extends JDialog
 		setTitle(resourceMap.getString(LOCALIZATION_PREFIX + "title"));
 		setLayout(new BorderLayout());
 
-		JPanel controlPanel = new JPanel(new MigLayout("flowy, fillx"));
-		controlPanel.add(getAddButton(), "growx");
-		controlPanel.add(getDeleteButton(), "growx");
-		controlPanel.add(getOkButton(), "growx");
 
-		JPanel dataPanel = new JPanel(new BorderLayout());
-		JPanel inputPanel = new JPanel(new MigLayout());
-		inputPanel.add(new JLabel(resourceMap.getString(LOCALIZATION_PREFIX
+		JPanel northPanel = new JPanel(new MigLayout());
+		northPanel.add(new JLabel(resourceMap.getString(LOCALIZATION_PREFIX
 		  + "name")));
-		inputPanel.add(getInputTextField());
-		dataPanel.add(inputPanel, BorderLayout.NORTH);
-		dataPanel.add(new JScrollPane(getJobCategoryJList()), BorderLayout.CENTER);
+		northPanel.add(getInputTextField());
+		northPanel.add(getAddButton());
 
-		getContentPane().add(dataPanel, BorderLayout.CENTER);
-		getContentPane().add(controlPanel, BorderLayout.EAST);
+		JPanel centerPanel = new JPanel(new MigLayout("", "[90%][]", ""));
+		centerPanel.add(
+		  new JLabel(resourceMap.getString(LOCALIZATION_PREFIX + "categories")),
+		  "wrap");
+		centerPanel.add(new JScrollPane(getJobCategoryJList()), "grow");
+		centerPanel.add(getDeleteButton());
+
+		JPanel buttonPanel = new JPanel(new MigLayout("rtl"));
+		buttonPanel.add(getOkButton());
+
+		getContentPane().add(northPanel, BorderLayout.NORTH);
+		getContentPane().add(centerPanel, BorderLayout.CENTER);
+		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
 		setLocationRelativeTo(null);
 		pack();
@@ -134,6 +143,35 @@ public class EditJobCategoryDialog extends JDialog
 						}
 					}
 				});
+			getInputTextField().getDocument().addDocumentListener(
+			  new DocumentListener()
+				  {
+
+					  @Override
+					  public void removeUpdate(DocumentEvent e)
+					  {
+						  toggleButton();
+					  }
+
+					  @Override
+					  public void insertUpdate(DocumentEvent e)
+					  {
+						  toggleButton();
+					  }
+
+					  @Override
+					  public void changedUpdate(DocumentEvent e)
+					  {
+						  toggleButton();
+					  }
+
+					  void toggleButton()
+					  {
+						  addButton.setEnabled(GreenToneUtilities
+						    .getText(getInputTextField()) != null);
+					  }
+				  });
+
 			addButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
 			  + "addToolTip"));
 			addButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "addIcon"));
@@ -167,6 +205,18 @@ public class EditJobCategoryDialog extends JDialog
 						}
 					}
 				});
+			getJobCategoryJList().addListSelectionListener(
+			  new ListSelectionListener()
+				  {
+
+					  @Override
+					  public void valueChanged(ListSelectionEvent e)
+					  {
+						  deleteButton
+						    .setEnabled(getJobCategoryJList().getSelectedIndex() > -1);
+					  }
+				  });
+
 			deleteButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
 			  + "deleteToolTip"));
 			deleteButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX
@@ -187,9 +237,7 @@ public class EditJobCategoryDialog extends JDialog
 						setVisible(false);
 					}
 				});
-			okButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
-			  + "okButton"));
-			okButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "okIcon"));
+			okButton.setText(resourceMap.getString(LOCALIZATION_PREFIX + "okButton"));
 		}
 		return okButton;
 	}
@@ -202,6 +250,9 @@ public class EditJobCategoryDialog extends JDialog
 		ListModel listModel =
 		  new EventListModel<JobCategory>(jobCategoryService.getAllJobCategories());
 		getJobCategoryJList().setModel(listModel);
+		getInputTextField().setText(null);
+		getDeleteButton().setEnabled(false);
+		getAddButton().setEnabled(false);
 	}
 
 }
