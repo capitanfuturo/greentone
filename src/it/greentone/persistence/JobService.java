@@ -370,7 +370,8 @@ public class JobService
 				  public boolean matches(Job arg0)
 				  {
 					  if(arg0.getDueDate() != null && arg0.getFinishDate() == null
-					    && arg0.getDueDate().isBefore(trigger.getMillis()))
+					    && arg0.getDueDate().isBefore(trigger.getMillis())
+					    && !arg0.getDueDate().isBeforeNow())
 					  {
 						  return true;
 					  }
