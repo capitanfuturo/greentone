@@ -1,6 +1,5 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 
 import javax.inject.Inject;
@@ -39,7 +38,6 @@ public class AddOperationAction
 	@Action
 	public void addOperation()
 	{
-		operationsPanel.clearForm();
-		operationsPanel.setStatus(EStatus.NEW);
+		operationsPanel.initializeForInsertion();
 	}
 }

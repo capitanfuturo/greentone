@@ -1,4 +1,4 @@
-package it.greentone.gui;
+package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
 
@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 
 import org.jdesktop.swingx.JXDatePicker;
@@ -113,20 +116,39 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	public JXTable getContentTable()
 	{
 		if(contentTable == null)
-			contentTable = createContentTable();
-		return contentTable;
-	}
+		{
+			contentTable = GreenToneUtilities.createJXTable();
+			contentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			contentTable.getSelectionModel().addListSelectionListener(
+			  new ListSelectionListener()
+				  {
+					  @Override
+					  public void valueChanged(ListSelectionEvent e)
+					  {
+						  if(!e.getValueIsAdjusting())
+						  {
+							  int selectedRow = getContentTable().getSelectedRow();
+							  if(selectedRow > -1)
+							  {
+								  int rowIndexToModel =
+								    getContentTable().convertRowIndexToModel(
+								      getContentTable().getSelectedRow());
+								  setSelectedItem(getItemFromTableRow(rowIndexToModel));
+								  SwingUtilities.invokeLater(new Runnable()
+									  {
 
-	/**
-	 * Costruisce la tabella di tutti gli elementi dell'oggetto di modello.
-	 * 
-	 * @return la tabella di tutti gli elementi dell'oggetto di modello
-	 */
-	protected JXTable createContentTable()
-	{
-		JXTable table = GreenToneUtilities.createJXTable();
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		return table;
+										  @Override
+										  public void run()
+										  {
+											  initializeForEditing();
+										  }
+									  });
+							  }
+						  }
+					  }
+				  });
+		}
+		return contentTable;
 	}
 
 	/**
@@ -153,14 +175,80 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	public void setup()
 	{
 		super.setup();
-		getContextualToolBar().removeAll();
+		initializeToolBar();
+		populateModel();
+		clearForm();
+		setHeaderPanelEnabled(false);
+	}
+
+	/**
+	 * Abilita o disabilita tutti i componenti registrati
+	 * {@link #registerComponent(JComponent)} del pannello di testata
+	 * 
+	 * @param enable
+	 *          stato di abilitazione del pannello di testata
+	 */
+	public void setHeaderPanelEnabled(boolean enable)
+	{
+		for(JComponent component : registeredComponents)
+		{
+			component.setEnabled(enable);
+		}
+	}
+
+	/**
+	 * Inizializzazione della toolbar. Per accedere alla toolbar usare
+	 * {@link #getContextualToolBar()}
+	 */
+	public abstract void initializeToolBar();
+
+	/**
+	 * Utilizzare questo metodo per popolare il modello dei dati utili per
+	 * l'interfaccia grafica
+	 */
+	public abstract void populateModel();
+
+	/**
+	 * Attività da compiere dopo il salvataggio della persistenza.
+	 */
+	public void postSaveData()
+	{
+		clearForm();
+		setHeaderPanelEnabled(false);
+		if(getContentTable() != null)
+		{
+			getContentTable().clearSelection();
+		}
+		setStatus(null);
+	};
+
+	/**
+	 * Azioni da intraprendere per l'inserimento di una nuova riga della
+	 * {@link #getContentTable()}.
+	 */
+	public void initializeForInsertion()
+	{
+		setStatus(EStatus.NEW);
+		setHeaderPanelEnabled(true);
+		clearForm();
+		getContentTable().clearSelection();
+	}
+
+	/**
+	 * Azioni da intraprendere per la modifica di una riga della
+	 * {@link #getContentTable()}.
+	 */
+	public void initializeForEditing()
+	{
+		setStatus(EStatus.EDIT);
+		setHeaderPanelEnabled(true);
 		clearForm();
 	}
 
 	/**
 	 * Ripulisce il pannello {@link #getHeaderPanel()} di intestazione.
 	 */
-	public void clearForm()
+	protected void clearForm()
 	{
 		for(JComponent component : registeredComponents)
 		{
@@ -242,4 +330,13 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	{
 		this.selectedItem = selectedItem;
 	}
+
+	/**
+	 * Restituisce a partire dalla riga di modello della tabella dei contenuti
+	 * {@link #getContentTable()} un oggetto di modello.
+	 * 
+	 * @param rowIndex
+	 * @return oggetto di modello
+	 */
+	public abstract T getItemFromTableRow(int rowIndex);
 }

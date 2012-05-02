@@ -4,7 +4,7 @@ import it.greentone.GreenTone;
 import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.AbstractPanel.EStatus;
+import it.greentone.gui.panel.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
@@ -140,8 +140,7 @@ public class SaveDocumentAction extends AbstractBean
 			documentService.addDocument(document);
 		else
 			documentService.storeDocument(document);
-		documentsPanel.clearForm();
-		documentsPanel.getContentTable().clearSelection();
+		documentsPanel.postSaveData();
 	}
 
 	/**

@@ -51,7 +51,6 @@ public class ViewOperationsAction extends ContextualAction
 	@Action
 	public void viewOperations()
 	{
-		operationsPanel.setup();
 		addTab(operationsPanel);
 	}
 }

@@ -2,9 +2,9 @@ package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.HomePanel;
 import it.greentone.gui.panel.JobsPanel;
+import it.greentone.gui.panel.AbstractPanel.EStatus;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobCategory;
 import it.greentone.persistence.JobService;
@@ -167,9 +167,8 @@ public class SaveJobAction extends AbstractBean
 		{
 			jobService.storeJob(job);
 		}
-		jobsPanel.clearForm();
-		jobsPanel.getContentTable().clearSelection();
 
+		jobsPanel.postSaveData();
 		homePanel.refresh();
 	}
 

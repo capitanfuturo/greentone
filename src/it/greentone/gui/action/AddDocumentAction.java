@@ -1,8 +1,6 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
-import it.greentone.persistence.DocumentService;
 
 import javax.inject.Inject;
 
@@ -33,8 +31,6 @@ public class AddDocumentAction
 {
 	@Inject
 	private DocumentsPanel documentsPanel;
-	@Inject
-	private DocumentService documentService;
 
 	/**
 	 * Aggiunge un documento.
@@ -42,10 +38,6 @@ public class AddDocumentAction
 	@Action
 	public void addDocument()
 	{
-		documentsPanel.clearForm();
-		documentsPanel.setStatus(EStatus.NEW);
-		/* calcolo il protocollo da impostare */
-		documentsPanel.getProtocolTextField().setText(
-		  documentService.getNextProtocol());
+		documentsPanel.initializeForInsertion();
 	}
 }

@@ -3,7 +3,6 @@ package it.greentone.gui.panel;
 import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.FontProvider;
 
 import java.awt.BorderLayout;

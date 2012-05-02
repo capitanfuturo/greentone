@@ -51,7 +51,6 @@ public class ViewDocumentsAction extends ContextualAction
 	@Action
 	public void viewDocuments()
 	{
-		documentsPanel.setup();
 		addTab(documentsPanel);
 	}
 }

@@ -1,7 +1,6 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
@@ -66,8 +65,7 @@ public class DeleteOperationAction extends AbstractBean
 		{
 			Operation operation = operationsPanel.getSelectedItem();
 			operationService.deleteOperation(operation);
-			operationsPanel.clearForm();
-			operationsPanel.setStatus(EStatus.NEW);
+			operationsPanel.postSaveData();
 		}
 	}
 

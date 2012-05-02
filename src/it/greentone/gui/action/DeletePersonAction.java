@@ -1,7 +1,6 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.PersonsPanel;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
@@ -68,8 +67,7 @@ public class DeletePersonAction extends AbstractBean
 			if(confirmDialog == JOptionPane.OK_OPTION)
 			{
 				personService.deletePerson(person);
-				personsPanel.clearForm();
-				personsPanel.setStatus(EStatus.NEW);
+				personsPanel.postSaveData();
 			}
 		}
 		else
