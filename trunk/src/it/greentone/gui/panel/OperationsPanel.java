@@ -1,7 +1,6 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteOperationAction;
 import it.greentone.gui.action.SaveOperationAction;
@@ -178,102 +177,25 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	}
 
 	@Override
-	protected JXTable createContentTable()
+	public JXTable getContentTable()
 	{
-		final JXTable table = super.createContentTable();
+		final JXTable table = super.getContentTable();
 		table.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
-
 				  @Override
 				  public void valueChanged(ListSelectionEvent e)
 				  {
 					  if(!e.getValueIsAdjusting())
 					  {
 						  int selectedRow = getContentTable().getSelectedRow();
-						  if(selectedRow > -1)
-						  {
-							  setStatus(EStatus.EDIT);
-							  int rowIndexToModel = table.convertRowIndexToModel(selectedRow);
-							  Operation selectedOperation =
-							    operationService.getAllOperations().get(rowIndexToModel);
-							  setSelectedItem(selectedOperation);
-
-							  /* aggiorno il pannello */
-							  getDescriptionTextField().setText(
-							    selectedOperation.getDescription());
-							  Job job = selectedOperation.getJob();
-							  getJobComboBox().getModel().setSelectedItem(job);
-							  getTypeComboBox().setSelectedItem(
-							    selectedOperation.getOperationType() != null
-							      ? selectedOperation.getOperationType().getLocalizedName()
-							      : null);
-							  getVacazioneCheckBox().setSelected(
-							    selectedOperation.getIsVacazione());
-							  getProfessionalVacazioneCheckBox().setSelected(
-							    selectedOperation.getIsProfessionalVacazione());
-							  getOperationDate().setDate(
-							    selectedOperation.getOperationDate() != null
-							      ? selectedOperation.getOperationDate().toDate()
-							      : null);
-							  getAmountTextField().setValue(selectedOperation.getAmount());
-							  getNumVacazioniTextField().setValue(
-							    selectedOperation.getNumVacazioni());
-							  /*
-								 * abilito i campi di importo e vacazione a seconda che il flag
-								 * sia abilitato
-								 */
-							  getAmountTextField().setEnabled(
-							    !selectedOperation.getIsVacazione());
-							  getCalcButton().setEnabled(!selectedOperation.getIsVacazione());
-							  getNumVacazioniTextField().setEnabled(
-							    selectedOperation.getIsVacazione());
-							  getProfessionalVacazioneCheckBox().setEnabled(
-							    selectedOperation.getIsVacazione());
-
-							  /* abilito le azioni legate alla selezione */
-							  deleteOperationAction.setDeleteOperationActionEnabled(true);
-						  }
-						  else
-						  {
-							  /* disabilito le azioni legate alla selezione */
-							  deleteOperationAction.setDeleteOperationActionEnabled(false);
-						  }
+						  /* abilito le azioni legate alla selezione */
+						  deleteOperationAction
+						    .setDeleteOperationActionEnabled(selectedRow > -1);
 					  }
 				  }
 			  });
 		return table;
-	}
-
-	@Override
-	public void setup()
-	{
-		super.setup();
-
-		getCalcButton().setAction(actionProvider.getViewCalc());
-
-		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().add(actionProvider.getAddOperation());
-		getContextualToolBar().add(actionProvider.getSaveOperation());
-		getContextualToolBar().add(actionProvider.getDeleteOperation());
-
-		/* aggiorno la lista degli incarichi */
-		getJobComboBox().setModel(
-		  new EventComboBoxModel<Job>(jobService.getAllJobs()));
-
-		tableModel =
-		  new EventJXTableModel<Operation>(operationService.getAllOperations(),
-		    new BeanTableFormat<Operation>(Operation.class, tableProperties,
-		      tableColumnsNames, tableWritables));
-		getContentTable().setModel(tableModel);
-		getContentTable().setSortOrder(1, SortOrder.DESCENDING);
-
-		/* disabilito il campo delle vacazioni */
-		getNumVacazioniTextField().setEnabled(false);
-		getProfessionalVacazioneCheckBox().setEnabled(false);
-		/* abilito quello dell'importo */
-		getAmountTextField().setEnabled(true);
-		getCalcButton().setEnabled(true);
 	}
 
 	@Override
@@ -549,7 +471,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	}
 
 	@Override
-	public void clearForm()
+	protected void clearForm()
 	{
 		super.clearForm();
 		getNumVacazioniTextField().setEnabled(false);
@@ -559,5 +481,82 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		getOperationDate().setDate(new DateTime().toDate());
 		/* Imposto il tipo a lavoro */
 		getTypeComboBox().setSelectedItem(OperationType.TASK.getLocalizedName());
+	}
+
+	@Override
+	public Operation getItemFromTableRow(int rowIndex)
+	{
+		int rowIndexToModel = getContentTable().convertRowIndexToModel(rowIndex);
+		Operation selectedOperation =
+		  operationService.getAllOperations().get(rowIndexToModel);
+		return selectedOperation;
+	}
+
+	@Override
+	public void initializeToolBar()
+	{
+		getContextualToolBar().add(actionProvider.getAddOperation());
+		getContextualToolBar().add(actionProvider.getSaveOperation());
+		getContextualToolBar().add(actionProvider.getDeleteOperation());
+	}
+
+	@Override
+	public void initializeForInsertion()
+	{
+		super.initializeForInsertion();
+		/* disabilito il campo delle vacazioni */
+		getNumVacazioniTextField().setEnabled(false);
+		getProfessionalVacazioneCheckBox().setEnabled(false);
+		/* abilito quello dell'importo */
+		getAmountTextField().setEnabled(true);
+		getCalcButton().setEnabled(true);
+	}
+
+	@Override
+	public void initializeForEditing()
+	{
+		super.initializeForEditing();
+		Operation selectedOperation = getSelectedItem();
+		/* aggiorno il pannello */
+		getDescriptionTextField().setText(selectedOperation.getDescription());
+		Job job = selectedOperation.getJob();
+		getJobComboBox().getModel().setSelectedItem(job);
+		getTypeComboBox().setSelectedItem(
+		  selectedOperation.getOperationType() != null? selectedOperation
+		    .getOperationType().getLocalizedName(): null);
+		getVacazioneCheckBox().setSelected(selectedOperation.getIsVacazione());
+		getProfessionalVacazioneCheckBox().setSelected(
+		  selectedOperation.getIsProfessionalVacazione());
+		getOperationDate().setDate(
+		  selectedOperation.getOperationDate() != null? selectedOperation
+		    .getOperationDate().toDate(): null);
+		getAmountTextField().setValue(selectedOperation.getAmount());
+		getNumVacazioniTextField().setValue(selectedOperation.getNumVacazioni());
+		/*
+		 * abilito i campi di importo e vacazione a seconda che il flag sia
+		 * abilitato
+		 */
+		getAmountTextField().setEnabled(!selectedOperation.getIsVacazione());
+		getCalcButton().setEnabled(!selectedOperation.getIsVacazione());
+		getNumVacazioniTextField().setEnabled(selectedOperation.getIsVacazione());
+		getProfessionalVacazioneCheckBox().setEnabled(
+		  selectedOperation.getIsVacazione());
+	}
+
+	@Override
+	public void populateModel()
+	{
+		getCalcButton().setAction(actionProvider.getViewCalc());
+
+		/* aggiorno la lista degli incarichi */
+		getJobComboBox().setModel(
+		  new EventComboBoxModel<Job>(jobService.getAllJobs()));
+
+		tableModel =
+		  new EventJXTableModel<Operation>(operationService.getAllOperations(),
+		    new BeanTableFormat<Operation>(Operation.class, tableProperties,
+		      tableColumnsNames, tableWritables));
+		getContentTable().setModel(tableModel);
+		getContentTable().setSortOrder(1, SortOrder.DESCENDING);
 	}
 }

@@ -2,7 +2,6 @@ package it.greentone.gui.panel;
 
 import it.greentone.ConfigurationProperties;
 import it.greentone.GreenToneLogProvider;
-import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.persistence.Office;
 import it.greentone.persistence.OfficeService;
@@ -101,7 +100,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 	}
 
 	@Override
-	protected JXTable createContentTable()
+	public JXTable getContentTable()
 	{
 		return null;
 	}
@@ -113,40 +112,6 @@ public class OptionsPanel extends ContextualPanel<Void>
 		headerPanel.add(getAppPanel(), "growx,wrap");
 		headerPanel.add(getSystemPanel(), "growx");
 		return headerPanel;
-	}
-
-	@Override
-	public void setup()
-	{
-		super.setup();
-
-		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().removeAll();
-		getContextualToolBar().add(actionProvider.getSaveOptions());
-
-		/* aggiorno il pannello con le informazioni dello studio */
-		Office office = officeService.loadOffice();
-		getNameTextField().setText(office.getName());
-		getAddressTextField().setText(office.getAddress());
-		getCityTextField().setText(office.getCity());
-		getProvinceTextField().setText(office.getProvince());
-		getCapTextField().setText(office.getCap());
-		getCfTextField().setText(office.getCf());
-		getPivaTextField().setText(office.getPiva());
-		getTelephone1TextField().setText(office.getTelephone1());
-		getTelephone2TextField().setText(office.getTelephone2());
-		getFaxTextField().setText(office.getFax());
-		getEmailTextField().setText(office.getEmail());
-		if(office.getLogo() != null)
-			getLogoPreviewPanel().setImage(office.getLogo());
-
-		/* altre impostazioni */
-		getCheckUpdateCheckBox().setSelected(properties.isCheckUpdateActivated());
-		getVacazioneTextField().setValue(properties.getVacazionePrice());
-		getVacazioneAiutanteTextField().setValue(
-		  properties.getVacazioneHelperPrice());
-		getUseYearInJobProtocolCheckBox().setSelected(
-		  properties.getUseYearsInJobsProtocol());
 	}
 
 	private JPanel getSystemPanel()
@@ -557,5 +522,45 @@ public class OptionsPanel extends ContextualPanel<Void>
 		if(emailTextField == null)
 			emailTextField = new JTextField();
 		return emailTextField;
+	}
+
+	@Override
+	public Void getItemFromTableRow(int rowIndex)
+	{
+		return null;
+	}
+
+	@Override
+	public void initializeToolBar()
+	{
+		getContextualToolBar().add(actionProvider.getSaveOptions());
+	}
+
+	@Override
+	public void populateModel()
+	{
+		/* aggiorno il pannello con le informazioni dello studio */
+		Office office = officeService.loadOffice();
+		getNameTextField().setText(office.getName());
+		getAddressTextField().setText(office.getAddress());
+		getCityTextField().setText(office.getCity());
+		getProvinceTextField().setText(office.getProvince());
+		getCapTextField().setText(office.getCap());
+		getCfTextField().setText(office.getCf());
+		getPivaTextField().setText(office.getPiva());
+		getTelephone1TextField().setText(office.getTelephone1());
+		getTelephone2TextField().setText(office.getTelephone2());
+		getFaxTextField().setText(office.getFax());
+		getEmailTextField().setText(office.getEmail());
+		if(office.getLogo() != null)
+			getLogoPreviewPanel().setImage(office.getLogo());
+
+		/* altre impostazioni */
+		getCheckUpdateCheckBox().setSelected(properties.isCheckUpdateActivated());
+		getVacazioneTextField().setValue(properties.getVacazionePrice());
+		getVacazioneAiutanteTextField().setValue(
+		  properties.getVacazioneHelperPrice());
+		getUseYearInJobProtocolCheckBox().setSelected(
+		  properties.getUseYearsInJobsProtocol());
 	}
 }

@@ -2,7 +2,6 @@ package it.greentone.gui.panel;
 
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeletePersonAction;
 import it.greentone.gui.action.EditUserAction;
@@ -202,9 +201,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	@Override
-	protected JXTable createContentTable()
+	public JXTable getContentTable()
 	{
-		final JXTable personTable = super.createContentTable();
+		final JXTable personTable = super.getContentTable();
 		personTable.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
@@ -216,28 +215,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 						  int selectedRow = getContentTable().getSelectedRow();
 						  if(selectedRow > -1)
 						  {
-							  setStatus(EStatus.EDIT);
-							  int rowIndexToModel =
-							    personTable.convertRowIndexToModel(selectedRow);
-							  setSelectedItem(personService.getAllPersons().get(
-							    rowIndexToModel));
-							  getNameTextField().setText(getSelectedItem().getName());
-							  getAddressTextField().setText(getSelectedItem().getAddress());
-							  getCityTextField().setText(getSelectedItem().getCity());
-							  getProvinceTextField().setText(getSelectedItem().getProvince());
-							  getCapTextField().setText(getSelectedItem().getCap());
-							  getCfTexField().setText(getSelectedItem().getCf());
-							  getPivaTextField().setText(getSelectedItem().getPiva());
-							  getTelephone1TextField().setText(
-							    getSelectedItem().getTelephone1());
-							  getTelephone2TextField().setText(
-							    getSelectedItem().getTelephone2());
-							  getFaxTextField().setText(getSelectedItem().getFax());
-							  getEmailTextField().setText(getSelectedItem().getEmail());
-							  getIsLegalCheckBox()
-							    .setSelected(getSelectedItem().getIsLegal());
-							  getIdentityCardTextField().setText(
-							    getSelectedItem().getIdentityCard());
 							  /* abilito le azioni legate alla selezione */
 							  deletePersonAction.setDeletePersonActionEnabled(true);
 							  editUserAction.setEditUserActionEnabled(true);
@@ -258,30 +235,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 				  }
 			  });
 		return personTable;
-	}
-
-	@Override
-	public void setup()
-	{
-		super.setup();
-		viewReportsAction.setup(personReportsCategory);
-
-		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().add(actionProvider.getAddPerson());
-		getContextualToolBar().add(actionProvider.getSavePerson());
-		getContextualToolBar().add(actionProvider.getDeletePerson());
-		getContextualToolBar().add(actionProvider.getViewPerson());
-		getContextualToolBar().addSeparator();
-		getContextualToolBar().add(actionProvider.getViewReports());
-		// getContextualToolBar().add(actionProvider.getEditUser());
-
-		/* aggiorno la tabella delle persone in anagrafica */
-		tableModel =
-		  new EventJXTableModel<Person>(personService.getAllPersons(),
-		    new BeanTableFormat<Person>(Person.class, properties, columnsNames,
-		      writables));
-		getContentTable().setModel(tableModel);
-		getContentTable().setSortOrder(0, SortOrder.ASCENDING);
 	}
 
 	/**
@@ -596,7 +549,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	@Override
-	public void clearForm()
+	protected void clearForm()
 	{
 		super.clearForm();
 		toggleNameLabel();
@@ -640,5 +593,57 @@ public class PersonsPanel extends ContextualPanel<Person>
 			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva")
 			    + ":");
 		return pivaLabel;
+	}
+
+	@Override
+	public Person getItemFromTableRow(int rowIndex)
+	{
+		int rowIndexToModel = getContentTable().convertRowIndexToModel(rowIndex);
+		return personService.getAllPersons().get(rowIndexToModel);
+	}
+
+	@Override
+	public void initializeToolBar()
+	{
+		getContextualToolBar().add(actionProvider.getAddPerson());
+		getContextualToolBar().add(actionProvider.getSavePerson());
+		getContextualToolBar().add(actionProvider.getDeletePerson());
+		getContextualToolBar().add(actionProvider.getViewPerson());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getViewReports());
+	}
+
+	@Override
+	public void populateModel()
+	{
+		viewReportsAction.setup(personReportsCategory);
+		/* aggiorno la tabella delle persone in anagrafica */
+		tableModel =
+		  new EventJXTableModel<Person>(personService.getAllPersons(),
+		    new BeanTableFormat<Person>(Person.class, properties, columnsNames,
+		      writables));
+		getContentTable().setModel(tableModel);
+		getContentTable().setSortOrder(0, SortOrder.ASCENDING);
+	}
+
+	@Override
+	public void initializeForEditing()
+	{
+		super.initializeForEditing();
+		getNameTextField().setText(getSelectedItem().getName());
+		getAddressTextField().setText(getSelectedItem().getAddress());
+		getCityTextField().setText(getSelectedItem().getCity());
+		getProvinceTextField().setText(getSelectedItem().getProvince());
+		getCapTextField().setText(getSelectedItem().getCap());
+		getCfTexField().setText(getSelectedItem().getCf());
+		getPivaTextField().setText(getSelectedItem().getPiva());
+		getTelephone1TextField().setText(getSelectedItem().getTelephone1());
+		getTelephone2TextField().setText(getSelectedItem().getTelephone2());
+		getFaxTextField().setText(getSelectedItem().getFax());
+		getEmailTextField().setText(getSelectedItem().getEmail());
+		getIsLegalCheckBox().setSelected(getSelectedItem().getIsLegal());
+		getIdentityCardTextField().setText(getSelectedItem().getIdentityCard());
+		/* aggiorno l'etichetta del nome/ragione sociale */
+		toggleNameLabel();
 	}
 }

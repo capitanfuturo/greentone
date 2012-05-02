@@ -51,7 +51,6 @@ public class ViewJobsAction extends ContextualAction
 	@Action
 	public void viewJobs()
 	{
-		jobsPanel.setup();
 		addTab(jobsPanel);
 	}
 }

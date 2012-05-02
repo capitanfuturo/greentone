@@ -51,7 +51,6 @@ public class ViewPersonsAction extends ContextualAction
 	@Action
 	public void viewPersons()
 	{
-		personsPanel.setup();
 		addTab(personsPanel);
 	}
 }

@@ -1,4 +1,4 @@
-package it.greentone.gui;
+package it.greentone.gui.panel;
 
 import it.greentone.GreenTone;
 

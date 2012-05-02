@@ -1,9 +1,9 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.AbstractPanel;
 import it.greentone.gui.ButtonTabComponent;
 import it.greentone.gui.MainPanel;
+import it.greentone.gui.panel.AbstractPanel;
 import it.greentone.gui.panel.JobPanel;
 import it.greentone.persistence.Job;
 

@@ -1,7 +1,6 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.gui.panel.HomePanel;
 import it.greentone.gui.panel.JobsPanel;
@@ -90,8 +89,7 @@ public class DeleteJobAction extends AbstractBean
 		if(confirmDialog == JOptionPane.OK_OPTION)
 		{
 			jobService.deleteJob(job);
-			jobsPanel.clearForm();
-			jobsPanel.setStatus(EStatus.NEW);
+			jobsPanel.postSaveData();
 		}
 
 		homePanel.refresh();

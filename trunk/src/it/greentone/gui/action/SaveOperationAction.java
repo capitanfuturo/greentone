@@ -4,7 +4,7 @@ import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.AbstractPanel.EStatus;
+import it.greentone.gui.panel.AbstractPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobStatus;
@@ -275,8 +275,7 @@ public class SaveOperationAction extends AbstractBean
 		{
 			operationService.storeOperation(operation);
 		}
-		operationsPanel.clearForm();
-		operationsPanel.getContentTable().clearSelection();
+		operationsPanel.postSaveData();
 	}
 
 	/**

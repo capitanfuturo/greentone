@@ -1,7 +1,6 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteDocumentAction;
 import it.greentone.gui.action.SaveDocumentAction;
@@ -496,36 +495,9 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	}
 
 	@Override
-	public void setup()
+	public JXTable getContentTable()
 	{
-		super.setup();
-		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().add(actionProvider.getAddDocument());
-		getContextualToolBar().add(actionProvider.getSaveDocument());
-		getContextualToolBar().add(actionProvider.getDeleteDocument());
-
-		/* carico destinatari */
-		EventComboBoxModel<Person> recipientComboBoxModel =
-		  new EventComboBoxModel<Person>(personService.getAllPersons());
-		getRecipientComboBox().setModel(recipientComboBoxModel);
-
-		/* carico gli incarichi */
-		EventComboBoxModel<Job> jobComboBoxModel =
-		  new EventComboBoxModel<Job>(jobService.getAllJobs());
-		getJobComboBox().setModel(jobComboBoxModel);
-
-		tableModel =
-		  new EventJXTableModel<Document>(documentService.getAllDocuments(),
-		    new BeanTableFormat<Document>(Document.class, properties, columnsNames,
-		      writables));
-		getContentTable().setModel(tableModel);
-		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
-	}
-
-	@Override
-	protected JXTable createContentTable()
-	{
-		final JXTable documentTable = super.createContentTable();
+		final JXTable documentTable = super.getContentTable();
 		documentTable.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
@@ -534,54 +506,10 @@ public class DocumentsPanel extends ContextualPanel<Document>
 				  {
 					  if(!e.getValueIsAdjusting())
 					  {
-						  int selectedRow = getContentTable().getSelectedRow();
-						  if(selectedRow > -1)
-						  {
-							  setStatus(EStatus.EDIT);
-							  int rowIndexToModel =
-							    documentTable.convertRowIndexToModel(selectedRow);
-							  setSelectedItem(documentService.getAllDocuments().get(
-							    rowIndexToModel));
-							  /* aggiorno il pannello */
-							  getProtocolTextField().setText(getSelectedItem().getProtocol());
-							  getDescriptionTextField().setText(
-							    getSelectedItem().getDescription());
-							  getJobComboBox().getModel().setSelectedItem(
-							    getSelectedItem().getJob());
-							  getRecipientComboBox().getModel().setSelectedItem(
-							    getSelectedItem().getRecipient());
-							  getIsDigitalCheckBox().setSelected(
-							    getSelectedItem().getIsDigital());
-
-							  String URI = getSelectedItem().getUri();
-							  if(URI != null)
-							  {
-								  final File file = new File(URI);
-								  getFilePathField().setText(file.getName());
-								  setFile(file);
-							  }
-							  else
-							  {
-								  getFilePathField().setText(null);
-							  }
-
-							  getOutgoingCheckBox().setSelected(
-							    getSelectedItem().getIsOutgoing());
-							  getReleaseDateDatePicker().setDate(
-							    getSelectedItem().getReleaseDate() != null? getSelectedItem()
-							      .getReleaseDate().toDate(): null);
-							  getNotesTextArea().setText(getSelectedItem().getNotes());
-
-							  /* calcolo visibilità della sezione del file */
-							  toggleFileSection();
-							  /* abilito le azioni legate alla selezione */
-							  deleteDocumentAction.setDeleteDocumentActionEnabled(true);
-						  }
-						  else
-						  {
-							  /* disabilito le azioni legate alla selezione */
-							  deleteDocumentAction.setDeleteDocumentActionEnabled(false);
-						  }
+						  /* abilito le azioni legate alla selezione */
+						  deleteDocumentAction
+						    .setDeleteDocumentActionEnabled(getContentTable()
+						      .getSelectedRow() > -1);
 					  }
 				  }
 			  });
@@ -612,7 +540,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	}
 
 	@Override
-	public void clearForm()
+	protected void clearForm()
 	{
 		super.clearForm();
 		/* Issue 69: di default impostare la data odierna */
@@ -670,5 +598,85 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	public File getFile()
 	{
 		return file;
+	}
+
+	@Override
+	public Document getItemFromTableRow(int rowIndex)
+	{
+		int rowIndexToModel = getContentTable().convertRowIndexToModel(rowIndex);
+		return documentService.getAllDocuments().get(rowIndexToModel);
+	}
+
+	@Override
+	public void initializeToolBar()
+	{
+		getContextualToolBar().add(actionProvider.getAddDocument());
+		getContextualToolBar().add(actionProvider.getSaveDocument());
+		getContextualToolBar().add(actionProvider.getDeleteDocument());
+	}
+
+	@Override
+	public void populateModel()
+	{
+		/* carico destinatari */
+		EventComboBoxModel<Person> recipientComboBoxModel =
+		  new EventComboBoxModel<Person>(personService.getAllPersons());
+		getRecipientComboBox().setModel(recipientComboBoxModel);
+
+		/* carico gli incarichi */
+		EventComboBoxModel<Job> jobComboBoxModel =
+		  new EventComboBoxModel<Job>(jobService.getAllJobs());
+		getJobComboBox().setModel(jobComboBoxModel);
+
+		tableModel =
+		  new EventJXTableModel<Document>(documentService.getAllDocuments(),
+		    new BeanTableFormat<Document>(Document.class, properties, columnsNames,
+		      writables));
+		getContentTable().setModel(tableModel);
+		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
+	}
+
+	@Override
+	public void initializeForEditing()
+	{
+		super.initializeForEditing();
+		getProtocolTextField().setEnabled(false);
+		/* aggiorno il pannello */
+		getProtocolTextField().setText(getSelectedItem().getProtocol());
+		getDescriptionTextField().setText(getSelectedItem().getDescription());
+		getJobComboBox().getModel().setSelectedItem(getSelectedItem().getJob());
+		getRecipientComboBox().getModel().setSelectedItem(
+		  getSelectedItem().getRecipient());
+		getIsDigitalCheckBox().setSelected(getSelectedItem().getIsDigital());
+
+		String URI = getSelectedItem().getUri();
+		if(URI != null)
+		{
+			final File file = new File(URI);
+			getFilePathField().setText(file.getName());
+			setFile(file);
+		}
+		else
+		{
+			getFilePathField().setText(null);
+		}
+
+		getOutgoingCheckBox().setSelected(getSelectedItem().getIsOutgoing());
+		getReleaseDateDatePicker().setDate(
+		  getSelectedItem().getReleaseDate() != null? getSelectedItem()
+		    .getReleaseDate().toDate(): null);
+		getNotesTextArea().setText(getSelectedItem().getNotes());
+
+		/* calcolo visibilità della sezione del file */
+		toggleFileSection();
+	}
+
+	@Override
+	public void initializeForInsertion()
+	{
+		super.initializeForInsertion();
+		getProtocolTextField().setEnabled(false);
+		/* calcolo il protocollo da impostare */
+		getProtocolTextField().setText(documentService.getNextProtocol());
 	}
 }

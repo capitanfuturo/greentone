@@ -1,7 +1,6 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
@@ -66,8 +65,7 @@ public class DeleteDocumentAction extends AbstractBean
 		{
 			Document document = documentsPanel.getSelectedItem();
 			documentService.deleteDocument(document);
-			documentsPanel.clearForm();
-			documentsPanel.setStatus(EStatus.NEW);
+			documentsPanel.postSaveData();
 		}
 	}
 

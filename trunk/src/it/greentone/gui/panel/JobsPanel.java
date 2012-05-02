@@ -1,7 +1,6 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
-import it.greentone.gui.ContextualPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteJobAction;
 import it.greentone.gui.action.SaveJobAction;
@@ -196,13 +195,12 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	protected JXTable createContentTable()
+	public JXTable getContentTable()
 	{
-		final JXTable table = super.createContentTable();
+		JXTable table = super.getContentTable();
 		table.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
-
 				  @Override
 				  public void valueChanged(ListSelectionEvent e)
 				  {
@@ -211,36 +209,9 @@ public class JobsPanel extends ContextualPanel<Job>
 						  int selectedRow = getContentTable().getSelectedRow();
 						  if(selectedRow > -1)
 						  {
-							  setStatus(EStatus.EDIT);
-							  int rowIndexToModel = table.convertRowIndexToModel(selectedRow);
-							  Job selectedJob = jobService.getAllJobs().get(rowIndexToModel);
-							  setSelectedItem(selectedJob);
-							  /* aggiorno il pannello */
-							  getProtocolTextField().setText(selectedJob.getProtocol());
-							  getDueDatePicker().setDate(
-							    selectedJob.getDueDate() != null? selectedJob.getDueDate()
-							      .toDate(): null);
-							  getStartDatePicker().setDate(
-							    selectedJob.getStartDate() != null? selectedJob
-							      .getStartDate().toDate(): null);
-							  getFinishDatePicker().setDate(
-							    selectedJob.getFinishDate() != null? selectedJob
-							      .getFinishDate().toDate(): null);
-							  getCategoryComboBox().getModel().setSelectedItem(
-							    selectedJob.getCategory());
-							  getStatusComboBox().setSelectedItem(
-							    selectedJob.getStatus() != null? selectedJob.getStatus()
-							      .getLocalizedName(): null);
-							  getDescriptionTextField().setText(selectedJob.getDescription());
-							  Person customer = selectedJob.getCustomer();
-							  getCustomerComboBox().getModel().setSelectedItem(customer);
-							  Person manager = selectedJob.getManager();
-							  getManagerComboBox().getModel().setSelectedItem(manager);
-							  getNotesTextArea().setText(selectedJob.getNotes());
-							  getCityField().setSelectedItem(selectedJob.getCity());
 							  /* abilito le azioni legate alla selezione */
 							  deleteJobAction.setDeleteJobActionEnabled(true);
-							  viewJobAction.setJob(selectedJob);
+							  viewJobAction.setJob(getSelectedItem());
 							  viewJobAction.setViewJobActionEnabled(true);
 						  }
 						  else
@@ -257,19 +228,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	public void setup()
+	public void populateModel()
 	{
-		super.setup();
-		/* pulisco e ricostruisco la toolbar */
-		getContextualToolBar().add(actionProvider.getAddJob());
-		getContextualToolBar().add(actionProvider.getSaveJob());
-		getContextualToolBar().add(actionProvider.getDeleteJob());
-		getContextualToolBar().add(actionProvider.getViewJob());
-		getContextualToolBar().addSeparator();
-		// TODO
-		// getContextualToolBar().add(actionProvider.getEditJobStakeholder());
-		getContextualToolBar().add(actionProvider.getEditJobCategory());
-
 		tableModel =
 		  new EventJXTableModel<Job>(
 		    jobService.getAllJobs(),
@@ -288,6 +248,73 @@ public class JobsPanel extends ContextualPanel<Job>
 		  new EventComboBoxModel<JobCategory>(
 		    jobCategoryService.getAllJobCategories());
 		categoryComboBox.setModel(model);
+	}
+
+	@Override
+	public void initializeToolBar()
+	{
+		getContextualToolBar().add(actionProvider.getAddJob());
+		getContextualToolBar().add(actionProvider.getSaveJob());
+		getContextualToolBar().add(actionProvider.getDeleteJob());
+		getContextualToolBar().add(actionProvider.getViewJob());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getEditJobCategory());
+	}
+
+	@Override
+	public void initializeForInsertion()
+	{
+		super.initializeForInsertion();
+		getProtocolTextField().setEnabled(false);
+		/* Issue 74: la data di inizio viene prepopolata con la data corrente */
+		getStartDatePicker().setDate(new DateTime().toDate());
+		/* Issue 89: autocompletion */
+		getCities().clear();
+		getCities().addAll(jobService.getAllCities());
+		/* Issue 100: lo stato iniziale di un incarico è "In pianificazione" */
+		getStatusComboBox().setSelectedItem(JobStatus.PLANNING.getLocalizedName());
+		/* Imposto il protocollo */
+		getProtocolTextField().setText(jobService.getNextProtocol());
+	}
+
+	@Override
+	public void initializeForEditing()
+	{
+		super.initializeForEditing();
+		getProtocolTextField().setEnabled(false);
+		/* aggiorno il pannello */
+		Job selectedJob = getSelectedItem();
+		getProtocolTextField().setText(selectedJob.getProtocol());
+		getDueDatePicker()
+		  .setDate(
+		    selectedJob.getDueDate() != null
+		      ? selectedJob.getDueDate().toDate()
+		      : null);
+		getStartDatePicker().setDate(
+		  selectedJob.getStartDate() != null
+		    ? selectedJob.getStartDate().toDate()
+		    : null);
+		getFinishDatePicker().setDate(
+		  selectedJob.getFinishDate() != null
+		    ? selectedJob.getFinishDate().toDate()
+		    : null);
+		getCategoryComboBox().getModel().setSelectedItem(selectedJob.getCategory());
+		getStatusComboBox().setSelectedItem(
+		  selectedJob.getStatus() != null? selectedJob.getStatus()
+		    .getLocalizedName(): null);
+		getDescriptionTextField().setText(selectedJob.getDescription());
+		Person customer = selectedJob.getCustomer();
+		getCustomerComboBox().getModel().setSelectedItem(customer);
+		Person manager = selectedJob.getManager();
+		getManagerComboBox().getModel().setSelectedItem(manager);
+		getNotesTextArea().setText(selectedJob.getNotes());
+		getCityField().setSelectedItem(selectedJob.getCity());
+	}
+
+	@Override
+	public Job getItemFromTableRow(int rowIndex)
+	{
+		return jobService.getAllJobs().get(rowIndex);
 	}
 
 	/**
@@ -321,7 +348,6 @@ public class JobsPanel extends ContextualPanel<Job>
 		{
 			protocolTextField = new JTextField();
 			registerComponent(protocolTextField);
-			protocolTextField.setEnabled(false);
 
 			protocolTextField.getDocument().addDocumentListener(
 			  new DocumentListener()
@@ -509,18 +535,5 @@ public class JobsPanel extends ContextualPanel<Job>
 			AutoCompleteSupport.install(cityField, getCities());
 		}
 		return cityField;
-	}
-
-	@Override
-	public void clearForm()
-	{
-		super.clearForm();
-		/* Issue 74: la data di inizio viene prepopolata con la data corrente */
-		getStartDatePicker().setDate(new DateTime().toDate());
-		/* Issue 89: autocompletion */
-		getCities().clear();
-		getCities().addAll(jobService.getAllCities());
-		/* Issue 100: lo stato iniziale di un incarico è "In pianificazione" */
-		getStatusComboBox().setSelectedItem(JobStatus.PLANNING.getLocalizedName());
 	}
 }
