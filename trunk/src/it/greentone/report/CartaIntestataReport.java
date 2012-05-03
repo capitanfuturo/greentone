@@ -1,10 +1,13 @@
 package it.greentone.report;
 
-import it.greentone.persistence.PersonService;
+import it.greentone.persistence.Office;
+import it.greentone.persistence.OfficeService;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,17 +29,15 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Report di informativa sulla privacy.
+ * Stampa carta intestata dello studio.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class InformativaPrivacyReport implements ReportDescriptorInterface
+public class CartaIntestataReport implements ReportDescriptorInterface
 {
 	@Inject
-	private PersonService personService;
-	/** Chiave del parametro della persona selezionata */
-	public static final String PERSON = "person";
+	private OfficeService officeService;
 	Map<String, Object> commonParameters;
 
 	@Override
@@ -48,8 +49,9 @@ public class InformativaPrivacyReport implements ReportDescriptorInterface
 	@Override
 	public Collection<?> getDataSet()
 	{
-		// TODO
-		return personService.getAllPersons();
+		List<Office> offices = new ArrayList<Office>();
+		offices.add(officeService.loadOffice());
+		return offices;
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class InformativaPrivacyReport implements ReportDescriptorInterface
 	@Override
 	public InputStream getReportInputStream()
 	{
-		return getClass().getResourceAsStream("report.jasper");
+		return getClass().getResourceAsStream("CartaIntestata.jasper");
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class InformativaPrivacyReport implements ReportDescriptorInterface
 	@Override
 	public String getName()
 	{
-		return "Informativa sulla privacy";
+		return "Carta Intestata";
 	}
 
 	@Override

@@ -175,6 +175,7 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	public void setup()
 	{
 		super.setup();
+		getContextualToolBar().removeAll();
 		initializeToolBar();
 		populateModel();
 		clearForm();

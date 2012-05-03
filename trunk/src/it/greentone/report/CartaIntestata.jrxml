@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CartaIntestata" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     GT_OFFICE."ADDRESS" AS address,
+     GT_OFFICE."CAP" AS cap,
+     GT_OFFICE."CF" AS cf,
+     GT_OFFICE."CITY" AS city,
+     GT_OFFICE."EMAIL" AS email,
+     GT_OFFICE."FAX" AS fax,
+     GT_OFFICE."LOGO" AS logo,
+     GT_OFFICE."NAME" AS name,
+     GT_OFFICE."PIVA" AS piva,
+     GT_OFFICE."PROVINCE" AS province,
+     GT_OFFICE."TELEPHONE1" AS telephone1,
+     GT_OFFICE."TELEPHONE2" AS telephone2
+FROM
+     "PUBLIC"."GT_OFFICE" GT_OFFICE]]>
+	</queryString>
+	<field name="address" class="java.lang.String"/>
+	<field name="cap" class="java.lang.String"/>
+	<field name="cf" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="fax" class="java.lang.String"/>
+	<field name="logo" class="java.awt.Image"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="piva" class="java.lang.String"/>
+	<field name="province" class="java.lang.String"/>
+	<field name="telephone1" class="java.lang.String"/>
+	<field name="telephone2" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="128" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="172" y="7" width="383" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="28" width="383" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{address} + " " + $F{city} +
+( $F{province} == null ? "" : " ("+ $F{province} +")" )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="49" width="383" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[( $F{telephone1} == null ? "" : "tel.: " + $F{telephone1} + " ") +
+( $F{telephone2} == null ? "" : "tel.: " + $F{telephone2} + " ") +
+( $F{fax} == null ? "" : "fax.: " + $F{fax} )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="93" width="383" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[( $F{email} == null ? "" : "email:"+$F{email} )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="71" width="383" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[( $F{cf} == null ? "" : "C.F: " + $F{cf} +" ") +
+( $F{piva} == null ? "" : "P.IVA: " + $F{piva} )]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="123" width="555" height="1"/>
+			</line>
+			<image>
+				<reportElement x="0" y="7" width="172" height="111"/>
+				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

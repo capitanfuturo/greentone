@@ -1,21 +1,30 @@
 package it.greentone.report;
 
+import it.greentone.GreenTone;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
 import it.greentone.persistence.PersonService;
 import it.greentone.report.ReportDescriptorInterface.ExtensionType;
 
+import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
+import net.miginfocom.swing.MigLayout;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,7 +42,7 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Manager dei report
+ * Manager dei report.
  * 
  * @author Giuseppe Caliendo
  */
@@ -48,6 +57,19 @@ public class ReportManager
 	ReportsListDialog reportsListDialog;
 	@Inject
 	GreenToneLogProvider logProvider;
+	JDialog messageDialog;
+	final ResourceMap resourceMap;
+	JFrame mainFrame;
+
+	/**
+	 * Manager dei report.
+	 */
+	public ReportManager()
+	{
+		resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		mainFrame = Application.getInstance(GreenTone.class).getMainFrame();
+	}
 
 	/**
 	 * Genera un report a partire da un descrittore di report
@@ -137,12 +159,38 @@ public class ReportManager
 					@Override
 					protected Void doInBackground() throws Exception
 					{
+						getMessageDialog().setVisible(true);
 						logProvider.getLogger().info(
 						  "Generating: " + selectedReportDescriptor);
 						generate(selectedReportDescriptor);
 						return null;
 					}
+
+					@Override
+					protected void done()
+					{
+						getMessageDialog().setVisible(false);
+					}
 				}.execute();
 		}
+	}
+
+	private JDialog getMessageDialog()
+	{
+		if(messageDialog == null)
+		{
+			messageDialog = new JDialog(mainFrame);
+			messageDialog.setTitle(resourceMap.getString("Application.title"));
+			messageDialog.getContentPane().setLayout(new BorderLayout(5, 5));
+			JPanel panel = new JPanel(new MigLayout());
+			panel.add(new JLabel(), "wrap");
+			panel
+			  .add(new JLabel(resourceMap.getString("viewReports.Dialog.printing")));
+			panel.add(new JLabel(), "wrap");
+			messageDialog.getContentPane().add(panel, BorderLayout.CENTER);
+			messageDialog.pack();
+			messageDialog.setLocationRelativeTo(null);
+		}
+		return messageDialog;
 	}
 }
