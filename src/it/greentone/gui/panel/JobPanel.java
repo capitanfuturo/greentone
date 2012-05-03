@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SortOrder;
@@ -148,9 +149,10 @@ public class JobPanel extends AbstractPanel
 		documentsPanel.add(new JScrollPane(getDocumentsTable()),
 		  BorderLayout.CENTER);
 
-
-		contentPanel.add(operationsPanel, BorderLayout.WEST);
-		contentPanel.add(documentsPanel, BorderLayout.EAST);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.add(operationsPanel);
+		splitPane.add(documentsPanel);
+		contentPanel.add(splitPane, BorderLayout.CENTER);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(northPanel, BorderLayout.NORTH);
