@@ -4,6 +4,8 @@ import it.greentone.GreenTone;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -66,7 +68,7 @@ public class ReportsListDialog extends JDialog
 
 		setLayout(new BorderLayout());
 
-		JPanel listContent = new JPanel(new MigLayout());
+		JPanel listContent = new JPanel(new MigLayout("fill"));
 		listContent.add(
 		  new JLabel(resourceMap.getString("viewReports.Dialog.reports")), "wrap");
 		listContent.add(new JScrollPane(getReportsList()), "grow");
@@ -149,9 +151,21 @@ public class ReportsListDialog extends JDialog
 	public void setup(ReportsCategoryInterface category)
 	{
 		reportDescriptorList = category.getDescriptors();
+		Collections.sort(reportDescriptorList,
+		  new Comparator<ReportDescriptorInterface>()
+			  {
+
+				  @Override
+				  public int compare(ReportDescriptorInterface o1,
+				    ReportDescriptorInterface o2)
+				  {
+					  return o1.getName().compareToIgnoreCase(o2.getName());
+				  }
+			  });
+
 		ListModel listModel =
 		  new ListComboBoxModel<ReportDescriptorInterface>(reportDescriptorList);
-		reportsList.setModel(listModel);
+		getReportsList().setModel(listModel);
 		pack();
 	}
 }

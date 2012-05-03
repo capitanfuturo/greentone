@@ -22,12 +22,12 @@ import org.springframework.stereotype.Component;
  * </code>
  * <br>
  * <br>
- * Categoria dei report per l'anagrafica persona.
+ * Categoria dei report per lo studio professionale.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class PersonReportsCategory extends ReportsCategoryInterface
+public class HomeReportsCategory extends ReportsCategoryInterface
 {
 	@Inject
 	CartaIntestataReport cartaIntestataReport;
@@ -40,4 +40,5 @@ public class PersonReportsCategory extends ReportsCategoryInterface
 		reports.add(cartaIntestataReport);
 		return reports;
 	}
+
 }

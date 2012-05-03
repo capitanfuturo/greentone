@@ -5,10 +5,12 @@ import it.greentone.gui.FontProvider;
 import it.greentone.gui.MainPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.ViewJobsAction;
+import it.greentone.gui.action.ViewReportsAction;
 import it.greentone.gui.panel.AgendaDetailPanel.TimeStatus;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.JobStatus;
+import it.greentone.report.HomeReportsCategory;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -75,6 +77,10 @@ public class HomePanel extends AbstractPanel
 	private MainPanel mainPanel;
 	@Inject
 	private ViewJobsAction viewJobsAction;
+	@Inject
+	private ViewReportsAction viewReportsAction;
+	@Inject
+	private HomeReportsCategory homeReportsCategory;
 
 	ResourceMap resourceMap;
 	JPanel centralPanel;
@@ -306,8 +312,12 @@ public class HomePanel extends AbstractPanel
 	public void setup()
 	{
 		super.setup();
+		viewReportsAction.setup(homeReportsCategory);
+
 		/* toolbar */
 		getContextualToolBar().removeAll();
+		getContextualToolBar().add(actionProvider.getViewReports());
+		getContextualToolBar().addSeparator();
 		getContextualToolBar().add(actionProvider.getViewHelp());
 
 		/* pulisco i pannelli */

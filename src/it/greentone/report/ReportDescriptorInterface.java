@@ -63,6 +63,13 @@ public interface ReportDescriptorInterface
 	public ExtensionType getExtensionType();
 
 	/**
+	 * Restituisce il nome del report.
+	 * 
+	 * @return il nome del report
+	 */
+	public String getName();
+
+	/**
 	 * Enumerato delle estensioni dei file supportati dal motore di reportistica
 	 * di GreenTone
 	 * 
