@@ -214,13 +214,21 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 */
 	public void postSaveData()
 	{
-		clearForm();
-		setHeaderPanelEnabled(false);
-		if(getContentTable() != null)
-		{
-			getContentTable().clearSelection();
-		}
-		setStatus(null);
+		SwingUtilities.invokeLater(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					clearForm();
+					setHeaderPanelEnabled(false);
+					if(getContentTable() != null)
+					{
+						getContentTable().clearSelection();
+					}
+					setStatus(null);
+				}
+			});
 	};
 
 	/**
@@ -317,6 +325,13 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 */
 	public T getSelectedItem()
 	{
+		if(selectedItem == null && getContentTable().getSelectedRow() > -1)
+		{
+			int rowIndexToModel =
+			  getContentTable().convertRowIndexToModel(
+			    getContentTable().getSelectedRow());
+			setSelectedItem(getItemFromTableRow(rowIndexToModel));
+		}
 		return selectedItem;
 	}
 
