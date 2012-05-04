@@ -112,6 +112,10 @@ public class SaveOptionsAction extends AbstractBean
 					office.setLogo(GreenToneUtilities.toBufferedImage(optionsPanel
 					  .getLogoPreviewPanel().getImage()));
 				}
+				else
+				{
+					office.setLogo(null);
+				}
 				officeService.storeOffice(office);
 
 				/* recupero i dati dal pannello e li salvo */

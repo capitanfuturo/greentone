@@ -70,6 +70,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 	private JFormattedTextField vacazioneAiutanteTextField;
 	private JCheckBox useYearInJobProtocolCheckBox;
 	private JButton deleteLogsButton;
+	private JButton deleteLogoButton;
 	private JTextField nameTextField;
 	private JTextField addressTextField;
 	private JTextField cityTextField;
@@ -222,6 +223,7 @@ public class OptionsPanel extends ContextualPanel<Void>
 
 			appPanel.add(logoLabel, "gap para");
 			appPanel.add(getLogoPreviewPanel(), "grow");
+			appPanel.add(getDeleteLogoButton(), "growx");
 			appPanel.add(getLogoButton(), "growx, wrap");
 
 			// dati relativi agli importi di vacazione
@@ -389,6 +391,32 @@ public class OptionsPanel extends ContextualPanel<Void>
 			  "viewOptions.Panel.deleteLogsText"));
 		}
 		return deleteLogsButton;
+	}
+
+	/**
+	 * Restituisce il bottone per l'eliminazione del logo nel database.
+	 * 
+	 * @return il bottone per l'eliminazione del logo nel database
+	 */
+	public JButton getDeleteLogoButton()
+	{
+		if(deleteLogoButton == null)
+		{
+			deleteLogoButton = new JButton(new AbstractAction()
+				{
+					@Override
+					public void actionPerformed(ActionEvent arg0)
+					{
+						File file = null;
+						getLogoPreviewPanel().setImage(file);
+					}
+				});
+			deleteLogoButton.setIcon(getResourceMap().getIcon(
+			  "viewOptions.Panel.deleteLogsIcon"));
+			deleteLogoButton.setText(getResourceMap().getString(
+			  "viewOptions.Panel.deleteLogsText"));
+		}
+		return deleteLogoButton;
 	}
 
 	/**

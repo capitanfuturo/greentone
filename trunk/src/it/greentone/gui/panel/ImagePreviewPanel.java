@@ -73,19 +73,27 @@ public class ImagePreviewPanel extends JPanel implements PropertyChangeListener
 	 */
 	public void setImage(File file)
 	{
-		String name = file.getAbsolutePath();
-		/*
-		 * Make reasonably sure we have an image format that AWT can handle so we
-		 * don't try to draw something silly.
-		 */
-		if((name != null) && name.toLowerCase().endsWith(".jpg")
-		  || name.toLowerCase().endsWith(".jpeg")
-		  || name.toLowerCase().endsWith(".gif")
-		  || name.toLowerCase().endsWith(".png"))
+		if(file != null)
 		{
-			ImageIcon icon = new ImageIcon(name);
-			image = icon.getImage();
-			scaleImage();
+			String name = file.getAbsolutePath();
+			/*
+			 * Make reasonably sure we have an image format that AWT can handle so we
+			 * don't try to draw something silly.
+			 */
+			if((name != null) && name.toLowerCase().endsWith(".jpg")
+			  || name.toLowerCase().endsWith(".jpeg")
+			  || name.toLowerCase().endsWith(".gif")
+			  || name.toLowerCase().endsWith(".png"))
+			{
+				ImageIcon icon = new ImageIcon(name);
+				image = icon.getImage();
+				scaleImage();
+				repaint();
+			}
+		}
+		else
+		{
+			image = null;
 			repaint();
 		}
 	}
@@ -97,9 +105,12 @@ public class ImagePreviewPanel extends JPanel implements PropertyChangeListener
 	 */
 	public void setImage(BufferedImage bimage)
 	{
-		image = bimage;
-		scaleImage();
-		repaint();
+		if(bimage != null)
+		{
+			image = bimage;
+			scaleImage();
+			repaint();
+		}
 	}
 
 	private void scaleImage()
