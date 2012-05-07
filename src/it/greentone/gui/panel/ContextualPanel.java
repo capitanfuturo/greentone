@@ -189,7 +189,7 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * @param enable
 	 *          stato di abilitazione del pannello di testata
 	 */
-	public void setHeaderPanelEnabled(boolean enable)
+	protected void setHeaderPanelEnabled(boolean enable)
 	{
 		for(JComponent component : registeredComponents)
 		{
@@ -201,13 +201,13 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * Inizializzazione della toolbar. Per accedere alla toolbar usare
 	 * {@link #getContextualToolBar()}
 	 */
-	public abstract void initializeToolBar();
+	protected abstract void initializeToolBar();
 
 	/**
 	 * Utilizzare questo metodo per popolare il modello dei dati utili per
 	 * l'interfaccia grafica
 	 */
-	public abstract void populateModel();
+	protected abstract void populateModel();
 
 	/**
 	 * Attività da compiere dopo il salvataggio della persistenza.

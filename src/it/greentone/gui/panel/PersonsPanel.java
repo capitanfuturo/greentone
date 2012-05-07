@@ -10,7 +10,7 @@ import it.greentone.gui.action.ViewPersonAction;
 import it.greentone.gui.action.ViewReportsAction;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
-import it.greentone.report.PersonReportsCategory;
+import it.greentone.report.PersonsReportsCategory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -80,7 +80,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	@Inject
 	private ViewReportsAction viewReportsAction;
 	@Inject
-	private PersonReportsCategory personReportsCategory;
+	private PersonsReportsCategory personReportsCategory;
 	private EventJXTableModel<Person> tableModel;
 	private final String panelBundle;
 	private JTextField nameTextField;

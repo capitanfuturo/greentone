@@ -1,6 +1,7 @@
 package it.greentone.report;
 
 import it.greentone.GreenTone;
+import it.greentone.GreenToneUtilities;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -80,6 +81,7 @@ public class ReportsListDialog extends JDialog
 		getContentPane().add(listContent, BorderLayout.CENTER);
 		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
+		setMinimumSize(GreenToneUtilities.DIALOG_SIZE);
 		setLocationRelativeTo(null);
 	}
 

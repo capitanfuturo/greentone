@@ -4,12 +4,14 @@ import it.greentone.GreenToneUtilities;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteDocumentAction;
 import it.greentone.gui.action.SaveDocumentAction;
+import it.greentone.gui.action.ViewReportsAction;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
+import it.greentone.report.DocumentsReportsCategory;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -89,6 +91,10 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	private SaveDocumentAction saveDocumentAction;
 	@Inject
 	private GreenToneUtilities utilities;
+	@Inject
+	private ViewReportsAction viewReportsAction;
+	@Inject
+	private DocumentsReportsCategory documentsReportsCategory;
 
 	private JTextField protocolTextField;
 	private JTextField descriptionTextField;
@@ -613,11 +619,15 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		getContextualToolBar().add(actionProvider.getAddDocument());
 		getContextualToolBar().add(actionProvider.getSaveDocument());
 		getContextualToolBar().add(actionProvider.getDeleteDocument());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getViewReports());
 	}
 
 	@Override
 	public void populateModel()
 	{
+		viewReportsAction.setup(documentsReportsCategory);
+
 		/* carico destinatari */
 		EventComboBoxModel<Person> recipientComboBoxModel =
 		  new EventComboBoxModel<Person>(personService.getAllPersons());

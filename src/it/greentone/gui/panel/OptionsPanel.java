@@ -228,9 +228,13 @@ public class OptionsPanel extends ContextualPanel<Void>
 
 			// dati relativi agli importi di vacazione
 			appPanel.add(vacazioneLabel, "gap para");
-			appPanel.add(getVacazioneTextField(), "growx,wrap");
+			appPanel.add(getVacazioneTextField(), "growx");
+			appPanel.add(new JLabel("(default: 44,93)"), "wrap");
+
 			appPanel.add(vacazioneAiutanteLabel, "gap para");
-			appPanel.add(getVacazioneAiutanteTextField(), "growx,wrap");
+			appPanel.add(getVacazioneAiutanteTextField(), "growx");
+			appPanel.add(new JLabel("(default: 28,41)"), "wrap");
+
 			appPanel.add(useYearInJobsProtocolLabel, "gap para");
 			appPanel.add(getUseYearInJobProtocolCheckBox(), "growx");
 		}
