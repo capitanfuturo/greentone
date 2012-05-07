@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
@@ -39,6 +40,7 @@ import javax.swing.text.MaskFormatter;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -78,7 +80,7 @@ public class GreenToneUtilities
 	private static final String APP_MINOR_VERSION = "minor.version.number";
 	private static final String APP_MINUS_VERSION = "minus.version.number";
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat
-	  .forPattern("dd/MM/yyyy");
+	  .forPattern(GreenToneAppConfig.DATE_PATTERN);
 
 	/**
 	 * Restituisce il testo contenuto nel campo di testo passato in ingresso. Tale
@@ -589,5 +591,25 @@ public class GreenToneUtilities
 		/* double */
 		table.setDefaultRenderer(Double.class, getDoubleTableCellRenderer());
 		return table;
+	}
+
+	/**
+	 * Crea un date picker secondo alcune convenzioni utili per tutta
+	 * l'applicazione.
+	 * 
+	 * @return un date picker secondo alcune convenzioni utili per tutta
+	 *         l'applicazione
+	 */
+
+	public static JXDatePicker createJXDataPicker()
+	{
+		JXDatePicker datePicker = new JXDatePicker();
+		/* imposto il formato per le date */
+		datePicker
+		  .setFormats(new SimpleDateFormat(GreenToneAppConfig.DATE_PATTERN));
+		/* imposto il pannello di selezione delle date */
+		JXMonthView monthView = datePicker.getMonthView();
+		monthView.setLocale(GreenToneAppConfig.APPLICATION_LOCALE);
+		return datePicker;
 	}
 }

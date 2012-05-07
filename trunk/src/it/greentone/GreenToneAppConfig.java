@@ -2,6 +2,7 @@ package it.greentone;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.jdo.JDOHelper;
@@ -69,6 +70,10 @@ public class GreenToneAppConfig
 	 * Nome del file del manuale utente
 	 */
 	public static final String MANUAL_FILE_NAME = "GreenTone-ManualeUtente.pdf";
+	/** Locale applicativo */
+	public static final Locale APPLICATION_LOCALE = Locale.ITALY;
+	/** pattern di default utilizzato per le date nell'applicazione */
+	public static final String DATE_PATTERN = "dd/MM/yy";
 
 	/**
 	 * Resituisce la factory di gestione della persistenza.

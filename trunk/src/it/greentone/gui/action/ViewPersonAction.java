@@ -4,6 +4,7 @@ import it.greentone.GreenTone;
 import it.greentone.gui.ButtonTabComponent;
 import it.greentone.gui.MainPanel;
 import it.greentone.gui.panel.AbstractPanel;
+import it.greentone.gui.panel.HomePanel;
 import it.greentone.gui.panel.PersonPanel;
 import it.greentone.persistence.Person;
 
@@ -149,14 +150,25 @@ public class ViewPersonAction extends AbstractBean
 			  .setTitle(title + " - " + applicationName);
 			/* configuro e aggiungo il tab */
 			panel.setup();
-			tabbedPane
-			  .insertTab(
-			    title,
-			    resourceMap.getIcon(panel.getBundleName() + ACTION_SMALL_ICON_SUFFIX),
-			    panel,
-			    resourceMap.getString(panel.getBundleName() + ACTION_TOOLTIP_SUFFIX),
-			    0);
-			tabbedPane.setTabComponentAt(0, new ButtonTabComponent(tabbedPane));
+			/*
+			 * Issue 126: la pagina iniziale deve rimanere in prima posizione e non si
+			 * può chiudere
+			 */
+			if(panel instanceof HomePanel)
+			{
+				tabbedPane
+				  .insertTab(title, resourceMap.getIcon(panel.getBundleName()
+				    + ACTION_SMALL_ICON_SUFFIX), panel, resourceMap.getString(panel
+				    .getBundleName() + ACTION_TOOLTIP_SUFFIX), 0);
+			}
+			else
+			{
+				tabbedPane
+				  .insertTab(title, resourceMap.getIcon(panel.getBundleName()
+				    + ACTION_SMALL_ICON_SUFFIX), panel, resourceMap.getString(panel
+				    .getBundleName() + ACTION_TOOLTIP_SUFFIX), 1);
+				tabbedPane.setTabComponentAt(1, new ButtonTabComponent(tabbedPane));
+			}
 		}
 		tabbedPane.setSelectedComponent(panel);
 	}
