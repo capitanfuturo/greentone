@@ -399,7 +399,7 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	{
 		if(operationDate == null)
 		{
-			operationDate = new JXDatePicker();
+			operationDate = GreenToneUtilities.createJXDataPicker();
 			registerComponent(operationDate);
 		}
 		return operationDate;

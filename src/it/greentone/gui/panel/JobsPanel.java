@@ -198,6 +198,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	public JXTable getContentTable()
 	{
 		JXTable table = super.getContentTable();
+		table.setName("jobsContentTable");
 		table.getSelectionModel().addListSelectionListener(
 		  new ListSelectionListener()
 			  {
@@ -390,7 +391,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		if(dueDatePicker == null)
 		{
-			dueDatePicker = new JXDatePicker();
+			dueDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(dueDatePicker);
 		}
 		return dueDatePicker;
@@ -405,7 +406,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		if(startDatePicker == null)
 		{
-			startDatePicker = new JXDatePicker();
+			startDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(startDatePicker);
 		}
 		return startDatePicker;
@@ -420,7 +421,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		if(finishDatePicker == null)
 		{
-			finishDatePicker = new JXDatePicker();
+			finishDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(finishDatePicker);
 		}
 		return finishDatePicker;

@@ -426,7 +426,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	{
 		if(releaseDateDatePicker == null)
 		{
-			releaseDateDatePicker = new JXDatePicker();
+			releaseDateDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(releaseDateDatePicker);
 		}
 		return releaseDateDatePicker;
