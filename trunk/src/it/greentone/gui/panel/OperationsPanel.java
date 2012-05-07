@@ -4,11 +4,13 @@ import it.greentone.GreenToneUtilities;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteOperationAction;
 import it.greentone.gui.action.SaveOperationAction;
+import it.greentone.gui.action.ViewReportsAction;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
 import it.greentone.persistence.OperationType;
+import it.greentone.report.OperationsReportsCategory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -79,6 +81,11 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	DeleteOperationAction deleteOperationAction;
 	@Inject
 	SaveOperationAction saveOperationAction;
+	@Inject
+	private ViewReportsAction viewReportsAction;
+	@Inject
+	private OperationsReportsCategory operationsReportsCategory;
+
 	private EventJXTableModel<Operation> tableModel;
 
 	private JTextField descriptionTextField;
@@ -471,19 +478,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	}
 
 	@Override
-	protected void clearForm()
-	{
-		super.clearForm();
-		getNumVacazioniTextField().setEnabled(false);
-		getAmountTextField().setEnabled(true);
-		getCalcButton().setEnabled(true);
-		/* Imposto di default la data odierna */
-		getOperationDate().setDate(new DateTime().toDate());
-		/* Imposto il tipo a lavoro */
-		getTypeComboBox().setSelectedItem(OperationType.TASK.getLocalizedName());
-	}
-
-	@Override
 	public Operation getItemFromTableRow(int rowIndex)
 	{
 		int rowIndexToModel = getContentTable().convertRowIndexToModel(rowIndex);
@@ -498,6 +492,8 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		getContextualToolBar().add(actionProvider.getAddOperation());
 		getContextualToolBar().add(actionProvider.getSaveOperation());
 		getContextualToolBar().add(actionProvider.getDeleteOperation());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getViewReports());
 	}
 
 	@Override
@@ -505,11 +501,15 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	{
 		super.initializeForInsertion();
 		/* disabilito il campo delle vacazioni */
-		getNumVacazioniTextField().setEnabled(false);
 		getProfessionalVacazioneCheckBox().setEnabled(false);
-		/* abilito quello dell'importo */
+		getNumVacazioniTextField().setEnabled(false);
+		/* abilito l'importo */
 		getAmountTextField().setEnabled(true);
 		getCalcButton().setEnabled(true);
+		/* Imposto di default la data odierna */
+		getOperationDate().setDate(new DateTime().toDate());
+		/* Imposto il tipo a lavoro */
+		getTypeComboBox().setSelectedItem(OperationType.TASK.getLocalizedName());
 	}
 
 	@Override
@@ -546,7 +546,10 @@ public class OperationsPanel extends ContextualPanel<Operation>
 	@Override
 	public void populateModel()
 	{
+		viewReportsAction.setup(operationsReportsCategory);
+
 		getCalcButton().setAction(actionProvider.getViewCalc());
+		getCalcButton().setEnabled(false);
 
 		/* aggiorno la lista degli incarichi */
 		getJobComboBox().setModel(

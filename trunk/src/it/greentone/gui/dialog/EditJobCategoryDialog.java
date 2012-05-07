@@ -81,13 +81,13 @@ public class EditJobCategoryDialog extends JDialog
 		setLayout(new BorderLayout());
 
 
-		JPanel northPanel = new JPanel(new MigLayout());
-		northPanel.add(new JLabel(resourceMap.getString(LOCALIZATION_PREFIX
-		  + "name")));
-		northPanel.add(getInputTextField());
+		JPanel northPanel = new JPanel(new MigLayout("", "[90%][]", ""));
+		northPanel.add(
+		  new JLabel(resourceMap.getString(LOCALIZATION_PREFIX + "name")), "wrap");
+		northPanel.add(getInputTextField(), "growx");
 		northPanel.add(getAddButton());
 
-		JPanel centerPanel = new JPanel(new MigLayout("", "[90%][]", ""));
+		JPanel centerPanel = new JPanel(new MigLayout("", "[90%][]", "[][top][]"));
 		centerPanel.add(
 		  new JLabel(resourceMap.getString(LOCALIZATION_PREFIX + "categories")),
 		  "wrap");
@@ -103,6 +103,7 @@ public class EditJobCategoryDialog extends JDialog
 
 		setLocationRelativeTo(null);
 		pack();
+		setSize(GreenToneUtilities.DIALOG_SIZE);
 	}
 
 	protected JTextField getInputTextField()

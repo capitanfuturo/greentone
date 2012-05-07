@@ -4,6 +4,7 @@ import it.greentone.persistence.JobStatus;
 import it.greentone.persistence.OperationType;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -81,6 +82,9 @@ public class GreenToneUtilities
 	private static final String APP_MINUS_VERSION = "minus.version.number";
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat
 	  .forPattern(GreenToneAppConfig.DATE_PATTERN);
+	/** Dimensione di default delle finestre di dialogo dell'applicazione */
+	public static final Dimension DIALOG_SIZE = new Dimension(450, 300);
+
 
 	/**
 	 * Restituisce il testo contenuto nel campo di testo passato in ingresso. Tale

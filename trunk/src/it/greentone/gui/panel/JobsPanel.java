@@ -5,6 +5,7 @@ import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteJobAction;
 import it.greentone.gui.action.SaveJobAction;
 import it.greentone.gui.action.ViewJobAction;
+import it.greentone.gui.action.ViewReportsAction;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobCategory;
 import it.greentone.persistence.JobCategoryService;
@@ -12,6 +13,7 @@ import it.greentone.persistence.JobService;
 import it.greentone.persistence.JobStatus;
 import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
+import it.greentone.report.JobsReportsCategory;
 
 import javax.inject.Inject;
 import javax.swing.ComboBoxModel;
@@ -78,6 +80,10 @@ public class JobsPanel extends ContextualPanel<Job>
 	private DeleteJobAction deleteJobAction;
 	@Inject
 	private ViewJobAction viewJobAction;
+	@Inject
+	private ViewReportsAction viewReportsAction;
+	@Inject
+	private JobsReportsCategory jobsReportsCategory;
 
 	private static final String LOCALIZATION_PREFIX = "viewJobs.Panel.";
 	private final String panelBundle;
@@ -231,6 +237,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	@Override
 	public void populateModel()
 	{
+		viewReportsAction.setup(jobsReportsCategory);
+
 		tableModel =
 		  new EventJXTableModel<Job>(
 		    jobService.getAllJobs(),
@@ -260,6 +268,8 @@ public class JobsPanel extends ContextualPanel<Job>
 		getContextualToolBar().add(actionProvider.getViewJob());
 		getContextualToolBar().addSeparator();
 		getContextualToolBar().add(actionProvider.getEditJobCategory());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getViewReports());
 	}
 
 	@Override
