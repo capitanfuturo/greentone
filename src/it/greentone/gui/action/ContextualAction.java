@@ -81,6 +81,9 @@ public abstract class ContextualAction
 	{
 		/* controllo che il tab non sia già presente */
 		JTabbedPane tabbedPane = getMainPanel().getMainTabbedPane();
+		String title =
+		  resourceMap.getString(panel.getBundleName() + PANEL_TITLE_SUFFIX);
+
 		boolean tabInserted = false;
 		for(int i = 0; i < tabbedPane.getTabCount(); i++)
 		{
@@ -92,11 +95,6 @@ public abstract class ContextualAction
 		}
 		if(!tabInserted)
 		{
-			String title =
-			  resourceMap.getString(panel.getBundleName() + PANEL_TITLE_SUFFIX);
-			/* aggiorno il titolo dell'applicazione */
-			Application.getInstance(GreenTone.class).getMainFrame()
-			  .setTitle(title + " - " + applicationName);
 			/* configuro e aggiungo il tab */
 			panel.setup();
 			/*
