@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
@@ -47,6 +49,7 @@ public class MainPanel extends JPanel
 	private JTabbedPane mainTabbedPane;
 	private JLabel statusLabel;
 	private ResourceMap resourceMap;
+	private String applicationName;
 
 	/**
 	 * Inizializza l'interfaccia grafica.
@@ -55,6 +58,7 @@ public class MainPanel extends JPanel
 	{
 		resourceMap =
 		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		applicationName = resourceMap.getString("Application.title");
 
 		setLayout(new BorderLayout());
 		add(getMainToolBar(), BorderLayout.WEST);
@@ -105,6 +109,19 @@ public class MainPanel extends JPanel
 		if(mainTabbedPane == null)
 		{
 			mainTabbedPane = new DnDTabbedPane();
+			mainTabbedPane.addChangeListener(new ChangeListener()
+				{
+
+					@Override
+					public void stateChanged(ChangeEvent e)
+					{
+						/* aggiorno il titolo dell'applicazione */
+						int selectedIndex = mainTabbedPane.getSelectedIndex();
+						String title = mainTabbedPane.getTitleAt(selectedIndex);
+						Application.getInstance(GreenTone.class).getMainFrame()
+						  .setTitle(title + " - " + applicationName);
+					}
+				});
 		}
 		return mainTabbedPane;
 	}
