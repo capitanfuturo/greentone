@@ -26,13 +26,10 @@ import javax.swing.JTextField;
 import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
-import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
@@ -198,40 +195,6 @@ public class JobsPanel extends ContextualPanel<Job>
 		headerPanel.add(requiredLabel);
 
 		return headerPanel;
-	}
-
-	@Override
-	public JXTable getContentTable()
-	{
-		JXTable table = super.getContentTable();
-		table.setName("jobsContentTable");
-		table.getSelectionModel().addListSelectionListener(
-		  new ListSelectionListener()
-			  {
-				  @Override
-				  public void valueChanged(ListSelectionEvent e)
-				  {
-					  if(!e.getValueIsAdjusting())
-					  {
-						  int selectedRow = getContentTable().getSelectedRow();
-						  if(selectedRow > -1)
-						  {
-							  /* abilito le azioni legate alla selezione */
-							  deleteJobAction.setDeleteJobActionEnabled(true);
-							  viewJobAction.setJob(getSelectedItem());
-							  viewJobAction.setViewJobActionEnabled(true);
-						  }
-						  else
-						  {
-							  /* disabilito le azioni legate alla selezione */
-							  deleteJobAction.setDeleteJobActionEnabled(false);
-							  viewJobAction.setJob(null);
-							  viewJobAction.setViewJobActionEnabled(false);
-						  }
-					  }
-				  }
-			  });
-		return table;
 	}
 
 	@Override
@@ -546,5 +509,25 @@ public class JobsPanel extends ContextualPanel<Job>
 			AutoCompleteSupport.install(cityField, getCities());
 		}
 		return cityField;
+	}
+
+	@Override
+	protected void tableSelectionHook()
+	{
+		super.tableSelectionHook();
+		/* abilito le azioni legate alla selezione */
+		deleteJobAction.setDeleteJobActionEnabled(true);
+		viewJobAction.setJob(getSelectedItem());
+		viewJobAction.setViewJobActionEnabled(true);
+	}
+
+	@Override
+	protected void tableSelectionLostHook()
+	{
+		super.tableSelectionLostHook();
+		/* disabilito le azioni legate alla selezione */
+		deleteJobAction.setDeleteJobActionEnabled(false);
+		viewJobAction.setJob(null);
+		viewJobAction.setViewJobActionEnabled(false);
 	}
 }

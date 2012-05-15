@@ -60,6 +60,7 @@ public class JobPanel extends AbstractPanel
 	private DocumentService documentService;
 	@Inject
 	private OperationService operationService;
+
 	private static final String LOCALIZATION_PREFIX = "viewJob.Panel.";
 	private Job job;
 	private Collection<Operation> operations;
@@ -449,6 +450,9 @@ public class JobPanel extends AbstractPanel
 	public void setup()
 	{
 		super.setup();
+
+		/* toolbar */
+		getToolBar().removeAll();
 
 		/* informazioni di testata */
 		getProtocolLabel().setText(job.getProtocol());

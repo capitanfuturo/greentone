@@ -20,6 +20,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.Comparator;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
@@ -37,17 +38,15 @@ import javax.swing.SortOrder;
 import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
-import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
+import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
@@ -501,28 +500,6 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	}
 
 	@Override
-	public JXTable getContentTable()
-	{
-		final JXTable documentTable = super.getContentTable();
-		documentTable.getSelectionModel().addListSelectionListener(
-		  new ListSelectionListener()
-			  {
-				  @Override
-				  public void valueChanged(ListSelectionEvent e)
-				  {
-					  if(!e.getValueIsAdjusting())
-					  {
-						  /* abilito le azioni legate alla selezione */
-						  deleteDocumentAction
-						    .setDeleteDocumentActionEnabled(getContentTable()
-						      .getSelectedRow() > -1);
-					  }
-				  }
-			  });
-		return documentTable;
-	}
-
-	@Override
 	public String getBundleName()
 	{
 		return PANEL_BUNDLE;
@@ -634,8 +611,18 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		getRecipientComboBox().setModel(recipientComboBoxModel);
 
 		/* carico gli incarichi */
+		SortedList<Job> jobsList =
+		  new SortedList<Job>(jobService.getAllJobs(), new Comparator<Job>()
+			  {
+
+				  @Override
+				  public int compare(Job o1, Job o2)
+				  {
+					  return o2.getProtocol().compareToIgnoreCase(o1.getProtocol());
+				  }
+			  });
 		EventComboBoxModel<Job> jobComboBoxModel =
-		  new EventComboBoxModel<Job>(jobService.getAllJobs());
+		  new EventComboBoxModel<Job>(jobsList);
 		getJobComboBox().setModel(jobComboBoxModel);
 
 		tableModel =
@@ -688,5 +675,19 @@ public class DocumentsPanel extends ContextualPanel<Document>
 		getProtocolTextField().setEnabled(false);
 		/* calcolo il protocollo da impostare */
 		getProtocolTextField().setText(documentService.getNextProtocol());
+	}
+
+	@Override
+	protected void tableSelectionHook()
+	{
+		super.tableSelectionHook();
+		deleteDocumentAction.setDeleteDocumentActionEnabled(true);
+	}
+
+	@Override
+	protected void tableSelectionLostHook()
+	{
+		super.tableSelectionLostHook();
+		deleteDocumentAction.setDeleteDocumentActionEnabled(false);
 	}
 }
