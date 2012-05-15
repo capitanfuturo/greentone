@@ -18,6 +18,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Comparator;
 import java.util.Currency;
 
 import javax.inject.Inject;
@@ -31,16 +32,14 @@ import javax.swing.JTextField;
 import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
-import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
+import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
@@ -181,28 +180,6 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		headerPanel.add(requiredLabel);
 
 		return headerPanel;
-	}
-
-	@Override
-	public JXTable getContentTable()
-	{
-		final JXTable table = super.getContentTable();
-		table.getSelectionModel().addListSelectionListener(
-		  new ListSelectionListener()
-			  {
-				  @Override
-				  public void valueChanged(ListSelectionEvent e)
-				  {
-					  if(!e.getValueIsAdjusting())
-					  {
-						  int selectedRow = getContentTable().getSelectedRow();
-						  /* abilito le azioni legate alla selezione */
-						  deleteOperationAction
-						    .setDeleteOperationActionEnabled(selectedRow > -1);
-					  }
-				  }
-			  });
-		return table;
 	}
 
 	@Override
@@ -552,8 +529,17 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		getCalcButton().setEnabled(false);
 
 		/* aggiorno la lista degli incarichi */
-		getJobComboBox().setModel(
-		  new EventComboBoxModel<Job>(jobService.getAllJobs()));
+		SortedList<Job> jobsList =
+		  new SortedList<Job>(jobService.getAllJobs(), new Comparator<Job>()
+			  {
+
+				  @Override
+				  public int compare(Job o1, Job o2)
+				  {
+					  return o2.getProtocol().compareToIgnoreCase(o1.getProtocol());
+				  }
+			  });
+		getJobComboBox().setModel(new EventComboBoxModel<Job>(jobsList));
 
 		tableModel =
 		  new EventJXTableModel<Operation>(operationService.getAllOperations(),
@@ -562,4 +548,18 @@ public class OperationsPanel extends ContextualPanel<Operation>
 		getContentTable().setModel(tableModel);
 		getContentTable().setSortOrder(1, SortOrder.DESCENDING);
 	}
+
+	@Override
+	public void tableSelectionHook()
+	{
+		super.tableSelectionHook();
+		deleteOperationAction.setDeleteOperationActionEnabled(true);
+	}
+
+	@Override
+	public void tableSelectionLostHook()
+	{
+		super.tableSelectionLostHook();
+		deleteOperationAction.setDeleteOperationActionEnabled(false);
+	};
 }

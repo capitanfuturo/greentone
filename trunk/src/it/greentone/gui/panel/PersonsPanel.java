@@ -27,13 +27,10 @@ import javax.swing.JTextField;
 import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.jdesktop.swingx.JXTable;
 import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
@@ -198,43 +195,6 @@ public class PersonsPanel extends ContextualPanel<Person>
 		headerPanel.add(getEmailTextField(), "growx, wrap");
 		headerPanel.add(requiredLabel);
 		return headerPanel;
-	}
-
-	@Override
-	public JXTable getContentTable()
-	{
-		final JXTable personTable = super.getContentTable();
-		personTable.getSelectionModel().addListSelectionListener(
-		  new ListSelectionListener()
-			  {
-				  @Override
-				  public void valueChanged(ListSelectionEvent e)
-				  {
-					  if(!e.getValueIsAdjusting())
-					  {
-						  int selectedRow = getContentTable().getSelectedRow();
-						  if(selectedRow > -1)
-						  {
-							  /* abilito le azioni legate alla selezione */
-							  deletePersonAction.setDeletePersonActionEnabled(true);
-							  editUserAction.setEditUserActionEnabled(true);
-							  viewPersonAction.setPerson(getSelectedItem());
-							  viewPersonAction.setViewPersonActionEnabled(true);
-							  /* aggiorno l'etichetta del nome/ragione sociale */
-							  toggleNameLabel();
-						  }
-						  else
-						  {
-							  /* disabilito le azioni legate alla selezione */
-							  deletePersonAction.setDeletePersonActionEnabled(false);
-							  editUserAction.setEditUserActionEnabled(false);
-							  viewPersonAction.setPerson(null);
-							  viewPersonAction.setViewPersonActionEnabled(false);
-						  }
-					  }
-				  }
-			  });
-		return personTable;
 	}
 
 	/**
@@ -645,5 +605,29 @@ public class PersonsPanel extends ContextualPanel<Person>
 		getIdentityCardTextField().setText(getSelectedItem().getIdentityCard());
 		/* aggiorno l'etichetta del nome/ragione sociale */
 		toggleNameLabel();
+	}
+
+	@Override
+	public void tableSelectionHook()
+	{
+		super.tableSelectionHook();
+		/* abilito le azioni legate alla selezione */
+		deletePersonAction.setDeletePersonActionEnabled(true);
+		editUserAction.setEditUserActionEnabled(true);
+		viewPersonAction.setPerson(getSelectedItem());
+		viewPersonAction.setViewPersonActionEnabled(true);
+		/* aggiorno l'etichetta del nome/ragione sociale */
+		toggleNameLabel();
+	}
+
+	@Override
+	public void tableSelectionLostHook()
+	{
+		super.tableSelectionLostHook();
+		/* disabilito le azioni legate alla selezione */
+		deletePersonAction.setDeletePersonActionEnabled(false);
+		editUserAction.setEditUserActionEnabled(false);
+		viewPersonAction.setPerson(null);
+		viewPersonAction.setViewPersonActionEnabled(false);
 	}
 }

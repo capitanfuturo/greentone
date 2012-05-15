@@ -127,23 +127,33 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 					  {
 						  if(!e.getValueIsAdjusting())
 						  {
-							  int selectedRow = getContentTable().getSelectedRow();
-							  if(selectedRow > -1)
-							  {
-								  int rowIndexToModel =
-								    getContentTable().convertRowIndexToModel(
-								      getContentTable().getSelectedRow());
-								  setSelectedItem(getItemFromTableRow(rowIndexToModel));
-								  SwingUtilities.invokeLater(new Runnable()
+							  SwingUtilities.invokeLater(new Runnable()
+								  {
+									  @Override
+									  public void run()
 									  {
-
-										  @Override
-										  public void run()
+										  int selectedRow = getContentTable().getSelectedRow();
+										  /* disabilito la tabella */
+										  contentTable.setEnabled(false);
+										  /* gestisco la selezione */
+										  if(selectedRow > -1)
 										  {
+											  int rowIndexToModel =
+											    getContentTable().convertRowIndexToModel(
+											      getContentTable().getSelectedRow());
+											  setSelectedItem(getItemFromTableRow(rowIndexToModel));
 											  initializeForEditing();
+											  tableSelectionHook();
 										  }
-									  });
-							  }
+										  else
+										  {
+											  tableSelectionLostHook();
+										  }
+										  /* riabilito la tabella */
+										  contentTable.setEnabled(true);
+									  }
+
+								  });
 						  }
 					  }
 				  });
@@ -247,11 +257,30 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * Azioni da intraprendere per la modifica di una riga della
 	 * {@link #getContentTable()}.
 	 */
-	public void initializeForEditing()
+	protected void initializeForEditing()
 	{
 		setStatus(EStatus.EDIT);
 		setHeaderPanelEnabled(true);
 		clearForm();
+	}
+
+	/**
+	 * Porzione di codice che viene eseguita a seguito della selezione di un
+	 * elemento nella tabella {@link #getContentTable()}, in coda a
+	 * {@link #initializeForEditing()}
+	 */
+	protected void tableSelectionHook()
+	{
+		// vuoto di default;
+	}
+
+	/**
+	 * Porzione di codice che viene eseguita a seguito della perdita di selezione
+	 * nella tabella {@link #getContentTable()}
+	 */
+	protected void tableSelectionLostHook()
+	{
+		// vuoto di default;
 	}
 
 	/**
