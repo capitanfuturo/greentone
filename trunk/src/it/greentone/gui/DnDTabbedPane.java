@@ -356,7 +356,11 @@ public class DnDTabbedPane extends JTabbedPane
 
 	private void convertTab(int prev, int next)
 	{
-		if(next < 0 || prev == next)
+		/*
+		 * GreenTone: non voglio che si possa spostare una scheda in prima posizione
+		 * perchè rimane fissa la pagina iniziale
+		 */
+		if(next < 0 || prev == next || next == 0)
 		{
 			return;
 		}
@@ -370,14 +374,18 @@ public class DnDTabbedPane extends JTabbedPane
 		remove(prev);
 		insertTab(str, icon, cmp, tip, tgtindex);
 		setEnabledAt(tgtindex, flg);
-		// When you drag'n'drop a disabled tab, it finishes enabled and selected.
-		// pointed out by dlorde
+		/*
+		 * When you drag'n'drop a disabled tab, it finishes enabled and selected.
+		 * pointed out by dlorde
+		 */
 		if(flg)
 			setSelectedIndex(tgtindex);
 
-		// I have a component in all tabs (jlabel with an X to close the tab) and
-// when i move a tab the component disappear.
-		// pointed out by Daniel Dario Morales Salas
+		/*
+		 * I have a component in all tabs (jlabel with an X to close the tab) and
+		 * when i move a tab the component disappear. pointed out by Daniel Dario
+		 * Morales Salas
+		 */
 		setTabComponentAt(tgtindex, tab);
 	}
 
@@ -451,8 +459,10 @@ public class DnDTabbedPane extends JTabbedPane
 	private Rectangle getTabAreaBounds()
 	{
 		Rectangle tabbedRect = getBounds();
-		// pointed out by daryl. NullPointerException: i.e. addTab("Tab",null)
-		// Rectangle compRect = getSelectedComponent().getBounds();
+		/*
+		 * pointed out by daryl. NullPointerException: i.e. addTab("Tab",null)
+		 * Rectangle compRect = getSelectedComponent().getBounds();
+		 */
 		Component comp = getSelectedComponent();
 		int idx = 0;
 		while(comp == null && idx < getTabCount())
@@ -494,8 +504,9 @@ public class DnDTabbedPane extends JTabbedPane
 		{
 			setOpaque(false);
 			composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
-			// http://bugs.sun.com/view_bug.do?bug_id=6700748
-			// setCursor(null);
+			/*
+			 * http://bugs.sun.com/view_bug.do?bug_id=6700748 setCursor(null);
+			 */
 		}
 
 		public void setImage(BufferedImage draggingGhost)
