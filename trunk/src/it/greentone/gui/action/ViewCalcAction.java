@@ -1,6 +1,5 @@
 package it.greentone.gui.action;
 
-import it.greentone.gui.MainPanel;
 import it.greentone.gui.dialog.CalculatorDialog;
 import it.greentone.gui.panel.OperationsPanel;
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -29,24 +28,12 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewCalcAction extends ContextualAction
+public class ViewCalcAction
 {
 	@Inject
 	private CalculatorDialog calcDialog;
 	@Inject
 	private OperationsPanel operationsPanel;
-
-	/**
-	 * Visualizza il pannello sulle informazioni dell'applicazione.
-	 * 
-	 * @param mainPanel
-	 *          pannello principale
-	 */
-	@Inject
-	public ViewCalcAction(MainPanel mainPanel)
-	{
-		super(mainPanel);
-	}
 
 	/**
 	 * Visualizza il pannello sulle informazioni dell'applicazione.

@@ -4,7 +4,6 @@ import it.greentone.GreenToneUtilities;
 import it.greentone.gui.FontProvider;
 import it.greentone.gui.MainPanel;
 import it.greentone.gui.action.ActionProvider;
-import it.greentone.gui.action.ViewJobsAction;
 import it.greentone.gui.action.ViewReportsAction;
 import it.greentone.gui.panel.AgendaDetailPanel.TimeStatus;
 import it.greentone.persistence.Job;
@@ -43,7 +42,7 @@ import ca.odell.glazedlists.matchers.Matcher;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -75,8 +74,6 @@ public class HomePanel extends AbstractPanel
 	private JobPanel jobPanel;
 	@Inject
 	private MainPanel mainPanel;
-	@Inject
-	private ViewJobsAction viewJobsAction;
 	@Inject
 	private ViewReportsAction viewReportsAction;
 	@Inject
@@ -254,7 +251,7 @@ public class HomePanel extends AbstractPanel
 										for(Job job : jobs)
 										{
 											getResultPanel().add(
-											  new AgendaDetailPanel(job, jobPanel, viewJobsAction,
+											  new AgendaDetailPanel(job, jobPanel, mainPanel,
 											    getResourceMap(), TimeStatus.ON_TIME), "growx, wrap");
 											getSplitPane().validate();
 										}
@@ -380,7 +377,7 @@ public class HomePanel extends AbstractPanel
 		for(Job job : allJobsStartDate)
 		{
 			JobDetailsPanel jobDetailsPanel =
-			  new JobDetailsPanel(job, jobPanel, viewJobsAction, getResourceMap());
+			  new JobDetailsPanel(job, jobPanel, mainPanel, getResourceMap());
 			getCentralPanel().add(jobDetailsPanel, "growx, wrap");
 		}
 		/*
@@ -412,14 +409,14 @@ public class HomePanel extends AbstractPanel
 		for(Job job : nextExpiringJob)
 		{
 			AgendaDetailPanel panel =
-			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap(),
+			  new AgendaDetailPanel(job, jobPanel, mainPanel, getResourceMap(),
 			    TimeStatus.EXPIRING);
 			getAgendaPanel().add(panel, "growx, wrap");
 		}
 		for(Job job : expiredJob)
 		{
 			AgendaDetailPanel panel =
-			  new AgendaDetailPanel(job, jobPanel, viewJobsAction, getResourceMap(),
+			  new AgendaDetailPanel(job, jobPanel, mainPanel, getResourceMap(),
 			    TimeStatus.EXPIRED);
 			getAgendaPanel().add(panel, "growx, wrap");
 		}

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -28,22 +28,12 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewDocumentsAction extends ContextualAction
+public class ViewDocumentsAction
 {
 	@Inject
 	private DocumentsPanel documentsPanel;
-
-	/**
-	 * Mostra i documenti nel pannello principale dell'applicazione.
-	 * 
-	 * @param mainPanel
-	 *          pannello principale
-	 */
 	@Inject
-	public ViewDocumentsAction(MainPanel mainPanel)
-	{
-		super(mainPanel);
-	}
+	private MainPanel mainPanel;
 
 	/**
 	 * Mostra i documenti nel pannello principale dell'applicazione.
@@ -51,6 +41,6 @@ public class ViewDocumentsAction extends ContextualAction
 	@Action
 	public void viewDocuments()
 	{
-		addTab(documentsPanel);
+		ContextualAction.addTab(mainPanel, documentsPanel);
 	}
 }

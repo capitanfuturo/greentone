@@ -16,7 +16,7 @@ import org.jdesktop.application.ResourceMap;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -34,53 +34,28 @@ import org.jdesktop.application.ResourceMap;
  * 
  * @author Giuseppe Caliendo
  */
-public abstract class ContextualAction
+public class ContextualAction
 {
 	protected static final String PANEL_TITLE_SUFFIX = ".Panel.title";
 	protected static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
 	protected static final String ACTION_TOOLTIP_SUFFIX =
 	  ".Action.shortDescription";
 
-	private final MainPanel mainPanel;
-	private final ResourceMap resourceMap;
-	private final String applicationName;
-
-	/**
-	 * Azione legata alla visualizzazione di tipi di oggetti del database nel
-	 * pannello principale dell'applicazione. Aggiunge una scheda se non già
-	 * presente nel pannello principale.
-	 * 
-	 * @param mainPanel
-	 *          pannello principale dell'applicazione
-	 */
-	public ContextualAction(MainPanel mainPanel)
-	{
-		this.mainPanel = mainPanel;
-		this.resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		this.applicationName = resourceMap.getString("Application.title");
-	}
-
-	protected ResourceMap getResourceMap()
-	{
-		return resourceMap;
-	}
-
-	protected MainPanel getMainPanel()
-	{
-		return mainPanel;
-	}
-
 	/**
 	 * Aggiunge una scheda alla finestra principale.
 	 * 
+	 * @param mainPanel
+	 *          pannello al quale aggiungere il tab
 	 * @param panel
 	 *          contenuto della scheda
 	 */
-	public void addTab(AbstractPanel panel)
+	public static void addTab(MainPanel mainPanel, AbstractPanel panel)
 	{
+		ResourceMap resourceMap =
+		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+
 		/* controllo che il tab non sia già presente */
-		JTabbedPane tabbedPane = getMainPanel().getMainTabbedPane();
+		JTabbedPane tabbedPane = mainPanel.getMainTabbedPane();
 		String title =
 		  resourceMap.getString(panel.getBundleName() + PANEL_TITLE_SUFFIX);
 
@@ -118,15 +93,5 @@ public abstract class ContextualAction
 			}
 		}
 		tabbedPane.setSelectedComponent(panel);
-	}
-
-	/**
-	 * Restituisce il nome dell'applicazione.
-	 * 
-	 * @return il nome dell'applicazione
-	 */
-	public String getApplicationName()
-	{
-		return applicationName;
 	}
 }

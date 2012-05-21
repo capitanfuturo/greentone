@@ -43,7 +43,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -529,5 +529,19 @@ public class JobsPanel extends ContextualPanel<Job>
 		deleteJobAction.setDeleteJobActionEnabled(false);
 		viewJobAction.setJob(null);
 		viewJobAction.setViewJobActionEnabled(false);
+	}
+
+	/**
+	 * Imposta una selezione da un pannello esterno.
+	 * 
+	 * @param toSelect
+	 *          incarico da selezionare
+	 */
+	protected void setSelectedJob(Job toSelect)
+	{
+		int indexOf = jobService.getAllJobs().indexOf(toSelect);
+		int rowIndexToView = getContentTable().convertRowIndexToView(indexOf);
+		getContentTable().getSelectionModel().setSelectionInterval(rowIndexToView,
+		  rowIndexToView);
 	}
 }

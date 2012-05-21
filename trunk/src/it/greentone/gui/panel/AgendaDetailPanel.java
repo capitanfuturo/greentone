@@ -2,7 +2,8 @@ package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.FontProvider;
-import it.greentone.gui.action.ViewJobsAction;
+import it.greentone.gui.MainPanel;
+import it.greentone.gui.action.ContextualAction;
 import it.greentone.persistence.Job;
 
 import java.awt.Color;
@@ -20,7 +21,7 @@ import org.jdesktop.application.ResourceMap;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -47,13 +48,12 @@ public class AgendaDetailPanel extends JPanel
 	 * @param job
 	 *          incarico di cui mostrare il dettaglio
 	 * @param jobPanel
-	 * @param viewJobsAction
+	 * @param mainPanel
 	 * @param resourceMap
 	 * @param status
 	 */
 	public AgendaDetailPanel(final Job job, final JobPanel jobPanel,
-	  final ViewJobsAction viewJobsAction, ResourceMap resourceMap,
-	  TimeStatus status)
+	  final MainPanel mainPanel, ResourceMap resourceMap, TimeStatus status)
 	{
 		JButton viewDetailsButton = new JButton(new AbstractAction()
 			{
@@ -63,7 +63,7 @@ public class AgendaDetailPanel extends JPanel
 				{
 					jobPanel.setJob(job);
 					jobPanel.setup();
-					viewJobsAction.addTab(jobPanel);
+					ContextualAction.addTab(mainPanel, jobPanel);
 				}
 			});
 		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
