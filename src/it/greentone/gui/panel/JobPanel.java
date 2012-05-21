@@ -2,6 +2,8 @@ package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.FontProvider;
+import it.greentone.gui.MainPanel;
+import it.greentone.gui.action.ContextualAction;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
 import it.greentone.persistence.Job;
@@ -10,9 +12,12 @@ import it.greentone.persistence.OperationService;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 
 import javax.inject.Inject;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,7 +40,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -60,6 +65,10 @@ public class JobPanel extends AbstractPanel
 	private DocumentService documentService;
 	@Inject
 	private OperationService operationService;
+	@Inject
+	private JobsPanel jobsPanel;
+	@Inject
+	private MainPanel gtMainPanel;
 
 	private static final String LOCALIZATION_PREFIX = "viewJob.Panel.";
 	private Job job;
@@ -453,6 +462,22 @@ public class JobPanel extends AbstractPanel
 
 		/* toolbar */
 		getToolBar().removeAll();
+		JButton goButton =
+		  new JButton(getResourceMap().getIcon("viewJob.Action.goToJobs"));
+		goButton.setToolTipText(getResourceMap().getString("viewJob.Panel.goto"));
+		goButton.addActionListener(new ActionListener()
+			{
+
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					jobsPanel.setup();
+					ContextualAction.addTab(gtMainPanel, jobsPanel);
+					jobsPanel.setSelectedJob(job);
+				}
+			});
+		getToolBar().add(goButton);
+
 
 		/* informazioni di testata */
 		getProtocolLabel().setText(job.getProtocol());

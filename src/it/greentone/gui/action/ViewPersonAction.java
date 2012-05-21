@@ -1,26 +1,19 @@
 package it.greentone.gui.action;
 
-import it.greentone.GreenTone;
-import it.greentone.gui.ButtonTabComponent;
 import it.greentone.gui.MainPanel;
-import it.greentone.gui.panel.AbstractPanel;
-import it.greentone.gui.panel.HomePanel;
 import it.greentone.gui.panel.PersonPanel;
 import it.greentone.persistence.Person;
 
 import javax.inject.Inject;
-import javax.swing.JTabbedPane;
 
 import org.jdesktop.application.AbstractBean;
 import org.jdesktop.application.Action;
-import org.jdesktop.application.Application;
-import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -44,30 +37,8 @@ public class ViewPersonAction extends AbstractBean
 	private PersonPanel personPanel;
 	private Person person;
 	boolean viewPersonActionEnabled = false;
-
-
-	private static final String PANEL_TITLE_SUFFIX = ".Panel.title";
-	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
-	private static final String ACTION_TOOLTIP_SUFFIX =
-	  ".Action.shortDescription";
-	private final MainPanel mainPanel;
-	private final ResourceMap resourceMap;
-	private final String applicationName;
-
-	/**
-	 * Mostra gli incarichi nel pannello principale dell'applicazione.
-	 * 
-	 * @param mainPanel
-	 *          pannello principale
-	 */
 	@Inject
-	public ViewPersonAction(MainPanel mainPanel)
-	{
-		this.mainPanel = mainPanel;
-		this.resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		this.applicationName = resourceMap.getString("Application.title");
-	}
+	private MainPanel mainPanel;
 
 	/**
 	 * Imposta la persona da visualizzare.
@@ -88,7 +59,7 @@ public class ViewPersonAction extends AbstractBean
 	{
 		personPanel.setPerson(person);
 		personPanel.setup();
-		addTab(personPanel);
+		ContextualAction.addTab(mainPanel, personPanel);
 	}
 
 	/**
@@ -116,60 +87,5 @@ public class ViewPersonAction extends AbstractBean
 		this.viewPersonActionEnabled = viewPersonActionEnabled;
 		firePropertyChange("viewPersonActionEnabled", oldValue,
 		  viewPersonActionEnabled);
-	}
-
-	protected ResourceMap getResourceMap()
-	{
-		return resourceMap;
-	}
-
-	protected MainPanel getMainPanel()
-	{
-		return mainPanel;
-	}
-
-	protected void addTab(AbstractPanel panel)
-	{
-		/* controllo che il tab non sia già presente */
-		JTabbedPane tabbedPane = getMainPanel().getMainTabbedPane();
-		boolean tabInserted = false;
-		for(int i = 0; i < tabbedPane.getTabCount(); i++)
-		{
-			java.awt.Component componentAt = tabbedPane.getComponentAt(i);
-			if(componentAt.equals(panel))
-			{
-				tabInserted = true;
-			}
-		}
-		if(!tabInserted)
-		{
-			String title =
-			  resourceMap.getString(panel.getBundleName() + PANEL_TITLE_SUFFIX);
-			/* aggiorno il titolo dell'applicazione */
-			Application.getInstance(GreenTone.class).getMainFrame()
-			  .setTitle(title + " - " + applicationName);
-			/* configuro e aggiungo il tab */
-			panel.setup();
-			/*
-			 * Issue 126: la pagina iniziale deve rimanere in prima posizione e non si
-			 * può chiudere
-			 */
-			if(panel instanceof HomePanel)
-			{
-				tabbedPane
-				  .insertTab(title, resourceMap.getIcon(panel.getBundleName()
-				    + ACTION_SMALL_ICON_SUFFIX), panel, resourceMap.getString(panel
-				    .getBundleName() + ACTION_TOOLTIP_SUFFIX), 0);
-			}
-			else
-			{
-				tabbedPane
-				  .insertTab(title, resourceMap.getIcon(panel.getBundleName()
-				    + ACTION_SMALL_ICON_SUFFIX), panel, resourceMap.getString(panel
-				    .getBundleName() + ACTION_TOOLTIP_SUFFIX), 1);
-				tabbedPane.setTabComponentAt(1, new ButtonTabComponent(tabbedPane));
-			}
-		}
-		tabbedPane.setSelectedComponent(panel);
 	}
 }
