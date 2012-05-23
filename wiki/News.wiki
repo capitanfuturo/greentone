@@ -6,14 +6,13 @@
   * Corretto grave problema di sincronizzazione dell'interfaccia grafica [http://code.google.com/p/greentone/issues/detail?id=149&can=1&q=Milestone%3D0.1.1 issue 149]
   * [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.1.1+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles Changelog 0.1.1] completo
 
-*06 Marzo 2012:* rilasciata la versione 0.1.0 (comprende anche 0.0.6):
+*06 Marzo 2012:* rilasciata la versione 0.1.0:
   * aggiunta pagina iniziale con funzionalità di ricerca
   * aggiunta scheda riepilogativa per un singolo incarico
   * aggiunta scheda riepilogativa per un singola anagrafica
   * aggiunto un sistema di logging su file per permettere una migliore stesura delle issue.
   * aggiunta la gestione delle informazioni sullo studio professionale
   * [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.1.0+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles Changelog 0.1.0] completo
-  * [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.0.6+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles Changelog 0.0.6] completo
 
 *01 Dicembre 2011:* rilasciata la versione 0.0.5:
   * Aggiunte caratteristiche importanti che aprono la strada a sviluppi interessanti e a personalizzazioni del prodotto
