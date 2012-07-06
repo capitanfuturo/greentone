@@ -2,6 +2,7 @@ package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.FontProvider;
+import it.greentone.gui.JXSplitPane;
 import it.greentone.gui.MainPanel;
 import it.greentone.gui.action.ContextualAction;
 import it.greentone.persistence.Document;
@@ -97,6 +98,7 @@ public class JobPanel extends AbstractPanel
 	private final String[] documentsProperties;
 	private final String[] documentsColumnsNames;
 	private final boolean[] documentsWritables;
+	private final JXSplitPane mainSplitPane;
 
 	/**
 	 * Pannello di riepilogo di un incarico. Mostra i dati di testata, le
@@ -159,10 +161,10 @@ public class JobPanel extends AbstractPanel
 		documentsPanel.add(new JScrollPane(getDocumentsTable()),
 		  BorderLayout.CENTER);
 
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPane.add(operationsPanel);
-		splitPane.add(documentsPanel);
-		contentPanel.add(splitPane, BorderLayout.CENTER);
+		mainSplitPane = new JXSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		mainSplitPane.add(operationsPanel);
+		mainSplitPane.add(documentsPanel);
+		contentPanel.add(mainSplitPane, BorderLayout.CENTER);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(northPanel, BorderLayout.NORTH);
@@ -520,6 +522,9 @@ public class JobPanel extends AbstractPanel
 		      documentsColumnsNames, documentsWritables));
 		getDocumentsTable().setModel(documentsTableModel);
 		getDocumentsTable().setSortOrder(0, SortOrder.DESCENDING);
+
+		/* aggiorno la posizione dello splitpane */
+		mainSplitPane.setDividerLocation(0.7);
 	}
 
 	/**
