@@ -13,7 +13,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -118,7 +117,6 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 		if(contentTable == null)
 		{
 			contentTable = GreenToneUtilities.createJXTable();
-			contentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			contentTable.getSelectionModel().addListSelectionListener(
 			  new ListSelectionListener()
 				  {

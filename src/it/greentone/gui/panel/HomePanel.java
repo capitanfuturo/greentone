@@ -2,6 +2,7 @@ package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.FontProvider;
+import it.greentone.gui.JXSplitPane;
 import it.greentone.gui.MainPanel;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.ViewReportsAction;
@@ -87,8 +88,8 @@ public class HomePanel extends AbstractPanel
 	private JTextField searchTextField;
 	private JPanel resultPanel;
 	private JToolBar contextualToolBar;
-	private JSplitPane sideSplitPane;
-	private JSplitPane splitPane;
+	private JXSplitPane sideSplitPane;
+	private JXSplitPane splitPane;
 
 	/**
 	 * Pannello di inizio dell'applicazione.
@@ -107,18 +108,18 @@ public class HomePanel extends AbstractPanel
 		if(splitPane == null)
 		{
 			splitPane =
-			  new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getCentralPanel(),
+			  new JXSplitPane(JSplitPane.HORIZONTAL_SPLIT, getCentralPanel(),
 			    getSideSplitPane());
 		}
 		return splitPane;
 	}
 
-	private JSplitPane getSideSplitPane()
+	private JXSplitPane getSideSplitPane()
 	{
 		if(sideSplitPane == null)
 		{
 			sideSplitPane =
-			  new JSplitPane(JSplitPane.VERTICAL_SPLIT, getSearchPanel(),
+			  new JXSplitPane(JSplitPane.VERTICAL_SPLIT, getSearchPanel(),
 			    getAgendaPanel());
 		}
 		return sideSplitPane;
@@ -428,8 +429,8 @@ public class HomePanel extends AbstractPanel
 		}
 
 		/* aggiusto gli splitpane */
-		getSplitPane().setDividerLocation((int) (mainPanel.getWidth() * 0.7));
-		getSideSplitPane().setDividerLocation((int) (mainPanel.getHeight() * 0.5));
+		getSplitPane().setDividerLocation(0.7);
+		getSideSplitPane().setDividerLocation(0.5);
 	}
 
 	@Override

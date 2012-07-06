@@ -40,6 +40,7 @@ import org.jdesktop.application.ResourceMap;
 public class JobDetailsPanel extends JPanel
 {
 	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
+	private static final JLabel NA_LABEL = new JLabel("N/A");
 
 	/**
 	 * Pannello di dettaglio di un incarico.
@@ -83,8 +84,22 @@ public class JobDetailsPanel extends JPanel
 		add(protocolLabel);
 		add(descriptionFieldLabel, "wrap");
 		add(new JLabel(resourceMap.getString("JobDetailsPanel.duedate")));
-		add(dueDateFieldLabel);
+		if(job.getDueDate() != null)
+		{
+			add(dueDateFieldLabel);
+		}
+		else
+		{
+			add(NA_LABEL);
+		}
 		add(new JLabel(resourceMap.getString("JobDetailsPanel.customer")));
-		add(customerFieldLabel, "wrap");
+		if(job.getCustomer() != null)
+		{
+			add(customerFieldLabel, "wrap");
+		}
+		else
+		{
+			add(NA_LABEL);
+		}
 	}
 }
