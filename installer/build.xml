@@ -34,7 +34,9 @@
 				<include name="**/*.txt"/>
 				<include name="**/*.png"/>
 				<include name="**/*.xml"/>
+				<include name="**/*.jasper"/>
 				<exclude name="**/*.java"/>
+				<exclude name="**/*.jrxml"/>
 			</fileset>
 		</copy>
 	</target>
@@ -97,7 +99,9 @@
 				<include name="**/*.png"/>
 				<include name="**/*.xml"/>
 				<include name="**/*.txt"/>
+				<include name="**/*.jasper"/>
 	    		<exclude name="**/*.java"/>
+				<exclude name="**/*.jrxml"/>
 			</fileset>
 		</jar>
 		<delete file="MANIFEST.MF"/>
