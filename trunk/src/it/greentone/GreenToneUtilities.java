@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import javax.inject.Inject;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
@@ -43,6 +44,8 @@ import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -585,6 +588,9 @@ public class GreenToneUtilities
 	{
 		JXTable table = new JXTable();
 		table.setColumnControlVisible(true);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		Highlighter striping = HighlighterFactory.createAlternateStriping();
+		table.setHighlighters(striping);
 		/* status dell'incarico */
 		table.setDefaultRenderer(JobStatus.class, getJobStatusTableCellRenderer());
 		/* tipo di operazione */

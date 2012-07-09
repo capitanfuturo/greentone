@@ -15,6 +15,8 @@ import it.greentone.persistence.Person;
 import it.greentone.persistence.PersonService;
 import it.greentone.report.JobsReportsCategory;
 
+import java.util.Comparator;
+
 import javax.inject.Inject;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
@@ -210,15 +213,35 @@ public class JobsPanel extends ContextualPanel<Job>
 		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
 
 		/* carico responsabili e committenti */
+		EventList<Person> allPersons = personService.getAllPersons();
+		SortedList<Person> soertedAllPersons =
+		  new SortedList<Person>(allPersons, new Comparator<Person>()
+			  {
+				  @Override
+				  public int compare(Person o1, Person o2)
+				  {
+					  return o1.getName().compareToIgnoreCase(o2.getName());
+				  }
+			  });
 		getCustomerComboBox().setModel(
-		  new EventComboBoxModel<Person>(personService.getAllPersons()));
+		  new EventComboBoxModel<Person>(soertedAllPersons));
 		getManagerComboBox().setModel(
-		  new EventComboBoxModel<Person>(personService.getAllPersons()));
+		  new EventComboBoxModel<Person>(soertedAllPersons));
 
 		/* carico le categorie */
+		EventList<JobCategory> allCategories =
+		  jobCategoryService.getAllJobCategories();
+		SortedList<JobCategory> sortedAllCategories =
+		  new SortedList<JobCategory>(allCategories, new Comparator<JobCategory>()
+			  {
+				  @Override
+				  public int compare(JobCategory o1, JobCategory o2)
+				  {
+					  return o1.getName().compareToIgnoreCase(o2.getName());
+				  }
+			  });
 		ComboBoxModel model =
-		  new EventComboBoxModel<JobCategory>(
-		    jobCategoryService.getAllJobCategories());
+		  new EventComboBoxModel<JobCategory>(sortedAllCategories);
 		categoryComboBox.setModel(model);
 	}
 
@@ -300,7 +323,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	{
 		if(cities == null)
 		{
-			cities = new BasicEventList<String>();
+			cities = new SortedList<String>(new BasicEventList<String>());
 		}
 		return cities;
 	}

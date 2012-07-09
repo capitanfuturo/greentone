@@ -12,6 +12,8 @@ import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +21,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,6 +29,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SortOrder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -98,7 +103,16 @@ public class JobPanel extends AbstractPanel
 	private final String[] documentsProperties;
 	private final String[] documentsColumnsNames;
 	private final boolean[] documentsWritables;
-	private final JXSplitPane mainSplitPane;
+	private JXSplitPane mainSplitPane;
+	private JPanel contentPanel;
+	private static final String GLOBAL_PANEL = "GLOBAL_PANEL";
+	private static final String OPERATION_PANEL = "OPERATION_PANEL";
+	private static final String DOCUMENT_PANEL = "DOCUMENT_PANEL";
+	private JButton backDetailButton;
+	private JButton documentDetailButton;
+	private JButton operationDetailButton;
+	private EventJXTableModel<Document> documentsTableModel;
+	private EventJXTableModel<Operation> operationsTableModel;
 
 	/**
 	 * Pannello di riepilogo di un incarico. Mostra i dati di testata, le
@@ -107,68 +121,59 @@ public class JobPanel extends AbstractPanel
 	public JobPanel()
 	{
 		operationsProperties =
-		  new String[] {"description", "operationType", "isVacazione",
-		    "isProfessionalVacazione", "operationDate", "amount", "numVacazioni"};
+		  new String[] {"description", "operationDate", "amount"};
 		operationsColumnsNames =
 		  new String[] {
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.type"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isVacazione"),
-		    getResourceMap().getString(
-		      LOCALIZATION_PREFIX + "Table.isProfessionalVacazione"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.numVacazioni")};
-		operationsWritables =
-		  new boolean[] {false, false, false, false, false, false, false};
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount")};
+		operationsWritables = new boolean[] {false, false, false};
 
 		documentsProperties =
-		  new String[] {"protocol", "description", "recipient", "isDigital", "uri",
-		    "isOutgoing", "releaseDate", "notes"};
+		  new String[] {"protocol", "description", "releaseDate"};
 		documentsColumnsNames =
 		  new String[] {
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
 		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.recipient"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isDigital"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.outgoing"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
-		documentsWritables =
-		  new boolean[] {false, false, false, false, false, false, false, false};
+		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date")};
+		documentsWritables = new boolean[] {false, false, false};
 
 
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(getToolBar(), BorderLayout.NORTH);
 		northPanel.add(getHeaderPanel(), BorderLayout.CENTER);
 
-		JPanel contentPanel = new JPanel(new BorderLayout());
-
-		JPanel operationsPanel = new JPanel(new BorderLayout());
+		JPanel operationsHeaderPanel = new JPanel(new MigLayout());
 		JLabel operationsLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "operations"));
 		operationsLabel.setFont(FontProvider.TITLE_SMALL);
-		operationsPanel.add(operationsLabel, BorderLayout.NORTH);
+		operationsHeaderPanel.add(operationsLabel);
+		operationsHeaderPanel.add(getOperationDetailButton());
+
+		JPanel operationsPanel = new JPanel(new BorderLayout());
+		operationsPanel.add(operationsHeaderPanel, BorderLayout.NORTH);
 		operationsPanel.add(new JScrollPane(getOperationsTable()),
 		  BorderLayout.CENTER);
 
-		JPanel documentsPanel = new JPanel(new BorderLayout());
+		JPanel docHeaderPanel = new JPanel(new MigLayout());
 		JLabel documentsLabel =
 		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "documents"));
 		documentsLabel.setFont(FontProvider.TITLE_SMALL);
-		documentsPanel.add(documentsLabel, BorderLayout.NORTH);
+		docHeaderPanel.add(documentsLabel);
+		docHeaderPanel.add(getDocumentDetailButton());
+
+		JPanel documentsPanel = new JPanel(new BorderLayout());
+		documentsPanel.add(docHeaderPanel, BorderLayout.NORTH);
 		documentsPanel.add(new JScrollPane(getDocumentsTable()),
 		  BorderLayout.CENTER);
 
-		mainSplitPane = new JXSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		mainSplitPane.add(operationsPanel);
-		mainSplitPane.add(documentsPanel);
-		contentPanel.add(mainSplitPane, BorderLayout.CENTER);
+		getMainSplitPane().add(operationsPanel);
+		getMainSplitPane().add(documentsPanel);
+		getContentPanel().add(getMainSplitPane(), GLOBAL_PANEL);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(northPanel, BorderLayout.NORTH);
-		mainPanel.add(contentPanel, BorderLayout.CENTER);
+		mainPanel.add(getContentPanel(), BorderLayout.CENTER);
 		mainPanel.setPreferredSize(new Dimension(800, 600));
 		setLayout(new BorderLayout());
 		add(mainPanel);
@@ -420,6 +425,36 @@ public class JobPanel extends AbstractPanel
 	}
 
 	/**
+	 * Restituisce il pannello sottostante che raccoglie i contenuti
+	 * dell'incarico.
+	 * 
+	 * @return il pannello sottostante che raccoglie i contenuti dell'incarico
+	 */
+	public JPanel getContentPanel()
+	{
+		if(contentPanel == null)
+		{
+			contentPanel = new JPanel();
+			contentPanel.setLayout(new CardLayout());
+		}
+		return contentPanel;
+	}
+
+	/**
+	 * Restituisce lo splitpane delle operazioni / documenti.
+	 * 
+	 * @return lo splitpane delle operazioni / documenti
+	 */
+	public JXSplitPane getMainSplitPane()
+	{
+		if(mainSplitPane == null)
+		{
+			mainSplitPane = new JXSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		}
+		return mainSplitPane;
+	}
+
+	/**
 	 * Restituisce la tabella delle operazioni.
 	 * 
 	 * @return la tabella delle operazioni
@@ -445,6 +480,136 @@ public class JobPanel extends AbstractPanel
 			documentsTable = GreenToneUtilities.createJXTable();
 		}
 		return documentsTable;
+	}
+
+	/**
+	 * Restituisce il pulsante che permette di passare dalla vista a split pane al
+	 * dettaglio del documento selezionato.
+	 * 
+	 * @return il pulsante che permette di passare dalla vista a split pane al
+	 *         dettaglio del documento selezionato
+	 */
+	public JButton getDocumentDetailButton()
+	{
+		if(documentDetailButton == null)
+		{
+			documentDetailButton =
+			  new JButton(getResourceMap().getIcon("viewJob.Action.smallIcon"));
+			/* abilitazione del tasto */
+			documentDetailButton.setEnabled(false);
+			getDocumentsTable().getSelectionModel().addListSelectionListener(
+			  new ListSelectionListener()
+				  {
+					  @Override
+					  public void valueChanged(ListSelectionEvent e)
+					  {
+						  int selectedRow = getDocumentsTable().getSelectedRow();
+						  documentDetailButton.setEnabled(selectedRow > -1);
+					  }
+				  });
+			/* azione del pulsante */
+			documentDetailButton.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						int selectedRow = getDocumentsTable().getSelectedRow();
+						if(selectedRow > -1)
+						{
+							int rowIndexToModel =
+							  getDocumentsTable().convertRowIndexToModel(
+							    getDocumentsTable().getSelectedRow());
+							JPanel documentPanel =
+							  createDocumentPanel(documentsTableModel
+							    .getElementAt(rowIndexToModel));
+							getContentPanel().add(documentPanel, DOCUMENT_PANEL);
+
+							CardLayout cl = (CardLayout) (getContentPanel().getLayout());
+							cl.show(getContentPanel(), DOCUMENT_PANEL);
+						}
+					}
+				});
+		}
+		return documentDetailButton;
+	}
+
+	/**
+	 * Restituisce il pulsante che permette di passare dalla vista a split pane al
+	 * dettaglio dell'operazione selezionata.
+	 * 
+	 * @return il pulsante che permette di passare dalla vista a split pane al
+	 *         dettaglio dell'operazione selezionata
+	 */
+	public JButton getOperationDetailButton()
+	{
+		if(operationDetailButton == null)
+		{
+			operationDetailButton =
+			  new JButton(getResourceMap().getIcon("viewJob.Action.smallIcon"));
+			/* abilitazione del tasto */
+			operationDetailButton.setEnabled(false);
+			getOperationsTable().getSelectionModel().addListSelectionListener(
+			  new ListSelectionListener()
+				  {
+					  @Override
+					  public void valueChanged(ListSelectionEvent e)
+					  {
+						  int selectedRow = getOperationsTable().getSelectedRow();
+						  operationDetailButton.setEnabled(selectedRow > -1);
+					  }
+				  });
+			/* azione del pulsante */
+			operationDetailButton.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						int selectedRow = getOperationsTable().getSelectedRow();
+						if(selectedRow > -1)
+						{
+							int rowIndexToModel =
+							  getOperationsTable().convertRowIndexToModel(
+							    getOperationsTable().getSelectedRow());
+							JPanel operationPanel =
+							  createOperationPanel(operationsTableModel
+							    .getElementAt(rowIndexToModel));
+							getContentPanel().add(operationPanel, OPERATION_PANEL);
+
+							CardLayout cl = (CardLayout) (getContentPanel().getLayout());
+							cl.show(getContentPanel(), OPERATION_PANEL);
+						}
+					}
+				});
+		}
+		return operationDetailButton;
+	}
+
+	/**
+	 * Restituisce il pulsante per tornare alla vista con split pane della scheda.
+	 * 
+	 * @return il pulsante per tornare alla vista con split pane della scheda
+	 */
+	public JButton getBackDetailButton()
+	{
+		if(backDetailButton == null)
+		{
+			backDetailButton =
+			  new JButton(getResourceMap().getIcon(
+			    LOCALIZATION_PREFIX + "zoomOutIcon"));
+			backDetailButton.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						CardLayout cl = (CardLayout) (getContentPanel().getLayout());
+						cl.show(getContentPanel(), GLOBAL_PANEL);
+					}
+				});
+		}
+		return backDetailButton;
 	}
 
 	@Override
@@ -505,7 +670,7 @@ public class JobPanel extends AbstractPanel
 		operations = operationService.getOperationsJob(job);
 		EventList<Operation> operationsEventList = new BasicEventList<Operation>();
 		operationsEventList.addAll(operations);
-		EventJXTableModel<Operation> operationsTableModel =
+		operationsTableModel =
 		  new EventJXTableModel<Operation>(operationsEventList,
 		    new BeanTableFormat<Operation>(Operation.class, operationsProperties,
 		      operationsColumnsNames, operationsWritables));
@@ -516,7 +681,7 @@ public class JobPanel extends AbstractPanel
 		documents = documentService.getDocumentsJob(job);
 		EventList<Document> documentsEventList = new BasicEventList<Document>();
 		documentsEventList.addAll(documents);
-		EventJXTableModel<Document> documentsTableModel =
+		documentsTableModel =
 		  new EventJXTableModel<Document>(documentsEventList,
 		    new BeanTableFormat<Document>(Document.class, documentsProperties,
 		      documentsColumnsNames, documentsWritables));
@@ -538,5 +703,155 @@ public class JobPanel extends AbstractPanel
 	public void setJob(Job job)
 	{
 		this.job = job;
+	}
+
+	protected JPanel createDocumentPanel(Document document)
+	{
+		JPanel documentDetailPanel =
+		  new JPanel(new MigLayout("", "[][10%][][20%][]"));
+
+		JLabel title =
+		  new JLabel(getResourceMap().getString(
+		    LOCALIZATION_PREFIX + "documentDetail"));
+		title.setFont(FontProvider.TITLE_SMALL);
+		documentDetailPanel.add(title);
+		documentDetailPanel.add(getBackDetailButton(), "wrap");
+		documentDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewDocuments.Panel.protocol")),
+		  "gap para");
+		documentDetailPanel.add(new JLabel(document.getProtocol()), "growx, wrap");
+		documentDetailPanel
+		  .add(
+		    new JLabel(getResourceMap()
+		      .getString("viewDocuments.Panel.description")), "gap para");
+		documentDetailPanel.add(new JLabel(document.getDescription()),
+		  "span 2, growx, wrap");
+		documentDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewDocuments.Panel.isDigital")),
+		  "gap para");
+		if(document.getIsDigital())
+		{
+			documentDetailPanel.add(new JLabel(getResourceMap().getString(
+			  LOCALIZATION_PREFIX + "yes")));
+			documentDetailPanel.add(
+			  new JLabel(getResourceMap().getString("viewDocuments.Panel.file")),
+			  "gap para");
+			JEditorPane filePathField = new JEditorPane();
+			filePathField.setForeground(Color.blue);
+			filePathField.setText(document.getUri());
+			documentDetailPanel.add(filePathField, "growx");
+		}
+		else
+		{
+			documentDetailPanel.add(new JLabel(getResourceMap().getString(
+			  LOCALIZATION_PREFIX + "no")));
+		}
+		documentDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewDocuments.Panel.date")),
+		  "gap para");
+		documentDetailPanel.add(
+		  new JLabel(GreenToneUtilities.formatDateTime(document.getReleaseDate())),
+		  "growx, wrap");
+		documentDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewDocuments.Panel.outgoing")),
+		  "gap para");
+		if(document.getIsOutgoing())
+		{
+			documentDetailPanel.add(new JLabel(getResourceMap().getString(
+			  LOCALIZATION_PREFIX + "yes")));
+			documentDetailPanel.add(new JLabel(getResourceMap().getString(
+			  "viewDocuments.Panel.recipient")));
+		}
+		else
+		{
+			documentDetailPanel.add(new JLabel(getResourceMap().getString(
+			  LOCALIZATION_PREFIX + "no")));
+			documentDetailPanel.add(new JLabel(getResourceMap().getString(
+			  "viewDocuments.Panel.sender")));
+		}
+		documentDetailPanel.add(new JLabel(document.getRecipient() != null
+		  ? document.getRecipient().toString()
+		  : ""), "growx, wrap");
+		documentDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewDocuments.Panel.notes")),
+		  "gap para");
+		JTextArea ta = new JTextArea(5, 50);
+		ta.setText(document.getNotes());
+		documentDetailPanel.add(new JScrollPane(ta), "span, growx, wrap");
+
+		return documentDetailPanel;
+	}
+
+	protected JPanel createOperationPanel(Operation operation)
+	{
+		JPanel operationDetailPanel =
+		  new JPanel(new MigLayout("", "[][10%][][10%][][10%]"));
+
+		JLabel title =
+		  new JLabel(getResourceMap().getString(
+		    LOCALIZATION_PREFIX + "operationDetail"));
+		title.setFont(FontProvider.TITLE_SMALL);
+		operationDetailPanel.add(title);
+		operationDetailPanel.add(getBackDetailButton(), "wrap");
+		operationDetailPanel
+		  .add(
+		    new JLabel(getResourceMap().getString(
+		      "viewOperations.Panel.description")), "gap para");
+		operationDetailPanel.add(new JLabel(operation.getDescription()),
+		  "span 3, growx, wrap");
+		operationDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewOperations.Panel.type")),
+		  "gap para");
+		operationDetailPanel.add(new JLabel(operation.getOperationType()
+		  .getLocalizedName()), "growx, wrap");
+		operationDetailPanel
+		  .add(
+		    new JLabel(getResourceMap().getString(
+		      "viewOperations.Panel.isVacazione")), "gap para");
+		if(operation.getIsVacazione())
+		{
+			operationDetailPanel.add(
+			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "yes")),
+			  "growx");
+			if(operation.getIsProfessionalVacazione())
+			{
+				operationDetailPanel.add(
+				  new JLabel(getResourceMap().getString(
+				    "viewOperations.Panel.isProfessionalVacazione")), "gap para");
+				operationDetailPanel.add(
+				  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "yes")),
+				  "growx, wrap");
+			}
+		}
+		else
+		{
+			operationDetailPanel.add(
+			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "no")),
+			  "growx");
+		}
+		operationDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewOperations.Panel.date")),
+		  "gap para");
+		operationDetailPanel.add(
+		  new JLabel(
+		    GreenToneUtilities.formatDateTime(operation.getOperationDate())),
+		  "growx");
+		if(operation.getIsVacazione())
+		{
+			operationDetailPanel
+			  .add(
+			    new JLabel(getResourceMap().getString(
+			      "viewOperations.Panel.vacazioni")), "growx");
+			operationDetailPanel.add(new JLabel(operation.getNumVacazioni() + ""),
+			  "gap para");
+		}
+		operationDetailPanel.add(
+		  new JLabel(getResourceMap().getString("viewOperations.Panel.amount")),
+		  "gap para");
+		Double amount = operation.getAmount();
+		operationDetailPanel.add(new JLabel(amount != null? amount.toString(): ""),
+		  "growx");
+
+		return operationDetailPanel;
 	}
 }

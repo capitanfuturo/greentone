@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="lib/bin/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/bin/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/bin/miglayout-4.0-swing.jar"/>
-	<classpathentry kind="lib" path="lib/bin/glazedlists-1.8.0_java15.jar"/>
+	<classpathentry kind="lib" path="lib/bin/glazedlists-1.8.0_java15.jar" sourcepath="lib/src/glazedlists-1.8.0-source_java15.zip"/>
 	<classpathentry kind="lib" path="lib/bin/jasperreports-4.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/bin/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/bin/commons-digester-1.7.jar"/>
