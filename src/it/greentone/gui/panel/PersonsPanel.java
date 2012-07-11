@@ -57,8 +57,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class PersonsPanel extends ContextualPanel<Person>
-{
+public class PersonsPanel extends ContextualPanel<Person> {
 	private static final String LOCALIZATION_PREFIX = "viewPersons.Panel.";
 	@Inject
 	private ActionProvider actionProvider;
@@ -103,65 +102,33 @@ public class PersonsPanel extends ContextualPanel<Person>
 	/**
 	 * Pannello di gestione delle persone in anagrafica.
 	 */
-	public PersonsPanel()
-	{
+	public PersonsPanel() {
 		super();
 		panelBundle = "viewPersons";
 
-		properties =
-		  new String[] {"name", "address", "city", "province", "cap", "isLegal",
-		    "cf", "piva", "identityCard", "telephone1", "telephone2", "fax",
-		    "email"};
-		columnsNames =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.name"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.address"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.province"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cap"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isLegal"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cf"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.piva"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.identityCard"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone1"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone2"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.fax"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.email")};
-		writables =
-		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false, false, false, false, false};
+		properties = new String[] { "name", "address", "city", "province", "cap", "isLegal", "cf", "piva", "identityCard", "telephone1", "telephone2", "fax", "email" };
+		columnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.name"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.address"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.province"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cap"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isLegal"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cf"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.piva"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.identityCard"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone1"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone2"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.fax"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.email") };
+		writables = new boolean[] { false, false, false, false, false, false, false, false, false, false, false, false, false };
 	}
 
 	@Override
-	public JPanel createHeaderPanel()
-	{
-		JLabel addressLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
-		JLabel cityLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
-		JLabel provinceLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
-		JLabel capLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cap"));
-		JLabel telephone1Label =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone1"));
-		JLabel telephone2Label =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone2"));
-		JLabel faxLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "fax"));
-		JLabel emailLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "email"));
-		JLabel isLegalLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isLegal"));
-		JLabel identityCardLabel =
-		  new JLabel(getResourceMap().getString(
-		    LOCALIZATION_PREFIX + "identityCard"));
-		JLabel requiredLabel =
-		  new JLabel(getResourceMap().getString(
-		    LOCALIZATION_PREFIX + "requiredField"));
+	public JPanel createHeaderPanel() {
+		JLabel addressLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
+		JLabel cityLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
+		JLabel provinceLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
+		JLabel capLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cap"));
+		JLabel telephone1Label = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone1"));
+		JLabel telephone2Label = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone2"));
+		JLabel faxLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "fax"));
+		JLabel emailLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "email"));
+		JLabel isLegalLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isLegal"));
+		JLabel identityCardLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "identityCard"));
+		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
 
-		JPanel headerPanel =
-		  new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]"));
+		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]"));
 
 		headerPanel.add(isLegalLabel, "gap para");
 		headerPanel.add(getIsLegalCheckBox(), "wrap");
@@ -202,13 +169,9 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return l'etichetta della ragione sociale
 	 */
-	public JLabel getNameLabel()
-	{
-		if(nameLabel == null)
-		{
-			nameLabel =
-			  new JLabel(getResourceMap().getString(
-			    LOCALIZATION_PREFIX + "surnameName"));
+	public JLabel getNameLabel() {
+		if (nameLabel == null) {
+			nameLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
 		}
 		return nameLabel;
 	}
@@ -218,39 +181,31 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento del nome
 	 */
-	public JTextField getNameTextField()
-	{
-		if(nameTextField == null)
-		{
+	public JTextField getNameTextField() {
+		if (nameTextField == null) {
 			nameTextField = new JTextField();
 			registerComponent(nameTextField);
-			nameTextField.getDocument().addDocumentListener(new DocumentListener()
-				{
+			nameTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-					@Override
-					public void removeUpdate(DocumentEvent e)
-					{
-						toogleAction();
-					}
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					@Override
-					public void insertUpdate(DocumentEvent e)
-					{
-						toogleAction();
-					}
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					@Override
-					public void changedUpdate(DocumentEvent e)
-					{
-						toogleAction();
-					}
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					private void toogleAction()
-					{
-						savePersonAction.setSavePersonActionEnabled(GreenToneUtilities
-						  .getText(nameTextField) != null);
-					}
-				});
+				private void toogleAction() {
+					savePersonAction.setSavePersonActionEnabled(GreenToneUtilities.getText(nameTextField) != null);
+				}
+			});
 		}
 		return nameTextField;
 	}
@@ -260,10 +215,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento della descrizione
 	 */
-	public JTextField getAddressTextField()
-	{
-		if(addressTextField == null)
-		{
+	public JTextField getAddressTextField() {
+		if (addressTextField == null) {
 			addressTextField = new JTextField();
 			registerComponent(addressTextField);
 		}
@@ -275,10 +228,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento della città
 	 */
-	public JTextField getCityTextField()
-	{
-		if(cityTextField == null)
-		{
+	public JTextField getCityTextField() {
+		if (cityTextField == null) {
 			cityTextField = new JTextField();
 			registerComponent(cityTextField);
 		}
@@ -291,10 +242,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento della provincia
 	 */
-	public JTextField getProvinceTextField()
-	{
-		if(provinceTextField == null)
-		{
+	public JTextField getProvinceTextField() {
+		if (provinceTextField == null) {
 			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("UU");
 			provinceTextField = new JFormattedTextField(mf);
 			registerComponent(provinceTextField);
@@ -308,10 +257,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento del codice di avviamento postale
 	 */
-	public JTextField getCapTextField()
-	{
-		if(capTextField == null)
-		{
+	public JTextField getCapTextField() {
+		if (capTextField == null) {
 			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("#####");
 			capTextField = new JFormattedTextField(mf);
 			registerComponent(capTextField);
@@ -335,41 +282,30 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento del codice fiscale
 	 */
-	public JFormattedTextField getCfTexField()
-	{
-		if(cfTextField == null)
-		{
-			final MaskFormatter mf =
-			  GreenToneUtilities.createMaskFormatter("UUUUUU##U##U###U");
+	public JFormattedTextField getCfTexField() {
+		if (cfTextField == null) {
+			final MaskFormatter mf = GreenToneUtilities.createMaskFormatter("UUUUUU##U##U###U");
 			cfTextField = new JFormattedTextField(mf);
 			/*
 			 * Issue 25: se è obbligatorio il codice fiscale, flag legale non
-			 * impostato, allora in caso di malformattazione del codice fiscale far
-			 * comparire un popup che spiega il problema
+			 * impostato, allora in caso di malformattazione del codice fiscale
+			 * far comparire un popup che spiega il problema
 			 */
-			cfTextField.addFocusListener(new FocusAdapter()
-				{
+			cfTextField.addFocusListener(new FocusAdapter() {
 
-					@Override
-					public void focusLost(FocusEvent e)
-					{
-						try
-						{
-							if(!getIsLegalCheckBox().isSelected())
-							{
-								if(mf.stringToValue(cfTextField.getText()) == null)
-								{
-									showCFMessageDialog();
-								}
+				@Override
+				public void focusLost(FocusEvent e) {
+					try {
+						if (!getIsLegalCheckBox().isSelected()) {
+							if (mf.stringToValue(cfTextField.getText()) == null) {
+								showCFMessageDialog();
 							}
 						}
-						catch(Exception e1)
-						{
-							logger.getLogger().info(
-							  getResourceMap().getString("ErrorMessage.parsingValue"));
-						}
+					} catch (Exception e1) {
+						logger.getLogger().info(getResourceMap().getString("ErrorMessage.parsingValue"));
 					}
-				});
+				}
+			});
 			registerComponent(cfTextField);
 		}
 		return cfTextField;
@@ -381,10 +317,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento della partita IVA
 	 */
-	public JTextField getPivaTextField()
-	{
-		if(pivaTextField == null)
-		{
+	public JTextField getPivaTextField() {
+		if (pivaTextField == null) {
 			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("###########");
 			pivaTextField = new JFormattedTextField(mf);
 			registerComponent(pivaTextField);
@@ -397,10 +331,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento del telefono principale
 	 */
-	public JTextField getTelephone1TextField()
-	{
-		if(telephone1TextField == null)
-		{
+	public JTextField getTelephone1TextField() {
+		if (telephone1TextField == null) {
 			telephone1TextField = new JTextField();
 			registerComponent(telephone1TextField);
 		}
@@ -412,10 +344,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento del telefono secondario
 	 */
-	public JTextField getTelephone2TextField()
-	{
-		if(telephone2TextField == null)
-		{
+	public JTextField getTelephone2TextField() {
+		if (telephone2TextField == null) {
 			telephone2TextField = new JTextField();
 			registerComponent(telephone2TextField);
 		}
@@ -427,10 +357,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento del fax
 	 */
-	public JTextField getFaxTextField()
-	{
-		if(faxTextField == null)
-		{
+	public JTextField getFaxTextField() {
+		if (faxTextField == null) {
 			faxTextField = new JTextField();
 			registerComponent(faxTextField);
 		}
@@ -442,10 +370,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di inserimento dell'indirizzo mail
 	 */
-	public JTextField getEmailTextField()
-	{
-		if(emailTextField == null)
-		{
+	public JTextField getEmailTextField() {
+		if (emailTextField == null) {
 			emailTextField = new JTextField();
 			registerComponent(emailTextField);
 		}
@@ -457,19 +383,15 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il flag che marca una persona come legale
 	 */
-	public JCheckBox getIsLegalCheckBox()
-	{
-		if(isLegalCheckBox == null)
-		{
+	public JCheckBox getIsLegalCheckBox() {
+		if (isLegalCheckBox == null) {
 			isLegalCheckBox = new JCheckBox();
-			isLegalCheckBox.addActionListener(new ActionListener()
-				{
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						toggleNameLabel();
-					}
-				});
+			isLegalCheckBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					toggleNameLabel();
+				}
+			});
 			registerComponent(isLegalCheckBox);
 		}
 		return isLegalCheckBox;
@@ -480,10 +402,8 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * 
 	 * @return il campo di numero di carta di identità
 	 */
-	public JTextField getIdentityCardTextField()
-	{
-		if(identityCardTextField == null)
-		{
+	public JTextField getIdentityCardTextField() {
+		if (identityCardTextField == null) {
 			identityCardTextField = new JTextField();
 			registerComponent(identityCardTextField);
 		}
@@ -491,8 +411,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	@Override
-	public String getBundleName()
-	{
+	public String getBundleName() {
 		return panelBundle;
 	}
 
@@ -500,71 +419,47 @@ public class PersonsPanel extends ContextualPanel<Person>
 	 * Mostra una finestra di dialogo che informa come inserire il campo codice
 	 * fiscale.
 	 */
-	private void showCFMessageDialog()
-	{
-		JOptionPane.showMessageDialog(this,
-		  getResourceMap().getString(LOCALIZATION_PREFIX + "cfMessage"),
-		  getResourceMap().getString(LOCALIZATION_PREFIX + "infoTitle"),
-		  JOptionPane.INFORMATION_MESSAGE);
+	private void showCFMessageDialog() {
+		JOptionPane.showMessageDialog(this, getResourceMap().getString(LOCALIZATION_PREFIX + "cfMessage"), getResourceMap().getString(LOCALIZATION_PREFIX + "infoTitle"), JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	@Override
-	protected void clearForm()
-	{
+	protected void clearForm() {
 		super.clearForm();
 		toggleNameLabel();
 	}
 
-	private void toggleNameLabel()
-	{
-		if(getIsLegalCheckBox().isSelected())
-		{
-			getNameLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
-			getCfLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + ":");
-			getPivaLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + " *:");
-		}
-		else
-		{
-			getNameLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
-			getCfLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + " *:");
-			getPivaLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + ":");
+	private void toggleNameLabel() {
+		if (getIsLegalCheckBox().isSelected()) {
+			getNameLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
+			getCfLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + ":");
+			getPivaLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + " *:");
+		} else {
+			getNameLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
+			getCfLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + " *:");
+			getPivaLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + ":");
 		}
 	}
 
-	private JLabel getCfLabel()
-	{
-		if(cfLabel == null)
-			cfLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cf")
-			    + " *:");
+	private JLabel getCfLabel() {
+		if (cfLabel == null)
+			cfLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + " *:");
 		return cfLabel;
 	}
 
-	private JLabel getPivaLabel()
-	{
-		if(pivaLabel == null)
-			pivaLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva")
-			    + ":");
+	private JLabel getPivaLabel() {
+		if (pivaLabel == null)
+			pivaLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + ":");
 		return pivaLabel;
 	}
 
 	@Override
-	public Person getItemFromTableRow(int rowIndex)
-	{
-		int rowIndexToModel = getContentTable().convertRowIndexToModel(rowIndex);
-		return personService.getAllPersons().get(rowIndexToModel);
+	public Person getItemFromTableRow(int rowIndex) {
+		return personService.getAllPersons().get(rowIndex);
 	}
 
 	@Override
-	public void initializeToolBar()
-	{
+	public void initializeToolBar() {
 		getContextualToolBar().add(actionProvider.getAddPerson());
 		getContextualToolBar().add(actionProvider.getSavePerson());
 		getContextualToolBar().add(actionProvider.getDeletePerson());
@@ -574,21 +469,16 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	@Override
-	public void populateModel()
-	{
+	public void populateModel() {
 		viewReportsAction.setup(personReportsCategory);
 		/* aggiorno la tabella delle persone in anagrafica */
-		tableModel =
-		  new EventJXTableModel<Person>(personService.getAllPersons(),
-		    new BeanTableFormat<Person>(Person.class, properties, columnsNames,
-		      writables));
+		tableModel = new EventJXTableModel<Person>(personService.getAllPersons(), new BeanTableFormat<Person>(Person.class, properties, columnsNames, writables));
 		getContentTable().setModel(tableModel);
 		getContentTable().setSortOrder(0, SortOrder.ASCENDING);
 	}
 
 	@Override
-	public void initializeForEditing()
-	{
+	public void initializeForEditing() {
 		super.initializeForEditing();
 		getNameTextField().setText(getSelectedItem().getName());
 		getAddressTextField().setText(getSelectedItem().getAddress());
@@ -608,8 +498,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	@Override
-	public void tableSelectionHook()
-	{
+	public void tableSelectionHook() {
 		super.tableSelectionHook();
 		/* abilito le azioni legate alla selezione */
 		deletePersonAction.setDeletePersonActionEnabled(true);
@@ -621,8 +510,7 @@ public class PersonsPanel extends ContextualPanel<Person>
 	}
 
 	@Override
-	public void tableSelectionLostHook()
-	{
+	public void tableSelectionLostHook() {
 		super.tableSelectionLostHook();
 		/* disabilito le azioni legate alla selezione */
 		deletePersonAction.setDeletePersonActionEnabled(false);
