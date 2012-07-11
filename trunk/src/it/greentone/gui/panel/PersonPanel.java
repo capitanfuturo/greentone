@@ -7,15 +7,22 @@ import it.greentone.persistence.JobService;
 import it.greentone.persistence.Person;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 
 import javax.inject.Inject;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SortOrder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -49,8 +56,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class PersonPanel extends AbstractPanel
-{
+public class PersonPanel extends AbstractPanel {
 	@Inject
 	private JobService jobService;
 
@@ -75,50 +81,43 @@ public class PersonPanel extends AbstractPanel
 	private JLabel faxLabel;
 	private JLabel emailLabel;
 	private JLabel identityCardLabel;
+	private JButton backDetailButton;
+	private JButton jobDetailButton;
+	private JPanel contentPanel;
+	private static final String GLOBAL_PANEL = "GLOBAL_PANEL";
+	private static final String JOB_PANEL = "JOB_PANEL";
+
+	private EventJXTableModel<Job> jobsTableModel;
 
 	/**
 	 * Pannello di riepilogo di un cliente. Mostra i dati di testata e gli
 	 * incarichi del cliente oggetto del pannello.
 	 */
-	public PersonPanel()
-	{
-		jobsProperties =
-		  new String[] {"protocol", "manager", "city", "description", "dueDate",
-		    "startDate", "finishDate", "category", "status", "notes"};
-		jobsColumnsNames =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.startDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.finishDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.category"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.status"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
-		jobsWritables =
-		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false, false};
+	public PersonPanel() {
+		jobsProperties = new String[] { "protocol", "manager", "description", "dueDate", "status" };
+		jobsColumnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.status") };
+		jobsWritables = new boolean[] { false, false, false, false, false };
 
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(getToolBar(), BorderLayout.NORTH);
 		northPanel.add(getHeaderPanel(), BorderLayout.CENTER);
 
-		JPanel contentPanel = new JPanel(new BorderLayout());
+		JPanel jobHeaderPanel = new JPanel(new MigLayout());
+		JLabel jobsLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobs"));
+		jobsLabel.setFont(FontProvider.TITLE_SMALL);
+		jobHeaderPanel.add(jobsLabel);
+		jobHeaderPanel.add(getJobDetailButton());
 
 		JPanel jobsPanel = new JPanel(new BorderLayout());
-		JLabel jobsLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobs"));
-		jobsLabel.setFont(FontProvider.TITLE_SMALL);
-		jobsPanel.add(jobsLabel, BorderLayout.NORTH);
+		jobsPanel.add(jobHeaderPanel, BorderLayout.NORTH);
 		jobsPanel.add(new JScrollPane(getJobsTable()), BorderLayout.CENTER);
 
-		contentPanel.add(jobsPanel, BorderLayout.CENTER);
+		getContentPanel().add(jobsPanel, GLOBAL_PANEL);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(northPanel, BorderLayout.NORTH);
-		mainPanel.add(contentPanel, BorderLayout.CENTER);
+		mainPanel.add(getContentPanel(), BorderLayout.CENTER);
 		mainPanel.setPreferredSize(new Dimension(800, 600));
 		setLayout(new BorderLayout());
 		add(mainPanel);
@@ -129,10 +128,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return la tabella dei documenti
 	 */
-	public JXTable getJobsTable()
-	{
-		if(jobsTable == null)
-		{
+	public JXTable getJobsTable() {
+		if (jobsTable == null) {
 			jobsTable = GreenToneUtilities.createJXTable();
 		}
 		return jobsTable;
@@ -143,10 +140,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return la toolbar
 	 */
-	public JToolBar getToolBar()
-	{
-		if(toolBar == null)
-		{
+	public JToolBar getToolBar() {
+		if (toolBar == null) {
 			toolBar = new JToolBar();
 			toolBar.setFloatable(false);
 		}
@@ -158,41 +153,23 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il pannello di testata
 	 */
-	public JPanel getHeaderPanel()
-	{
-		if(headerPanel == null)
-		{
-			JLabel titleLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+	public JPanel getHeaderPanel() {
+		if (headerPanel == null) {
+			JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
 			titleLabel.setFont(FontProvider.TITLE_SMALL);
-			JLabel addressLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
-			JLabel cityLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
-			JLabel provinceLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
-			JLabel capLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cap"));
-			JLabel cfLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cf"));
-			JLabel pivaLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva"));
-			JLabel telephone1Label =
-			  new JLabel(getResourceMap().getString(
-			    LOCALIZATION_PREFIX + "telephone1"));
-			JLabel telephone2Label =
-			  new JLabel(getResourceMap().getString(
-			    LOCALIZATION_PREFIX + "telephone2"));
-			JLabel faxLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "fax"));
-			JLabel emailLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "email"));
-			JLabel identityCardLabel =
-			  new JLabel(getResourceMap().getString(
-			    LOCALIZATION_PREFIX + "identityCard"));
+			JLabel addressLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
+			JLabel cityLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
+			JLabel provinceLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
+			JLabel capLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cap"));
+			JLabel cfLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cf"));
+			JLabel pivaLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva"));
+			JLabel telephone1Label = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone1"));
+			JLabel telephone2Label = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone2"));
+			JLabel faxLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "fax"));
+			JLabel emailLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "email"));
+			JLabel identityCardLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "identityCard"));
 
-			headerPanel =
-			  new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]"));
+			headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]"));
 
 			headerPanel.add(titleLabel, "wrap");
 
@@ -232,10 +209,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo della ragione sociale
 	 */
-	public JLabel getNameField()
-	{
-		if(nameField == null)
-		{
+	public JLabel getNameField() {
+		if (nameField == null) {
 			nameField = new JLabel();
 		}
 		return nameField;
@@ -246,10 +221,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo dell'indirizzo
 	 */
-	public JLabel getAddressLabel()
-	{
-		if(addressLabel == null)
-		{
+	public JLabel getAddressLabel() {
+		if (addressLabel == null) {
 			addressLabel = new JLabel();
 		}
 		return addressLabel;
@@ -260,10 +233,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo della città
 	 */
-	public JLabel getCityLabel()
-	{
-		if(cityLabel == null)
-		{
+	public JLabel getCityLabel() {
+		if (cityLabel == null) {
 			cityLabel = new JLabel();
 		}
 		return cityLabel;
@@ -274,10 +245,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo della provincia
 	 */
-	public JLabel getProvinceLabel()
-	{
-		if(provinceLabel == null)
-		{
+	public JLabel getProvinceLabel() {
+		if (provinceLabel == null) {
 			provinceLabel = new JLabel();
 		}
 		return provinceLabel;
@@ -288,10 +257,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo del CAP
 	 */
-	public JLabel getCapLabel()
-	{
-		if(capLabel == null)
-		{
+	public JLabel getCapLabel() {
+		if (capLabel == null) {
 			capLabel = new JLabel();
 		}
 		return capLabel;
@@ -302,10 +269,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo del codice fiscale
 	 */
-	public JLabel getCfLabel()
-	{
-		if(cfLabel == null)
-		{
+	public JLabel getCfLabel() {
+		if (cfLabel == null) {
 			cfLabel = new JLabel();
 		}
 		return cfLabel;
@@ -316,10 +281,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo della partita IVA
 	 */
-	public JLabel getPivaLabel()
-	{
-		if(pivaLabel == null)
-		{
+	public JLabel getPivaLabel() {
+		if (pivaLabel == null) {
 			pivaLabel = new JLabel();
 		}
 		return pivaLabel;
@@ -330,10 +293,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo della carta di identità di riferimento
 	 */
-	public JLabel getIdentityCardLabel()
-	{
-		if(identityCardLabel == null)
-		{
+	public JLabel getIdentityCardLabel() {
+		if (identityCardLabel == null) {
 			identityCardLabel = new JLabel();
 		}
 		return identityCardLabel;
@@ -344,10 +305,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo del telefono principale
 	 */
-	public JLabel getTelephone1Label()
-	{
-		if(telephone1Label == null)
-		{
+	public JLabel getTelephone1Label() {
+		if (telephone1Label == null) {
 			telephone1Label = new JLabel();
 		}
 		return telephone1Label;
@@ -358,10 +317,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo del telefono secondario
 	 */
-	public JLabel getTelephone2Label()
-	{
-		if(telephone2Label == null)
-		{
+	public JLabel getTelephone2Label() {
+		if (telephone2Label == null) {
 			telephone2Label = new JLabel();
 		}
 		return telephone2Label;
@@ -372,10 +329,8 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo del FAX
 	 */
-	public JLabel getFaxLabel()
-	{
-		if(faxLabel == null)
-		{
+	public JLabel getFaxLabel() {
+		if (faxLabel == null) {
 			faxLabel = new JLabel();
 		}
 		return faxLabel;
@@ -386,53 +341,145 @@ public class PersonPanel extends AbstractPanel
 	 * 
 	 * @return il campo della email
 	 */
-	public JLabel getEmailLabel()
-	{
-		if(emailLabel == null)
-		{
+	public JLabel getEmailLabel() {
+		if (emailLabel == null) {
 			emailLabel = new JLabel();
 		}
 		return emailLabel;
 	}
-
 
 	/**
 	 * Restituisce l'etichetta della ragione sociale.
 	 * 
 	 * @return l'etichetta della ragione sociale
 	 */
-	public JLabel getNameLabel()
-	{
-		if(nameLabel == null)
-		{
-			nameLabel =
-			  new JLabel(getResourceMap().getString(
-			    LOCALIZATION_PREFIX + "surnameName"));
+	public JLabel getNameLabel() {
+		if (nameLabel == null) {
+			nameLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
 		}
 		return nameLabel;
 	}
 
+	/**
+	 * Restituisce il pannello sottostante che raccoglie i contenuti
+	 * dell'incarico.
+	 * 
+	 * @return il pannello sottostante che raccoglie i contenuti dell'incarico
+	 */
+	public JPanel getContentPanel() {
+		if (contentPanel == null) {
+			contentPanel = new JPanel(new CardLayout());
+		}
+		return contentPanel;
+	}
+
+	/**
+	 * Restituisce il pulsante per tornare alla vista con gli incarichi della
+	 * scheda.
+	 * 
+	 * @return il pulsante per tornare alla vista con gli incarichi della scheda
+	 */
+	public JButton getBackDetailButton() {
+		if (backDetailButton == null) {
+			backDetailButton = new JButton(getResourceMap().getIcon(LOCALIZATION_PREFIX + "zoomOutIcon"));
+			backDetailButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					CardLayout cl = (CardLayout) (getContentPanel().getLayout());
+					cl.show(getContentPanel(), GLOBAL_PANEL);
+				}
+			});
+		}
+		return backDetailButton;
+	}
+
+	/**
+	 * Restituisce il pulsante che permette di passare dalla vista tabellare al
+	 * dettaglio dell'incarico selezionato.
+	 * 
+	 * @return il pulsante che permette di passare dalla vista tabellare al
+	 *         dettaglio dell'incarico selezionato
+	 */
+	public JButton getJobDetailButton() {
+		if (jobDetailButton == null) {
+			jobDetailButton = new JButton(getResourceMap().getIcon("viewJob.Action.smallIcon"));
+			/* abilitazione del tasto */
+			jobDetailButton.setEnabled(false);
+			getJobsTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					int selectedRow = getJobsTable().getSelectedRow();
+					jobDetailButton.setEnabled(selectedRow > -1);
+				}
+			});
+			/* azione del pulsante */
+			jobDetailButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int selectedRow = getJobsTable().getSelectedRow();
+					if (selectedRow > -1) {
+						int rowIndexToModel = getJobsTable().convertRowIndexToModel(getJobsTable().getSelectedRow());
+						JPanel operationPanel = createJobPanel(jobsTableModel.getElementAt(rowIndexToModel));
+						getContentPanel().add(operationPanel, JOB_PANEL);
+
+						CardLayout cl = (CardLayout) (getContentPanel().getLayout());
+						cl.show(getContentPanel(), JOB_PANEL);
+					}
+				}
+			});
+		}
+		return jobDetailButton;
+	}
+
+	JPanel createJobPanel(Job job) {
+		JPanel jobPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%]"));
+
+		JLabel title = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobDetail"));
+		title.setFont(FontProvider.TITLE_SMALL);
+		jobPanel.add(title);
+		jobPanel.add(getBackDetailButton(), "wrap");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.protocol")), "gap para");
+		jobPanel.add(new JLabel(job.getProtocol()), "growx, wrap");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.manager")), "gap para");
+		jobPanel.add(new JLabel(job.getManager() != null ? job.getManager().toString() : ""), "growx");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.city")), "gap para");
+		jobPanel.add(new JLabel(job.getCity()), "growx,wrap");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.description")), "gap para");
+		jobPanel.add(new JLabel(job.getDescription()), "span, growx, wrap");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.dueDate")), "gap para");
+		jobPanel.add(new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate())), "growx");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.startDate")), "gap para");
+		jobPanel.add(new JLabel(GreenToneUtilities.formatDateTime(job.getStartDate())), "growx");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.finishDate")), "gap para");
+		jobPanel.add(new JLabel(GreenToneUtilities.formatDateTime(job.getFinishDate())), "growx, wrap");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.category")), "gap para");
+		jobPanel.add(new JLabel(job.getCategory() != null ? job.getCategory().getName() : ""), "growx");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.status")), "gap para");
+		jobPanel.add(new JLabel(job.getStatus().getLocalizedName()), "growx, wrap");
+		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.notes")), "gap para");
+		JTextArea notesTextArea = new JTextArea(5, 50);
+		notesTextArea.setText(job.getNotes());
+		jobPanel.add(notesTextArea, "span, growx, wrap");
+
+		return jobPanel;
+	}
+
 	@Override
-	public String getBundleName()
-	{
+	public String getBundleName() {
 		return "viewPerson";
 	}
 
 	@Override
-	public void setup()
-	{
+	public void setup() {
 		super.setup();
 
 		/* informazioni di testata */
-		if(person.getIsLegal())
-		{
-			getNameLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
-		}
-		else
-		{
-			getNameLabel().setText(
-			  getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
+		if (person.getIsLegal()) {
+			getNameLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
+		} else {
+			getNameLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
 		}
 		getNameField().setText(person.getName());
 		getAddressLabel().setText(person.getAddress());
@@ -450,10 +497,7 @@ public class PersonPanel extends AbstractPanel
 		Collection<Job> jobs = jobService.getJobsAsCustomer(person);
 		EventList<Job> jobsEventList = new BasicEventList<Job>();
 		jobsEventList.addAll(jobs);
-		EventJXTableModel<Job> jobsTableModel =
-		  new EventJXTableModel<Job>(jobService.getAllJobs(),
-		    new BeanTableFormat<Job>(Job.class, jobsProperties, jobsColumnsNames,
-		      jobsWritables));
+		jobsTableModel = new EventJXTableModel<Job>(jobsEventList, new BeanTableFormat<Job>(Job.class, jobsProperties, jobsColumnsNames, jobsWritables));
 		getJobsTable().setModel(jobsTableModel);
 		getJobsTable().setSortOrder(0, SortOrder.DESCENDING);
 	}
@@ -462,10 +506,9 @@ public class PersonPanel extends AbstractPanel
 	 * Imposta la persona oggetto del pannello.
 	 * 
 	 * @param person
-	 *          la persona oggetto del pannello
+	 *            la persona oggetto del pannello
 	 */
-	public void setPerson(Person person)
-	{
+	public void setPerson(Person person) {
 		this.person = person;
 	}
 }
