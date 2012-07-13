@@ -4,6 +4,7 @@ import it.greentone.GreenTone;
 import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.ModelEventManager;
 import it.greentone.gui.panel.AbstractPanel.EStatus;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
@@ -45,8 +46,7 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class SaveDocumentAction extends AbstractBean
-{
+public class SaveDocumentAction extends AbstractBean {
 	@Inject
 	private DocumentsPanel documentsPanel;
 	@Inject
@@ -55,32 +55,27 @@ public class SaveDocumentAction extends AbstractBean
 	private GreenToneLogProvider logger;
 	@Inject
 	private GreenToneUtilities utilities;
+	@Inject
+	private ModelEventManager modelEventManager;
 	private final ResourceMap resourceMap;
 	boolean saveDocumentActionEnabled = false;
 
 	/**
 	 * Salva un documento.
 	 */
-	public SaveDocumentAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public SaveDocumentAction() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
 	}
 
 	/**
 	 * Salva un documento.
 	 */
 	@Action(enabledProperty = "saveDocumentActionEnabled")
-	public void saveDocument()
-	{
+	public void saveDocument() {
 		/* controllo che la data inserita non sia nel futuro */
-		DateTime releaseDate =
-		  GreenToneUtilities.getDateTime(documentsPanel.getReleaseDateDatePicker());
-		if(releaseDate != null && releaseDate.isAfterNow())
-		{
-			JOptionPane.showMessageDialog(documentsPanel,
-			  resourceMap.getString("saveDocument.Action.dateAfterNowMessage"),
-			  resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
+		DateTime releaseDate = GreenToneUtilities.getDateTime(documentsPanel.getReleaseDateDatePicker());
+		if (releaseDate != null && releaseDate.isAfterNow()) {
+			JOptionPane.showMessageDialog(documentsPanel, resourceMap.getString("saveDocument.Action.dateAfterNowMessage"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -88,58 +83,49 @@ public class SaveDocumentAction extends AbstractBean
 		 * se si tratta di una nuova entry creo un nuovo documento altrimenti
 		 * modifico quella selezionata
 		 */
-		Document document =
-		  documentsPanel.getStatus() == EStatus.EDIT? documentsPanel
-		    .getSelectedItem(): new Document();
+		Document document = documentsPanel.getStatus() == EStatus.EDIT ? documentsPanel.getSelectedItem() : new Document();
 		/* compilo il bean */
-		document.setDescription(GreenToneUtilities.getText(documentsPanel
-		  .getDescriptionTextField()));
+		document.setDescription(GreenToneUtilities.getText(documentsPanel.getDescriptionTextField()));
 		document.setIsDigital(documentsPanel.getIsDigitalCheckBox().isSelected());
 		document.setIsOutgoing(documentsPanel.getOutgoingCheckBox().isSelected());
 		document.setJob((Job) documentsPanel.getJobComboBox().getSelectedItem());
 		document.setNotes(documentsPanel.getNotesTextArea().getText());
-		document.setProtocol(GreenToneUtilities.getText(documentsPanel
-		  .getProtocolTextField()));
-		document.setRecipient((Person) documentsPanel.getRecipientComboBox()
-		  .getSelectedItem());
+		String protocol = GreenToneUtilities.getText(documentsPanel.getProtocolTextField());
+		document.setProtocol(protocol);
+		document.setRecipient((Person) documentsPanel.getRecipientComboBox().getSelectedItem());
 		document.setReleaseDate(releaseDate);
 
+		/* salvataggio dei file */
 		String oldUri = document.getUri();
 		File file = documentsPanel.getFile();
 		String newUri = null;
 
-		try
-		{
+		try {
 			/* caso nessun file precedentemente caricato */
-			if(oldUri == null)
-			{
-				if(file != null)
-					newUri = copyFile(file);
-			}
-			else
-			{
+			if (oldUri == null) {
+				if (file != null)
+					newUri = copyFile(file, protocol);
+			} else {
 				/* caso file precedentemente caricato */
 				File oldFile = new File(oldUri);
 				oldFile.delete();
-				if(file != null)
-				{
-					newUri = copyFile(file);
+				if (file != null) {
+					newUri = copyFile(file, protocol);
 				}
 			}
 			document.setUri(newUri);
+		} catch (Exception e) {
+			logger.getLogger().log(Level.WARNING, resourceMap.getString("ErrorMessage.copyingFile") + file.getPath(), e);
 		}
-		catch(Exception e)
-		{
-			logger.getLogger().log(Level.WARNING,
-			  resourceMap.getString("ErrorMessage.copyingFile") + file.getPath(), e);
-		}
-
 
 		/* aggiorno la tabella */
-		if(documentsPanel.getStatus() == EStatus.NEW)
+		if (documentsPanel.getStatus() == EStatus.NEW) {
 			documentService.addDocument(document);
-		else
+			modelEventManager.fireDocumentInserted(document);
+		} else {
 			documentService.storeDocument(document);
+			modelEventManager.fireDocumentModified(document);
+		}
 		documentsPanel.postSaveData();
 	}
 
@@ -150,8 +136,7 @@ public class SaveDocumentAction extends AbstractBean
 	 * @return <code>true</code> se è possibile abilitare l'azione,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean isSaveDocumentActionEnabled()
-	{
+	public boolean isSaveDocumentActionEnabled() {
 		return saveDocumentActionEnabled;
 	}
 
@@ -159,15 +144,13 @@ public class SaveDocumentAction extends AbstractBean
 	 * Imposta l'abilitazione dell'azione.
 	 * 
 	 * @param saveDocumentActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
+	 *            <code>true</code> se si vuole abilitare l'azione,
+	 *            <code>false</code> altrimenti
 	 */
-	public void setSaveDocumentActionEnabled(boolean saveDocumentActionEnabled)
-	{
+	public void setSaveDocumentActionEnabled(boolean saveDocumentActionEnabled) {
 		final boolean oldValue = this.saveDocumentActionEnabled;
 		this.saveDocumentActionEnabled = saveDocumentActionEnabled;
-		firePropertyChange("saveDocumentActionEnabled", oldValue,
-		  saveDocumentActionEnabled);
+		firePropertyChange("saveDocumentActionEnabled", oldValue, saveDocumentActionEnabled);
 	}
 
 	/**
@@ -175,15 +158,20 @@ public class SaveDocumentAction extends AbstractBean
 	 * nuovo file
 	 * 
 	 * @param inputFile
-	 *          file da copiare nel repository
+	 *            file da copiare nel repository
 	 * @return l'URI del nuovo file copiato
 	 * @throws IOException
 	 */
-	private String copyFile(File inputFile) throws IOException
-	{
+	private String copyFile(File inputFile, String protocol) throws IOException {
 		new File(GreenToneAppConfig.DOCUMENTS_REPOSITORY).mkdirs();
-		File copiedFile =
-		  new File(GreenToneAppConfig.DOCUMENTS_REPOSITORY + inputFile.getName());
+		String filename = inputFile.getName();
+		String prefix = filename;
+		String extension = "";
+		if (filename.length() > 4) {
+			prefix = filename.substring(0, filename.length() - 4);
+			extension = filename.substring(filename.length() - 4);
+		}
+		File copiedFile = new File(GreenToneAppConfig.DOCUMENTS_REPOSITORY + prefix + "_" + protocol + extension);
 		utilities.copyFile(inputFile, copiedFile);
 		return copiedFile.getCanonicalPath().toString();
 	}

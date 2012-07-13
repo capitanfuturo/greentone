@@ -1,6 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
+import it.greentone.gui.ModelEventManager;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Operation;
 import it.greentone.persistence.OperationService;
@@ -34,38 +35,34 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class DeleteOperationAction extends AbstractBean
-{
+public class DeleteOperationAction extends AbstractBean {
 	@Inject
 	OperationsPanel operationsPanel;
 	@Inject
 	OperationService operationService;
+	@Inject
+	ModelEventManager modelEventManager;
 	boolean deleteOperationActionEnabled = false;
 	private final ResourceMap resourceMap;
 
 	/**
 	 * Elimina l'operazione selezionata in tabella.
 	 */
-	public DeleteOperationAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public DeleteOperationAction() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
 	}
 
 	/**
 	 * Elimina l'operazione selezionata in tabella.
 	 */
 	@Action(enabledProperty = "deleteOperationActionEnabled")
-	public void deleteOperation()
-	{
-		int confirmDialog =
-		  JOptionPane.showConfirmDialog(operationsPanel,
-		    resourceMap.getString("deleteOperation.Action.confirmMessage"));
-		if(confirmDialog == JOptionPane.OK_OPTION)
-		{
+	public void deleteOperation() {
+		int confirmDialog = JOptionPane.showConfirmDialog(operationsPanel, resourceMap.getString("deleteOperation.Action.confirmMessage"));
+		if (confirmDialog == JOptionPane.OK_OPTION) {
 			Operation operation = operationsPanel.getSelectedItem();
 			operationService.deleteOperation(operation);
 			operationsPanel.postSaveData();
+			modelEventManager.fireOperationDeleted(operation);
 		}
 	}
 
@@ -76,8 +73,7 @@ public class DeleteOperationAction extends AbstractBean
 	 * @return <code>true</code> se è possibile abilitare l'azione,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean isDeleteOperationActionEnabled()
-	{
+	public boolean isDeleteOperationActionEnabled() {
 		return deleteOperationActionEnabled;
 	}
 
@@ -85,15 +81,12 @@ public class DeleteOperationAction extends AbstractBean
 	 * Imposta l'abilitazione dell'azione.
 	 * 
 	 * @param deleteOperationActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
+	 *            <code>true</code> se si vuole abilitare l'azione,
+	 *            <code>false</code> altrimenti
 	 */
-	public void setDeleteOperationActionEnabled(
-	  boolean deleteOperationActionEnabled)
-	{
+	public void setDeleteOperationActionEnabled(boolean deleteOperationActionEnabled) {
 		final boolean oldValue = this.deleteOperationActionEnabled;
 		this.deleteOperationActionEnabled = deleteOperationActionEnabled;
-		firePropertyChange("deleteOperationActionEnabled", oldValue,
-		  deleteOperationActionEnabled);
+		firePropertyChange("deleteOperationActionEnabled", oldValue, deleteOperationActionEnabled);
 	}
 }

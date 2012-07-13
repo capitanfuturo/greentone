@@ -38,53 +38,49 @@ import org.jdesktop.application.ResourceMap;
  * @author Giuseppe Caliendo
  */
 @SuppressWarnings("serial")
-public class AgendaDetailPanel extends JPanel
-{
+public class AgendaDetailPanel extends JPanel {
 	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
 
 	/**
-	 * Pannello di dettaglio di un incarico nell'agenda della schermata iniziale.
+	 * Pannello di dettaglio di un incarico nell'agenda della schermata
+	 * iniziale.
 	 * 
 	 * @param job
-	 *          incarico di cui mostrare il dettaglio
+	 *            incarico di cui mostrare il dettaglio
 	 * @param jobPanel
 	 * @param mainPanel
 	 * @param resourceMap
 	 * @param status
 	 */
-	public AgendaDetailPanel(final Job job, final JobPanel jobPanel,
-	  final MainPanel mainPanel, ResourceMap resourceMap, TimeStatus status)
-	{
-		JButton viewDetailsButton = new JButton(new AbstractAction()
-			{
+	public AgendaDetailPanel(final Job job, final JobPanel jobPanel, final MainPanel mainPanel, ResourceMap resourceMap, TimeStatus status) {
+		JButton viewDetailsButton = new JButton(new AbstractAction() {
 
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					jobPanel.setJob(job);
-					jobPanel.setup();
-					ContextualAction.addTab(mainPanel, jobPanel);
-				}
-			});
-		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
-		  + ACTION_SMALL_ICON_SUFFIX));
-		viewDetailsButton.setToolTipText(resourceMap
-		  .getString("JobDetailsPanel.jobDetails"));
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jobPanel.setJob(job);
+				jobPanel.setup();
+				ContextualAction.addTab(mainPanel, jobPanel);
+			}
+		});
+		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName() + ACTION_SMALL_ICON_SUFFIX));
+		viewDetailsButton.setToolTipText(resourceMap.getString("JobDetailsPanel.jobDetails"));
 
 		JLabel protocolFieldLabel = new JLabel(job.getProtocol());
 		protocolFieldLabel.setFont(FontProvider.PARAGRAPH_BIG);
-		JLabel dueDateFieldLabel =
-		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
+
+		JLabel iconLabel = null;
+		JLabel dueDateFieldLabel = new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
 		JLabel descriptionLabel = new JLabel(job.getDescription());
 
-		if(status.getColor() != null)
-		{
-			dueDateFieldLabel.setOpaque(true);
-			dueDateFieldLabel.setBackground(status.getColor());
+		if (status.getIconName() != null) {
+			iconLabel = new JLabel(resourceMap.getIcon("JobDetailsPanel." + status.getIconName()));
 		}
 
 		setLayout(new MigLayout());
 		add(viewDetailsButton);
+		if (iconLabel != null) {
+			add(iconLabel);
+		}
 		add(dueDateFieldLabel);
 		add(protocolFieldLabel);
 		add(descriptionLabel);
@@ -95,33 +91,41 @@ public class AgendaDetailPanel extends JPanel
 	 * 
 	 * @author Giuseppe Caliendo
 	 */
-	public enum TimeStatus
-	{
+	public enum TimeStatus {
 		/** Incarico nelle tempistiche */
-		ON_TIME
-		{
+		ON_TIME {
 			@Override
-			public Color getColor()
-			{
+			public Color getColor() {
+				return null;
+			}
+
+			@Override
+			public String getIconName() {
 				return null;
 			}
 		},
 		/** Incarico in scadenza */
-		EXPIRING
-		{
+		EXPIRING {
 			@Override
-			public Color getColor()
-			{
+			public Color getColor() {
 				return new Color(245, 230, 90);
+			}
+
+			@Override
+			public String getIconName() {
+				return "expiringIcon";
 			}
 		},
 		/** Incarico scaduto */
-		EXPIRED
-		{
+		EXPIRED {
 			@Override
-			public Color getColor()
-			{
+			public Color getColor() {
 				return new Color(220, 55, 20);
+			}
+
+			@Override
+			public String getIconName() {
+				return "expiredIcon";
 			}
 		};
 
@@ -131,5 +135,12 @@ public class AgendaDetailPanel extends JPanel
 		 * @return il colore con sui segnalare l'incarico
 		 */
 		public abstract Color getColor();
+
+		/**
+		 * Restituisce il nome dell'icona da usare
+		 * 
+		 * @return il nome dell'icona da usare
+		 */
+		public abstract String getIconName();
 	}
 }
