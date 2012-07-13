@@ -42,17 +42,15 @@ import org.jdesktop.swingx.JXTable;
  * 
  * @author Giuseppe Caliendo
  * @param <T>
- *          Oggetto base del pannello contestuale
+ *            Oggetto base del pannello contestuale
  */
 @SuppressWarnings("serial")
-public abstract class ContextualPanel<T> extends AbstractPanel
-{
+public abstract class ContextualPanel<T> extends AbstractPanel {
 	private JXTable contentTable;
 	private JToolBar contextualToolBar;
 	private JPanel headerPanel;
 	private T selectedItem;
 	Set<JComponent> registeredComponents;
-
 
 	/**
 	 * Pannello generico da estendere per poter avere delle facilities utili. Un
@@ -60,8 +58,7 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * le informazioni dell'oggetto selezionato nella tabella generale
 	 * sottostante.
 	 */
-	public ContextualPanel()
-	{
+	public ContextualPanel() {
 		super();
 		registeredComponents = new HashSet<JComponent>();
 		JPanel northPanel = new JPanel(new BorderLayout());
@@ -71,8 +68,7 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 		contentPanel.add(new JScrollPane(getContentTable()), BorderLayout.CENTER);
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(northPanel, BorderLayout.NORTH);
-		if(getContentTable() != null)
-		{
+		if (getContentTable() != null) {
 			mainPanel.add(contentPanel, BorderLayout.CENTER);
 		}
 		mainPanel.setPreferredSize(new Dimension(800, 600));
@@ -88,9 +84,8 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * @return il pannello superiore contenente tipicamente le informazioni
 	 *         dettagliate della tabella sottostante
 	 */
-	public JPanel getHeaderPanel()
-	{
-		if(headerPanel == null)
+	public JPanel getHeaderPanel() {
+		if (headerPanel == null)
 			headerPanel = createHeaderPanel();
 		return headerPanel;
 	}
@@ -102,8 +97,7 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * @return il pannello superiore contenente tipicamente le informazioni
 	 *         dettagliate della tabella sottostante
 	 */
-	protected JPanel createHeaderPanel()
-	{
+	protected JPanel createHeaderPanel() {
 		return new JPanel(new BorderLayout());
 	}
 
@@ -112,49 +106,36 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * 
 	 * @return la tabella di tutti gli elementi dell'oggetto di modello
 	 */
-	public JXTable getContentTable()
-	{
-		if(contentTable == null)
-		{
+	public JXTable getContentTable() {
+		if (contentTable == null) {
 			contentTable = GreenToneUtilities.createJXTable();
-			contentTable.getSelectionModel().addListSelectionListener(
-			  new ListSelectionListener()
-				  {
-					  @Override
-					  public void valueChanged(ListSelectionEvent e)
-					  {
-						  if(!e.getValueIsAdjusting())
-						  {
-							  SwingUtilities.invokeLater(new Runnable()
-								  {
-									  @Override
-									  public void run()
-									  {
-										  int selectedRow = getContentTable().getSelectedRow();
-										  /* disabilito la tabella */
-										  contentTable.setEnabled(false);
-										  /* gestisco la selezione */
-										  if(selectedRow > -1)
-										  {
-											  int rowIndexToModel =
-											    getContentTable().convertRowIndexToModel(
-											      getContentTable().getSelectedRow());
-											  setSelectedItem(getItemFromTableRow(rowIndexToModel));
-											  initializeForEditing();
-											  tableSelectionHook();
-										  }
-										  else
-										  {
-											  tableSelectionLostHook();
-										  }
-										  /* riabilito la tabella */
-										  contentTable.setEnabled(true);
-									  }
+			contentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					if (!e.getValueIsAdjusting()) {
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								int selectedRow = getContentTable().getSelectedRow();
+								/* disabilito la tabella */
+								contentTable.setEnabled(false);
+								/* gestisco la selezione */
+								if (selectedRow > -1) {
+									int rowIndexToModel = getContentTable().convertRowIndexToModel(getContentTable().getSelectedRow());
+									setSelectedItem(getItemFromTableRow(rowIndexToModel));
+									initializeForEditing();
+									tableSelectionHook();
+								} else {
+									tableSelectionLostHook();
+								}
+								/* riabilito la tabella */
+								contentTable.setEnabled(true);
+							}
 
-								  });
-						  }
-					  }
-				  });
+						});
+					}
+				}
+			});
 		}
 		return contentTable;
 	}
@@ -166,10 +147,8 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * @return la barra degli strumenti delle azioni disponibili per il pannello
 	 *         corrente
 	 */
-	public JToolBar getContextualToolBar()
-	{
-		if(contextualToolBar == null)
-		{
+	public JToolBar getContextualToolBar() {
+		if (contextualToolBar == null) {
 			contextualToolBar = new JToolBar();
 			contextualToolBar.setFloatable(false);
 		}
@@ -180,8 +159,7 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * Inizializza o re-inizializza il pannello intero
 	 */
 	@Override
-	public void setup()
-	{
+	public void setup() {
 		super.setup();
 		getContextualToolBar().removeAll();
 		initializeToolBar();
@@ -195,12 +173,10 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * {@link #registerComponent(JComponent)} del pannello di testata
 	 * 
 	 * @param enable
-	 *          stato di abilitazione del pannello di testata
+	 *            stato di abilitazione del pannello di testata
 	 */
-	protected void setHeaderPanelEnabled(boolean enable)
-	{
-		for(JComponent component : registeredComponents)
-		{
+	protected void setHeaderPanelEnabled(boolean enable) {
+		for (JComponent component : registeredComponents) {
 			component.setEnabled(enable);
 		}
 	}
@@ -220,31 +196,26 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	/**
 	 * Attività da compiere dopo il salvataggio della persistenza.
 	 */
-	public void postSaveData()
-	{
-		SwingUtilities.invokeLater(new Runnable()
-			{
+	public void postSaveData() {
+		SwingUtilities.invokeLater(new Runnable() {
 
-				@Override
-				public void run()
-				{
-					clearForm();
-					setHeaderPanelEnabled(false);
-					if(getContentTable() != null)
-					{
-						getContentTable().clearSelection();
-					}
-					setStatus(null);
+			@Override
+			public void run() {
+				clearForm();
+				setHeaderPanelEnabled(false);
+				if (getContentTable() != null) {
+					getContentTable().clearSelection();
 				}
-			});
+				setStatus(null);
+			}
+		});
 	};
 
 	/**
 	 * Azioni da intraprendere per l'inserimento di una nuova riga della
 	 * {@link #getContentTable()}.
 	 */
-	public void initializeForInsertion()
-	{
+	public void initializeForInsertion() {
 		setStatus(EStatus.NEW);
 		setHeaderPanelEnabled(true);
 		clearForm();
@@ -255,8 +226,7 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * Azioni da intraprendere per la modifica di una riga della
 	 * {@link #getContentTable()}.
 	 */
-	protected void initializeForEditing()
-	{
+	protected void initializeForEditing() {
 		setStatus(EStatus.EDIT);
 		setHeaderPanelEnabled(true);
 		clearForm();
@@ -267,50 +237,36 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * elemento nella tabella {@link #getContentTable()}, in coda a
 	 * {@link #initializeForEditing()}
 	 */
-	protected void tableSelectionHook()
-	{
+	protected void tableSelectionHook() {
 		// vuoto di default;
 	}
 
 	/**
-	 * Porzione di codice che viene eseguita a seguito della perdita di selezione
-	 * nella tabella {@link #getContentTable()}
+	 * Porzione di codice che viene eseguita a seguito della perdita di
+	 * selezione nella tabella {@link #getContentTable()}
 	 */
-	protected void tableSelectionLostHook()
-	{
+	protected void tableSelectionLostHook() {
 		// vuoto di default;
 	}
 
 	/**
 	 * Ripulisce il pannello {@link #getHeaderPanel()} di intestazione.
 	 */
-	protected void clearForm()
-	{
-		for(JComponent component : registeredComponents)
-		{
-			if(component instanceof JTextComponent)
-			{
+	protected void clearForm() {
+		for (JComponent component : registeredComponents) {
+			if (component instanceof JTextComponent) {
 				JTextComponent textComponent = (JTextComponent) component;
 				textComponent.setText(null);
+			} else if (component instanceof JComboBox) {
+				JComboBox comboBox = (JComboBox) component;
+				comboBox.setSelectedItem(null);
+			} else if (component instanceof JCheckBox) {
+				JCheckBox checkBox = (JCheckBox) component;
+				checkBox.setSelected(false);
+			} else if (component instanceof JXDatePicker) {
+				JXDatePicker datePicker = (JXDatePicker) component;
+				datePicker.setDate(null);
 			}
-			else
-				if(component instanceof JComboBox)
-				{
-					JComboBox comboBox = (JComboBox) component;
-					comboBox.setSelectedItem(null);
-				}
-				else
-					if(component instanceof JCheckBox)
-					{
-						JCheckBox checkBox = (JCheckBox) component;
-						checkBox.setSelected(false);
-					}
-					else
-						if(component instanceof JXDatePicker)
-						{
-							JXDatePicker datePicker = (JXDatePicker) component;
-							datePicker.setDate(null);
-						}
 		}
 	}
 
@@ -318,10 +274,9 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * Registra un componente per la gestione automatizzata.
 	 * 
 	 * @param component
-	 *          componente da aggiungere
+	 *            componente da aggiungere
 	 */
-	public void registerComponent(JComponent component)
-	{
+	public void registerComponent(JComponent component) {
 		registeredComponents.add(component);
 	}
 
@@ -329,10 +284,9 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * Deregistra un componente per la gestione automatizzata.
 	 * 
 	 * @param component
-	 *          componente da rimuovere
+	 *            componente da rimuovere
 	 */
-	public void deregisterComponent(JComponent component)
-	{
+	public void deregisterComponent(JComponent component) {
 		registeredComponents.remove(component);
 	}
 
@@ -345,18 +299,15 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	public abstract String getBundleName();
 
 	/**
-	 * Restituisce l'elemento correntemente selezionato dalla tabella contestuale.
+	 * Restituisce l'elemento correntemente selezionato dalla tabella
+	 * contestuale.
 	 * 
 	 * @return l'elemento correntemente selezionato dalla tabella contestuale
 	 * @see ContextualPanel#getContentTable()
 	 */
-	public T getSelectedItem()
-	{
-		if(selectedItem == null && getContentTable().getSelectedRow() > -1)
-		{
-			int rowIndexToModel =
-			  getContentTable().convertRowIndexToModel(
-			    getContentTable().getSelectedRow());
+	public T getSelectedItem() {
+		if (selectedItem == null && getContentTable().getSelectedRow() > -1) {
+			int rowIndexToModel = getContentTable().convertRowIndexToModel(getContentTable().getSelectedRow());
 			setSelectedItem(getItemFromTableRow(rowIndexToModel));
 		}
 		return selectedItem;
@@ -366,11 +317,10 @@ public abstract class ContextualPanel<T> extends AbstractPanel
 	 * Imposta l'elemento correntemente selezionato dalla tabella contestuale.
 	 * 
 	 * @param selectedItem
-	 *          l'elemento correntemente selezionato dalla tabella contestuale
+	 *            l'elemento correntemente selezionato dalla tabella contestuale
 	 * @see ContextualPanel#getContentTable()
 	 */
-	public void setSelectedItem(T selectedItem)
-	{
+	public void setSelectedItem(T selectedItem) {
 		this.selectedItem = selectedItem;
 	}
 

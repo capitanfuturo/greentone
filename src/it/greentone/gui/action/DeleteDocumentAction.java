@@ -1,6 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
+import it.greentone.gui.ModelEventManager;
 import it.greentone.gui.panel.DocumentsPanel;
 import it.greentone.persistence.Document;
 import it.greentone.persistence.DocumentService;
@@ -34,38 +35,34 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class DeleteDocumentAction extends AbstractBean
-{
+public class DeleteDocumentAction extends AbstractBean {
 	@Inject
 	DocumentsPanel documentsPanel;
 	@Inject
 	DocumentService documentService;
+	@Inject
+	ModelEventManager modelEventManager;
 	boolean deleteDocumentActionEnabled = false;
 	private final ResourceMap resourceMap;
 
 	/**
 	 * Elimina un documento.
 	 */
-	public DeleteDocumentAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public DeleteDocumentAction() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
 	}
 
 	/**
 	 * Elimina un documento.
 	 */
 	@Action(enabledProperty = "deleteDocumentActionEnabled")
-	public void deleteDocument()
-	{
-		int confirmDialog =
-		  JOptionPane.showConfirmDialog(documentsPanel,
-		    resourceMap.getString("deleteDocument.Action.confirmMessage"));
-		if(confirmDialog == JOptionPane.OK_OPTION)
-		{
+	public void deleteDocument() {
+		int confirmDialog = JOptionPane.showConfirmDialog(documentsPanel, resourceMap.getString("deleteDocument.Action.confirmMessage"));
+		if (confirmDialog == JOptionPane.OK_OPTION) {
 			Document document = documentsPanel.getSelectedItem();
 			documentService.deleteDocument(document);
 			documentsPanel.postSaveData();
+			modelEventManager.fireDocumentDeleted(document);
 		}
 	}
 
@@ -76,8 +73,7 @@ public class DeleteDocumentAction extends AbstractBean
 	 * @return <code>true</code> se è possibile abilitare l'azione,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean isDeleteDocumentActionEnabled()
-	{
+	public boolean isDeleteDocumentActionEnabled() {
 		return deleteDocumentActionEnabled;
 	}
 
@@ -85,14 +81,12 @@ public class DeleteDocumentAction extends AbstractBean
 	 * Imposta l'abilitazione dell'azione.
 	 * 
 	 * @param deleteDocumentActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
+	 *            <code>true</code> se si vuole abilitare l'azione,
+	 *            <code>false</code> altrimenti
 	 */
-	public void setDeleteDocumentActionEnabled(boolean deleteDocumentActionEnabled)
-	{
+	public void setDeleteDocumentActionEnabled(boolean deleteDocumentActionEnabled) {
 		final boolean oldValue = this.deleteDocumentActionEnabled;
 		this.deleteDocumentActionEnabled = deleteDocumentActionEnabled;
-		firePropertyChange("deleteDocumentActionEnabled", oldValue,
-		  deleteDocumentActionEnabled);
+		firePropertyChange("deleteDocumentActionEnabled", oldValue, deleteDocumentActionEnabled);
 	}
 }

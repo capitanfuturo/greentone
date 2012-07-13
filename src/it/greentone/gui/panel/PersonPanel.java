@@ -2,6 +2,7 @@ package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
 import it.greentone.gui.FontProvider;
+import it.greentone.gui.ModelEventManager;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.Person;
@@ -11,6 +12,8 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import javax.inject.Inject;
@@ -92,8 +95,12 @@ public class PersonPanel extends AbstractPanel {
 	/**
 	 * Pannello di riepilogo di un cliente. Mostra i dati di testata e gli
 	 * incarichi del cliente oggetto del pannello.
+	 * 
+	 * @param modelEventManager
+	 *            manager degli eventi
 	 */
-	public PersonPanel() {
+	@Inject
+	public PersonPanel(ModelEventManager modelEventManager) {
 		jobsProperties = new String[] { "protocol", "manager", "description", "dueDate", "status" };
 		jobsColumnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
 				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.status") };
@@ -121,6 +128,26 @@ public class PersonPanel extends AbstractPanel {
 		mainPanel.setPreferredSize(new Dimension(800, 600));
 		setLayout(new BorderLayout());
 		add(mainPanel);
+
+		/* aggiornamento dinamico */
+		modelEventManager.addPropertyChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				String propertyName = evt.getPropertyName();
+				if (propertyName.equals(ModelEventManager.JOB_INSERTED) || propertyName.equals(ModelEventManager.JOB_MODIFIED) || propertyName.equals(ModelEventManager.JOB_DELETED)) {
+					Job job = (Job) evt.getNewValue();
+					if (job.getCustomer().getId() == person.getId()) {
+						loadJobs();
+					}
+				} else if (propertyName.equals(ModelEventManager.PERSON_MODIFIED)) {
+					Person p = (Person) evt.getNewValue();
+					if (p.getId() == person.getId()) {
+						loadHeader();
+					}
+				}
+			}
+		});
 	}
 
 	/**
@@ -474,7 +501,31 @@ public class PersonPanel extends AbstractPanel {
 	@Override
 	public void setup() {
 		super.setup();
+		loadHeader();
+		/* informazioni su incarichi */
+		loadJobs();
+		getJobsTable().setSortOrder(0, SortOrder.DESCENDING);
+	}
 
+	/**
+	 * Imposta la persona oggetto del pannello.
+	 * 
+	 * @param person
+	 *            la persona oggetto del pannello
+	 */
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
+	private void loadJobs() {
+		Collection<Job> jobs = jobService.getJobsAsCustomer(person);
+		EventList<Job> jobsEventList = new BasicEventList<Job>();
+		jobsEventList.addAll(jobs);
+		jobsTableModel = new EventJXTableModel<Job>(jobsEventList, new BeanTableFormat<Job>(Job.class, jobsProperties, jobsColumnsNames, jobsWritables));
+		getJobsTable().setModel(jobsTableModel);
+	}
+
+	private void loadHeader() {
 		/* informazioni di testata */
 		if (person.getIsLegal()) {
 			getNameLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
@@ -492,23 +543,5 @@ public class PersonPanel extends AbstractPanel {
 		getTelephone2Label().setText(person.getTelephone2());
 		getFaxLabel().setText(person.getFax());
 		getEmailLabel().setText(person.getEmail());
-
-		/* informazioni su incarichi */
-		Collection<Job> jobs = jobService.getJobsAsCustomer(person);
-		EventList<Job> jobsEventList = new BasicEventList<Job>();
-		jobsEventList.addAll(jobs);
-		jobsTableModel = new EventJXTableModel<Job>(jobsEventList, new BeanTableFormat<Job>(Job.class, jobsProperties, jobsColumnsNames, jobsWritables));
-		getJobsTable().setModel(jobsTableModel);
-		getJobsTable().setSortOrder(0, SortOrder.DESCENDING);
-	}
-
-	/**
-	 * Imposta la persona oggetto del pannello.
-	 * 
-	 * @param person
-	 *            la persona oggetto del pannello
-	 */
-	public void setPerson(Person person) {
-		this.person = person;
 	}
 }

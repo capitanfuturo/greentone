@@ -1,10 +1,8 @@
 package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
-import it.greentone.gui.panel.DocumentsPanel;
-import it.greentone.gui.panel.HomePanel;
+import it.greentone.gui.ModelEventManager;
 import it.greentone.gui.panel.JobsPanel;
-import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.DocumentService;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
@@ -38,61 +36,46 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class DeleteJobAction extends AbstractBean
-{
+public class DeleteJobAction extends AbstractBean {
 	@Inject
 	JobsPanel jobsPanel;
-	@Inject
-	DocumentsPanel documentsPanel;
-	@Inject
-	OperationsPanel operationsPanel;
 	@Inject
 	JobService jobService;
 	@Inject
 	DocumentService documentService;
 	@Inject
-	private HomePanel homePanel;
+	private ModelEventManager modelEventManager;
 	boolean deleteJobActionEnabled = false;
 	private final ResourceMap resourceMap;
 
 	/**
 	 * Elimina un incarico.
 	 */
-	public DeleteJobAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public DeleteJobAction() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
 	}
 
 	/**
 	 * Elimina un incarico.
 	 */
 	@Action(enabledProperty = "deleteJobActionEnabled")
-	public void deleteJob()
-	{
+	public void deleteJob() {
 		Job job = jobsPanel.getSelectedItem();
 		/*
-		 * Issue 82: Non è possibile eliminare un incarico se ci sono dei documenti
-		 * collegati
+		 * Issue 82: Non è possibile eliminare un incarico se ci sono dei
+		 * documenti collegati
 		 */
-		if(documentService.getDocumentsJob(job).size() > 0)
-		{
-			JOptionPane.showMessageDialog(jobsPanel,
-			  resourceMap.getString("deleteJob.Action.errorMessage"),
-			  resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
+		if (documentService.getDocumentsJob(job).size() > 0) {
+			JOptionPane.showMessageDialog(jobsPanel, resourceMap.getString("deleteJob.Action.errorMessage"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
-		int confirmDialog =
-		  JOptionPane.showConfirmDialog(jobsPanel,
-		    resourceMap.getString("deleteJob.Action.confirmMessage"));
-		if(confirmDialog == JOptionPane.OK_OPTION)
-		{
+		int confirmDialog = JOptionPane.showConfirmDialog(jobsPanel, resourceMap.getString("deleteJob.Action.confirmMessage"));
+		if (confirmDialog == JOptionPane.OK_OPTION) {
 			jobService.deleteJob(job);
 			jobsPanel.postSaveData();
+			modelEventManager.fireJobDeleted(job);
 		}
-
-		homePanel.refresh();
 	}
 
 	/**
@@ -102,8 +85,7 @@ public class DeleteJobAction extends AbstractBean
 	 * @return <code>true</code> se è possibile abilitare l'azione,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean isDeleteJobActionEnabled()
-	{
+	public boolean isDeleteJobActionEnabled() {
 		return deleteJobActionEnabled;
 	}
 
@@ -111,14 +93,12 @@ public class DeleteJobAction extends AbstractBean
 	 * Imposta l'abilitazione dell'azione.
 	 * 
 	 * @param deleteJobActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
+	 *            <code>true</code> se si vuole abilitare l'azione,
+	 *            <code>false</code> altrimenti
 	 */
-	public void setDeleteJobActionEnabled(boolean deleteJobActionEnabled)
-	{
+	public void setDeleteJobActionEnabled(boolean deleteJobActionEnabled) {
 		final boolean oldValue = this.deleteJobActionEnabled;
 		this.deleteJobActionEnabled = deleteJobActionEnabled;
-		firePropertyChange("deleteJobActionEnabled", oldValue,
-		  deleteJobActionEnabled);
+		firePropertyChange("deleteJobActionEnabled", oldValue, deleteJobActionEnabled);
 	}
 }

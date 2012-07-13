@@ -2,6 +2,7 @@ package it.greentone.gui.action;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.ModelEventManager;
 import it.greentone.gui.panel.AbstractPanel.EStatus;
 import it.greentone.gui.panel.PersonsPanel;
 import it.greentone.persistence.Person;
@@ -36,22 +37,21 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class SavePersonAction extends AbstractBean
-{
+public class SavePersonAction extends AbstractBean {
 	@Inject
 	private PersonsPanel personsPanel;
 	@Inject
 	private PersonService personService;
+	@Inject
+	private ModelEventManager modelEventManager;
 	private final ResourceMap resourceMap;
 	boolean savePersonActionEnabled = false;
 
 	/**
 	 * Azione di salvataggio di una persona in anagrafica.
 	 */
-	public SavePersonAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public SavePersonAction() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
 	}
 
 	/**
@@ -59,87 +59,56 @@ public class SavePersonAction extends AbstractBean
 	 * obbligatoria.
 	 */
 	@Action(enabledProperty = "savePersonActionEnabled")
-	public void savePerson()
-	{
+	public void savePerson() {
 		String name = GreenToneUtilities.getText(personsPanel.getNameTextField());
 		/* la ragione sociale è obbligatoria */
-		if(name == null)
-		{
-			JOptionPane.showMessageDialog(personsPanel,
-			  resourceMap.getString("savePerson.Action.nameNotNull"),
-			  resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
+		if (name == null) {
+			JOptionPane.showMessageDialog(personsPanel, resourceMap.getString("savePerson.Action.nameNotNull"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 			personsPanel.getNameTextField().requestFocus();
-		}
-		else
-		{
+		} else {
 			/*
 			 * se si tratta di una nuova entry creo una nuova persona altrimenti
 			 * modifico quella selezionata
 			 */
-			Person person =
-			  personsPanel.getStatus() == EStatus.NEW? new Person(): personsPanel
-			    .getSelectedItem();
+			Person person = personsPanel.getStatus() == EStatus.NEW ? new Person() : personsPanel.getSelectedItem();
 			/* compilo il bean */
-			person.setAddress(GreenToneUtilities.getText(personsPanel
-			  .getAddressTextField()));
+			person.setAddress(GreenToneUtilities.getText(personsPanel.getAddressTextField()));
 			person.setCap(GreenToneUtilities.getText(personsPanel.getCapTextField()));
 			person.setCf(GreenToneUtilities.getText(personsPanel.getCfTexField()));
-			person
-			  .setCity(GreenToneUtilities.getText(personsPanel.getCityTextField()));
-			person.setEmail(GreenToneUtilities.getText(personsPanel
-			  .getEmailTextField()));
+			person.setCity(GreenToneUtilities.getText(personsPanel.getCityTextField()));
+			person.setEmail(GreenToneUtilities.getText(personsPanel.getEmailTextField()));
 			person.setFax(GreenToneUtilities.getText(personsPanel.getFaxTextField()));
-			person.setIdentityCard(GreenToneUtilities.getText(personsPanel
-			  .getIdentityCardTextField()));
+			person.setIdentityCard(GreenToneUtilities.getText(personsPanel.getIdentityCardTextField()));
 			person.setLegal(personsPanel.getIsLegalCheckBox().isSelected());
-			person
-			  .setName(GreenToneUtilities.getText(personsPanel.getNameTextField()));
-			person
-			  .setPiva(GreenToneUtilities.getText(personsPanel.getPivaTextField()));
-			person.setProvince(GreenToneUtilities.getText(personsPanel
-			  .getProvinceTextField()));
-			person.setTelephone1(GreenToneUtilities.getText(personsPanel
-			  .getTelephone1TextField()));
-			person.setTelephone2(GreenToneUtilities.getText(personsPanel
-			  .getTelephone2TextField()));
+			person.setName(GreenToneUtilities.getText(personsPanel.getNameTextField()));
+			person.setPiva(GreenToneUtilities.getText(personsPanel.getPivaTextField()));
+			person.setProvince(GreenToneUtilities.getText(personsPanel.getProvinceTextField()));
+			person.setTelephone1(GreenToneUtilities.getText(personsPanel.getTelephone1TextField()));
+			person.setTelephone2(GreenToneUtilities.getText(personsPanel.getTelephone2TextField()));
 			/*
 			 * controllo la compilazione del campo partita IVA, codice fiscale a
 			 * seconda che il flag sia impostato
 			 */
-			if(person.getIsLegal())
-			{
-				if(person.getPiva() == null)
-				{
-					JOptionPane.showMessageDialog(personsPanel,
-					  resourceMap.getString("savePerson.Action.pivaNotNull"),
-					  resourceMap.getString("ErrorMessage.title"),
-					  JOptionPane.ERROR_MESSAGE);
+			if (person.getIsLegal()) {
+				if (person.getPiva() == null) {
+					JOptionPane.showMessageDialog(personsPanel, resourceMap.getString("savePerson.Action.pivaNotNull"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
+					personsPanel.getNameTextField().requestFocus();
+					return;
+				}
+			} else {
+				if (person.getCf() == null) {
+					JOptionPane.showMessageDialog(personsPanel, resourceMap.getString("savePerson.Action.cfNotNull"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
 					personsPanel.getNameTextField().requestFocus();
 					return;
 				}
 			}
-			else
-			{
-				if(person.getCf() == null)
-				{
-					JOptionPane.showMessageDialog(personsPanel,
-					  resourceMap.getString("savePerson.Action.cfNotNull"),
-					  resourceMap.getString("ErrorMessage.title"),
-					  JOptionPane.ERROR_MESSAGE);
-					personsPanel.getNameTextField().requestFocus();
-					return;
-				}
-			}
-
 
 			/* salvo il bean */
-			if(personsPanel.getStatus() == EStatus.NEW)
-			{
+			if (personsPanel.getStatus() == EStatus.NEW) {
 				personService.addPerson(person);
-			}
-			else
-			{
+			} else {
 				personService.storePerson(person);
+				modelEventManager.firePersonModified(person);
 			}
 			personsPanel.postSaveData();
 		}
@@ -149,15 +118,13 @@ public class SavePersonAction extends AbstractBean
 	 * Imposta l'abilitazione dell'azione.
 	 * 
 	 * @param savePersonActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
+	 *            <code>true</code> se si vuole abilitare l'azione,
+	 *            <code>false</code> altrimenti
 	 */
-	public void setSavePersonActionEnabled(boolean savePersonActionEnabled)
-	{
+	public void setSavePersonActionEnabled(boolean savePersonActionEnabled) {
 		final boolean oldValue = this.savePersonActionEnabled;
 		this.savePersonActionEnabled = savePersonActionEnabled;
-		firePropertyChange("savePersonActionEnabled", oldValue,
-		  savePersonActionEnabled);
+		firePropertyChange("savePersonActionEnabled", oldValue, savePersonActionEnabled);
 	}
 
 	/**
@@ -167,8 +134,7 @@ public class SavePersonAction extends AbstractBean
 	 * @return <code>true</code> se è possibile abilitare l'azione,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean isSavePersonActionEnabled()
-	{
+	public boolean isSavePersonActionEnabled() {
 		return savePersonActionEnabled;
 	}
 }

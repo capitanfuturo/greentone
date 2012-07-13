@@ -4,6 +4,7 @@ import it.greentone.ConfigurationProperties;
 import it.greentone.GreenTone;
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.ModelEventManager;
 import it.greentone.gui.panel.AbstractPanel.EStatus;
 import it.greentone.gui.panel.OperationsPanel;
 import it.greentone.persistence.Job;
@@ -45,8 +46,7 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class SaveOperationAction extends AbstractBean
-{
+public class SaveOperationAction extends AbstractBean {
 	@Inject
 	private OperationService operationService;
 	@Inject
@@ -55,150 +55,110 @@ public class SaveOperationAction extends AbstractBean
 	private ConfigurationProperties properties;
 	@Inject
 	private GreenToneLogProvider logger;
+	@Inject
+	private ModelEventManager modelEventManager;
+
 	private final ResourceMap resourceMap;
 	boolean saveOperationActionEnabled = false;
 
 	/**
 	 * Salva l'operazione di un incarico.
 	 */
-	public SaveOperationAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public SaveOperationAction() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
 	}
 
 	/**
 	 * Salva un'operazione.
 	 */
 	@Action(enabledProperty = "saveOperationActionEnabled")
-	public void saveOperation()
-	{
-		try
-		{
+	public void saveOperation() {
+		try {
 			String errorTitle = resourceMap.getString("ErrorMessage.title");
 			/* controllo date */
-			DateTime operationDate =
-			  GreenToneUtilities.getDateTime(operationsPanel.getOperationDate());
+			DateTime operationDate = GreenToneUtilities.getDateTime(operationsPanel.getOperationDate());
 			/*
-			 * Issue 34: se il campo data rimane vuoto mostrare un popup che chiede
-			 * conferma del salvataggio
+			 * Issue 34: se il campo data rimane vuoto mostrare un popup che
+			 * chiede conferma del salvataggio
 			 */
-			if(operationDate == null)
-			{
-				int confirmDialog =
-				  JOptionPane.showConfirmDialog(operationsPanel,
-				    resourceMap.getString("saveOperation.Action.dateMessage"));
-				if(confirmDialog != JOptionPane.OK_OPTION)
+			if (operationDate == null) {
+				int confirmDialog = JOptionPane.showConfirmDialog(operationsPanel, resourceMap.getString("saveOperation.Action.dateMessage"));
+				if (confirmDialog != JOptionPane.OK_OPTION)
 					return;
-			}
-			else
-			{
+			} else {
 				/* controllo che la data non sia successiva alla data odierna */
-				if(operationDate.isAfterNow())
-				{
-					JOptionPane.showMessageDialog(operationsPanel,
-					  resourceMap.getString("saveOperation.Action.dateAfterNowMessage"),
-					  errorTitle, JOptionPane.ERROR_MESSAGE);
+				if (operationDate.isAfterNow()) {
+					JOptionPane.showMessageDialog(operationsPanel, resourceMap.getString("saveOperation.Action.dateAfterNowMessage"), errorTitle, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
 			/*
-			 * Issue 36: se selezionato l'onorario a vacazione allora il valore deve
-			 * essere maggiore di 2
+			 * Issue 36: se selezionato l'onorario a vacazione allora il valore
+			 * deve essere maggiore di 2
 			 */
-			if(operationsPanel.getVacazioneCheckBox().isSelected())
-			{
-				String vacazioniValue =
-				  GreenToneUtilities
-				    .getText(operationsPanel.getNumVacazioniTextField());
+			if (operationsPanel.getVacazioneCheckBox().isSelected()) {
+				String vacazioniValue = GreenToneUtilities.getText(operationsPanel.getNumVacazioniTextField());
 				Integer numVacazioni = null;
-				if(vacazioniValue == null)
-				{
-					JOptionPane.showMessageDialog(operationsPanel,
-					  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
-					  errorTitle, JOptionPane.ERROR_MESSAGE);
+				if (vacazioniValue == null) {
+					JOptionPane.showMessageDialog(operationsPanel, resourceMap.getString("saveOperation.Action.vacazioniMessage"), errorTitle, JOptionPane.ERROR_MESSAGE);
 					return;
-				}
-				else
-				{
+				} else {
 					operationsPanel.getNumVacazioniTextField().commitEdit();
-					numVacazioni =
-					  new Integer(operationsPanel.getNumVacazioniTextField().getValue()
-					    .toString());
-					if(numVacazioni.intValue() < 2)
-					{
-						JOptionPane.showMessageDialog(operationsPanel,
-						  resourceMap.getString("saveOperation.Action.vacazioniMessage"),
-						  errorTitle, JOptionPane.ERROR_MESSAGE);
+					numVacazioni = new Integer(operationsPanel.getNumVacazioniTextField().getValue().toString());
+					if (numVacazioni.intValue() < 2) {
+						JOptionPane.showMessageDialog(operationsPanel, resourceMap.getString("saveOperation.Action.vacazioniMessage"), errorTitle, JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 				}
 			}
 			/*
-			 * Issue 97: se l'incarico selezionato è in stato chiuso non si possono
-			 * modificare le operazioni, se lo stato dell'incarico è sospeso allora
-			 * posso inserire solo operazioni di tipo "Acconto"
+			 * Issue 97: se l'incarico selezionato è in stato chiuso non si
+			 * possono modificare le operazioni, se lo stato dell'incarico è
+			 * sospeso allora posso inserire solo operazioni di tipo "Acconto"
 			 */
-			if(operationsPanel.getJobComboBox().getSelectedItem() != null)
-			{
-				Job selectedJob =
-				  (Job) operationsPanel.getJobComboBox().getSelectedItem();
-				if(selectedJob.getStatus() == JobStatus.CLOSED)
-				{
-					/* non si possono modificare le operazioni per un incarico chiuso */
-					JOptionPane.showMessageDialog(operationsPanel,
-					  resourceMap.getString("saveOperation.Action.closedJobMessage"),
-					  errorTitle, JOptionPane.ERROR_MESSAGE);
+			if (operationsPanel.getJobComboBox().getSelectedItem() != null) {
+				Job selectedJob = (Job) operationsPanel.getJobComboBox().getSelectedItem();
+				if (selectedJob.getStatus() == JobStatus.CLOSED) {
+					/*
+					 * non si possono modificare le operazioni per un incarico
+					 * chiuso
+					 */
+					JOptionPane.showMessageDialog(operationsPanel, resourceMap.getString("saveOperation.Action.closedJobMessage"), errorTitle, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				OperationType operationType =
-				  OperationType.values()[operationsPanel.getTypeComboBox()
-				    .getSelectedIndex()];
-				if(selectedJob.getStatus() == JobStatus.SUSPEND
-				  && operationType != OperationType.EXPENSE_DEPOSIT)
-				{
+				OperationType operationType = OperationType.values()[operationsPanel.getTypeComboBox().getSelectedIndex()];
+				if (selectedJob.getStatus() == JobStatus.SUSPEND && operationType != OperationType.EXPENSE_DEPOSIT) {
 					/*
-					 * si possono aggiungere solo operazioni di acconto per l'incarico in
-					 * stato sospeso
+					 * si possono aggiungere solo operazioni di acconto per
+					 * l'incarico in stato sospeso
 					 */
-					JOptionPane.showMessageDialog(operationsPanel,
-					  resourceMap.getString("saveOperation.Action.suspendJobMessage"),
-					  errorTitle, JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(operationsPanel, resourceMap.getString("saveOperation.Action.suspendJobMessage"), errorTitle, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
 			/*
-			 * se arrivo qui allora tutta la validazione è passata correttamente e
-			 * posso salvare
+			 * se arrivo qui allora tutta la validazione è passata correttamente
+			 * e posso salvare
 			 */
 			save();
-		}
-		catch(Exception e)
-		{
-			logger.getLogger().log(Level.SEVERE,
-			  resourceMap.getString("ErrorMessage.saveOperation"), e);
+		} catch (Exception e) {
+			logger.getLogger().log(Level.SEVERE, resourceMap.getString("ErrorMessage.saveOperation"), e);
 		}
 
 	}
 
-	private void save() throws ParseException
-	{
+	private void save() throws ParseException {
 		/*
 		 * se si tratta di una nuova entry creo un nuova operazione altrimenti
 		 * modifico quella selezionata
 		 */
-		Operation operation =
-		  operationsPanel.getStatus() == EStatus.EDIT? operationsPanel
-		    .getSelectedItem(): new Operation();
+		Operation operation = operationsPanel.getStatus() == EStatus.EDIT ? operationsPanel.getSelectedItem() : new Operation();
 		/* compilo il bean */
-		if(operationsPanel.getVacazioneCheckBox().isSelected())
-		{
+		if (operationsPanel.getVacazioneCheckBox().isSelected()) {
 			/* caso operazione con onorario a vacazione */
-			String vacazioniValue =
-			  GreenToneUtilities.getText(operationsPanel.getNumVacazioniTextField());
+			String vacazioniValue = GreenToneUtilities.getText(operationsPanel.getNumVacazioniTextField());
 			Integer numVacazioni = null;
-			if(vacazioniValue != null)
-			{
+			if (vacazioniValue != null) {
 				operationsPanel.getNumVacazioniTextField().commitEdit();
 				numVacazioni = new Integer(vacazioniValue);
 			}
@@ -206,76 +166,56 @@ public class SaveOperationAction extends AbstractBean
 			 * se ho un valore per le vacazioni allora calcolo anche l'importo
 			 * altrimenti lo imposto a null
 			 */
-			if(numVacazioni == null)
-			{
+			if (numVacazioni == null) {
 				operation.setNumVacazioni(null);
 				operation.setAmount(null);
-			}
-			else
-			{
+			} else {
 				operation.setNumVacazioni(numVacazioni);
 				/* distinguo i casi di vacazione aiutante o no */
-				if(operationsPanel.getProfessionalVacazioneCheckBox().isSelected())
-				{
-					operation.setAmount(numVacazioni
-					  * properties.getVacazioneHelperPrice());
-				}
-				else
-				{
+				if (operationsPanel.getProfessionalVacazioneCheckBox().isSelected()) {
+					operation.setAmount(numVacazioni * properties.getVacazioneHelperPrice());
+				} else {
 					operation.setAmount(numVacazioni * properties.getVacazionePrice());
 				}
 			}
-		}
-		else
-		{
+		} else {
 			/* caso operazione con importo */
-			String amountValue =
-			  GreenToneUtilities.getText(operationsPanel.getAmountTextField());
+			String amountValue = GreenToneUtilities.getText(operationsPanel.getAmountTextField());
 			Double amount = null;
-			if(amountValue != null)
-			{
+			if (amountValue != null) {
 				operationsPanel.getAmountTextField().commitEdit();
-				amount =
-				  new Double(operationsPanel.getAmountTextField().getValue().toString());
+				amount = new Double(operationsPanel.getAmountTextField().getValue().toString());
 				operation.setAmount(GreenToneUtilities.roundTwoDecimals(amount));
-			}
-			else
-			{
+			} else {
 				operation.setAmount(null);
 			}
 			operation.setNumVacazioni(null);
 		}
 
 		/* descrizione */
-		operation.setDescription(GreenToneUtilities.getText(operationsPanel
-		  .getDescriptionTextField()));
+		operation.setDescription(GreenToneUtilities.getText(operationsPanel.getDescriptionTextField()));
 		/* flag vacazione aiutante */
-		operation.setIsProfessionalVacazione(operationsPanel
-		  .getProfessionalVacazioneCheckBox().isSelected());
+		operation.setIsProfessionalVacazione(operationsPanel.getProfessionalVacazioneCheckBox().isSelected());
 		/* flag onorario a vacazione */
-		operation.setIsVacazione(operationsPanel.getVacazioneCheckBox()
-		  .isSelected());
+		operation.setIsVacazione(operationsPanel.getVacazioneCheckBox().isSelected());
 		/* incarico */
 		operation.setJob((Job) operationsPanel.getJobComboBox().getSelectedItem());
 		/* data operazione */
-		operation.setOperationDate(GreenToneUtilities.getDateTime(operationsPanel
-		  .getOperationDate()));
+		operation.setOperationDate(GreenToneUtilities.getDateTime(operationsPanel.getOperationDate()));
 		/* tipo di operazione */
-		if(operationsPanel.getTypeComboBox().getSelectedIndex() > -1)
-		{
-			operation.setOperationType(OperationType.values()[operationsPanel
-			  .getTypeComboBox().getSelectedIndex()]);
+		if (operationsPanel.getTypeComboBox().getSelectedIndex() > -1) {
+			operation.setOperationType(OperationType.values()[operationsPanel.getTypeComboBox().getSelectedIndex()]);
 		}
 		/* aggiorno la tabella */
-		if(operationsPanel.getStatus() == EStatus.NEW)
-		{
+		if (operationsPanel.getStatus() == EStatus.NEW) {
 			operationService.addOperation(operation);
-		}
-		else
-		{
+			modelEventManager.fireOperationInserted(operation);
+		} else {
 			operationService.storeOperation(operation);
+			modelEventManager.fireOperationModified(operation);
 		}
 		operationsPanel.postSaveData();
+
 	}
 
 	/**
@@ -285,8 +225,7 @@ public class SaveOperationAction extends AbstractBean
 	 * @return <code>true</code> se è possibile abilitare l'azione,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean isSaveOperationActionEnabled()
-	{
+	public boolean isSaveOperationActionEnabled() {
 		return saveOperationActionEnabled;
 	}
 
@@ -294,14 +233,12 @@ public class SaveOperationAction extends AbstractBean
 	 * Imposta l'abilitazione dell'azione.
 	 * 
 	 * @param saveOperationActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
+	 *            <code>true</code> se si vuole abilitare l'azione,
+	 *            <code>false</code> altrimenti
 	 */
-	public void setSaveOperationActionEnabled(boolean saveOperationActionEnabled)
-	{
+	public void setSaveOperationActionEnabled(boolean saveOperationActionEnabled) {
 		final boolean oldValue = this.saveOperationActionEnabled;
 		this.saveOperationActionEnabled = saveOperationActionEnabled;
-		firePropertyChange("saveOperationActionEnabled", oldValue,
-		  saveOperationActionEnabled);
+		firePropertyChange("saveOperationActionEnabled", oldValue, saveOperationActionEnabled);
 	}
 }

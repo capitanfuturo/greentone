@@ -46,6 +46,7 @@ import org.jdesktop.swingx.JXDatePicker;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
+import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
@@ -72,8 +73,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class DocumentsPanel extends ContextualPanel<Document>
-{
+public class DocumentsPanel extends ContextualPanel<Document> {
 	private static final String LOCALIZATION_PREFIX = "viewDocuments.Panel.";
 	private static final String PANEL_BUNDLE = "viewDocuments";
 	@Inject
@@ -117,50 +117,26 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	/**
 	 * Pannello di visualizzazione di tutti i documenti presenti in database.
 	 */
-	public DocumentsPanel()
-	{
+	public DocumentsPanel() {
 		super();
 
-		properties =
-		  new String[] {"protocol", "description", "job", "recipient", "isDigital",
-		    "uri", "isOutgoing", "releaseDate", "notes"};
-		columnsNames =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.recipient"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isDigital"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.outgoing"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
-		writables =
-		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false};
+		properties = new String[] { "protocol", "description", "job", "recipient", "isDigital", "uri", "isOutgoing", "releaseDate", "notes" };
+		columnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.recipient"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isDigital"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.outgoing"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes") };
+		writables = new boolean[] { false, false, false, false, false, false, false, false, false };
 	}
 
 	@Override
-	protected JPanel createHeaderPanel()
-	{
-		JLabel protocolLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "protocol"));
-		JLabel descriptionLabel =
-		  new JLabel(getResourceMap()
-		    .getString(LOCALIZATION_PREFIX + "description"));
-		JLabel jobLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
-		JLabel isDigitalLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isDigital"));
-		JLabel incomingLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "outgoing"));
-		JLabel releaseDateLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "date"));
-		JLabel notesLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "notes"));
-		JLabel requiredLabel =
-		  new JLabel(getResourceMap().getString(
-		    LOCALIZATION_PREFIX + "requiredField"));
+	protected JPanel createHeaderPanel() {
+		JLabel protocolLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "protocol"));
+		JLabel descriptionLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "description"));
+		JLabel jobLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
+		JLabel isDigitalLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isDigital"));
+		JLabel incomingLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "outgoing"));
+		JLabel releaseDateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "date"));
+		JLabel notesLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "notes"));
+		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
 
 		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][20%][]"));
 
@@ -199,12 +175,9 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return l'etichetta utilizzata per il destinatario e mittente
 	 */
-	public JLabel getRecipientLabel()
-	{
-		if(recipientLabel == null)
-		{
-			recipientLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+	public JLabel getRecipientLabel() {
+		if (recipientLabel == null) {
+			recipientLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
 		}
 		return recipientLabel;
 	}
@@ -214,12 +187,9 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return l'etichetta del campo di scelta del file
 	 */
-	public JLabel getFileLabel()
-	{
-		if(fileLabel == null)
-		{
-			fileLabel =
-			  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "file"));
+	public JLabel getFileLabel() {
+		if (fileLabel == null) {
+			fileLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "file"));
 		}
 		return fileLabel;
 	}
@@ -229,41 +199,33 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo protocollo
 	 */
-	public JTextField getProtocolTextField()
-	{
-		if(protocolTextField == null)
-		{
+	public JTextField getProtocolTextField() {
+		if (protocolTextField == null) {
 			protocolTextField = new JTextField();
 			registerComponent(protocolTextField);
 			protocolTextField.setEnabled(false);
 
-			protocolTextField.getDocument().addDocumentListener(
-			  new DocumentListener()
-				  {
+			protocolTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-					  @Override
-					  public void removeUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  @Override
-					  public void insertUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  @Override
-					  public void changedUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  private void toogleAction()
-					  {
-						  toggleSaveAction();
-					  }
-				  });
+				private void toogleAction() {
+					toggleSaveAction();
+				}
+			});
 		}
 		return protocolTextField;
 	}
@@ -273,39 +235,31 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo descrizione
 	 */
-	public JTextField getDescriptionTextField()
-	{
-		if(descriptionTextField == null)
-		{
+	public JTextField getDescriptionTextField() {
+		if (descriptionTextField == null) {
 			descriptionTextField = new JTextField();
 			registerComponent(descriptionTextField);
-			descriptionTextField.getDocument().addDocumentListener(
-			  new DocumentListener()
-				  {
+			descriptionTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-					  @Override
-					  public void removeUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  @Override
-					  public void insertUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  @Override
-					  public void changedUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  private void toogleAction()
-					  {
-						  toggleSaveAction();
-					  }
-				  });
+				private void toogleAction() {
+					toggleSaveAction();
+				}
+			});
 		}
 		return descriptionTextField;
 	}
@@ -315,21 +269,17 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo incarico
 	 */
-	public JComboBox getJobComboBox()
-	{
-		if(jobComboBox == null)
-		{
+	public JComboBox getJobComboBox() {
+		if (jobComboBox == null) {
 			jobComboBox = new JComboBox();
 			registerComponent(jobComboBox);
-			jobComboBox.addActionListener(new ActionListener()
-				{
+			jobComboBox.addActionListener(new ActionListener() {
 
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						toggleSaveAction();
-					}
-				});
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					toggleSaveAction();
+				}
+			});
 		}
 		return jobComboBox;
 	}
@@ -339,10 +289,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo destinatario
 	 */
-	public JComboBox getRecipientComboBox()
-	{
-		if(recipientComboBox == null)
-		{
+	public JComboBox getRecipientComboBox() {
+		if (recipientComboBox == null) {
 			recipientComboBox = new JComboBox();
 			registerComponent(recipientComboBox);
 		}
@@ -354,21 +302,17 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il flag che indica se un documento è digitale
 	 */
-	public JCheckBox getIsDigitalCheckBox()
-	{
-		if(isDigitalCheckBox == null)
-		{
+	public JCheckBox getIsDigitalCheckBox() {
+		if (isDigitalCheckBox == null) {
 			isDigitalCheckBox = new JCheckBox();
 			registerComponent(isDigitalCheckBox);
-			isDigitalCheckBox.addActionListener(new ActionListener()
-				{
+			isDigitalCheckBox.addActionListener(new ActionListener() {
 
-					@Override
-					public void actionPerformed(ActionEvent arg0)
-					{
-						toggleFileSection();
-					}
-				});
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					toggleFileSection();
+				}
+			});
 		}
 		return isDigitalCheckBox;
 	}
@@ -378,10 +322,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo file
 	 */
-	public JEditorPane getFilePathField()
-	{
-		if(filePathField == null)
-		{
+	public JEditorPane getFilePathField() {
+		if (filePathField == null) {
 			filePathField = new JEditorPane();
 			filePathField.setForeground(Color.blue);
 			registerComponent(filePathField);
@@ -394,30 +336,21 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il flag che indica se il documento è in uscita
 	 */
-	public JCheckBox getOutgoingCheckBox()
-	{
-		if(outgoingCheckBox == null)
-		{
+	public JCheckBox getOutgoingCheckBox() {
+		if (outgoingCheckBox == null) {
 			outgoingCheckBox = new JCheckBox();
 			registerComponent(outgoingCheckBox);
-			outgoingCheckBox.addActionListener(new ActionListener()
-				{
+			outgoingCheckBox.addActionListener(new ActionListener() {
 
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						if(outgoingCheckBox.isSelected())
-						{
-							getRecipientLabel().setText(
-							  getResourceMap().getString(LOCALIZATION_PREFIX + "recipient"));
-						}
-						else
-						{
-							getRecipientLabel().setText(
-							  getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
-						}
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (outgoingCheckBox.isSelected()) {
+						getRecipientLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "recipient"));
+					} else {
+						getRecipientLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
 					}
-				});
+				}
+			});
 		}
 		return outgoingCheckBox;
 	}
@@ -427,10 +360,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo della data di rilascio del documento
 	 */
-	public JXDatePicker getReleaseDateDatePicker()
-	{
-		if(releaseDateDatePicker == null)
-		{
+	public JXDatePicker getReleaseDateDatePicker() {
+		if (releaseDateDatePicker == null) {
 			releaseDateDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(releaseDateDatePicker);
 		}
@@ -442,10 +373,8 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il campo note
 	 */
-	public JTextArea getNotesTextArea()
-	{
-		if(notesTextArea == null)
-		{
+	public JTextArea getNotesTextArea() {
+		if (notesTextArea == null) {
 			notesTextArea = new JTextArea(5, 50);
 			registerComponent(notesTextArea);
 		}
@@ -467,70 +396,55 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return un pulsante per navigare nel file system
 	 */
-	public JButton getFileChooserButton()
-	{
-		if(fileChooserButton == null)
-		{
-			fileChooserButton = new JButton(new AbstractAction()
-				{
+	public JButton getFileChooserButton() {
+		if (fileChooserButton == null) {
+			fileChooserButton = new JButton(new AbstractAction() {
 
-					@Override
-					public void actionPerformed(ActionEvent arg0)
-					{
-						JFileChooser fileChooser = new JFileChooser();
-						fileChooser.setFileHidingEnabled(true);
-						fileChooser.setAcceptAllFileFilterUsed(false);
-						fileChooser.setFileFilter(new FileNameExtensionFilter(
-						  "pdf, png, tif, zip, rar, 7z, p7m", "pdf", "png", "tif", "zip",
-						  "rar", "7z", "p7m"));
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					JFileChooser fileChooser = new JFileChooser();
+					fileChooser.setFileHidingEnabled(true);
+					fileChooser.setAcceptAllFileFilterUsed(false);
+					fileChooser.setFileFilter(new FileNameExtensionFilter("pdf, png, tif, zip, rar, 7z, p7m", "pdf", "png", "tif", "zip", "rar", "7z", "p7m"));
 
-						int returnVal = fileChooser.showOpenDialog(null);
-						if(returnVal == JFileChooser.APPROVE_OPTION)
-						{
-							final File file = fileChooser.getSelectedFile();
-							getFilePathField().setText(file.getName());
-							setFile(file);
-						}
+					int returnVal = fileChooser.showOpenDialog(null);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						final File file = fileChooser.getSelectedFile();
+						getFilePathField().setText(file.getName());
+						setFile(file);
 					}
-				});
-			fileChooserButton.setText(getResourceMap().getString(
-			  LOCALIZATION_PREFIX + "openFile"));
+				}
+			});
+			fileChooserButton.setText(getResourceMap().getString(LOCALIZATION_PREFIX + "openFile"));
 		}
 		return fileChooserButton;
 	}
 
 	@Override
-	public String getBundleName()
-	{
+	public String getBundleName() {
 		return PANEL_BUNDLE;
 	}
 
 	/**
-	 * Issue 66: Controlla che sia possibile abilitare l'azione di salvataggio di
-	 * un documento:
+	 * Issue 66: Controlla che sia possibile abilitare l'azione di salvataggio
+	 * di un documento:
 	 * <ul>
 	 * <li>Deve essere assegnato un protocollo</li>
 	 * <li>Deve essere assegnato un incarico</li>
 	 * <li>Deve essere assegnato una descrizione</li>
 	 * </ul>
 	 */
-	private void toggleSaveAction()
-	{
-		saveDocumentAction.setSaveDocumentActionEnabled(GreenToneUtilities
-		  .getText(getDescriptionTextField()) != null
-		  && getJobComboBox().getSelectedItem() != null
-		  && GreenToneUtilities.getText(getProtocolTextField()) != null);
+	private void toggleSaveAction() {
+		saveDocumentAction.setSaveDocumentActionEnabled(GreenToneUtilities.getText(getDescriptionTextField()) != null && getJobComboBox().getSelectedItem() != null && GreenToneUtilities.getText(getProtocolTextField()) != null);
 	}
 
 	@Override
-	protected void clearForm()
-	{
+	protected void clearForm() {
 		super.clearForm();
 		/* Issue 69: di default impostare la data odierna */
 		getReleaseDateDatePicker().setDate(new DateTime().toDate());
 		/* Issue 70: di default l'etichetta è impostata a destinatario */
-		getRecipientLabel().setText(
-		  getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+		getRecipientLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
 		/* Issue 77: di default non viene mostrata la scelta del file */
 		toggleFileSection();
 
@@ -540,36 +454,29 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	/**
 	 * Mostra / nasconde la parte relativa alla scelta del file del documento.
 	 */
-	private void toggleFileSection()
-	{
+	private void toggleFileSection() {
 		getFileLabel().setVisible(getIsDigitalCheckBox().isSelected());
 		getFilePathField().setVisible(getIsDigitalCheckBox().isSelected());
 		getFileChooserButton().setVisible(getIsDigitalCheckBox().isSelected());
 	}
 
-	private void setFile(final File file)
-	{
-		for(MouseListener listener : getFilePathField().getMouseListeners())
-		{
+	private void setFile(final File file) {
+		for (MouseListener listener : getFilePathField().getMouseListeners()) {
 			getFilePathField().removeMouseListener(listener);
 		}
-		getFilePathField().addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					new SwingWorker<Void, Void>()
-						{
+		getFilePathField().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				new SwingWorker<Void, Void>() {
 
-							@Override
-							protected Void doInBackground() throws Exception
-							{
-								utilities.open(file);
-								return null;
-							}
-						}.execute();
-				};
-			});
+					@Override
+					protected Void doInBackground() throws Exception {
+						utilities.open(file);
+						return null;
+					}
+				}.execute();
+			};
+		});
 		this.file = file;
 	}
 
@@ -578,21 +485,17 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	 * 
 	 * @return il file del documento
 	 */
-	public File getFile()
-	{
+	public File getFile() {
 		return file;
 	}
 
 	@Override
-	public Document getItemFromTableRow(int rowIndex)
-	{
-		int rowIndexToModel = getContentTable().convertRowIndexToModel(rowIndex);
-		return documentService.getAllDocuments().get(rowIndexToModel);
+	public Document getItemFromTableRow(int rowIndex) {
+		return documentService.getAllDocuments().get(rowIndex);
 	}
 
 	@Override
-	public void initializeToolBar()
-	{
+	public void initializeToolBar() {
 		getContextualToolBar().add(actionProvider.getAddDocument());
 		getContextualToolBar().add(actionProvider.getSaveDocument());
 		getContextualToolBar().add(actionProvider.getDeleteDocument());
@@ -601,67 +504,60 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	}
 
 	@Override
-	public void populateModel()
-	{
+	public void populateModel() {
 		viewReportsAction.setup(documentsReportsCategory);
 
+		tableModel = new EventJXTableModel<Document>(documentService.getAllDocuments(), new BeanTableFormat<Document>(Document.class, properties, columnsNames, writables));
+		getContentTable().setModel(tableModel);
+		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
+
 		/* carico destinatari */
-		EventComboBoxModel<Person> recipientComboBoxModel =
-		  new EventComboBoxModel<Person>(personService.getAllPersons());
+		EventList<Person> allPersons = personService.getAllPersons();
+		SortedList<Person> sortedAllPersons = new SortedList<Person>(allPersons, new Comparator<Person>() {
+
+			@Override
+			public int compare(Person o1, Person o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+
+		EventComboBoxModel<Person> recipientComboBoxModel = new EventComboBoxModel<Person>(sortedAllPersons);
 		getRecipientComboBox().setModel(recipientComboBoxModel);
 
 		/* carico gli incarichi */
-		SortedList<Job> jobsList =
-		  new SortedList<Job>(jobService.getAllJobs(), new Comparator<Job>()
-			  {
+		SortedList<Job> jobsList = new SortedList<Job>(jobService.getAllJobs(), new Comparator<Job>() {
 
-				  @Override
-				  public int compare(Job o1, Job o2)
-				  {
-					  return o2.getProtocol().compareToIgnoreCase(o1.getProtocol());
-				  }
-			  });
-		EventComboBoxModel<Job> jobComboBoxModel =
-		  new EventComboBoxModel<Job>(jobsList);
+			@Override
+			public int compare(Job o1, Job o2) {
+				return o2.getProtocol().compareToIgnoreCase(o1.getProtocol());
+			}
+		});
+		EventComboBoxModel<Job> jobComboBoxModel = new EventComboBoxModel<Job>(jobsList);
 		getJobComboBox().setModel(jobComboBoxModel);
-
-		tableModel =
-		  new EventJXTableModel<Document>(documentService.getAllDocuments(),
-		    new BeanTableFormat<Document>(Document.class, properties, columnsNames,
-		      writables));
-		getContentTable().setModel(tableModel);
-		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
 	}
 
 	@Override
-	public void initializeForEditing()
-	{
+	public void initializeForEditing() {
 		super.initializeForEditing();
 		getProtocolTextField().setEnabled(false);
 		/* aggiorno il pannello */
 		getProtocolTextField().setText(getSelectedItem().getProtocol());
 		getDescriptionTextField().setText(getSelectedItem().getDescription());
 		getJobComboBox().getModel().setSelectedItem(getSelectedItem().getJob());
-		getRecipientComboBox().getModel().setSelectedItem(
-		  getSelectedItem().getRecipient());
+		getRecipientComboBox().getModel().setSelectedItem(getSelectedItem().getRecipient());
 		getIsDigitalCheckBox().setSelected(getSelectedItem().getIsDigital());
 
 		String URI = getSelectedItem().getUri();
-		if(URI != null)
-		{
+		if (URI != null) {
 			final File file = new File(URI);
 			getFilePathField().setText(file.getName());
 			setFile(file);
-		}
-		else
-		{
+		} else {
 			getFilePathField().setText(null);
 		}
 
 		getOutgoingCheckBox().setSelected(getSelectedItem().getIsOutgoing());
-		getReleaseDateDatePicker().setDate(
-		  getSelectedItem().getReleaseDate() != null? getSelectedItem()
-		    .getReleaseDate().toDate(): null);
+		getReleaseDateDatePicker().setDate(getSelectedItem().getReleaseDate() != null ? getSelectedItem().getReleaseDate().toDate() : null);
 		getNotesTextArea().setText(getSelectedItem().getNotes());
 
 		/* calcolo visibilità della sezione del file */
@@ -669,8 +565,7 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	}
 
 	@Override
-	public void initializeForInsertion()
-	{
+	public void initializeForInsertion() {
 		super.initializeForInsertion();
 		getProtocolTextField().setEnabled(false);
 		/* calcolo il protocollo da impostare */
@@ -678,15 +573,13 @@ public class DocumentsPanel extends ContextualPanel<Document>
 	}
 
 	@Override
-	protected void tableSelectionHook()
-	{
+	protected void tableSelectionHook() {
 		super.tableSelectionHook();
 		deleteDocumentAction.setDeleteDocumentActionEnabled(true);
 	}
 
 	@Override
-	protected void tableSelectionLostHook()
-	{
+	protected void tableSelectionLostHook() {
 		super.tableSelectionLostHook();
 		deleteDocumentAction.setDeleteDocumentActionEnabled(false);
 	}
