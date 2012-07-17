@@ -113,6 +113,7 @@ public class PersonPanel extends AbstractPanel {
 		JPanel jobHeaderPanel = new JPanel(new MigLayout());
 		JLabel jobsLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobs"));
 		jobsLabel.setFont(FontProvider.TITLE_SMALL);
+		jobsLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "jobsIcon"));
 		jobHeaderPanel.add(jobsLabel);
 		jobHeaderPanel.add(getJobDetailButton());
 
@@ -135,15 +136,17 @@ public class PersonPanel extends AbstractPanel {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				String propertyName = evt.getPropertyName();
-				if (propertyName.equals(ModelEventManager.JOB_INSERTED) || propertyName.equals(ModelEventManager.JOB_MODIFIED) || propertyName.equals(ModelEventManager.JOB_DELETED)) {
-					Job job = (Job) evt.getNewValue();
-					if (job.getCustomer().getId() == person.getId()) {
-						loadJobs();
-					}
-				} else if (propertyName.equals(ModelEventManager.PERSON_MODIFIED)) {
-					Person p = (Person) evt.getNewValue();
-					if (p.getId() == person.getId()) {
-						loadHeader();
+				if (person != null) {
+					if (propertyName.equals(ModelEventManager.JOB_INSERTED) || propertyName.equals(ModelEventManager.JOB_MODIFIED) || propertyName.equals(ModelEventManager.JOB_DELETED)) {
+						Job job = (Job) evt.getNewValue();
+						if (job.getCustomer().getId() == person.getId()) {
+							loadJobs();
+						}
+					} else if (propertyName.equals(ModelEventManager.PERSON_MODIFIED)) {
+						Person p = (Person) evt.getNewValue();
+						if (p.getId() == person.getId()) {
+							loadHeader();
+						}
 					}
 				}
 			}
@@ -184,6 +187,8 @@ public class PersonPanel extends AbstractPanel {
 		if (headerPanel == null) {
 			JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
 			titleLabel.setFont(FontProvider.TITLE_SMALL);
+			titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
+
 			JLabel addressLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
 			JLabel cityLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
 			JLabel provinceLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
@@ -465,6 +470,8 @@ public class PersonPanel extends AbstractPanel {
 
 		JLabel title = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobDetail"));
 		title.setFont(FontProvider.TITLE_SMALL);
+		title.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "jobsIcon"));
+
 		jobPanel.add(title);
 		jobPanel.add(getBackDetailButton(), "wrap");
 		jobPanel.add(new JLabel(getResourceMap().getString("viewJobs.Panel.protocol")), "gap para");

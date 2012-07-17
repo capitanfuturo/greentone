@@ -1,6 +1,7 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.FontProvider;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteJobAction;
 import it.greentone.gui.action.SaveJobAction;
@@ -64,8 +65,7 @@ import ca.odell.glazedlists.swing.EventJXTableModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class JobsPanel extends ContextualPanel<Job>
-{
+public class JobsPanel extends ContextualPanel<Job> {
 	@Inject
 	private ActionProvider actionProvider;
 	@Inject
@@ -108,63 +108,38 @@ public class JobsPanel extends ContextualPanel<Job>
 	/**
 	 * Pannello di gestione degli incarichi dello studio professionale.
 	 */
-	public JobsPanel()
-	{
+	public JobsPanel() {
 		super();
 		panelBundle = "viewJobs";
 
-		properties =
-		  new String[] {"protocol", "customer", "manager", "city", "description",
-		    "dueDate", "startDate", "finishDate", "category", "status", "notes"};
-		columnsNames =
-		  new String[] {
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.customer"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.startDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.finishDate"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.category"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.status"),
-		    getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes")};
-		writables =
-		  new boolean[] {false, false, false, false, false, false, false, false,
-		    false, false, false};
+		properties = new String[] { "protocol", "customer", "manager", "city", "description", "dueDate", "startDate", "finishDate", "category", "status", "notes" };
+		columnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.customer"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.manager"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.dueDate"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.startDate"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.finishDate"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.category"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.status"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes") };
+		writables = new boolean[] { false, false, false, false, false, false, false, false, false, false, false };
 	}
 
 	@Override
-	protected JPanel createHeaderPanel()
-	{
-		JLabel protocolLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "protocol"));
-		JLabel dueDateLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "dueDate"));
-		JLabel startDateLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "startDate"));
-		JLabel finishDateLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "finishDate"));
-		JLabel categoryLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "category"));
-		JLabel statusLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "status"));
-		JLabel descriptionLabel =
-		  new JLabel(getResourceMap()
-		    .getString(LOCALIZATION_PREFIX + "description"));
-		JLabel managerLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "manager"));
-		JLabel customerLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "customer"));
-		JLabel notesLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "notes"));
-		JLabel requiredLabel =
-		  new JLabel(getResourceMap().getString(
-		    LOCALIZATION_PREFIX + "requiredField"));
-		JLabel cityLabel =
-		  new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
+	protected JPanel createHeaderPanel() {
+		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+		titleLabel.setFont(FontProvider.TITLE_SMALL);
+		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
+		JLabel protocolLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "protocol"));
+		JLabel dueDateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "dueDate"));
+		JLabel startDateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "startDate"));
+		JLabel finishDateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "finishDate"));
+		JLabel categoryLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "category"));
+		JLabel statusLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "status"));
+		JLabel descriptionLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "description"));
+		JLabel managerLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "manager"));
+		JLabel customerLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "customer"));
+		JLabel notesLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "notes"));
+		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
+		JLabel cityLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
 
 		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%]"));
+
+		headerPanel.add(titleLabel, "wrap");
 
 		headerPanel.add(protocolLabel, "gap para");
 		headerPanel.add(getProtocolTextField(), "growx, wrap");
@@ -201,53 +176,38 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	public void populateModel()
-	{
+	public void populateModel() {
 		viewReportsAction.setup(jobsReportsCategory);
 
-		tableModel =
-		  new EventJXTableModel<Job>(
-		    jobService.getAllJobs(),
-		    new BeanTableFormat<Job>(Job.class, properties, columnsNames, writables));
+		tableModel = new EventJXTableModel<Job>(jobService.getAllJobs(), new BeanTableFormat<Job>(Job.class, properties, columnsNames, writables));
 		getContentTable().setModel(tableModel);
 		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
 
 		/* carico responsabili e committenti */
 		EventList<Person> allPersons = personService.getAllPersons();
-		SortedList<Person> soertedAllPersons =
-		  new SortedList<Person>(allPersons, new Comparator<Person>()
-			  {
-				  @Override
-				  public int compare(Person o1, Person o2)
-				  {
-					  return o1.getName().compareToIgnoreCase(o2.getName());
-				  }
-			  });
-		getCustomerComboBox().setModel(
-		  new EventComboBoxModel<Person>(soertedAllPersons));
-		getManagerComboBox().setModel(
-		  new EventComboBoxModel<Person>(soertedAllPersons));
+		SortedList<Person> soertedAllPersons = new SortedList<Person>(allPersons, new Comparator<Person>() {
+			@Override
+			public int compare(Person o1, Person o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+		getCustomerComboBox().setModel(new EventComboBoxModel<Person>(soertedAllPersons));
+		getManagerComboBox().setModel(new EventComboBoxModel<Person>(soertedAllPersons));
 
 		/* carico le categorie */
-		EventList<JobCategory> allCategories =
-		  jobCategoryService.getAllJobCategories();
-		SortedList<JobCategory> sortedAllCategories =
-		  new SortedList<JobCategory>(allCategories, new Comparator<JobCategory>()
-			  {
-				  @Override
-				  public int compare(JobCategory o1, JobCategory o2)
-				  {
-					  return o1.getName().compareToIgnoreCase(o2.getName());
-				  }
-			  });
-		ComboBoxModel model =
-		  new EventComboBoxModel<JobCategory>(sortedAllCategories);
+		EventList<JobCategory> allCategories = jobCategoryService.getAllJobCategories();
+		SortedList<JobCategory> sortedAllCategories = new SortedList<JobCategory>(allCategories, new Comparator<JobCategory>() {
+			@Override
+			public int compare(JobCategory o1, JobCategory o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+		ComboBoxModel model = new EventComboBoxModel<JobCategory>(sortedAllCategories);
 		categoryComboBox.setModel(model);
 	}
 
 	@Override
-	public void initializeToolBar()
-	{
+	public void initializeToolBar() {
 		getContextualToolBar().add(actionProvider.getAddJob());
 		getContextualToolBar().add(actionProvider.getSaveJob());
 		getContextualToolBar().add(actionProvider.getDeleteJob());
@@ -259,8 +219,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	public void initializeForInsertion()
-	{
+	public void initializeForInsertion() {
 		super.initializeForInsertion();
 		getProtocolTextField().setEnabled(false);
 		/* Issue 74: la data di inizio viene prepopolata con la data corrente */
@@ -275,30 +234,17 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	public void initializeForEditing()
-	{
+	public void initializeForEditing() {
 		super.initializeForEditing();
 		getProtocolTextField().setEnabled(false);
 		/* aggiorno il pannello */
 		Job selectedJob = getSelectedItem();
 		getProtocolTextField().setText(selectedJob.getProtocol());
-		getDueDatePicker()
-		  .setDate(
-		    selectedJob.getDueDate() != null
-		      ? selectedJob.getDueDate().toDate()
-		      : null);
-		getStartDatePicker().setDate(
-		  selectedJob.getStartDate() != null
-		    ? selectedJob.getStartDate().toDate()
-		    : null);
-		getFinishDatePicker().setDate(
-		  selectedJob.getFinishDate() != null
-		    ? selectedJob.getFinishDate().toDate()
-		    : null);
+		getDueDatePicker().setDate(selectedJob.getDueDate() != null ? selectedJob.getDueDate().toDate() : null);
+		getStartDatePicker().setDate(selectedJob.getStartDate() != null ? selectedJob.getStartDate().toDate() : null);
+		getFinishDatePicker().setDate(selectedJob.getFinishDate() != null ? selectedJob.getFinishDate().toDate() : null);
 		getCategoryComboBox().getModel().setSelectedItem(selectedJob.getCategory());
-		getStatusComboBox().setSelectedItem(
-		  selectedJob.getStatus() != null? selectedJob.getStatus()
-		    .getLocalizedName(): null);
+		getStatusComboBox().setSelectedItem(selectedJob.getStatus() != null ? selectedJob.getStatus().getLocalizedName() : null);
 		getDescriptionTextField().setText(selectedJob.getDescription());
 		Person customer = selectedJob.getCustomer();
 		getCustomerComboBox().getModel().setSelectedItem(customer);
@@ -309,8 +255,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	public Job getItemFromTableRow(int rowIndex)
-	{
+	public Job getItemFromTableRow(int rowIndex) {
 		return jobService.getAllJobs().get(rowIndex);
 	}
 
@@ -319,18 +264,15 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return la lista dei comuni di riferimento
 	 */
-	public EventList<String> getCities()
-	{
-		if(cities == null)
-		{
+	public EventList<String> getCities() {
+		if (cities == null) {
 			cities = new SortedList<String>(new BasicEventList<String>());
 		}
 		return cities;
 	}
 
 	@Override
-	public String getBundleName()
-	{
+	public String getBundleName() {
 		return panelBundle;
 	}
 
@@ -339,41 +281,32 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo protocollo
 	 */
-	public JTextField getProtocolTextField()
-	{
-		if(protocolTextField == null)
-		{
+	public JTextField getProtocolTextField() {
+		if (protocolTextField == null) {
 			protocolTextField = new JTextField();
 			registerComponent(protocolTextField);
 
-			protocolTextField.getDocument().addDocumentListener(
-			  new DocumentListener()
-				  {
+			protocolTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-					  @Override
-					  public void removeUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  @Override
-					  public void insertUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  @Override
-					  public void changedUpdate(DocumentEvent e)
-					  {
-						  toogleAction();
-					  }
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+					toogleAction();
+				}
 
-					  private void toogleAction()
-					  {
-						  saveJobAction.setSaveJobActionEnabled(GreenToneUtilities
-						    .getText(protocolTextField) != null);
-					  }
-				  });
+				private void toogleAction() {
+					saveJobAction.setSaveJobActionEnabled(GreenToneUtilities.getText(protocolTextField) != null);
+				}
+			});
 		}
 		return protocolTextField;
 	}
@@ -383,10 +316,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo scadenza
 	 */
-	public JXDatePicker getDueDatePicker()
-	{
-		if(dueDatePicker == null)
-		{
+	public JXDatePicker getDueDatePicker() {
+		if (dueDatePicker == null) {
 			dueDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(dueDatePicker);
 		}
@@ -398,10 +329,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo data di inizio
 	 */
-	public JXDatePicker getStartDatePicker()
-	{
-		if(startDatePicker == null)
-		{
+	public JXDatePicker getStartDatePicker() {
+		if (startDatePicker == null) {
 			startDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(startDatePicker);
 		}
@@ -413,10 +342,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo data di fine
 	 */
-	public JXDatePicker getFinishDatePicker()
-	{
-		if(finishDatePicker == null)
-		{
+	public JXDatePicker getFinishDatePicker() {
+		if (finishDatePicker == null) {
 			finishDatePicker = GreenToneUtilities.createJXDataPicker();
 			registerComponent(finishDatePicker);
 		}
@@ -428,10 +355,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo categoria
 	 */
-	public JComboBox getCategoryComboBox()
-	{
-		if(categoryComboBox == null)
-		{
+	public JComboBox getCategoryComboBox() {
+		if (categoryComboBox == null) {
 			categoryComboBox = new JComboBox();
 			registerComponent(categoryComboBox);
 		}
@@ -443,15 +368,12 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo stato
 	 */
-	public JComboBox getStatusComboBox()
-	{
-		if(statusComboBox == null)
-		{
+	public JComboBox getStatusComboBox() {
+		if (statusComboBox == null) {
 			statusComboBox = new JComboBox();
 			registerComponent(statusComboBox);
 			JobStatus[] statusArray = JobStatus.values();
-			for(int i = 0; i < statusArray.length; i++)
-			{
+			for (int i = 0; i < statusArray.length; i++) {
 				statusComboBox.insertItemAt(statusArray[i].getLocalizedName(), i);
 			}
 		}
@@ -463,10 +385,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo descrizione
 	 */
-	public JTextField getDescriptionTextField()
-	{
-		if(descriptionTextField == null)
-		{
+	public JTextField getDescriptionTextField() {
+		if (descriptionTextField == null) {
 			descriptionTextField = new JTextField();
 			registerComponent(descriptionTextField);
 		}
@@ -478,10 +398,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo note
 	 */
-	public JTextArea getNotesTextArea()
-	{
-		if(notesTextArea == null)
-		{
+	public JTextArea getNotesTextArea() {
+		if (notesTextArea == null) {
 			notesTextArea = new JTextArea(5, 50);
 			registerComponent(notesTextArea);
 		}
@@ -493,10 +411,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo committente
 	 */
-	public JComboBox getCustomerComboBox()
-	{
-		if(customerComboBox == null)
-		{
+	public JComboBox getCustomerComboBox() {
+		if (customerComboBox == null) {
 			customerComboBox = new JComboBox();
 			registerComponent(customerComboBox);
 		}
@@ -508,10 +424,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo responsabile
 	 */
-	public JComboBox getManagerComboBox()
-	{
-		if(managerComboBox == null)
-		{
+	public JComboBox getManagerComboBox() {
+		if (managerComboBox == null) {
 			managerComboBox = new JComboBox();
 			registerComponent(managerComboBox);
 		}
@@ -523,10 +437,8 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * 
 	 * @return il campo comune di riferimento
 	 */
-	public JComboBox getCityField()
-	{
-		if(cityField == null)
-		{
+	public JComboBox getCityField() {
+		if (cityField == null) {
 			cityField = new JComboBox();
 			registerComponent(cityField);
 			AutoCompleteSupport.install(cityField, getCities());
@@ -535,8 +447,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	protected void tableSelectionHook()
-	{
+	protected void tableSelectionHook() {
 		super.tableSelectionHook();
 		/* abilito le azioni legate alla selezione */
 		deleteJobAction.setDeleteJobActionEnabled(true);
@@ -545,8 +456,7 @@ public class JobsPanel extends ContextualPanel<Job>
 	}
 
 	@Override
-	protected void tableSelectionLostHook()
-	{
+	protected void tableSelectionLostHook() {
 		super.tableSelectionLostHook();
 		/* disabilito le azioni legate alla selezione */
 		deleteJobAction.setDeleteJobActionEnabled(false);
@@ -558,13 +468,11 @@ public class JobsPanel extends ContextualPanel<Job>
 	 * Imposta una selezione da un pannello esterno.
 	 * 
 	 * @param toSelect
-	 *          incarico da selezionare
+	 *            incarico da selezionare
 	 */
-	protected void setSelectedJob(Job toSelect)
-	{
+	protected void setSelectedJob(Job toSelect) {
 		int indexOf = jobService.getAllJobs().indexOf(toSelect);
 		int rowIndexToView = getContentTable().convertRowIndexToView(indexOf);
-		getContentTable().getSelectionModel().setSelectionInterval(rowIndexToView,
-		  rowIndexToView);
+		getContentTable().getSelectionModel().setSelectionInterval(rowIndexToView, rowIndexToView);
 	}
 }

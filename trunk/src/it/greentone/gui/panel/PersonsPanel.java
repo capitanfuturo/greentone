@@ -2,6 +2,7 @@ package it.greentone.gui.panel;
 
 import it.greentone.GreenToneLogProvider;
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.FontProvider;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeletePersonAction;
 import it.greentone.gui.action.EditUserAction;
@@ -116,6 +117,9 @@ public class PersonsPanel extends ContextualPanel<Person> {
 
 	@Override
 	public JPanel createHeaderPanel() {
+		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+		titleLabel.setFont(FontProvider.TITLE_SMALL);
+		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
 		JLabel addressLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
 		JLabel cityLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
 		JLabel provinceLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
@@ -129,6 +133,8 @@ public class PersonsPanel extends ContextualPanel<Person> {
 		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
 
 		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]"));
+
+		headerPanel.add(titleLabel, "wrap");
 
 		headerPanel.add(isLegalLabel, "gap para");
 		headerPanel.add(getIsLegalCheckBox(), "wrap");
