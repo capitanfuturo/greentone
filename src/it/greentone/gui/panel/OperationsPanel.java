@@ -1,6 +1,7 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.FontProvider;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteOperationAction;
 import it.greentone.gui.action.SaveOperationAction;
@@ -118,6 +119,9 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 
 	@Override
 	protected JPanel createHeaderPanel() {
+		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+		titleLabel.setFont(FontProvider.TITLE_SMALL);
+		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
 		JLabel descriptionLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "description"));
 		JLabel jobLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
 		JLabel typeLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "type"));
@@ -129,6 +133,9 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
 
 		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%]"));
+
+		headerPanel.add(titleLabel, "wrap");
+
 		headerPanel.add(descriptionLabel, "gap para");
 		headerPanel.add(getDescriptionTextField(), "span 3, growx, wrap");
 

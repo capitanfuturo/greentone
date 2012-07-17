@@ -148,6 +148,7 @@ public class JobPanel extends AbstractPanel {
 		JPanel operationsHeaderPanel = new JPanel(new MigLayout());
 		JLabel operationsLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "operations"));
 		operationsLabel.setFont(FontProvider.TITLE_SMALL);
+		operationsLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "operationIcon"));
 		operationsHeaderPanel.add(operationsLabel);
 		operationsHeaderPanel.add(getOperationDetailButton());
 
@@ -158,6 +159,7 @@ public class JobPanel extends AbstractPanel {
 		JPanel docHeaderPanel = new JPanel(new MigLayout());
 		JLabel documentsLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "documents"));
 		documentsLabel.setFont(FontProvider.TITLE_SMALL);
+		documentsLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "documentIcon"));
 		docHeaderPanel.add(documentsLabel);
 		docHeaderPanel.add(getDocumentDetailButton());
 
@@ -182,20 +184,22 @@ public class JobPanel extends AbstractPanel {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				String name = evt.getPropertyName();
-				if (name.equals(ModelEventManager.OPERATION_INSERTED) || name.equals(ModelEventManager.OPERATION_MODIFIED) || name.equals(ModelEventManager.OPERATION_DELETED)) {
-					Operation operation = (Operation) evt.getNewValue();
-					if (operation.getJob().getId() == job.getId()) {
-						loadOperations();
-					}
-				} else if (name.equals(ModelEventManager.DOCUMENT_INSERTED) || name.equals(ModelEventManager.DOCUMENT_MODIFIED) || name.equals(ModelEventManager.DOCUMENT_DELETED)) {
-					Document document = (Document) evt.getNewValue();
-					if (document.getJob().getId() == job.getId()) {
-						loadDocuments();
-					}
-				} else if (name.equals(ModelEventManager.JOB_MODIFIED)) {
-					Job j = (Job) evt.getNewValue();
-					if (j.getId() == job.getId()) {
-						loadHeader();
+				if (job != null) {
+					if (name.equals(ModelEventManager.OPERATION_INSERTED) || name.equals(ModelEventManager.OPERATION_MODIFIED) || name.equals(ModelEventManager.OPERATION_DELETED)) {
+						Operation operation = (Operation) evt.getNewValue();
+						if (operation.getJob().getId() == job.getId()) {
+							loadOperations();
+						}
+					} else if (name.equals(ModelEventManager.DOCUMENT_INSERTED) || name.equals(ModelEventManager.DOCUMENT_MODIFIED) || name.equals(ModelEventManager.DOCUMENT_DELETED)) {
+						Document document = (Document) evt.getNewValue();
+						if (document.getJob().getId() == job.getId()) {
+							loadDocuments();
+						}
+					} else if (name.equals(ModelEventManager.JOB_MODIFIED)) {
+						Job j = (Job) evt.getNewValue();
+						if (j.getId() == job.getId()) {
+							loadHeader();
+						}
 					}
 				}
 			}
@@ -224,6 +228,7 @@ public class JobPanel extends AbstractPanel {
 		if (headerPanel == null) {
 			JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
 			titleLabel.setFont(FontProvider.TITLE_SMALL);
+			titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "jobIcon"));
 			JLabel protocolLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "protocol"));
 			JLabel dueDateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "dueDate"));
 			JLabel startDateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "startDate"));
@@ -631,6 +636,7 @@ public class JobPanel extends AbstractPanel {
 
 		JLabel title = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "documentDetail"));
 		title.setFont(FontProvider.TITLE_SMALL);
+		title.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "documentIcon"));
 		documentDetailPanel.add(title);
 		documentDetailPanel.add(getBackDetailButton(), "wrap");
 		documentDetailPanel.add(new JLabel(getResourceMap().getString("viewDocuments.Panel.protocol")), "gap para");
@@ -687,6 +693,7 @@ public class JobPanel extends AbstractPanel {
 
 		JLabel title = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "operationDetail"));
 		title.setFont(FontProvider.TITLE_SMALL);
+		title.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "operationIcon"));
 		operationDetailPanel.add(title);
 		operationDetailPanel.add(getBackDetailButton(), "wrap");
 		operationDetailPanel.add(new JLabel(getResourceMap().getString("viewOperations.Panel.description")), "gap para");
@@ -722,6 +729,8 @@ public class JobPanel extends AbstractPanel {
 		operationsEventList.addAll(operations);
 		operationsTableModel = new EventJXTableModel<Operation>(operationsEventList, new BeanTableFormat<Operation>(Operation.class, operationsProperties, operationsColumnsNames, operationsWritables));
 		getOperationsTable().setModel(operationsTableModel);
+		/* imposto la dimensione delle colonne più importanti */
+		getOperationsTable().getColumnModel().getColumn(0).setPreferredWidth(500);
 	}
 
 	private void loadDocuments() {
@@ -730,6 +739,9 @@ public class JobPanel extends AbstractPanel {
 		documentsEventList.addAll(documents);
 		documentsTableModel = new EventJXTableModel<Document>(documentsEventList, new BeanTableFormat<Document>(Document.class, documentsProperties, documentsColumnsNames, documentsWritables));
 		getDocumentsTable().setModel(documentsTableModel);
+		/* imposto la dimensione delle colonne più importanti */
+		getDocumentsTable().getColumnModel().getColumn(0).setPreferredWidth(17);
+		getDocumentsTable().getColumnModel().getColumn(2).setPreferredWidth(200);
 	}
 
 	private void loadHeader() {

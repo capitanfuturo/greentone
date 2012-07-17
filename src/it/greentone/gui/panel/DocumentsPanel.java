@@ -1,6 +1,7 @@
 package it.greentone.gui.panel;
 
 import it.greentone.GreenToneUtilities;
+import it.greentone.gui.FontProvider;
 import it.greentone.gui.action.ActionProvider;
 import it.greentone.gui.action.DeleteDocumentAction;
 import it.greentone.gui.action.SaveDocumentAction;
@@ -129,6 +130,9 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 
 	@Override
 	protected JPanel createHeaderPanel() {
+		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+		titleLabel.setFont(FontProvider.TITLE_SMALL);
+		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
 		JLabel protocolLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "protocol"));
 		JLabel descriptionLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "description"));
 		JLabel jobLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
@@ -139,6 +143,8 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
 
 		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][20%][]"));
+
+		headerPanel.add(titleLabel, "wrap");
 
 		headerPanel.add(protocolLabel, "gap para");
 		headerPanel.add(getProtocolTextField(), "growx, wrap");

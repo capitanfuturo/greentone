@@ -156,6 +156,7 @@ public class HomePanel extends AbstractPanel {
 			searchPanel = new JPanel(new MigLayout("", "[70%][30%]", "[][][]"));
 			JLabel searchLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "search"));
 			searchLabel.setFont(FontProvider.TITLE_SMALL);
+			searchLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "searchIcon"));
 
 			searchPanel.add(searchLabel, "span 2, wrap");
 			searchPanel.add(getSearchTextField(), "growx");
@@ -321,6 +322,8 @@ public class HomePanel extends AbstractPanel {
 
 		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobList"));
 		titleLabel.setFont(FontProvider.TITLE_SMALL);
+		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "jobListIcon"));
+
 		getCentralPanel().add(titleLabel, "wrap");
 		getCentralPanel().add(new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobListDescription")), "wrap");
 
@@ -347,6 +350,8 @@ public class HomePanel extends AbstractPanel {
 		 */
 		JLabel agendaLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "agenda"));
 		agendaLabel.setFont(FontProvider.TITLE_SMALL);
+		agendaLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "agendaIcon"));
+
 		getAgendaPanel().add(agendaLabel, "wrap");
 		getAgendaPanel().add(new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "agendaDescription")), "wrap");
 
