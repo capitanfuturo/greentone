@@ -1,99 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CartaIntestata" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="1.0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CartaIntestata" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9fe4a87a-b7f5-4119-a5be-d7c3441ec6f3">
+	<property name="ireport.zoom" value="1.0263162364614138"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<queryString language="SQL">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="H2"/>
+	<parameter name="officeName" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="officeAddress" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="officeTelephones" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="officeCfPiva" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="officeEmail" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="officeLogo" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="personId" class="java.lang.Long"/>
+	<parameter name="message" class="java.lang.String"/>
+	<queryString>
 		<![CDATA[SELECT
-     GT_OFFICE."ADDRESS" AS address,
-     GT_OFFICE."CAP" AS cap,
-     GT_OFFICE."CF" AS cf,
-     GT_OFFICE."CITY" AS city,
-     GT_OFFICE."EMAIL" AS email,
-     GT_OFFICE."FAX" AS fax,
-     GT_OFFICE."LOGO" AS logo,
-     GT_OFFICE."NAME" AS name,
-     GT_OFFICE."PIVA" AS piva,
-     GT_OFFICE."PROVINCE" AS province,
-     GT_OFFICE."TELEPHONE1" AS telephone1,
-     GT_OFFICE."TELEPHONE2" AS telephone2
+     p."NAME" AS name,
+     p."ADDRESS" AS address,
+     p."CITY" AS city,
+     p."PROVINCE" AS province,
+     p."CAP" AS cap
 FROM
-     "PUBLIC"."GT_OFFICE" GT_OFFICE]]>
+     "PUBLIC"."GT_PERSON" p
+WHERE
+     p."ID" = $P{personId}]]>
 	</queryString>
-	<field name="address" class="java.lang.String"/>
-	<field name="cap" class="java.lang.String"/>
-	<field name="cf" class="java.lang.String"/>
-	<field name="city" class="java.lang.String"/>
-	<field name="email" class="java.lang.String"/>
-	<field name="fax" class="java.lang.String"/>
-	<field name="logo" class="java.awt.Image"/>
 	<field name="name" class="java.lang.String"/>
-	<field name="piva" class="java.lang.String"/>
+	<field name="address" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
 	<field name="province" class="java.lang.String"/>
-	<field name="telephone1" class="java.lang.String"/>
-	<field name="telephone2" class="java.lang.String"/>
+	<field name="cap" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="128" splitType="Stretch">
-			<line>
-				<reportElement x="0" y="0" width="555" height="1"/>
-			</line>
-			<textField>
-				<reportElement x="172" y="7" width="383" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="172" y="28" width="383" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{address} + " " + $F{city} +
-( $F{province} == null ? "" : " ("+ $F{province} +")" )]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="172" y="49" width="383" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[( $F{telephone1} == null ? "" : "tel.: " + $F{telephone1} + " ") +
-( $F{telephone2} == null ? "" : "tel.: " + $F{telephone2} + " ") +
-( $F{fax} == null ? "" : "fax.: " + $F{fax} )]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="172" y="93" width="383" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[( $F{email} == null ? "" : "email:"+$F{email} )]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="172" y="71" width="383" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[( $F{cf} == null ? "" : "C.F: " + $F{cf} +" ") +
-( $F{piva} == null ? "" : "P.IVA: " + $F{piva} )]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="0" y="123" width="555" height="1"/>
-			</line>
-			<image>
-				<reportElement x="0" y="7" width="172" height="111"/>
-				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
-			</image>
-		</band>
-	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="74">
+			<textField>
+				<reportElement uuid="ce8727ca-6d91-4cd4-a527-e700532cccfb" x="79" y="7" width="383" height="11"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{officeName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="39057735-64af-45ee-bad1-bf344ebded26" x="79" y="17" width="383" height="11"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{officeAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d9bf636b-ee3a-453d-be4d-21dc5897f68d" x="79" y="38" width="383" height="12"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{officeCfPiva}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="f0b39eac-a32d-4550-8b30-cb1313360b42" x="0" y="0" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="682f2fb2-b724-4496-bf9d-1e4ea63ebdd3" x="79" y="27" width="383" height="12"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{officeTelephones}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="e6f5ca8e-225b-4190-85e8-f6f3f96f2ba4" x="0" y="7" width="63" height="53"/>
+				<imageExpression><![CDATA[$P{officeLogo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="c58a1e71-1d06-45bc-a084-bd3012e1a957" x="79" y="49" width="383" height="11"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{officeEmail}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="5dd11fbd-14ec-4064-b21d-6ef00e2fce86" x="0" y="67" width="555" height="1"/>
+			</line>
+		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="61" splitType="Stretch"/>
-	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="256" splitType="Stretch">
+			<textField>
+				<reportElement uuid="87f02cbb-636e-4af6-a3c9-7fb50dc1ea74" x="385" y="18" width="170" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Spett.le " + $F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="64468f63-fce7-4e5c-bea4-ce262e38b9e6" x="385" y="44" width="175" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cap}+", "+$F{city}+" ("+$F{province}+ ")"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="58f09dd7-fcfb-4224-a75c-b8d68de42014" x="385" y="31" width="170" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f508a592-7e01-4334-878c-e942a5ef355c" x="0" y="74" width="555" height="171"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{message}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="27" splitType="Stretch">
+			<textField>
+				<reportElement uuid="4bcc72e0-0aad-432a-9a35-ffc53c9f26fe" x="237" y="7" width="80" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" di "+$V{PAGE_COUNT}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="66015b61-8d91-4885-bad8-d10335a41d01" x="0" y="3" width="555" height="1"/>
+			</line>
+		</band>
 	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

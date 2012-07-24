@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -85,7 +85,7 @@ public class ReportManager
 			  new JRBeanCollectionDataSource(reportDescriptor.getDataSet());
 			final JasperPrint print =
 			  JasperFillManager.fillReport(reportDescriptor.getReportInputStream(),
-			    reportDescriptor.getParams(), dataSource);
+			    reportDescriptor.getParameters(), dataSource);
 			File tempFile = null;
 			try
 			{
@@ -146,13 +146,11 @@ public class ReportManager
 		{
 			/* imposta i parametri comuni della categoria */
 			logProvider.getLogger().info("Report common parameters setup");
-			selectedReportDescriptor.setup(category.getCommonParameters());
 			/*
-			 * TODO chiama il metodo di impostazione dei parametri di lancio
-			 * attraverso una dialog
+			 * chiama il metodo di impostazione dei parametri di lancio attraverso una
+			 * dialog
 			 */
-			/* TODO recupera i parametri immessi dall'utente */
-			/* esegue il report in un processo ad-hoc */
+			selectedReportDescriptor.retrieveParameters();
 			new SwingWorker<Void, Void>()
 				{
 
