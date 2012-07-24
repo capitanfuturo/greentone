@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -27,14 +27,6 @@ public interface ReportDescriptorInterface
 {
 
 	/**
-	 * Esegue l'inizializzazione del report prima che venga eseguito.
-	 * 
-	 * @param commonParameters
-	 *          input da passare al report
-	 */
-	public void setup(Map<String, Object> commonParameters);
-
-	/**
 	 * Restituisce l'insieme dei dati da lavorare.
 	 * 
 	 * @return il dataset del report
@@ -46,7 +38,12 @@ public interface ReportDescriptorInterface
 	 * 
 	 * @return una mappa dei parametri di esecuzione del report
 	 */
-	public Map<String, Object> getParams();
+	public Map<String, Object> getParameters();
+
+	/**
+	 * Carica i parametri specifici per il report.
+	 */
+	public void retrieveParameters();
 
 	/**
 	 * Restituisce uno stream verso il sorgente del report.
@@ -67,7 +64,7 @@ public interface ReportDescriptorInterface
 	 * 
 	 * @return il nome del report
 	 */
-	public String getName();
+	public String getLocalizedName();
 
 	/**
 	 * Enumerato delle estensioni dei file supportati dal motore di reportistica
@@ -86,7 +83,7 @@ public interface ReportDescriptorInterface
 			@Override
 			public String getExtension()
 			{
-				return "pdf";
+				return ".pdf";
 			}
 
 		},
@@ -96,7 +93,7 @@ public interface ReportDescriptorInterface
 			@Override
 			public String getExtension()
 			{
-				return "xml";
+				return ".xml";
 			}
 		},
 		/** HyperText Markup Language */
@@ -105,7 +102,7 @@ public interface ReportDescriptorInterface
 			@Override
 			public String getExtension()
 			{
-				return "html";
+				return ".html";
 			}
 		};
 

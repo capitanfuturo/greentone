@@ -17,6 +17,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -28,7 +30,7 @@ import org.springframework.stereotype.Component;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2011-2012 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -90,6 +92,18 @@ public class ReportsListDialog extends JDialog
 		if(reportsList == null)
 		{
 			reportsList = new JList();
+			reportsList.addListSelectionListener(new ListSelectionListener()
+				{
+
+					@Override
+					public void valueChanged(ListSelectionEvent e)
+					{
+						if(!e.getValueIsAdjusting())
+						{
+							getOkButton().setEnabled(e.getSource() != null);
+						}
+					}
+				});
 		}
 		return reportsList;
 	}
@@ -112,6 +126,7 @@ public class ReportsListDialog extends JDialog
 						setVisible(false);
 					}
 				});
+			okButton.setEnabled(false);
 			okButton.setText(resourceMap.getString("viewReports.Dialog.ok"));
 		}
 		return okButton;
@@ -161,7 +176,8 @@ public class ReportsListDialog extends JDialog
 				  public int compare(ReportDescriptorInterface o1,
 				    ReportDescriptorInterface o2)
 				  {
-					  return o1.getName().compareToIgnoreCase(o2.getName());
+					  return o1.getLocalizedName().compareToIgnoreCase(
+					    o2.getLocalizedName());
 				  }
 			  });
 
