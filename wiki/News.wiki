@@ -1,5 +1,10 @@
 #labels Featured
 = News =
+*25 Luglio 2012:* rilasciata la versione 0.1.2:
+  * Miglioramenti alle schede di dettaglio cliente ed incarico
+  * Fix vari sull'interfaccia grafica
+  * [http://code.google.com/p/greentone/issues/list?can=1&q=Milestone%3D0.1.1+&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=tiles Changelog 0.1.2] completo
+
 *22 Maggio 2012:* rilasciata la versione 0.1.1:
   * Miglioramenti alla pagina iniziale
   * Fix vari sull'interfaccia grafica
