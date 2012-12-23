@@ -6,12 +6,14 @@ import it.greentone.gui.MainPanel;
 import it.greentone.gui.action.ContextualAction;
 import it.greentone.persistence.Job;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -37,69 +39,68 @@ import org.jdesktop.application.ResourceMap;
  * @author Giuseppe Caliendo
  */
 @SuppressWarnings("serial")
-public class JobDetailsPanel extends JPanel
-{
-	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
-	private static final JLabel NA_LABEL = new JLabel("N/A");
+public class JobDetailsPanel extends JPanel {
+
+	private static final String ACTION_ICON_SUFFIX = ".Action.largeIcon";
 
 	/**
 	 * Pannello di dettaglio di un incarico.
 	 * 
 	 * @param job
-	 *          incarico di cui mostrare i dettagli
+	 *            incarico di cui mostrare i dettagli
 	 * @param jobPanel
 	 * @param mainPanel
 	 * @param resourceMap
 	 */
 	public JobDetailsPanel(final Job job, final JobPanel jobPanel,
-	  final MainPanel mainPanel, ResourceMap resourceMap)
-	{
-		JButton viewDetailsButton = new JButton(new AbstractAction()
-			{
+			final MainPanel mainPanel, ResourceMap resourceMap) {
+		JButton viewDetailsButton = new JButton(new AbstractAction() {
 
-				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					jobPanel.setJob(job);
-					jobPanel.setup();
-					ContextualAction.addTab(mainPanel, jobPanel);
-				}
-			});
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jobPanel.setJob(job);
+				jobPanel.setup();
+				ContextualAction.addTab(mainPanel, jobPanel);
+			}
+		});
 		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
-		  + ACTION_SMALL_ICON_SUFFIX));
+				+ ACTION_ICON_SUFFIX));
 		viewDetailsButton.setToolTipText(resourceMap
-		  .getString("JobDetailsPanel.jobDetails"));
+				.getString("JobDetailsPanel.jobDetails"));
+		String viewDetailsText = job.getProtocol();
+		if (job.getDescription() != null) {
+			viewDetailsText = viewDetailsText + " " + job.getDescription();
+		}
+		viewDetailsButton.setText(viewDetailsText);
+		viewDetailsButton.setFont(FontProvider.TITLE_SMALL);
+		viewDetailsButton.setHorizontalAlignment(SwingConstants.LEFT);
 
-		JLabel protocolLabel = new JLabel(job.getProtocol());
-		protocolLabel.setFont(FontProvider.TITLE_SMALL);
-		JLabel descriptionFieldLabel = new JLabel(job.getDescription());
-		descriptionFieldLabel.setFont(FontProvider.PARAGRAPH_BIG);
-		JLabel dueDateFieldLabel =
-		  new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
-		JLabel customerFieldLabel =
-		  new JLabel(job.getCustomer() != null? job.getCustomer().toString(): null);
+		JPanel northPanel = new JPanel(new BorderLayout());
+		northPanel.add(viewDetailsButton, BorderLayout.CENTER);
 
-		setLayout(new MigLayout());
-		add(viewDetailsButton, "span 1 2");
-		add(protocolLabel);
-		add(descriptionFieldLabel, "wrap");
-		add(new JLabel(resourceMap.getString("JobDetailsPanel.duedate")));
-		if(job.getDueDate() != null)
-		{
-			add(dueDateFieldLabel);
+		JPanel southPanel = new JPanel(new BorderLayout());
+		String customerString = job.getCustomer() != null ? job.getCustomer()
+				.toString() : null;
+		JLabel customerLabel = new JLabel(customerString);
+		customerLabel.setFont(FontProvider.PARAGRAPH_BIG);
+		JPanel leftPanel = new JPanel(new MigLayout());
+		leftPanel.add(new JLabel(resourceMap
+				.getString("JobDetailsPanel.customer")));
+		leftPanel.add(customerLabel);
+		southPanel.add(leftPanel, BorderLayout.WEST);
+
+		JPanel rightPanel = new JPanel(new MigLayout());
+		if (job.getDueDate() != null) {
+			rightPanel.add(new JLabel(resourceMap
+					.getString("JobDetailsPanel.duedate")
+					+ GreenToneUtilities.formatDateTime(job.getDueDate())));
+		} else {
+			rightPanel.add(new JLabel());
 		}
-		else
-		{
-			add(NA_LABEL);
-		}
-		add(new JLabel(resourceMap.getString("JobDetailsPanel.customer")));
-		if(job.getCustomer() != null)
-		{
-			add(customerFieldLabel, "wrap");
-		}
-		else
-		{
-			add(NA_LABEL);
-		}
+		southPanel.add(rightPanel, BorderLayout.EAST);
+
+		setLayout(new BorderLayout());
+		add(northPanel, BorderLayout.NORTH);
+		add(southPanel, BorderLayout.CENTER);
 	}
 }
