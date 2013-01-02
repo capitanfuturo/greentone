@@ -9,6 +9,7 @@ import it.greentone.report.ReportDescriptorInterface.ExtensionType;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.inject.Inject;
 import javax.swing.JDialog;
@@ -47,8 +48,7 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class ReportManager
-{
+public class ReportManager {
 	@Inject
 	PersonService personService;
 	@Inject
@@ -64,10 +64,9 @@ public class ReportManager
 	/**
 	 * Manager dei report.
 	 */
-	public ReportManager()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public ReportManager() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext()
+				.getResourceMap();
 		mainFrame = Application.getInstance(GreenTone.class).getMainFrame();
 	}
 
@@ -75,54 +74,47 @@ public class ReportManager
 	 * Genera un report a partire da un descrittore di report
 	 * 
 	 * @param reportDescriptor
-	 *          descrittore di report
+	 *            descrittore di report
 	 */
-	public void generate(ReportDescriptorInterface reportDescriptor)
-	{
-		try
-		{
-			final JRBeanCollectionDataSource dataSource =
-			  new JRBeanCollectionDataSource(reportDescriptor.getDataSet());
-			final JasperPrint print =
-			  JasperFillManager.fillReport(reportDescriptor.getReportInputStream(),
-			    reportDescriptor.getParameters(), dataSource);
+	public void generate(ReportDescriptorInterface reportDescriptor) {
+		try {
+			final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(
+					reportDescriptor.getDataSet());
+			logProvider.getLogger().info(
+					"Filling report " + reportDescriptor.getLocalizedName());
+			final JasperPrint print = JasperFillManager.fillReport(
+					reportDescriptor.getReportInputStream(),
+					reportDescriptor.getParameters(), dataSource);
 			File tempFile = null;
-			try
-			{
-				tempFile =
-				  File.createTempFile(print.getName(), reportDescriptor
-				    .getExtensionType().getExtension());
-				if(tempFile != null)
-				{
-					final File fileToOpen = tempFile;
-					if(reportDescriptor.getExtensionType() == ExtensionType.PDF)
-					{
+			try {
+				tempFile = File.createTempFile(print.getName(),
+						reportDescriptor.getExtensionType().getExtension());
+				logProvider.getLogger().info("Report tmp file created");
+				if (tempFile != null) {
+					if (reportDescriptor.getExtensionType() == ExtensionType.PDF) {
 						JasperExportManager.exportReportToPdfFile(print,
-						  fileToOpen.getPath());
+								tempFile.getPath());
+					} else if (reportDescriptor.getExtensionType() == ExtensionType.XML) {
+						JasperExportManager.exportReportToXmlFile(print,
+								tempFile.getPath(), false);
+					} else if (reportDescriptor.getExtensionType() == ExtensionType.HTML) {
+						JasperExportManager.exportReportToHtmlFile(print,
+								tempFile.getPath());
 					}
-					else
-						if(reportDescriptor.getExtensionType() == ExtensionType.XML)
-						{
-							JasperExportManager.exportReportToXmlFile(print,
-							  fileToOpen.getPath(), false);
-						}
-						else
-							if(reportDescriptor.getExtensionType() == ExtensionType.HTML)
-							{
-								JasperExportManager.exportReportToHtmlFile(print,
-								  fileToOpen.getPath());
-							}
-					utilities.open(fileToOpen);
+					logProvider.getLogger().info(
+							"Trying to open new generated report");
+					utilities.open(tempFile);
 				}
+			} catch (IOException ex) {
+				logProvider.getLogger().log(
+						Level.SEVERE,
+						"Error generating "
+								+ reportDescriptor.getLocalizedName(), ex);
 			}
-			catch(IOException ex)
-			{
-				ex.printStackTrace();
-			}
-		}
-		catch(final Exception e)
-		{
-			e.printStackTrace();
+		} catch (final Exception e) {
+			logProvider.getLogger().log(Level.SEVERE,
+					"Error generating " + reportDescriptor.getLocalizedName(),
+					e);
 		}
 	}
 
@@ -130,60 +122,53 @@ public class ReportManager
 	 * Mostra il pannello di dialogo per la selezione del report
 	 * 
 	 * @param category
-	 *          categoria dei report
+	 *            categoria dei report
 	 */
-	public void showDialog(ReportsCategoryInterface category)
-	{
+	public void showDialog(ReportsCategoryInterface category) {
 		/* imposta la lista di report sul pannello di selezione delle stampe */
 		logProvider.getLogger().info("Report dialog setup");
 		reportsListDialog.setup(category);
 		/* mostra il pannello di selezione */
 		reportsListDialog.setVisible(true);
 		/* recupera il report selezionato */
-		final ReportDescriptorInterface selectedReportDescriptor =
-		  reportsListDialog.getSelectedReportDescriptor();
-		if(selectedReportDescriptor != null)
-		{
+		final ReportDescriptorInterface selectedReportDescriptor = reportsListDialog
+				.getSelectedReportDescriptor();
+		if (selectedReportDescriptor != null) {
 			/* imposta i parametri comuni della categoria */
 			logProvider.getLogger().info("Report common parameters setup");
 			/*
-			 * chiama il metodo di impostazione dei parametri di lancio attraverso una
-			 * dialog
+			 * chiama il metodo di impostazione dei parametri di lancio
+			 * attraverso una dialog
 			 */
 			selectedReportDescriptor.retrieveParameters();
-			new SwingWorker<Void, Void>()
-				{
+			new SwingWorker<Void, Void>() {
 
-					@Override
-					protected Void doInBackground() throws Exception
-					{
-						getMessageDialog().setVisible(true);
-						logProvider.getLogger().info(
-						  "Generating: " + selectedReportDescriptor);
-						generate(selectedReportDescriptor);
-						return null;
-					}
+				@Override
+				protected Void doInBackground() throws Exception {
+					getMessageDialog().setVisible(true);
+					logProvider.getLogger().info(
+							"Generating: " + selectedReportDescriptor);
+					generate(selectedReportDescriptor);
+					return null;
+				}
 
-					@Override
-					protected void done()
-					{
-						getMessageDialog().setVisible(false);
-					}
-				}.execute();
+				@Override
+				protected void done() {
+					getMessageDialog().setVisible(false);
+				}
+			}.execute();
 		}
 	}
 
-	private JDialog getMessageDialog()
-	{
-		if(messageDialog == null)
-		{
+	private JDialog getMessageDialog() {
+		if (messageDialog == null) {
 			messageDialog = new JDialog(mainFrame);
 			messageDialog.setTitle(resourceMap.getString("Application.title"));
 			messageDialog.getContentPane().setLayout(new BorderLayout(5, 5));
 			JPanel panel = new JPanel(new MigLayout());
 			panel.add(new JLabel(), "wrap");
-			panel
-			  .add(new JLabel(resourceMap.getString("viewReports.Dialog.printing")));
+			panel.add(new JLabel(resourceMap
+					.getString("viewReports.Dialog.printing")));
 			panel.add(new JLabel(), "wrap");
 			messageDialog.getContentPane().add(panel, BorderLayout.CENTER);
 			messageDialog.pack();

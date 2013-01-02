@@ -110,29 +110,55 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 	public OperationsPanel() {
 		super();
 
-		tableProperties = new String[] { "description", "job", "operationType", "isVacazione", "isProfessionalVacazione", "operationDate", "amount", "numVacazioni" };
-		tableColumnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.type"),
-				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isVacazione"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isProfessionalVacazione"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.amount"),
-				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.numVacazioni") };
-		tableWritables = new boolean[] { false, false, false, false, false, false, false, false };
+		tableProperties = new String[] { "description", "job", "operationType",
+				"isVacazione", "isProfessionalVacazione", "operationDate",
+				"amount", "numVacazioni" };
+		tableColumnsNames = new String[] {
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.description"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.type"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.isVacazione"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.isProfessionalVacazione"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
+				getResourceMap()
+						.getString(LOCALIZATION_PREFIX + "Table.amount"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.numVacazioni") };
+		tableWritables = new boolean[] { false, false, false, false, false,
+				false, false, false };
 	}
 
 	@Override
 	protected JPanel createHeaderPanel() {
-		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+		JLabel titleLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "title"));
 		titleLabel.setFont(FontProvider.TITLE_SMALL);
-		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
-		JLabel descriptionLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "description"));
-		JLabel jobLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
-		JLabel typeLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "type"));
-		vacazioneLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isVacazione"));
-		professionalVacazioneLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isProfessionalVacazione"));
-		JLabel dateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "date"));
-		numVacazioniLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "vacazioni"));
-		JLabel amountLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "amount"));
-		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
+		titleLabel.setIcon(getResourceMap().getIcon(
+				LOCALIZATION_PREFIX + "titleIcon"));
+		JLabel descriptionLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "description"));
+		JLabel jobLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "job"));
+		JLabel typeLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "type"));
+		vacazioneLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "isVacazione"));
+		professionalVacazioneLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "isProfessionalVacazione"));
+		JLabel dateLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "date"));
+		numVacazioniLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "vacazioni"));
+		JLabel amountLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "amount"));
+		JLabel requiredLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "requiredField"));
 
-		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%]"));
+		JPanel headerPanel = new JPanel(new MigLayout("",
+				"[][10%][][10%][][10%]"));
 
 		headerPanel.add(titleLabel, "wrap");
 
@@ -187,27 +213,28 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 		if (descriptionTextField == null) {
 			descriptionTextField = new JTextField();
 			registerComponent(descriptionTextField);
-			descriptionTextField.getDocument().addDocumentListener(new DocumentListener() {
+			descriptionTextField.getDocument().addDocumentListener(
+					new DocumentListener() {
 
-				@Override
-				public void removeUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void removeUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void insertUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void insertUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void changedUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void changedUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				private void toogleAction() {
-					toggleSaveAction();
-				}
-			});
+						private void toogleAction() {
+							toggleSaveAction();
+						}
+					});
 		}
 		return descriptionTextField;
 	}
@@ -254,7 +281,8 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 						 * di operazione è lavoro: On. a vacazione, Vacazione
 						 * aiutante, Vacazioni.
 						 */
-						boolean isTask = OperationType.values()[typeComboBox.getSelectedIndex()] == OperationType.TASK;
+						boolean isTask = OperationType.values()[typeComboBox
+								.getSelectedIndex()] == OperationType.TASK;
 						getVacazioneCheckBox().setVisible(isTask);
 						vacazioneLabel.setVisible(isTask);
 						getProfessionalVacazioneCheckBox().setVisible(isTask);
@@ -344,7 +372,8 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 	 */
 	public JFormattedTextField getAmountTextField() {
 		if (amountTextField == null) {
-			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+			DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat
+					.getInstance();
 			decimalFormat.setCurrency(Currency.getInstance("EUR"));
 			decimalFormat.setMinimumFractionDigits(2);
 			decimalFormat.setMaximumFractionDigits(2);
@@ -353,7 +382,8 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 			amountTextField.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusLost(FocusEvent e) {
-					amountTextField.setText(amountTextField.getText().replace('.', ','));
+					amountTextField.setText(amountTextField.getText().replace(
+							'.', ','));
 				}
 			});
 
@@ -387,7 +417,10 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 	 * </ul>
 	 */
 	private void toggleSaveAction() {
-		saveOperationAction.setSaveOperationActionEnabled(GreenToneUtilities.getText(getDescriptionTextField()) != null && getJobComboBox().getSelectedItem() != null && getTypeComboBox().getSelectedItem() != null);
+		saveOperationAction.setSaveOperationActionEnabled(GreenToneUtilities
+				.getText(getDescriptionTextField()) != null
+				&& getJobComboBox().getSelectedItem() != null
+				&& getTypeComboBox().getSelectedItem() != null);
 	}
 
 	@Override
@@ -402,6 +435,8 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 		getContextualToolBar().add(actionProvider.getDeleteOperation());
 		getContextualToolBar().addSeparator();
 		getContextualToolBar().add(actionProvider.getViewReports());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getViewHelp());
 	}
 
 	@Override
@@ -416,7 +451,8 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 		/* Imposto di default la data odierna */
 		getOperationDate().setDate(new DateTime().toDate());
 		/* Imposto il tipo a lavoro */
-		getTypeComboBox().setSelectedItem(OperationType.TASK.getLocalizedName());
+		getTypeComboBox()
+				.setSelectedItem(OperationType.TASK.getLocalizedName());
 	}
 
 	@Override
@@ -427,20 +463,30 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 		getDescriptionTextField().setText(selectedOperation.getDescription());
 		Job job = selectedOperation.getJob();
 		getJobComboBox().getModel().setSelectedItem(job);
-		getTypeComboBox().setSelectedItem(selectedOperation.getOperationType() != null ? selectedOperation.getOperationType().getLocalizedName() : null);
+		getTypeComboBox()
+				.setSelectedItem(
+						selectedOperation.getOperationType() != null ? selectedOperation
+								.getOperationType().getLocalizedName() : null);
 		getVacazioneCheckBox().setSelected(selectedOperation.getIsVacazione());
-		getProfessionalVacazioneCheckBox().setSelected(selectedOperation.getIsProfessionalVacazione());
-		getOperationDate().setDate(selectedOperation.getOperationDate() != null ? selectedOperation.getOperationDate().toDate() : null);
+		getProfessionalVacazioneCheckBox().setSelected(
+				selectedOperation.getIsProfessionalVacazione());
+		getOperationDate()
+				.setDate(
+						selectedOperation.getOperationDate() != null ? selectedOperation
+								.getOperationDate().toDate() : null);
 		getAmountTextField().setValue(selectedOperation.getAmount());
-		getNumVacazioniTextField().setValue(selectedOperation.getNumVacazioni());
+		getNumVacazioniTextField()
+				.setValue(selectedOperation.getNumVacazioni());
 		/*
 		 * abilito i campi di importo e vacazione a seconda che il flag sia
 		 * abilitato
 		 */
 		getAmountTextField().setEnabled(!selectedOperation.getIsVacazione());
 		getCalcButton().setEnabled(!selectedOperation.getIsVacazione());
-		getNumVacazioniTextField().setEnabled(selectedOperation.getIsVacazione());
-		getProfessionalVacazioneCheckBox().setEnabled(selectedOperation.getIsVacazione());
+		getNumVacazioniTextField().setEnabled(
+				selectedOperation.getIsVacazione());
+		getProfessionalVacazioneCheckBox().setEnabled(
+				selectedOperation.getIsVacazione());
 	}
 
 	@Override
@@ -451,16 +497,21 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 		getCalcButton().setEnabled(false);
 
 		/* aggiorno la lista degli incarichi */
-		SortedList<Job> jobsList = new SortedList<Job>(jobService.getAllJobs(), new Comparator<Job>() {
+		SortedList<Job> jobsList = new SortedList<Job>(jobService.getAllJobs(),
+				new Comparator<Job>() {
 
-			@Override
-			public int compare(Job o1, Job o2) {
-				return o2.getProtocol().compareToIgnoreCase(o1.getProtocol());
-			}
-		});
+					@Override
+					public int compare(Job o1, Job o2) {
+						return o2.getProtocol().compareToIgnoreCase(
+								o1.getProtocol());
+					}
+				});
 		getJobComboBox().setModel(new EventComboBoxModel<Job>(jobsList));
 
-		tableModel = new EventJXTableModel<Operation>(operationService.getAllOperations(), new BeanTableFormat<Operation>(Operation.class, tableProperties, tableColumnsNames, tableWritables));
+		tableModel = new EventJXTableModel<Operation>(
+				operationService.getAllOperations(),
+				new BeanTableFormat<Operation>(Operation.class,
+						tableProperties, tableColumnsNames, tableWritables));
 		getContentTable().setModel(tableModel);
 		getContentTable().setSortOrder(1, SortOrder.DESCENDING);
 	}

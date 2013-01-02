@@ -33,39 +33,41 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author Giuseppe Caliendo
  */
 @Configuration
-public class GreenToneAppConfig
-{
+public class GreenToneAppConfig {
 	/**
 	 * Separatore di path di sistema
 	 */
 	public static final String FILE_SEPARATOR = System
-	  .getProperty("file.separator");
+			.getProperty("file.separator");
 	/**
 	 * Path di base dove salavare i dati di GreenTone
 	 */
 	public static final String BASE_PATH = System.getProperty("user.home")
-	  + FILE_SEPARATOR + "GreenTone" + FILE_SEPARATOR;
+			+ FILE_SEPARATOR + "GreenTone" + FILE_SEPARATOR;
 	/**
 	 * Path del file di configurazione di Spring Framework
 	 */
-	public static final String SPRING_CONFIG_LOCATION =
-	  "classpath:/it/greentone/resources/springAppConfig.xml";
+	public static final String SPRING_CONFIG_LOCATION = "classpath:/it/greentone/resources/springAppConfig.xml";
 	/**
 	 * Path del file di configurazione di Datanucleus
 	 */
-	public static final String DATANUCLEUS_CONFIG_LOCATION =
-	  "/it/greentone/resources/datanucleus.properties";
+	public static final String DATANUCLEUS_CONFIG_LOCATION = "/it/greentone/resources/datanucleus.properties";
+	/**
+	 * Path del repository dei report
+	 */
+	public static final String REPORTS_REPOSITORY = BASE_PATH + "report"
+			+ FILE_SEPARATOR;
 	/**
 	 * Path del repository dove salvare la copia dei file associati a dei
 	 * documenti
 	 */
 	public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents"
-	  + FILE_SEPARATOR;
+			+ FILE_SEPARATOR;
 	/**
 	 * Path dove risiede il manuale utente
 	 */
 	public static final String MANUAL_REPOSITORY = BASE_PATH + "manual"
-	  + FILE_SEPARATOR;
+			+ FILE_SEPARATOR;
 	/**
 	 * Nome del file del manuale utente
 	 */
@@ -81,17 +83,13 @@ public class GreenToneAppConfig
 	 * @return la factory di gestione della persistenza
 	 */
 	@Bean
-	PersistenceManagerFactory pmf()
-	{
+	PersistenceManagerFactory pmf() {
 
 		final Properties defaults = new Properties();
-		try
-		{
-			defaults
-			  .load(getClass().getResourceAsStream(DATANUCLEUS_CONFIG_LOCATION));
-		}
-		catch(IOException e)
-		{
+		try {
+			defaults.load(getClass().getResourceAsStream(
+					DATANUCLEUS_CONFIG_LOCATION));
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		final Properties props = new Properties(defaults);
@@ -99,11 +97,9 @@ public class GreenToneAppConfig
 		connectionURL.append("jdbc:h2:");
 		/* il db è posizionato nella cartella di esecuzione di greentone */
 		final String storageDirPath = BASE_PATH + "db";
-		if(storageDirPath != null && storageDirPath.length() > 0)
-		{
+		if (storageDirPath != null && storageDirPath.length() > 0) {
 			connectionURL.append(storageDirPath);
-			if(!storageDirPath.endsWith("/"))
-			{
+			if (!storageDirPath.endsWith("/")) {
 				connectionURL.append("/");
 			}
 		}
@@ -121,8 +117,7 @@ public class GreenToneAppConfig
 	 * @return il manager delle transazioni
 	 */
 	@Bean
-	public PlatformTransactionManager txManager()
-	{
+	public PlatformTransactionManager txManager() {
 		return new JdoTransactionManager(pmf());
 	}
 

@@ -1,9 +1,12 @@
 package it.greentone.report;
 
 import it.greentone.GreenTone;
+import it.greentone.GreenToneAppConfig;
 import it.greentone.persistence.Office;
 import it.greentone.persistence.OfficeService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,8 +40,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public abstract class AbstractReportDescriptor implements
-  ReportDescriptorInterface
-{
+		ReportDescriptorInterface {
 	private static final String LOC_PREFIX = "Reports.";
 	private static final String LOC_NAME_SUFFIX = ".name";
 	private static final String REPORT_SOURCE_SUFFIX = ".jasper";
@@ -69,70 +71,57 @@ public abstract class AbstractReportDescriptor implements
 	 * @param reportKey
 	 * @param type
 	 */
-	public AbstractReportDescriptor(String reportKey, ExtensionType type)
-	{
+	public AbstractReportDescriptor(String reportKey, ExtensionType type) {
 		this.type = type;
 		this.reportKey = reportKey;
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+		resourceMap = Application.getInstance(GreenTone.class).getContext()
+				.getResourceMap();
 		reportParameters = new HashMap<String, Object>();
 	}
 
 	@Override
-	public Map<String, Object> getParameters()
-	{
-		if(office == null)
-		{
+	public Map<String, Object> getParameters() {
+		if (office == null) {
 			office = officeService.loadOffice();
 			/* nome dello studio */
-			reportParameters.put(PARAMETER_OFFICE_NAME, office.getName() != null
-			  ? office.getName()
-			  : "");
+			reportParameters.put(PARAMETER_OFFICE_NAME,
+					office.getName() != null ? office.getName() : "");
 			/* indirizzo dello studio */
 			StringBuffer sb = new StringBuffer("");
-			if(office.getAddress() != null)
-			{
+			if (office.getAddress() != null) {
 				sb.append(office.getAddress() + " ");
 			}
-			if(office.getCity() != null)
-			{
+			if (office.getCity() != null) {
 				sb.append(office.getCity() + " ");
 			}
-			if(office.getProvince() != null)
-			{
+			if (office.getProvince() != null) {
 				sb.append("(" + office.getProvince() + ")");
 			}
 			reportParameters.put(PARAMETER_OFFICE_ADDRESS, sb.toString());
 			/* telefoni dello studio */
 			sb = new StringBuffer("");
-			if(office.getTelephone1() != null)
-			{
+			if (office.getTelephone1() != null) {
 				sb.append("tel.: " + office.getTelephone1() + " ");
 			}
-			if(office.getTelephone2() != null)
-			{
+			if (office.getTelephone2() != null) {
 				sb.append("tel.: " + office.getTelephone2() + " ");
 			}
-			if(office.getFax() != null)
-			{
+			if (office.getFax() != null) {
 				sb.append("fax.: " + office.getFax());
 			}
 			reportParameters.put(PARAMETER_OFFICE_TELEPHONES, sb.toString());
 			/* cf e p.iva dello studio */
 			sb = new StringBuffer("");
-			if(office.getCf() != null)
-			{
+			if (office.getCf() != null) {
 				sb.append("Cod.Fisc.: " + office.getCf() + " ");
 			}
-			if(office.getPiva() != null)
-			{
+			if (office.getPiva() != null) {
 				sb.append("P.IVA: " + office.getPiva());
 			}
 			reportParameters.put(PARAMETER_OFFICE_CF_PIVA, sb.toString());
 			/* email dello studio */
 			sb = new StringBuffer("");
-			if(office.getEmail() != null)
-			{
+			if (office.getEmail() != null) {
 				sb.append("E-mail: " + office.getEmail());
 			}
 			reportParameters.put(PARAMETER_OFFICE_EMAIL, sb.toString());
@@ -143,39 +132,33 @@ public abstract class AbstractReportDescriptor implements
 	}
 
 	@Override
-	public ExtensionType getExtensionType()
-	{
+	public ExtensionType getExtensionType() {
 		return type;
 	}
 
 	@Override
-	public String getLocalizedName()
-	{
+	public String getLocalizedName() {
 		return resourceMap.getString(LOC_PREFIX + reportKey + LOC_NAME_SUFFIX);
 	}
 
 	@Override
-	public InputStream getReportInputStream()
-	{
-		return getClass().getResourceAsStream(reportKey + REPORT_SOURCE_SUFFIX);
+	public InputStream getReportInputStream() throws IOException {
+		return new FileInputStream(GreenToneAppConfig.REPORTS_REPOSITORY
+				+ reportKey + REPORT_SOURCE_SUFFIX);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getLocalizedName();
 	}
 
 	@Override
-	public void retrieveParameters()
-	{
-		if(getReportParametersDialog() != null)
-		{
+	public void retrieveParameters() {
+		if (getReportParametersDialog() != null) {
 			getReportParametersDialog().setVisible(true);
-			Map<String, Object> outputParameters =
-			  getReportParametersDialog().getOutputParameters();
-			for(String key : outputParameters.keySet())
-			{
+			Map<String, Object> outputParameters = getReportParametersDialog()
+					.getOutputParameters();
+			for (String key : outputParameters.keySet()) {
 				reportParameters.put(key, outputParameters.get(key));
 			}
 		}
@@ -185,11 +168,10 @@ public abstract class AbstractReportDescriptor implements
 	 * Metodo da sovrascrivere con opportuna finestra di dialogo nel caso in cui
 	 * il report necessiti di parametri scelti dall'utente.
 	 * 
-	 * @return la finestra di dialogo adibita al recupero dei parametri per questo
-	 *         report
+	 * @return la finestra di dialogo adibita al recupero dei parametri per
+	 *         questo report
 	 */
-	protected ReportParametersDialog getReportParametersDialog()
-	{
+	protected ReportParametersDialog getReportParametersDialog() {
 		return null;
 	}
 
@@ -200,10 +182,14 @@ public abstract class AbstractReportDescriptor implements
 	 * @return un dataset vuoto per permettere la stampa delle bande che non
 	 *         verrebbero stampate nel caso di nessun dato
 	 */
-	protected final Collection<?> getEmptyDataSet()
-	{
+	protected final Collection<?> getEmptyDataSet() {
 		Collection<String> emptyDS = new ArrayList<String>();
 		emptyDS.add("");
 		return emptyDS;
+	}
+
+	@Override
+	public Collection<?> getDataSet() {
+		return getEmptyDataSet();
 	}
 }

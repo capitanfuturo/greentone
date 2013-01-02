@@ -107,32 +107,65 @@ public class PersonsPanel extends ContextualPanel<Person> {
 		super();
 		panelBundle = "viewPersons";
 
-		properties = new String[] { "name", "address", "city", "province", "cap", "isLegal", "cf", "piva", "identityCard", "telephone1", "telephone2", "fax", "email" };
-		columnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.name"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.address"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
-				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.province"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cap"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isLegal"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cf"),
-				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.piva"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.identityCard"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone1"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.telephone2"),
-				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.fax"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.email") };
-		writables = new boolean[] { false, false, false, false, false, false, false, false, false, false, false, false, false };
+		properties = new String[] { "name", "address", "city", "province",
+				"cap", "isLegal", "cf", "piva", "identityCard", "telephone1",
+				"telephone2", "fax", "email" };
+		columnsNames = new String[] {
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.name"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.address"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.city"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.province"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cap"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.isLegal"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.cf"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.piva"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.identityCard"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.telephone1"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.telephone2"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.fax"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.email") };
+		writables = new boolean[] { false, false, false, false, false, false,
+				false, false, false, false, false, false, false };
 	}
 
 	@Override
 	public JPanel createHeaderPanel() {
-		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+		JLabel titleLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "title"));
 		titleLabel.setFont(FontProvider.TITLE_SMALL);
-		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
-		JLabel addressLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "address"));
-		JLabel cityLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "city"));
-		JLabel provinceLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "province"));
-		JLabel capLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cap"));
-		JLabel telephone1Label = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone1"));
-		JLabel telephone2Label = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "telephone2"));
-		JLabel faxLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "fax"));
-		JLabel emailLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "email"));
-		JLabel isLegalLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isLegal"));
-		JLabel identityCardLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "identityCard"));
-		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
+		titleLabel.setIcon(getResourceMap().getIcon(
+				LOCALIZATION_PREFIX + "titleIcon"));
+		JLabel addressLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "address"));
+		JLabel cityLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "city"));
+		JLabel provinceLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "province"));
+		JLabel capLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "cap"));
+		JLabel telephone1Label = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "telephone1"));
+		JLabel telephone2Label = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "telephone2"));
+		JLabel faxLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "fax"));
+		JLabel emailLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "email"));
+		JLabel isLegalLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "isLegal"));
+		JLabel identityCardLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "identityCard"));
+		JLabel requiredLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "requiredField"));
 
-		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][10%][][10%][][10%]"));
+		JPanel headerPanel = new JPanel(new MigLayout("",
+				"[][10%][][10%][][10%][][10%]"));
 
 		headerPanel.add(titleLabel, "wrap");
 
@@ -177,7 +210,8 @@ public class PersonsPanel extends ContextualPanel<Person> {
 	 */
 	public JLabel getNameLabel() {
 		if (nameLabel == null) {
-			nameLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
+			nameLabel = new JLabel(getResourceMap().getString(
+					LOCALIZATION_PREFIX + "surnameName"));
 		}
 		return nameLabel;
 	}
@@ -191,27 +225,30 @@ public class PersonsPanel extends ContextualPanel<Person> {
 		if (nameTextField == null) {
 			nameTextField = new JTextField();
 			registerComponent(nameTextField);
-			nameTextField.getDocument().addDocumentListener(new DocumentListener() {
+			nameTextField.getDocument().addDocumentListener(
+					new DocumentListener() {
 
-				@Override
-				public void removeUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void removeUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void insertUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void insertUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void changedUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void changedUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				private void toogleAction() {
-					savePersonAction.setSavePersonActionEnabled(GreenToneUtilities.getText(nameTextField) != null);
-				}
-			});
+						private void toogleAction() {
+							savePersonAction
+									.setSavePersonActionEnabled(GreenToneUtilities
+											.getText(nameTextField) != null);
+						}
+					});
 		}
 		return nameTextField;
 	}
@@ -290,7 +327,8 @@ public class PersonsPanel extends ContextualPanel<Person> {
 	 */
 	public JFormattedTextField getCfTexField() {
 		if (cfTextField == null) {
-			final MaskFormatter mf = GreenToneUtilities.createMaskFormatter("UUUUUU##U##U###U");
+			final MaskFormatter mf = GreenToneUtilities
+					.createMaskFormatter("UUUUUU##U##U###U");
 			cfTextField = new JFormattedTextField(mf);
 			/*
 			 * Issue 25: se è obbligatorio il codice fiscale, flag legale non
@@ -308,7 +346,9 @@ public class PersonsPanel extends ContextualPanel<Person> {
 							}
 						}
 					} catch (Exception e1) {
-						logger.getLogger().info(getResourceMap().getString("ErrorMessage.parsingValue"));
+						logger.getLogger().info(
+								getResourceMap().getString(
+										"ErrorMessage.parsingValue"));
 					}
 				}
 			});
@@ -325,7 +365,8 @@ public class PersonsPanel extends ContextualPanel<Person> {
 	 */
 	public JTextField getPivaTextField() {
 		if (pivaTextField == null) {
-			MaskFormatter mf = GreenToneUtilities.createMaskFormatter("###########");
+			MaskFormatter mf = GreenToneUtilities
+					.createMaskFormatter("###########");
 			pivaTextField = new JFormattedTextField(mf);
 			registerComponent(pivaTextField);
 		}
@@ -426,7 +467,10 @@ public class PersonsPanel extends ContextualPanel<Person> {
 	 * fiscale.
 	 */
 	private void showCFMessageDialog() {
-		JOptionPane.showMessageDialog(this, getResourceMap().getString(LOCALIZATION_PREFIX + "cfMessage"), getResourceMap().getString(LOCALIZATION_PREFIX + "infoTitle"), JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this,
+				getResourceMap().getString(LOCALIZATION_PREFIX + "cfMessage"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "infoTitle"),
+				JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	@Override
@@ -437,25 +481,40 @@ public class PersonsPanel extends ContextualPanel<Person> {
 
 	private void toggleNameLabel() {
 		if (getIsLegalCheckBox().isSelected()) {
-			getNameLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
-			getCfLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + ":");
-			getPivaLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + " *:");
+			getNameLabel().setText(
+					getResourceMap().getString(LOCALIZATION_PREFIX + "name"));
+			getCfLabel().setText(
+					getResourceMap().getString(LOCALIZATION_PREFIX + "cf")
+							+ ":");
+			getPivaLabel().setText(
+					getResourceMap().getString(LOCALIZATION_PREFIX + "piva")
+							+ " *:");
 		} else {
-			getNameLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "surnameName"));
-			getCfLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + " *:");
-			getPivaLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + ":");
+			getNameLabel().setText(
+					getResourceMap().getString(
+							LOCALIZATION_PREFIX + "surnameName"));
+			getCfLabel().setText(
+					getResourceMap().getString(LOCALIZATION_PREFIX + "cf")
+							+ " *:");
+			getPivaLabel().setText(
+					getResourceMap().getString(LOCALIZATION_PREFIX + "piva")
+							+ ":");
 		}
 	}
 
 	private JLabel getCfLabel() {
 		if (cfLabel == null)
-			cfLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "cf") + " *:");
+			cfLabel = new JLabel(getResourceMap().getString(
+					LOCALIZATION_PREFIX + "cf")
+					+ " *:");
 		return cfLabel;
 	}
 
 	private JLabel getPivaLabel() {
 		if (pivaLabel == null)
-			pivaLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "piva") + ":");
+			pivaLabel = new JLabel(getResourceMap().getString(
+					LOCALIZATION_PREFIX + "piva")
+					+ ":");
 		return pivaLabel;
 	}
 
@@ -472,13 +531,17 @@ public class PersonsPanel extends ContextualPanel<Person> {
 		getContextualToolBar().add(actionProvider.getViewPerson());
 		getContextualToolBar().addSeparator();
 		getContextualToolBar().add(actionProvider.getViewReports());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getViewHelp());
 	}
 
 	@Override
 	public void populateModel() {
 		viewReportsAction.setup(personReportsCategory);
 		/* aggiorno la tabella delle persone in anagrafica */
-		tableModel = new EventJXTableModel<Person>(personService.getAllPersons(), new BeanTableFormat<Person>(Person.class, properties, columnsNames, writables));
+		tableModel = new EventJXTableModel<Person>(
+				personService.getAllPersons(), new BeanTableFormat<Person>(
+						Person.class, properties, columnsNames, writables));
 		getContentTable().setModel(tableModel);
 		getContentTable().setSortOrder(0, SortOrder.ASCENDING);
 	}
