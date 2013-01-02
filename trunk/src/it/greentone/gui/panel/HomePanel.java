@@ -14,6 +14,7 @@ import it.greentone.persistence.JobStatus;
 import it.greentone.report.HomeReportsCategory;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -29,12 +30,14 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
@@ -366,13 +369,29 @@ public class HomePanel extends AbstractPanel {
 
 		/*
 		 * popolo il pannello centrale con gli incarichi in lavorazione ordinati
-		 * per data di inizio
+		 * per data di inizio. Issue 168: aggiunto il supporto allo striping
 		 */
-		for (Job job : allJobsStartDate) {
-			JobDetailsPanel jobDetailsPanel = new JobDetailsPanel(job,
-					jobPanel, mainPanel, getResourceMap());
+		Color stripingColor = null;
+		if (stripingColor == null) {
+			stripingColor = UIManager
+					.getColor("UIColorHighlighter.stripingBackground");
+		}
+		if (stripingColor == null) {
+			stripingColor = HighlighterFactory.GENERIC_GRAY;
+		}
+
+		for (int i = 0; i < allJobsStartDate.size(); i++) {
+			HighlighterFactory.createAlternateStriping();
+			Color color = stripingColor;
+			if (i % 2 == 0) {
+				color = Color.WHITE;
+			}
+			JobDetailsPanel jobDetailsPanel = new JobDetailsPanel(
+					allJobsStartDate.get(i), jobPanel, mainPanel,
+					getResourceMap(), color);
 			getCentralPanel().add(jobDetailsPanel, "growx, wrap");
 		}
+
 		/*
 		 * Issue 127: se non c'è nessun incarico da visualizzare lo segnalo con
 		 * un messaggio all'utente
