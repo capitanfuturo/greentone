@@ -1,5 +1,6 @@
 package it.greentone.report;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
@@ -23,8 +24,7 @@ import java.util.Map;
  * 
  * @author Giuseppe Caliendo
  */
-public interface ReportDescriptorInterface
-{
+public interface ReportDescriptorInterface {
 
 	/**
 	 * Restituisce l'insieme dei dati da lavorare.
@@ -50,7 +50,7 @@ public interface ReportDescriptorInterface
 	 * 
 	 * @return uno stream verso il sorgente del report
 	 */
-	public InputStream getReportInputStream();
+	public InputStream getReportInputStream() throws IOException;
 
 	/**
 	 * Restituisce l'estensione del report.
@@ -72,36 +72,29 @@ public interface ReportDescriptorInterface
 	 * 
 	 * @author Giuseppe Caliendo
 	 */
-	public enum ExtensionType
-	{
+	public enum ExtensionType {
 		/**
 		 * Portable Document Format
 		 */
-		PDF
-		{
+		PDF {
 
 			@Override
-			public String getExtension()
-			{
+			public String getExtension() {
 				return ".pdf";
 			}
 
 		},
 		/** eXtensible Markup Language */
-		XML
-		{
+		XML {
 			@Override
-			public String getExtension()
-			{
+			public String getExtension() {
 				return ".xml";
 			}
 		},
 		/** HyperText Markup Language */
-		HTML
-		{
+		HTML {
 			@Override
-			public String getExtension()
-			{
+			public String getExtension() {
 				return ".html";
 			}
 		};

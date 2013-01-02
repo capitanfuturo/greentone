@@ -121,26 +121,51 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 	public DocumentsPanel() {
 		super();
 
-		properties = new String[] { "protocol", "description", "job", "recipient", "isDigital", "uri", "isOutgoing", "releaseDate", "notes" };
-		columnsNames = new String[] { getResourceMap().getString(LOCALIZATION_PREFIX + "Table.protocol"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.description"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
-				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.recipient"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.isDigital"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.outgoing"),
-				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"), getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes") };
-		writables = new boolean[] { false, false, false, false, false, false, false, false, false };
+		properties = new String[] { "protocol", "description", "job",
+				"recipient", "isDigital", "uri", "isOutgoing", "releaseDate",
+				"notes" };
+		columnsNames = new String[] {
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.protocol"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.description"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.job"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.recipient"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.isDigital"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.file"),
+				getResourceMap().getString(
+						LOCALIZATION_PREFIX + "Table.outgoing"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.date"),
+				getResourceMap().getString(LOCALIZATION_PREFIX + "Table.notes") };
+		writables = new boolean[] { false, false, false, false, false, false,
+				false, false, false };
 	}
 
 	@Override
 	protected JPanel createHeaderPanel() {
-		JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "title"));
+		JLabel titleLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "title"));
 		titleLabel.setFont(FontProvider.TITLE_SMALL);
-		titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "titleIcon"));
-		JLabel protocolLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "protocol"));
-		JLabel descriptionLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "description"));
-		JLabel jobLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "job"));
-		JLabel isDigitalLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "isDigital"));
-		JLabel incomingLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "outgoing"));
-		JLabel releaseDateLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "date"));
-		JLabel notesLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "notes"));
-		JLabel requiredLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "requiredField"));
+		titleLabel.setIcon(getResourceMap().getIcon(
+				LOCALIZATION_PREFIX + "titleIcon"));
+		JLabel protocolLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "protocol"));
+		JLabel descriptionLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "description"));
+		JLabel jobLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "job"));
+		JLabel isDigitalLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "isDigital"));
+		JLabel incomingLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "outgoing"));
+		JLabel releaseDateLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "date"));
+		JLabel notesLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "notes"));
+		JLabel requiredLabel = new JLabel(getResourceMap().getString(
+				LOCALIZATION_PREFIX + "requiredField"));
 
 		JPanel headerPanel = new JPanel(new MigLayout("", "[][10%][][20%][]"));
 
@@ -170,7 +195,8 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 		headerPanel.add(getRecipientComboBox(), "growx, wrap");
 
 		headerPanel.add(notesLabel, "gap para");
-		headerPanel.add(new JScrollPane(getNotesTextArea()), "span, growx, wrap");
+		headerPanel.add(new JScrollPane(getNotesTextArea()),
+				"span, growx, wrap");
 		headerPanel.add(requiredLabel);
 
 		return headerPanel;
@@ -183,7 +209,8 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 	 */
 	public JLabel getRecipientLabel() {
 		if (recipientLabel == null) {
-			recipientLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+			recipientLabel = new JLabel(getResourceMap().getString(
+					LOCALIZATION_PREFIX + "sender"));
 		}
 		return recipientLabel;
 	}
@@ -195,7 +222,8 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 	 */
 	public JLabel getFileLabel() {
 		if (fileLabel == null) {
-			fileLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "file"));
+			fileLabel = new JLabel(getResourceMap().getString(
+					LOCALIZATION_PREFIX + "file"));
 		}
 		return fileLabel;
 	}
@@ -211,27 +239,28 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 			registerComponent(protocolTextField);
 			protocolTextField.setEnabled(false);
 
-			protocolTextField.getDocument().addDocumentListener(new DocumentListener() {
+			protocolTextField.getDocument().addDocumentListener(
+					new DocumentListener() {
 
-				@Override
-				public void removeUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void removeUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void insertUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void insertUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void changedUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void changedUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				private void toogleAction() {
-					toggleSaveAction();
-				}
-			});
+						private void toogleAction() {
+							toggleSaveAction();
+						}
+					});
 		}
 		return protocolTextField;
 	}
@@ -245,27 +274,28 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 		if (descriptionTextField == null) {
 			descriptionTextField = new JTextField();
 			registerComponent(descriptionTextField);
-			descriptionTextField.getDocument().addDocumentListener(new DocumentListener() {
+			descriptionTextField.getDocument().addDocumentListener(
+					new DocumentListener() {
 
-				@Override
-				public void removeUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void removeUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void insertUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void insertUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				@Override
-				public void changedUpdate(DocumentEvent e) {
-					toogleAction();
-				}
+						@Override
+						public void changedUpdate(DocumentEvent e) {
+							toogleAction();
+						}
 
-				private void toogleAction() {
-					toggleSaveAction();
-				}
-			});
+						private void toogleAction() {
+							toggleSaveAction();
+						}
+					});
 		}
 		return descriptionTextField;
 	}
@@ -351,9 +381,13 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (outgoingCheckBox.isSelected()) {
-						getRecipientLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "recipient"));
+						getRecipientLabel().setText(
+								getResourceMap().getString(
+										LOCALIZATION_PREFIX + "recipient"));
 					} else {
-						getRecipientLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+						getRecipientLabel().setText(
+								getResourceMap().getString(
+										LOCALIZATION_PREFIX + "sender"));
 					}
 				}
 			});
@@ -411,7 +445,9 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 					JFileChooser fileChooser = new JFileChooser();
 					fileChooser.setFileHidingEnabled(true);
 					fileChooser.setAcceptAllFileFilterUsed(false);
-					fileChooser.setFileFilter(new FileNameExtensionFilter("pdf, png, tif, zip, rar, 7z, p7m", "pdf", "png", "tif", "zip", "rar", "7z", "p7m"));
+					fileChooser.setFileFilter(new FileNameExtensionFilter(
+							"pdf, png, tif, zip, rar, 7z, p7m", "pdf", "png",
+							"tif", "zip", "rar", "7z", "p7m"));
 
 					int returnVal = fileChooser.showOpenDialog(null);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -421,7 +457,8 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 					}
 				}
 			});
-			fileChooserButton.setText(getResourceMap().getString(LOCALIZATION_PREFIX + "openFile"));
+			fileChooserButton.setText(getResourceMap().getString(
+					LOCALIZATION_PREFIX + "openFile"));
 		}
 		return fileChooserButton;
 	}
@@ -441,7 +478,10 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 	 * </ul>
 	 */
 	private void toggleSaveAction() {
-		saveDocumentAction.setSaveDocumentActionEnabled(GreenToneUtilities.getText(getDescriptionTextField()) != null && getJobComboBox().getSelectedItem() != null && GreenToneUtilities.getText(getProtocolTextField()) != null);
+		saveDocumentAction.setSaveDocumentActionEnabled(GreenToneUtilities
+				.getText(getDescriptionTextField()) != null
+				&& getJobComboBox().getSelectedItem() != null
+				&& GreenToneUtilities.getText(getProtocolTextField()) != null);
 	}
 
 	@Override
@@ -450,7 +490,8 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 		/* Issue 69: di default impostare la data odierna */
 		getReleaseDateDatePicker().setDate(new DateTime().toDate());
 		/* Issue 70: di default l'etichetta è impostata a destinatario */
-		getRecipientLabel().setText(getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
+		getRecipientLabel().setText(
+				getResourceMap().getString(LOCALIZATION_PREFIX + "sender"));
 		/* Issue 77: di default non viene mostrata la scelta del file */
 		toggleFileSection();
 
@@ -507,38 +548,48 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 		getContextualToolBar().add(actionProvider.getDeleteDocument());
 		getContextualToolBar().addSeparator();
 		getContextualToolBar().add(actionProvider.getViewReports());
+		getContextualToolBar().addSeparator();
+		getContextualToolBar().add(actionProvider.getViewHelp());
 	}
 
 	@Override
 	public void populateModel() {
 		viewReportsAction.setup(documentsReportsCategory);
 
-		tableModel = new EventJXTableModel<Document>(documentService.getAllDocuments(), new BeanTableFormat<Document>(Document.class, properties, columnsNames, writables));
+		tableModel = new EventJXTableModel<Document>(
+				documentService.getAllDocuments(),
+				new BeanTableFormat<Document>(Document.class, properties,
+						columnsNames, writables));
 		getContentTable().setModel(tableModel);
 		getContentTable().setSortOrder(0, SortOrder.DESCENDING);
 
 		/* carico destinatari */
 		EventList<Person> allPersons = personService.getAllPersons();
-		SortedList<Person> sortedAllPersons = new SortedList<Person>(allPersons, new Comparator<Person>() {
+		SortedList<Person> sortedAllPersons = new SortedList<Person>(
+				allPersons, new Comparator<Person>() {
 
-			@Override
-			public int compare(Person o1, Person o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
+					@Override
+					public int compare(Person o1, Person o2) {
+						return o1.getName().compareToIgnoreCase(o2.getName());
+					}
+				});
 
-		EventComboBoxModel<Person> recipientComboBoxModel = new EventComboBoxModel<Person>(sortedAllPersons);
+		EventComboBoxModel<Person> recipientComboBoxModel = new EventComboBoxModel<Person>(
+				sortedAllPersons);
 		getRecipientComboBox().setModel(recipientComboBoxModel);
 
 		/* carico gli incarichi */
-		SortedList<Job> jobsList = new SortedList<Job>(jobService.getAllJobs(), new Comparator<Job>() {
+		SortedList<Job> jobsList = new SortedList<Job>(jobService.getAllJobs(),
+				new Comparator<Job>() {
 
-			@Override
-			public int compare(Job o1, Job o2) {
-				return o2.getProtocol().compareToIgnoreCase(o1.getProtocol());
-			}
-		});
-		EventComboBoxModel<Job> jobComboBoxModel = new EventComboBoxModel<Job>(jobsList);
+					@Override
+					public int compare(Job o1, Job o2) {
+						return o2.getProtocol().compareToIgnoreCase(
+								o1.getProtocol());
+					}
+				});
+		EventComboBoxModel<Job> jobComboBoxModel = new EventComboBoxModel<Job>(
+				jobsList);
 		getJobComboBox().setModel(jobComboBoxModel);
 	}
 
@@ -550,7 +601,8 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 		getProtocolTextField().setText(getSelectedItem().getProtocol());
 		getDescriptionTextField().setText(getSelectedItem().getDescription());
 		getJobComboBox().getModel().setSelectedItem(getSelectedItem().getJob());
-		getRecipientComboBox().getModel().setSelectedItem(getSelectedItem().getRecipient());
+		getRecipientComboBox().getModel().setSelectedItem(
+				getSelectedItem().getRecipient());
 		getIsDigitalCheckBox().setSelected(getSelectedItem().getIsDigital());
 
 		String URI = getSelectedItem().getUri();
@@ -563,7 +615,9 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 		}
 
 		getOutgoingCheckBox().setSelected(getSelectedItem().getIsOutgoing());
-		getReleaseDateDatePicker().setDate(getSelectedItem().getReleaseDate() != null ? getSelectedItem().getReleaseDate().toDate() : null);
+		getReleaseDateDatePicker().setDate(
+				getSelectedItem().getReleaseDate() != null ? getSelectedItem()
+						.getReleaseDate().toDate() : null);
 		getNotesTextArea().setText(getSelectedItem().getNotes());
 
 		/* calcolo visibilità della sezione del file */

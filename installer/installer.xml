@@ -88,6 +88,12 @@
 		 <description>GreenTone manuals set</description>
 		 <file src="@{basedir}/manual" targetdir="$INSTALL_PATH"/>
 	  </pack>
+	  
+	  <!-- Reportistica -->
+	  <pack name="Reports" required="yes" installGroups="Core" >
+		 <description>GreenTone manuals set</description>
+		 <file src="@{tempDir}/report" targetdir="$INSTALL_PATH"/>
+	  </pack>
    </packs>
    
 </installation>
