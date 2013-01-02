@@ -7,6 +7,7 @@ import it.greentone.gui.action.ContextualAction;
 import it.greentone.persistence.Job;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -49,11 +50,16 @@ public class JobDetailsPanel extends JPanel {
 	 * @param job
 	 *            incarico di cui mostrare i dettagli
 	 * @param jobPanel
+	 *            pannello degli incarichi
 	 * @param mainPanel
+	 *            pannello principale
 	 * @param resourceMap
+	 *            gestore delle risorse
+	 * @param color
+	 *            colore del pannello
 	 */
 	public JobDetailsPanel(final Job job, final JobPanel jobPanel,
-			final MainPanel mainPanel, ResourceMap resourceMap) {
+			final MainPanel mainPanel, ResourceMap resourceMap, Color color) {
 		JButton viewDetailsButton = new JButton(new AbstractAction() {
 
 			@Override
@@ -74,6 +80,10 @@ public class JobDetailsPanel extends JPanel {
 		viewDetailsButton.setText(viewDetailsText);
 		viewDetailsButton.setFont(FontProvider.TITLE_SMALL);
 		viewDetailsButton.setHorizontalAlignment(SwingConstants.LEFT);
+
+		viewDetailsButton.setBackground(color);
+		viewDetailsButton.setOpaque(true);
+		viewDetailsButton.setBorderPainted(false);
 
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(viewDetailsButton, BorderLayout.CENTER);
@@ -100,7 +110,12 @@ public class JobDetailsPanel extends JPanel {
 		southPanel.add(rightPanel, BorderLayout.EAST);
 
 		setLayout(new BorderLayout());
+
 		add(northPanel, BorderLayout.NORTH);
 		add(southPanel, BorderLayout.CENTER);
+
+		southPanel.setBackground(color);
+		leftPanel.setBackground(color);
+		rightPanel.setBackground(color);
 	}
 }
