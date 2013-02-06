@@ -89,14 +89,17 @@ public class JobDetailsPanel extends JPanel {
 		northPanel.add(viewDetailsButton, BorderLayout.CENTER);
 
 		JPanel southPanel = new JPanel(new BorderLayout());
-		String customerString = job.getCustomer() != null ? job.getCustomer()
-				.toString() : null;
-		JLabel customerLabel = new JLabel(customerString);
-		customerLabel.setFont(FontProvider.PARAGRAPH_BIG);
+
 		JPanel leftPanel = new JPanel(new MigLayout());
-		leftPanel.add(new JLabel(resourceMap
-				.getString("JobDetailsPanel.customer")));
-		leftPanel.add(customerLabel);
+		if (job.getCustomer() != null) {
+			JLabel customerLabel = new JLabel(job.getCustomer().toString());
+			customerLabel.setFont(FontProvider.PARAGRAPH_BIG);
+			leftPanel.add(new JLabel(resourceMap
+					.getString("JobDetailsPanel.customer")));
+			leftPanel.add(customerLabel);
+		} else {
+			leftPanel.add(new JLabel());
+		}
 		southPanel.add(leftPanel, BorderLayout.WEST);
 
 		JPanel rightPanel = new JPanel(new MigLayout());
