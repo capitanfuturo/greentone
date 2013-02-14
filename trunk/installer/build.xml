@@ -124,7 +124,7 @@
 			   classname="com.izforge.izpack.ant.IzPackTask"/>
 		<!-- Run installer build -->
 		<izpack input="${basedir}/installer.xml"
-			  output="${user.home}/${application.name}_${major.version.number}.${minor.version.number}.${minus.version.number}-installer.jar"
+			  output="${user.home}/${application.name}-${major.version.number}.${minor.version.number}.${minus.version.number}-installer.jar"
 			  installerType="standard"
 			  inheritAll="true"
 			  basedir="${basedir}"
