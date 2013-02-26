@@ -33,8 +33,7 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class ConfigurationProperties
-{
+public class ConfigurationProperties {
 	@Inject
 	private GreenToneLogProvider logger;
 	private boolean firstLaunch;
@@ -42,6 +41,8 @@ public class ConfigurationProperties
 	private final String PROPERTY_FILE_NAME = "configuration.properties";
 	/** Identificativo per la property di controllo aggiornamento */
 	private static final String CONF_CHECK_UPDATE = "checkUpdate";
+	/** Identificativo per la property di richiesta conferma alla chiusura */
+	private static final String CONF_CONFIRM_CLOSURE = "confirmClosure";
 	/**
 	 * Identificativo per la property del prezzo della vacazione del
 	 * professionista
@@ -50,8 +51,8 @@ public class ConfigurationProperties
 	/** Identificativo per la property del prezzo della vacazione dell'aiutante */
 	private static final String CONF_VAC_HELPER_PRICE = "vacHelperPrice";
 	/**
-	 * Identificativo per la property sulla modalità di generazione dei protocolli
-	 * per gli incarichi
+	 * Identificativo per la property sulla modalità di generazione dei
+	 * protocolli per gli incarichi
 	 */
 	private static final String CONF_JOB_PROT_STYLE = "useYearsInJobProtocol";
 	/**
@@ -82,69 +83,41 @@ public class ConfigurationProperties
 	/**
 	 * Configurazione utente del programma
 	 */
-	public ConfigurationProperties()
-	{
+	public ConfigurationProperties() {
 		/* carico la configurazione del programma */
 		properties = new Properties();
 		firstLaunch = false;
 
 		FileInputStream in;
-		try
-		{
-			File fileProperty =
-			  new File(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
-			if(!fileProperty.exists())
-			{
+		try {
+			File fileProperty = new File(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
+			if (!fileProperty.exists()) {
 				fileProperty.createNewFile();
 				firstLaunch = true;
 			}
-			in =
-			  new FileInputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
+			in = new FileInputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
 			properties.load(in);
 			in.close();
-		}
-		catch(FileNotFoundException fnfe)
-		{
-			logger.getLogger().info(
-			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
-			    .getString("ErrorMessage.configurationNotFound"));
-		}
-		catch(IOException e)
-		{
-			logger.getLogger().log(
-			  Level.SEVERE,
-			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
-			    .getString("ErrorMessage.loadConfiguration"), e);
+		} catch (FileNotFoundException fnfe) {
+			logger.getLogger().info(Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.configurationNotFound"));
+		} catch (IOException e) {
+			logger.getLogger().log(Level.SEVERE, Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.loadConfiguration"), e);
 		}
 	}
 
 	/**
 	 * Salva la configurazione su file.
 	 */
-	public void store()
-	{
+	public void store() {
 		FileOutputStream out;
-		try
-		{
-			out =
-			  new FileOutputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
-			properties
-			  .store(out,
-			    "Greentone - file autogenerato, non cancellare o modificare manualmente");
+		try {
+			out = new FileOutputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
+			properties.store(out, "Greentone - file autogenerato, non cancellare o modificare manualmente");
 			out.close();
-		}
-		catch(FileNotFoundException e)
-		{
-			logger.getLogger().warning(
-			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
-			    .getString("ErrorMessage.configurationNotFound"));
-		}
-		catch(IOException e)
-		{
-			logger.getLogger().log(
-			  Level.SEVERE,
-			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
-			    .getString("ErrorMessage.storeConfiguration"), e);
+		} catch (FileNotFoundException e) {
+			logger.getLogger().warning(Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.configurationNotFound"));
+		} catch (IOException e) {
+			logger.getLogger().log(Level.SEVERE, Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.storeConfiguration"), e);
 		}
 	}
 
@@ -155,8 +128,7 @@ public class ConfigurationProperties
 	 * @return <code>true</code> se è attivato il controllo degli aggiornamenti,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean isCheckUpdateActivated()
-	{
+	public boolean isCheckUpdateActivated() {
 		String value = properties.getProperty(CONF_CHECK_UPDATE, "true");
 		return Boolean.valueOf(value).booleanValue();
 	}
@@ -165,12 +137,34 @@ public class ConfigurationProperties
 	 * Imposta l'attivazione del controllo degli aggiornamenti.
 	 * 
 	 * @param isActivated
-	 *          <code>true</code> se è attivato il controllo degli aggiornamenti,
-	 *          <code>false</code> altrimenti
+	 *            <code>true</code> se è attivato il controllo degli
+	 *            aggiornamenti, <code>false</code> altrimenti
 	 */
-	public void setCheckUpdateActivated(boolean isActivated)
-	{
+	public void setCheckUpdateActivated(boolean isActivated) {
 		properties.setProperty(CONF_CHECK_UPDATE, "" + isActivated);
+	}
+
+	/**
+	 * Restituisce <code>true</code> se è attivato il controllo degli
+	 * aggiornamenti, <code>false</code> altrimenti.
+	 * 
+	 * @return <code>true</code> se è attivato il controllo degli aggiornamenti,
+	 *         <code>false</code> altrimenti
+	 */
+	public boolean isConfirmClosureActivated() {
+		String value = properties.getProperty(CONF_CONFIRM_CLOSURE, "true");
+		return Boolean.valueOf(value).booleanValue();
+	}
+
+	/**
+	 * Imposta l'attivazione del controllo degli aggiornamenti.
+	 * 
+	 * @param isActivated
+	 *            <code>true</code> se è attivato il controllo degli
+	 *            aggiornamenti, <code>false</code> altrimenti
+	 */
+	public void setConfirmClosureActivated(boolean isActivated) {
+		properties.setProperty(CONF_CONFIRM_CLOSURE, "" + isActivated);
 	}
 
 	/**
@@ -178,8 +172,7 @@ public class ConfigurationProperties
 	 * 
 	 * @return il prezzo della vacazione del professionista
 	 */
-	public Double getVacazionePrice()
-	{
+	public Double getVacazionePrice() {
 		String value = properties.getProperty(CONF_VAC_PRICE, "44.93d");
 		return Double.parseDouble(value);
 	}
@@ -188,10 +181,9 @@ public class ConfigurationProperties
 	 * Imposta il prezzo della vacazione del professionista.
 	 * 
 	 * @param price
-	 *          il prezzo della vacazione del professionista
+	 *            il prezzo della vacazione del professionista
 	 */
-	public void setVacazionePrice(double price)
-	{
+	public void setVacazionePrice(double price) {
 		properties.setProperty(CONF_VAC_PRICE, "" + price);
 	}
 
@@ -200,8 +192,7 @@ public class ConfigurationProperties
 	 * 
 	 * @return il prezzo della vacazione dell'aiutante
 	 */
-	public Double getVacazioneHelperPrice()
-	{
+	public Double getVacazioneHelperPrice() {
 		String value = properties.getProperty(CONF_VAC_HELPER_PRICE, "28.41d");
 		return Double.parseDouble(value);
 	}
@@ -210,10 +201,9 @@ public class ConfigurationProperties
 	 * Imposta il prezzo della vacazione dell'aiutante.
 	 * 
 	 * @param price
-	 *          il prezzo della vacazione dell'aiutante
+	 *            il prezzo della vacazione dell'aiutante
 	 */
-	public void setVacazioneHelperPrice(double price)
-	{
+	public void setVacazioneHelperPrice(double price) {
 		properties.setProperty(CONF_VAC_HELPER_PRICE, "" + price);
 	}
 
@@ -224,8 +214,7 @@ public class ConfigurationProperties
 	 * @return <code>true</code> se è attivato l'uso dell'annata nel protocollo,
 	 *         <code>false</code> altrimenti
 	 */
-	public boolean getUseYearsInJobsProtocol()
-	{
+	public boolean getUseYearsInJobsProtocol() {
 		String value = properties.getProperty(CONF_JOB_PROT_STYLE, "true");
 		return Boolean.valueOf(value).booleanValue();
 	}
@@ -234,11 +223,10 @@ public class ConfigurationProperties
 	 * Imposta l'attivazione del controllo degli aggiornamenti.
 	 * 
 	 * @param isActivated
-	 *          <code>true</code> se è attivato l'uso dell'annata nel protocollo,
-	 *          <code>false</code> altrimenti.
+	 *            <code>true</code> se è attivato l'uso dell'annata nel
+	 *            protocollo, <code>false</code> altrimenti.
 	 */
-	public void setUseYearsInJobsProtocol(boolean isActivated)
-	{
+	public void setUseYearsInJobsProtocol(boolean isActivated) {
 		properties.setProperty(CONF_JOB_PROT_STYLE, "" + isActivated);
 	}
 
@@ -249,8 +237,7 @@ public class ConfigurationProperties
 	 * @return <code>true</code> se è la prima volta che viene eseguito il
 	 *         programma, <code>false</code> altrimenti
 	 */
-	public boolean isFirstLaunch()
-	{
+	public boolean isFirstLaunch() {
 		return firstLaunch;
 	}
 }

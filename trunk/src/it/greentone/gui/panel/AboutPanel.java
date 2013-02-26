@@ -7,6 +7,8 @@ import it.greentone.gui.FontProvider;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -16,6 +18,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 
 import javax.inject.Inject;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,8 +54,7 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("serial")
 @Component
-public class AboutPanel extends AbstractPanel
-{
+public class AboutPanel extends AbstractPanel {
 	@Inject
 	private GreenToneLogProvider logger;
 	@Inject
@@ -62,8 +64,7 @@ public class AboutPanel extends AbstractPanel
 	/**
 	 * Pannello delle informazioni sul programma.
 	 */
-	public AboutPanel()
-	{
+	public AboutPanel() {
 		super();
 		panelBundle = "viewAbout";
 		setLayout(new BorderLayout(5, 5));
@@ -72,114 +73,91 @@ public class AboutPanel extends AbstractPanel
 		add(createLicencePanel(), BorderLayout.CENTER);
 	}
 
-	private JPanel createHeaderPanel()
-	{
+	private JPanel createHeaderPanel() {
 		JPanel headerPanel = new JPanel(new MigLayout());
 
-		JLabel logoLabel =
-		  new JLabel(getResourceMap().getIcon("viewAbout.Panel.logo"));
-		JLabel titleLabel =
-		  new JLabel(getResourceMap().getString("Application.title") + " v."
-		    + getResourceMap().getString("Application.version"));
+		JLabel logoLabel = new JLabel(getResourceMap().getIcon("viewAbout.Panel.logo"));
+		JLabel titleLabel = new JLabel(getResourceMap().getString("Application.title") + " v."
+				+ getResourceMap().getString("Application.version"));
 		titleLabel.setFont(FontProvider.TITLE_BIG);
-		JLabel subtitleLabel =
-		  new JLabel(getResourceMap().getString("viewAbout.Panel.description"));
+		JLabel subtitleLabel = new JLabel(getResourceMap().getString("viewAbout.Panel.description"));
 		subtitleLabel.setFont(FontProvider.TITLE_SMALL);
 
-		JLabel authorsLabel =
-		  new JLabel(getResourceMap().getString("viewAbout.Panel.authors"));
-		JTextArea authorsTextArea =
-		  new JTextArea(getResourceMap()
-		    .getString("viewAbout.Panel.authorsContent"));
+		JLabel authorsLabel = new JLabel(getResourceMap().getString("viewAbout.Panel.authors"));
+		JTextArea authorsTextArea = new JTextArea(getResourceMap().getString("viewAbout.Panel.authorsContent"));
 		authorsTextArea.setOpaque(false);
 		authorsTextArea.setEditable(false);
 
 		/* Indirizzo web */
-		JLabel webLabel =
-		  new JLabel(getResourceMap().getString("viewAbout.Panel.web"));
+		JLabel webLabel = new JLabel(getResourceMap().getString("viewAbout.Panel.web"));
 		String web = getResourceMap().getString("Application.homepage");
-		JEditorPane webContent =
-		  new JEditorPane("text/html", "<a href='" + web + "'>" + web + "</a>");
+		JEditorPane webContent = new JEditorPane("text/html", "<a href='" + web + "'>" + web + "</a>");
 		webContent.setEditable(false);
 		webContent.setOpaque(false);
-		webContent.addHyperlinkListener(new HyperlinkListener()
-			{
-				@Override
-				public void hyperlinkUpdate(HyperlinkEvent hle)
-				{
-					if(HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType()))
-					{
-						try
-						{
-							utilities.browse(hle.getURL().toURI());
-						}
-						catch(URISyntaxException e)
-						{
-							logger.getLogger().log(Level.WARNING,
-							  getResourceMap().getString("ErrorMessage.cannotOpenURL"), e);
-						}
+		webContent.addHyperlinkListener(new HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent hle) {
+				if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+					try {
+						utilities.browse(hle.getURL().toURI());
+					} catch (URISyntaxException e) {
+						logger.getLogger().log(Level.WARNING, getResourceMap().getString("ErrorMessage.cannotOpenURL"), e);
 					}
 				}
-			});
+			}
+		});
 
 		/* Indirizzo mail */
-		JLabel mailLabel =
-		  new JLabel(getResourceMap().getString("viewAbout.Panel.mail"));
+		JLabel mailLabel = new JLabel(getResourceMap().getString("viewAbout.Panel.mail"));
 		String mail = getResourceMap().getString("Application.email");
-		JEditorPane mailContent =
-		  new JEditorPane("text/html", "<a href='mailto:" + mail
-		    + "?Subject=Greentone%20"
-		    + getResourceMap().getString("Application.version") + "'>" + mail
-		    + "</a>");
+		JEditorPane mailContent = new JEditorPane("text/html", "<a href='mailto:" + mail + "?Subject=Greentone%20"
+				+ getResourceMap().getString("Application.version") + "'>" + mail + "</a>");
 		mailContent.setEditable(false);
 		mailContent.setOpaque(false);
-		mailContent.addHyperlinkListener(new HyperlinkListener()
-			{
-				@Override
-				public void hyperlinkUpdate(HyperlinkEvent hle)
-				{
-					if(HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType()))
-					{
-						try
-						{
-							utilities.browse(hle.getURL().toURI());
-						}
-						catch(URISyntaxException e)
-						{
-							logger.getLogger().log(Level.WARNING,
-							  getResourceMap().getString("ErrorMessage.cannotOpenURL"), e);
-						}
+		mailContent.addHyperlinkListener(new HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent hle) {
+				if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+					try {
+						utilities.browse(hle.getURL().toURI());
+					} catch (URISyntaxException e) {
+						logger.getLogger().log(Level.WARNING, getResourceMap().getString("ErrorMessage.cannotOpenURL"), e);
 					}
 				}
-			});
+			}
+		});
 
 		/* Manuale utente */
-		JLabel manualLabel =
-		  new JLabel(getResourceMap().getString("viewAbout.Panel.manual"));
-		final File manualFile =
-		  new File(GreenToneAppConfig.MANUAL_REPOSITORY
-		    + GreenToneAppConfig.MANUAL_FILE_NAME);
+		JLabel manualLabel = new JLabel(getResourceMap().getString("viewAbout.Panel.manual"));
+		final File manualFile = new File(GreenToneAppConfig.MANUAL_REPOSITORY + GreenToneAppConfig.MANUAL_FILE_NAME);
 		JEditorPane manualPathField = new JEditorPane();
 		manualPathField.setText(manualFile.getName());
 		manualPathField.setForeground(Color.blue);
 
-		manualPathField.addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					new SwingWorker<Void, Void>()
-						{
+		manualPathField.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				new SwingWorker<Void, Void>() {
 
-							@Override
-							protected Void doInBackground() throws Exception
-							{
-								utilities.open(manualFile);
-								return null;
-							}
-						}.execute();
-				};
-			});
+					@Override
+					protected Void doInBackground() throws Exception {
+						utilities.open(manualFile);
+						return null;
+					}
+				}.execute();
+			};
+		});
+
+		/* Bottone controlla aggiornamenti */
+		JLabel checkUpdateLabel = new JLabel();
+		JButton checkUpdateButton = new JButton(getResourceMap().getString("viewAbout.Panel.checkUpdates"));
+		checkUpdateButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				utilities.checkUpdates();
+			}
+		});
 
 		headerPanel.add(logoLabel, "spany 2");
 		headerPanel.add(titleLabel, "span");
@@ -197,30 +175,25 @@ public class AboutPanel extends AbstractPanel
 		headerPanel.add(manualLabel);
 		headerPanel.add(manualPathField, "grow, wrap");
 
+		headerPanel.add(checkUpdateLabel);
+		headerPanel.add(checkUpdateButton, "grow, wrap");
+
 		return headerPanel;
 	}
 
-	private JPanel createLicencePanel()
-	{
-		JLabel licenseLabel =
-		  new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
+	private JPanel createLicencePanel() {
+		JLabel licenseLabel = new JLabel(getResourceMap().getString("viewAbout.Panel.license"));
 
 		final JTextPane licenseText = new JTextPane();
 		licenseText.setEditable(false);
 		licenseText.setFont(FontProvider.CODE);
-		String licenceURL =
-		  "/" + getResourceMap().getResourcesDir() + "license.txt";
-		try
-		{
+		String licenceURL = "/" + getResourceMap().getResourcesDir() + "license.txt";
+		try {
 			InputStream inputStream = getClass().getResourceAsStream(licenceURL);
 			licenseText.read(new InputStreamReader(inputStream), null);
-		}
-		catch(Exception e)
-		{
-			logger.getLogger().log(
-			  Level.WARNING,
-			  getResourceMap().getString("ErrorMessage.cannotOpenURL") + " "
-			    + licenceURL, e);
+		} catch (Exception e) {
+			logger.getLogger().log(Level.WARNING, getResourceMap().getString("ErrorMessage.cannotOpenURL") + " "
+					+ licenceURL, e);
 		}
 		final JScrollPane scrollPane = new JScrollPane(licenseText);
 
@@ -231,8 +204,7 @@ public class AboutPanel extends AbstractPanel
 	}
 
 	@Override
-	public String getBundleName()
-	{
+	public String getBundleName() {
 		return panelBundle;
 	}
 

@@ -84,6 +84,7 @@ public class OptionsPanel extends ContextualPanel<Void> {
 	private JTextField emailTextField;
 	private ImagePreviewPanel logoPreviewPanel;
 	private JButton logoButton;
+	private JCheckBox confirmOnCloseCheckBox;
 
 	/**
 	 * Pannello delle configurazioni utente.
@@ -123,12 +124,32 @@ public class OptionsPanel extends ContextualPanel<Void> {
 			JLabel checkUpdateLabel = new JLabel(getResourceMap().getString("viewOptions.Panel.checkUpdate"));
 			JLabel deleteLogsLabel = new JLabel(getResourceMap().getString("viewOptions.Panel.deleteLogs"));
 
+			/* controllo aggiornamenti */
 			systemPanel.add(checkUpdateLabel, "gap para");
 			systemPanel.add(getCheckUpdateCheckBox(), "wrap");
+			/* richiesta di chiusura dell'applicazione */
+			JLabel confirmOnCloseLabel = new JLabel(getResourceMap().getString("viewOptions.Panel.confirmOnClose"));
+			systemPanel.add(confirmOnCloseLabel, "gap para");
+			systemPanel.add(getConfirmOnCloseCheckBox(), "wrap");
+			/* eliminazione logs */
 			systemPanel.add(deleteLogsLabel, "gap para");
 			systemPanel.add(getDeleteLogsButton());
 		}
 		return systemPanel;
+	}
+
+	/**
+	 * Restituisce il flag di abilitazione del richiesta di chiusura
+	 * dell'applicazione.
+	 * 
+	 * @return il flag di abilitazione del richiesta di chiusura
+	 *         dell'applicazione
+	 */
+	public JCheckBox getConfirmOnCloseCheckBox() {
+		if (confirmOnCloseCheckBox == null) {
+			confirmOnCloseCheckBox = new JCheckBox();
+		}
+		return confirmOnCloseCheckBox;
 	}
 
 	/**
@@ -508,6 +529,7 @@ public class OptionsPanel extends ContextualPanel<Void> {
 			getLogoPreviewPanel().setImage(office.getLogo());
 
 		/* altre impostazioni */
+		getConfirmOnCloseCheckBox().setSelected(properties.isConfirmClosureActivated());
 		getCheckUpdateCheckBox().setSelected(properties.isCheckUpdateActivated());
 		getVacazioneTextField().setValue(properties.getVacazionePrice());
 		getVacazioneAiutanteTextField().setValue(properties.getVacazioneHelperPrice());

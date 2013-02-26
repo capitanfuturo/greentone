@@ -4,13 +4,11 @@ import it.greentone.gui.MainPanel;
 import it.greentone.gui.action.ViewHomeAction;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.EventObject;
 
 import javax.inject.Inject;
 import javax.jdo.PersistenceManagerFactory;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -37,8 +35,7 @@ import org.springframework.stereotype.Component;
  * 
  * @author Giuseppe Caliendo
  */
-public class GreenTone extends SingleFrameApplication
-{
+public class GreenTone extends SingleFrameApplication {
 	private SpringBeansHolder springBeansHolder;
 
 	/**
@@ -46,146 +43,103 @@ public class GreenTone extends SingleFrameApplication
 	 * lancio.
 	 * 
 	 * @param args
-	 *          array degli argomenti del comando di lancio
+	 *            array degli argomenti del comando di lancio
 	 */
-	public static void main(final String[] args)
-	{
+	public static void main(final String[] args) {
 		Application.launch(GreenTone.class, args);
 	}
 
 	@Override
-	protected void initialize(String[] args)
-	{
+	protected void initialize(String[] args) {
 		super.initialize(args);
 		/*
 		 * Imposto come directory di salvataggio delle proprietà grafiche del
 		 * programma
 		 */
 		File filePath = new File(GreenToneAppConfig.BASE_PATH);
-		if(!filePath.exists())
-		{
+		if (!filePath.exists()) {
 			filePath.mkdirs();
 		}
 		getContext().getLocalStorage().setDirectory(filePath);
 
 		/* carico il contesto creato da Spring Framework */
-		ApplicationContext applicationContext =
-		  new ClassPathXmlApplicationContext(
-		    GreenToneAppConfig.SPRING_CONFIG_LOCATION);
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(GreenToneAppConfig.SPRING_CONFIG_LOCATION);
 		/* recupero il wrapper che contiene i bean creati da Spring Framework */
 		springBeansHolder = applicationContext.getBean(SpringBeansHolder.class);
-		// TODO JXLoginDialog PasswordDialog passwordDialog = new PasswordDialog();
+		// TODO JXLoginDialog PasswordDialog passwordDialog = new
+		// PasswordDialog();
 		springBeansHolder.getLogProvider().getLogger().info("Avvio Greentone");
 	}
 
 	@Override
-	protected void startup()
-	{
-		final String applicationTitle =
-		  getContext().getResourceMap().getString("Application.title");
+	protected void startup() {
+		final String applicationTitle = getContext().getResourceMap().getString("Application.title");
 		getMainFrame().setTitle(applicationTitle);
 		final MainPanel mainPanel = springBeansHolder.getMainPanel();
-		springBeansHolder.getLogProvider().getLogger()
-		  .info("Inizializzazione pannello principale");
+		springBeansHolder.getLogProvider().getLogger().info("Inizializzazione pannello principale");
 		mainPanel.initialize();
 		/* aggiungo un listener per la chiusura dell'applicazione */
-		addExitListener(new ExitListener()
-			{
+		addExitListener(new ExitListener() {
 
-				@Override
-				public void willExit(EventObject event)
-				{
-					// non va nulla per adesso.
-				}
+			@Override
+			public void willExit(EventObject event) {
+				// non va nulla per adesso.
+			}
 
-				@Override
-				public boolean canExit(EventObject event)
-				{
-					int confirmDialog =
-					  JOptionPane.showConfirmDialog(mainPanel, getContext()
-					    .getResourceMap().getString("exit.Action.confirmMessage"),
-					    applicationTitle, JOptionPane.YES_NO_OPTION);
+			@Override
+			public boolean canExit(EventObject event) {
+				/*
+				 * se è richiesta la conferma di chiusura allora mostro una
+				 * dialog
+				 */
+				if (springBeansHolder.getConfigurationProperties().isConfirmClosureActivated()) {
+					int confirmDialog = JOptionPane.showConfirmDialog(mainPanel, getContext().getResourceMap().getString("exit.Action.confirmMessage"), applicationTitle, JOptionPane.YES_NO_OPTION);
 					return confirmDialog == JOptionPane.OK_OPTION;
+				} else {
+					return true;
 				}
-			});
+
+			}
+		});
 		show(mainPanel);
-		springBeansHolder.getLogProvider().getLogger()
-		  .info("Interfaccia grafica avviata");
+		springBeansHolder.getLogProvider().getLogger().info("Interfaccia grafica avviata");
 
 		/* se è il primo avvio allora va gestito l'uso dell'annno del protocollo */
-		if(springBeansHolder.getConfigurationProperties().isFirstLaunch())
-		{
-			springBeansHolder.getLogProvider().getLogger()
-			  .info("Rilevato primo avvio");
-			int answer =
-			  JOptionPane.showConfirmDialog(mainPanel, getContext().getResourceMap()
-			    .getString("Application.firstLaunch"), applicationTitle,
-			    JOptionPane.YES_NO_OPTION);
-			springBeansHolder.getConfigurationProperties().setUseYearsInJobsProtocol(
-			  answer == JOptionPane.YES_OPTION);
+		if (springBeansHolder.getConfigurationProperties().isFirstLaunch()) {
+			springBeansHolder.getLogProvider().getLogger().info("Rilevato primo avvio");
+			int answer = JOptionPane.showConfirmDialog(mainPanel, getContext().getResourceMap().getString("Application.firstLaunch"), applicationTitle, JOptionPane.YES_NO_OPTION);
+			springBeansHolder.getConfigurationProperties().setUseYearsInJobsProtocol(answer == JOptionPane.YES_OPTION);
 			springBeansHolder.getConfigurationProperties().store();
 		}
 
 		/*
-		 * processo in background per verificare l'esistenza di una nuova versione
-		 * del programma
+		 * se è abilitato il controllo degli aggiornamenti allora avvio il
+		 * processo in background
 		 */
-		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>()
-			{
-
-				@Override
-				protected Void doInBackground() throws Exception
-				{
-					String remoteVersion =
-					  springBeansHolder.getUtilities().checkUpdates();
-					if(remoteVersion != null)
-					{
-						String currentVersion =
-						  getContext().getResourceMap().getString("Application.version");
-						String message =
-						  MessageFormat.format(
-						    getContext().getResourceMap().getString(
-						      "Application.newVersionAvaible"), currentVersion,
-						    remoteVersion);
-						JOptionPane.showMessageDialog(mainPanel, message, getContext()
-						  .getResourceMap().getString("viewPersons.Panel.infoTitle"),
-						  JOptionPane.INFORMATION_MESSAGE);
-					}
-					return null;
-				}
-
-			};
-		/*
-		 * se è abilitato il controllo degli aggiornamenti allora avvio il processo
-		 * in background
-		 */
-		if(springBeansHolder.getConfigurationProperties().isCheckUpdateActivated())
-		{
-			springBeansHolder.getLogProvider().getLogger()
-			  .info("Controllo aggiornamenti");
-			worker.execute();
+		if (springBeansHolder.getConfigurationProperties().isCheckUpdateActivated()) {
+			springBeansHolder.getLogProvider().getLogger().info("Controllo aggiornamenti");
+			springBeansHolder.getUtilities().checkUpdates();
 		}
+
 		/* mostro la schermata iniziale */
 		springBeansHolder.getViewHomeAction().viewHome();
 	}
 
 	@Override
-	protected void shutdown()
-	{
+	protected void shutdown() {
 		super.shutdown();
 		springBeansHolder.getConfigurationProperties().store();
 		springBeansHolder.getLogProvider().getLogger().info("Esco");
 	}
 
 	/**
-	 * Bean di comunicazione tra la classe di lancio dell'applicazione (framework
-	 * BSAF) e il framework di Spring.
+	 * Bean di comunicazione tra la classe di lancio dell'applicazione
+	 * (framework BSAF) e il framework di Spring.
 	 * 
 	 * @author Giuseppe Caliendo
 	 */
 	@Component
-	public static class SpringBeansHolder
-	{
+	public static class SpringBeansHolder {
 		@Inject
 		private PersistenceManagerFactory pmf;
 		@Inject
@@ -204,8 +158,7 @@ public class GreenTone extends SingleFrameApplication
 		 * 
 		 * @return la factory del manager della persistenza di JDO
 		 */
-		public PersistenceManagerFactory getPmf()
-		{
+		public PersistenceManagerFactory getPmf() {
 			return pmf;
 		}
 
@@ -213,10 +166,9 @@ public class GreenTone extends SingleFrameApplication
 		 * Imposta la factory del manager della persistenza di JDO.
 		 * 
 		 * @param pmf
-		 *          la factory del manager della persistenza di JDO
+		 *            la factory del manager della persistenza di JDO
 		 */
-		public void setPmf(PersistenceManagerFactory pmf)
-		{
+		public void setPmf(PersistenceManagerFactory pmf) {
 			this.pmf = pmf;
 		}
 
@@ -225,8 +177,7 @@ public class GreenTone extends SingleFrameApplication
 		 * 
 		 * @return il pannello principale dell'applicazione
 		 */
-		public MainPanel getMainPanel()
-		{
+		public MainPanel getMainPanel() {
 			return mainPanel;
 		}
 
@@ -234,10 +185,9 @@ public class GreenTone extends SingleFrameApplication
 		 * Imposta il pannello principale dell'applicazione.
 		 * 
 		 * @param mainPanel
-		 *          il pannello principale dell'applicazione
+		 *            il pannello principale dell'applicazione
 		 */
-		public void setMainPanel(MainPanel mainPanel)
-		{
+		public void setMainPanel(MainPanel mainPanel) {
 			this.mainPanel = mainPanel;
 		}
 
@@ -246,8 +196,7 @@ public class GreenTone extends SingleFrameApplication
 		 * 
 		 * @return la configurazione utente di Greentone
 		 */
-		public ConfigurationProperties getConfigurationProperties()
-		{
+		public ConfigurationProperties getConfigurationProperties() {
 			return configurationProperties;
 		}
 
@@ -255,11 +204,9 @@ public class GreenTone extends SingleFrameApplication
 		 * Imposta la configurazione utente di Greentone.
 		 * 
 		 * @param configurationProperties
-		 *          la configurazione utente di Greentone
+		 *            la configurazione utente di Greentone
 		 */
-		public void setConfigurationProperties(
-		  ConfigurationProperties configurationProperties)
-		{
+		public void setConfigurationProperties(ConfigurationProperties configurationProperties) {
 			this.configurationProperties = configurationProperties;
 		}
 
@@ -268,8 +215,7 @@ public class GreenTone extends SingleFrameApplication
 		 * 
 		 * @return l'oggetto di utilità dell'applicazione
 		 */
-		public GreenToneUtilities getUtilities()
-		{
+		public GreenToneUtilities getUtilities() {
 			return utilities;
 		}
 
@@ -277,10 +223,9 @@ public class GreenTone extends SingleFrameApplication
 		 * Imposta l'oggetto di utilità dell'applicazione.
 		 * 
 		 * @param utilities
-		 *          l'oggetto di utilità dell'applicazione
+		 *            l'oggetto di utilità dell'applicazione
 		 */
-		public void setUtilities(GreenToneUtilities utilities)
-		{
+		public void setUtilities(GreenToneUtilities utilities) {
 			this.utilities = utilities;
 		}
 
@@ -289,8 +234,7 @@ public class GreenTone extends SingleFrameApplication
 		 * 
 		 * @return il provider del logger
 		 */
-		public GreenToneLogProvider getLogProvider()
-		{
+		public GreenToneLogProvider getLogProvider() {
 			return logProvider;
 		}
 
@@ -298,10 +242,9 @@ public class GreenTone extends SingleFrameApplication
 		 * Imposta il provider del logger.
 		 * 
 		 * @param logProvider
-		 *          il provider del logger
+		 *            il provider del logger
 		 */
-		public void setLogProvider(GreenToneLogProvider logProvider)
-		{
+		public void setLogProvider(GreenToneLogProvider logProvider) {
 			this.logProvider = logProvider;
 		}
 
@@ -310,8 +253,7 @@ public class GreenTone extends SingleFrameApplication
 		 * 
 		 * @return il provider delle azioni
 		 */
-		public ViewHomeAction getViewHomeAction()
-		{
+		public ViewHomeAction getViewHomeAction() {
 			return viewHomeAction;
 		}
 
@@ -319,10 +261,9 @@ public class GreenTone extends SingleFrameApplication
 		 * Imposta il provider delle azioni.
 		 * 
 		 * @param viewHomeAction
-		 *          il provider delle azioni
+		 *            il provider delle azioni
 		 */
-		public void setViewHomeAction(ViewHomeAction viewHomeAction)
-		{
+		public void setViewHomeAction(ViewHomeAction viewHomeAction) {
 			this.viewHomeAction = viewHomeAction;
 		}
 	}
