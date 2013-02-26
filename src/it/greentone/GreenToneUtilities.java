@@ -1,5 +1,6 @@
 package it.greentone;
 
+import it.greentone.gui.dialog.UpdateCheckDialog;
 import it.greentone.persistence.JobStatus;
 import it.greentone.persistence.OperationType;
 
@@ -35,6 +36,7 @@ import javax.inject.Inject;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
@@ -71,43 +73,47 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class GreenToneUtilities
-{
+public class GreenToneUtilities {
 	@Inject
 	private GreenToneLogProvider logger;
-	private static final String UPDATE_URL =
-	  "http://greentone.googlecode.com/svn/trunk/installer/release.properties";
+
+	private static final String UPDATE_URL = "http://greentone.googlecode.com/svn/trunk/installer/release.properties";
 	private static final String COMMENTS_CHAR = "#";
 	private static final String VERSION_SEPARATOR = ".";
 	private static final String APP_NAME = "application.name";
 	private static final String APP_MAJOR_VERSION = "major.version.number";
 	private static final String APP_MINOR_VERSION = "minor.version.number";
 	private static final String APP_MINUS_VERSION = "minus.version.number";
-	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat
-	  .forPattern(GreenToneAppConfig.DATE_PATTERN);
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(GreenToneAppConfig.DATE_PATTERN);
 	/** Dimensione di default delle finestre di dialogo dell'applicazione */
 	public static final Dimension DIALOG_SIZE = new Dimension(450, 300);
 
+	private final ResourceMap resourceMap;
+	private UpdateCheckDialog upgradeDialog;
 
 	/**
-	 * Restituisce il testo contenuto nel campo di testo passato in ingresso. Tale
-	 * testo viene ripulito di spazi iniziali e finali del campo passato in
+	 * Insieme di metodi di utilità grafiche e di business.
+	 */
+	public GreenToneUtilities() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	}
+
+	/**
+	 * Restituisce il testo contenuto nel campo di testo passato in ingresso.
+	 * Tale testo viene ripulito di spazi iniziali e finali del campo passato in
 	 * ingresso. Restituisce <code>null</code> se il testo è vuoto.
 	 * 
 	 * @param textField
-	 *          il campo da processare
+	 *            il campo da processare
 	 * @return il testo contenuto nel campo di testo passato in ingresso. Tale
 	 *         testo viene ripulito di spazi iniziali e finali del campo passato
 	 *         in ingresso. Restituisce <code>null</code> se il testo è vuoto
 	 */
-	public static String getText(JTextComponent textField)
-	{
+	public static String getText(JTextComponent textField) {
 		String tmp = textField.getText();
-		if(tmp != null)
-		{
+		if (tmp != null) {
 			tmp = tmp.trim();
-			if(tmp.length() == 0)
-			{
+			if (tmp.length() == 0) {
 				tmp = null;
 			}
 		}
@@ -118,13 +124,12 @@ public class GreenToneUtilities
 	 * Restituisce una data di tipo Joda Time a partire dal widget di Swingx.
 	 * 
 	 * @param datePicker
-	 *          il componente grafico
+	 *            il componente grafico
 	 * @return la data di tipo Joda Time
 	 */
-	public static DateTime getDateTime(JXDatePicker datePicker)
-	{
+	public static DateTime getDateTime(JXDatePicker datePicker) {
 		Date date = datePicker.getDate();
-		return date != null? new DateTime(date): null;
+		return date != null ? new DateTime(date) : null;
 	}
 
 	/**
@@ -133,119 +138,115 @@ public class GreenToneUtilities
 	 * <code>null</code>
 	 * 
 	 * @param mask
-	 *          pattern di formattazione
+	 *            pattern di formattazione
 	 * @return un formatter per il pattern passato in ingresso
 	 * @see MaskFormatter
 	 */
-	public static MaskFormatter createMaskFormatter(String mask)
-	{
+	public static MaskFormatter createMaskFormatter(String mask) {
 		MaskFormatter mf = null;
-		try
-		{
-			mf = new MaskFormatter(mask)
-				{
-					private static final long serialVersionUID = 1L;
+		try {
+			mf = new MaskFormatter(mask) {
+				private static final long serialVersionUID = 1L;
 
-					@Override
-					public Object stringToValue(String value) throws ParseException
-					{
-						if(value == null || value.length() == 0 || value.trim().isEmpty())
-						{
-							return null;
-						}
-						return super.stringToValue(value);
+				@Override
+				public Object stringToValue(String value) throws ParseException {
+					if (value == null || value.length() == 0 || value.trim().isEmpty()) {
+						return null;
 					}
-				};
-		}
-		catch(ParseException e)
-		{
+					return super.stringToValue(value);
+				}
+			};
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return mf;
 	}
 
 	/**
-	 * Restituisce la stringa della nuova versione disponibile, <code>null</code>
-	 * altrimenti.
+	 * Restituisce la stringa della nuova versione disponibile,
+	 * <code>null</code> altrimenti.
 	 * 
 	 * @return la stringa della nuova versione disponibile, <code>null</code>
 	 *         altrimenti
 	 */
-	public String checkUpdates()
-	{
-		ResourceMap resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		String currentVersion = resourceMap.getString("Application.version");
-		String remoteVersion = "";
-		try
-		{
-			/* carico il contenuto dal file in remoto */
-			BufferedInputStream in =
-			  new BufferedInputStream(new URL(UPDATE_URL).openStream());
+	public void checkUpdates() {
+		/*
+		 * processo in background per verificare l'esistenza di una nuova
+		 * versione del programma
+		 */
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
-			StringBuffer strBuffer = new StringBuffer();
-			byte data[] = new byte[1024];
-			while(in.read(data, 0, 1024) >= 0)
-			{
-				for(int i = 0; i < data.length; i++)
-				{
-					strBuffer.append((char) data[i]);
-				}
-			}
-			in.close();
-			/* faccio il parsing dei dati caricati */
-			BufferedReader reader =
-			  new BufferedReader(new StringReader(strBuffer.toString()));
-			String str;
-			String major = "";
-			String minor = "";
-			String minus = "";
-			while((str = reader.readLine()) != null)
-			{
-				/* escludo la riga di commento e la riga del nome dell'applicazione */
-				if(str.length() > 0 && !str.startsWith(COMMENTS_CHAR)
-				  && !str.startsWith(APP_NAME))
-				{
-					if(str.startsWith(APP_MAJOR_VERSION))
-					{
-						major = str.substring(str.length() - 1) + VERSION_SEPARATOR;
-					}
-					else
-						if(str.startsWith(APP_MINOR_VERSION))
-						{
-							minor = str.substring(str.length() - 1) + VERSION_SEPARATOR;
+			@Override
+			protected Void doInBackground() throws Exception {
+				String currentVersion = resourceMap.getString("Application.version");
+				String remoteVersion = "";
+				try {
+					/* carico il contenuto dal file in remoto */
+					BufferedInputStream in = new BufferedInputStream(new URL(UPDATE_URL).openStream());
+
+					StringBuffer strBuffer = new StringBuffer();
+					byte data[] = new byte[1024];
+					while (in.read(data, 0, 1024) >= 0) {
+						for (int i = 0; i < data.length; i++) {
+							strBuffer.append((char) data[i]);
 						}
-						else
-							if(str.startsWith(APP_MINUS_VERSION))
-							{
+					}
+					in.close();
+					/* faccio il parsing dei dati caricati */
+					BufferedReader reader = new BufferedReader(new StringReader(strBuffer.toString()));
+					String str;
+					String major = "";
+					String minor = "";
+					String minus = "";
+					while ((str = reader.readLine()) != null) {
+						/*
+						 * escludo la riga di commento e la riga del nome
+						 * dell'applicazione
+						 */
+						if (str.length() > 0 && !str.startsWith(COMMENTS_CHAR) && !str.startsWith(APP_NAME)) {
+							if (str.startsWith(APP_MAJOR_VERSION)) {
+								major = str.substring(str.length() - 1) + VERSION_SEPARATOR;
+							} else if (str.startsWith(APP_MINOR_VERSION)) {
+								minor = str.substring(str.length() - 1) + VERSION_SEPARATOR;
+							} else if (str.startsWith(APP_MINUS_VERSION)) {
 								minus = str.substring(str.length() - 1);
 							}
+						}
+					}
+					remoteVersion = major + minor + minus;
+				} catch (Exception e) {
+					logger.getLogger().info(Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.checkUpdate"));
 				}
+				if (remoteVersion.length() > 0) {
+					remoteVersion = remoteVersion.equals(currentVersion) ? null : remoteVersion;
+				} else {
+					remoteVersion = null;
+				}
+
+				if (remoteVersion != null) {
+					getUpgradeDialog().showDialog(remoteVersion);
+				}
+				return null;
 			}
-			remoteVersion = major + minor + minus;
+		};
+		worker.execute();
+	}
+
+	private UpdateCheckDialog getUpgradeDialog() {
+		if (upgradeDialog == null) {
+			upgradeDialog = new UpdateCheckDialog(this, logger);
 		}
-		catch(Exception e)
-		{
-			logger.getLogger().info(
-			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
-			    .getString("ErrorMessage.checkUpdate"));
-		}
-		if(remoteVersion.length() > 0)
-		{
-			return remoteVersion.equals(currentVersion)? null: remoteVersion;
-		}
-		return null;
+		return upgradeDialog;
 	}
 
 	/**
 	 * Arrotonda un Double a due cifre significative.
 	 * 
 	 * @param value
-	 *          valore da arrotondare
+	 *            valore da arrotondare
 	 * @return il valore arrotondato
 	 */
-	public static double roundTwoDecimals(double value)
-	{
+	public static double roundTwoDecimals(double value) {
 		double result = value * 100;
 		result = Math.round(result);
 		result = result / 100;
@@ -256,37 +257,27 @@ public class GreenToneUtilities
 	 * Copia il contenuto di un file in un altro file.
 	 * 
 	 * @param input
-	 *          file di origine
+	 *            file di origine
 	 * @param output
-	 *          file di destinazione
+	 *            file di destinazione
 	 * @throws IOException
-	 *           eccezione in caso di errore
+	 *             eccezione in caso di errore
 	 */
-	public void copyFile(File input, File output) throws IOException
-	{
+	public void copyFile(File input, File output) throws IOException {
 		InputStream in = null;
 		OutputStream out = null;
-		try
-		{
+		try {
 			in = new FileInputStream(input);
 			out = new FileOutputStream(output);
 			byte[] buf = new byte[1024];
 			int len;
-			while((len = in.read(buf)) > 0)
-			{
+			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
 			}
-		}
-		catch(Exception e)
-		{
-			logger.getLogger().log(
-			  Level.WARNING,
-			  Application.getInstance(GreenTone.class).getContext().getResourceMap()
-			    .getString("ErrorMessage.copyingFile")
-			    + " " + input.getPath(), e);
-		}
-		finally
-		{
+		} catch (Exception e) {
+			logger.getLogger().log(Level.WARNING, Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.copyingFile")
+					+ " " + input.getPath(), e);
+		} finally {
 			in.close();
 			out.close();
 		}
@@ -297,24 +288,16 @@ public class GreenToneUtilities
 	 * sistema operativo corrente.
 	 * 
 	 * @param file
-	 *          il file da visualizzare
+	 *            il file da visualizzare
 	 */
-	public void open(File file)
-	{
-		if(Desktop.isDesktopSupported())
-		{
+	public void open(File file) {
+		if (Desktop.isDesktopSupported()) {
 			Desktop desktop = Desktop.getDesktop();
-			try
-			{
+			try {
 				desktop.open(file);
-			}
-			catch(IOException e)
-			{
-				logger.getLogger().log(
-				  Level.WARNING,
-				  Application.getInstance(GreenTone.class).getContext()
-				    .getResourceMap().getString("ErrorMessage.cannotOpenURL")
-				    + " " + file.getPath(), e);
+			} catch (IOException e) {
+				logger.getLogger().log(Level.WARNING, Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.cannotOpenURL")
+						+ " " + file.getPath(), e);
 			}
 		}
 	}
@@ -323,24 +306,16 @@ public class GreenToneUtilities
 	 * Apre un indirizzo di risorsa.
 	 * 
 	 * @param uri
-	 *          indirizzo di risorsa
+	 *            indirizzo di risorsa
 	 */
-	public void browse(URI uri)
-	{
-		if(Desktop.isDesktopSupported())
-		{
+	public void browse(URI uri) {
+		if (Desktop.isDesktopSupported()) {
 			Desktop desktop = Desktop.getDesktop();
-			try
-			{
+			try {
 				desktop.browse(uri);
-			}
-			catch(IOException e)
-			{
-				logger.getLogger().log(
-				  Level.WARNING,
-				  Application.getInstance(GreenTone.class).getContext()
-				    .getResourceMap().getString("ErrorMessage.cannotOpenURL")
-				    + " " + uri.getPath(), e);
+			} catch (IOException e) {
+				logger.getLogger().log(Level.WARNING, Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.cannotOpenURL")
+						+ " " + uri.getPath(), e);
 			}
 		}
 	}
@@ -350,19 +325,17 @@ public class GreenToneUtilities
 	 * carattere paddingChar.
 	 * 
 	 * @param toPad
-	 *          stringa senza padding
+	 *            stringa senza padding
 	 * @param paddingChar
-	 *          carattere di padding
+	 *            carattere di padding
 	 * @param length
-	 *          lunghezza della stringa voluta
+	 *            lunghezza della stringa voluta
 	 * @return una stringa lunga lenght con il padding a sinistra del carattere
 	 *         paddingChar
 	 */
-	public static String leftPadding(String toPad, char paddingChar, int length)
-	{
+	public static String leftPadding(String toPad, char paddingChar, int length) {
 		int toPadLength = toPad.length();
-		for(int y = 0; y < length - toPadLength; y++)
-		{
+		for (int y = 0; y < length - toPadLength; y++) {
 			toPad = paddingChar + toPad;
 		}
 		return toPad;
@@ -374,11 +347,9 @@ public class GreenToneUtilities
 	 * @param image
 	 * @return un'istanza di {@link BufferedImage}
 	 */
-	public static BufferedImage toBufferedImage(Image image)
-	{
+	public static BufferedImage toBufferedImage(Image image) {
 
-		if(image instanceof BufferedImage)
-		{
+		if (image instanceof BufferedImage) {
 			return (BufferedImage) image;
 		}
 
@@ -392,36 +363,27 @@ public class GreenToneUtilities
 		// screen
 		BufferedImage bimage = null;
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		try
-		{
+		try {
 			// Determine the type of transparency of the new buffered image
 			int transparency = Transparency.OPAQUE;
-			if(hasAlpha == true)
-			{
+			if (hasAlpha == true) {
 				transparency = Transparency.BITMASK;
 			}
 
 			// Create the buffered image
 			GraphicsDevice gs = ge.getDefaultScreenDevice();
 			GraphicsConfiguration gc = gs.getDefaultConfiguration();
-			bimage =
-			  gc.createCompatibleImage(image.getWidth(null), image.getHeight(null),
-			    transparency);
-		}
-		catch(HeadlessException e)
-		{
+			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+		} catch (HeadlessException e) {
 		} // No screen
 
-		if(bimage == null)
-		{
+		if (bimage == null) {
 			// Create a buffered image using the default color model
 			int type = BufferedImage.TYPE_INT_RGB;
-			if(hasAlpha == true)
-			{
+			if (hasAlpha == true) {
 				type = BufferedImage.TYPE_INT_ARGB;
 			}
-			bimage =
-			  new BufferedImage(image.getWidth(null), image.getHeight(null), type);
+			bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
 		}
 
 		// Copy image to buffered image
@@ -441,23 +403,18 @@ public class GreenToneUtilities
 	 * @return <code>true</code> se l'immagine ha il supporto alfa,
 	 *         <code>false</code> altrimenti
 	 */
-	public static boolean hasAlpha(Image image)
-	{
+	public static boolean hasAlpha(Image image) {
 		// If buffered image, the color model is readily available
-		if(image instanceof BufferedImage)
-		{
+		if (image instanceof BufferedImage) {
 			return ((BufferedImage) image).getColorModel().hasAlpha();
 		}
 
 		// Use a pixel grabber to retrieve the image's color model;
 		// grabbing a single pixel is usually sufficient
 		PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
-		try
-		{
+		try {
 			pg.grabPixels();
-		}
-		catch(InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 		}
 
 		// Get the image's color model
@@ -468,13 +425,11 @@ public class GreenToneUtilities
 	 * Restituisce una data formattata.
 	 * 
 	 * @param date
-	 *          la data da formattare
+	 *            la data da formattare
 	 * @return un formatter per le date in Joda Time
 	 */
-	public static String formatDateTime(DateTime date)
-	{
-		if(date != null)
-		{
+	public static String formatDateTime(DateTime date) {
+		if (date != null) {
 			return dateTimeFormatter.print(date);
 		}
 		return "";
@@ -486,22 +441,15 @@ public class GreenToneUtilities
 	 * @return un renderer per lo status dell'incarico
 	 */
 	@SuppressWarnings("serial")
-	public static DefaultTableCellRenderer getJobStatusTableCellRenderer()
-	{
-		return new DefaultTableCellRenderer()
-			{
+	public static DefaultTableCellRenderer getJobStatusTableCellRenderer() {
+		return new DefaultTableCellRenderer() {
 
-				@Override
-				public java.awt.Component getTableCellRendererComponent(JTable table,
-				  Object value, boolean isSelected, boolean hasFocus, int row,
-				  int column)
-				{
-					JobStatus status = (JobStatus) value;
-					return super.getTableCellRendererComponent(table, status != null
-					  ? status.getLocalizedName()
-					  : null, isSelected, hasFocus, row, column);
-				}
-			};
+			@Override
+			public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				JobStatus status = (JobStatus) value;
+				return super.getTableCellRendererComponent(table, status != null ? status.getLocalizedName() : null, isSelected, hasFocus, row, column);
+			}
+		};
 	}
 
 	/**
@@ -510,23 +458,15 @@ public class GreenToneUtilities
 	 * @return un renderer per il tipo di operazione
 	 */
 	@SuppressWarnings("serial")
-	public static DefaultTableCellRenderer getOperationTypeTableCellRenderer()
-	{
-		return new DefaultTableCellRenderer()
-			{
-				@Override
-				public java.awt.Component getTableCellRendererComponent(JTable table,
-				  Object value, boolean isSelected, boolean hasFocus, int row,
-				  int column)
-				{
-					OperationType type = (OperationType) value;
-					return super.getTableCellRendererComponent(table,
-					  type != null? type.getLocalizedName(): null, isSelected, hasFocus,
-					  row, column);
-				}
-			};
+	public static DefaultTableCellRenderer getOperationTypeTableCellRenderer() {
+		return new DefaultTableCellRenderer() {
+			@Override
+			public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				OperationType type = (OperationType) value;
+				return super.getTableCellRendererComponent(table, type != null ? type.getLocalizedName() : null, isSelected, hasFocus, row, column);
+			}
+		};
 	}
-
 
 	/**
 	 * Restituisce un renderer per le date.
@@ -534,21 +474,15 @@ public class GreenToneUtilities
 	 * @return un renderer per le date
 	 */
 	@SuppressWarnings("serial")
-	public static DefaultTableCellRenderer getDateTableCellRenderer()
-	{
-		return new DefaultTableCellRenderer()
-			{
+	public static DefaultTableCellRenderer getDateTableCellRenderer() {
+		return new DefaultTableCellRenderer() {
 
-				@Override
-				public java.awt.Component getTableCellRendererComponent(JTable table,
-				  Object value, boolean isSelected, boolean hasFocus, int row,
-				  int column)
-				{
-					DateTime date = (DateTime) value;
-					return super.getTableCellRendererComponent(table,
-					  formatDateTime(date), isSelected, hasFocus, row, column);
-				}
-			};
+			@Override
+			public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				DateTime date = (DateTime) value;
+				return super.getTableCellRendererComponent(table, formatDateTime(date), isSelected, hasFocus, row, column);
+			}
+		};
 	}
 
 	/**
@@ -557,35 +491,27 @@ public class GreenToneUtilities
 	 * @return un renderer per i double
 	 */
 	@SuppressWarnings("serial")
-	public static DefaultTableCellRenderer getDoubleTableCellRenderer()
-	{
-		return new DefaultTableCellRenderer()
-			{
-				@Override
-				public java.awt.Component getTableCellRendererComponent(JTable table,
-				  Object value, boolean isSelected, boolean hasFocus, int row,
-				  int column)
-				{
-					Double amount = (Double) value;
-					DecimalFormat decimalFormat =
-					  (DecimalFormat) DecimalFormat.getInstance();
-					decimalFormat.setMinimumFractionDigits(2);
-					decimalFormat.setMaximumFractionDigits(2);
-					return super.getTableCellRendererComponent(table, amount != null
-					  ? decimalFormat.format(amount)
-					  : null, isSelected, hasFocus, row, column);
-				}
-			};
+	public static DefaultTableCellRenderer getDoubleTableCellRenderer() {
+		return new DefaultTableCellRenderer() {
+			@Override
+			public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				Double amount = (Double) value;
+				DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+				decimalFormat.setMinimumFractionDigits(2);
+				decimalFormat.setMaximumFractionDigits(2);
+				return super.getTableCellRendererComponent(table, amount != null ? decimalFormat.format(amount) : null, isSelected, hasFocus, row, column);
+			}
+		};
 	}
 
 	/**
-	 * Crea una tabella secondo alcune convenzioni utili per tutta l'applicazione.
+	 * Crea una tabella secondo alcune convenzioni utili per tutta
+	 * l'applicazione.
 	 * 
 	 * @return una tabella secondo alcune convenzioni utili per tutta
 	 *         l'applicazione
 	 */
-	public static JXTable createJXTable()
-	{
+	public static JXTable createJXTable() {
 		JXTable table = new JXTable();
 		table.setColumnControlVisible(true);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -594,8 +520,7 @@ public class GreenToneUtilities
 		/* status dell'incarico */
 		table.setDefaultRenderer(JobStatus.class, getJobStatusTableCellRenderer());
 		/* tipo di operazione */
-		table.setDefaultRenderer(OperationType.class,
-		  getOperationTypeTableCellRenderer());
+		table.setDefaultRenderer(OperationType.class, getOperationTypeTableCellRenderer());
 		/* date */
 		table.setDefaultRenderer(DateTime.class, getDateTableCellRenderer());
 		/* double */
@@ -611,12 +536,10 @@ public class GreenToneUtilities
 	 *         l'applicazione
 	 */
 
-	public static JXDatePicker createJXDataPicker()
-	{
+	public static JXDatePicker createJXDataPicker() {
 		JXDatePicker datePicker = new JXDatePicker();
 		/* imposto il formato per le date */
-		datePicker
-		  .setFormats(new SimpleDateFormat(GreenToneAppConfig.DATE_PATTERN));
+		datePicker.setFormats(new SimpleDateFormat(GreenToneAppConfig.DATE_PATTERN));
 		/* imposto il pannello di selezione delle date */
 		JXMonthView monthView = datePicker.getMonthView();
 		monthView.setLocale(GreenToneAppConfig.APPLICATION_LOCALE);
