@@ -126,6 +126,8 @@ public class SaveOptionsAction extends AbstractBean {
 				}
 				properties.setUseYearsInJobsProtocol(optionsPanel.getUseYearInJobProtocolCheckBox().isSelected());
 
+				properties.setLogLevel(Level.parse(optionsPanel.getLogLevelComboBox().getSelectedItem().toString()));
+
 				/* salvo */
 				properties.store();
 			} catch (ParseException e) {

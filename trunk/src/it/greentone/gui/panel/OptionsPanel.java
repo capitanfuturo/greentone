@@ -14,18 +14,22 @@ import java.awt.event.FocusEvent;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Currency;
+import java.util.logging.Level;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -85,6 +89,7 @@ public class OptionsPanel extends ContextualPanel<Void> {
 	private ImagePreviewPanel logoPreviewPanel;
 	private JButton logoButton;
 	private JCheckBox confirmOnCloseCheckBox;
+	private JComboBox logLevelComboBox;
 
 	/**
 	 * Pannello delle configurazioni utente.
@@ -131,6 +136,10 @@ public class OptionsPanel extends ContextualPanel<Void> {
 			JLabel confirmOnCloseLabel = new JLabel(getResourceMap().getString("viewOptions.Panel.confirmOnClose"));
 			systemPanel.add(confirmOnCloseLabel, "gap para");
 			systemPanel.add(getConfirmOnCloseCheckBox(), "wrap");
+			/* livello dei log */
+			JLabel logLevelLabel = new JLabel(getResourceMap().getString("viewOptions.Panel.logLevel"));
+			systemPanel.add(logLevelLabel, "gap para");
+			systemPanel.add(getLogLevelComboBox(), "wrap");
 			/* eliminazione logs */
 			systemPanel.add(deleteLogsLabel, "gap para");
 			systemPanel.add(getDeleteLogsButton());
@@ -500,6 +509,30 @@ public class OptionsPanel extends ContextualPanel<Void> {
 		return emailTextField;
 	}
 
+	/**
+	 * Restituisce il menu a tendina dei livelli di log.
+	 * 
+	 * @return il menu a tendina dei livelli di log
+	 */
+	public JComboBox getLogLevelComboBox() {
+		if (logLevelComboBox == null) {
+			logLevelComboBox = new JComboBox(new Level[] { Level.OFF, Level.SEVERE, Level.WARNING, Level.INFO,
+					Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.ALL });
+			logLevelComboBox.setRenderer(new BasicComboBoxRenderer() {
+				@Override
+				public java.awt.Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+					JLabel component = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+					if (value instanceof Level) {
+						Level level = (Level) value;
+						component.setText((level == null) ? "" : level.getLocalizedName());
+					}
+					return component;
+				}
+			});
+		}
+		return logLevelComboBox;
+	}
+
 	@Override
 	public Void getItemFromTableRow(int rowIndex) {
 		return null;
@@ -534,5 +567,6 @@ public class OptionsPanel extends ContextualPanel<Void> {
 		getVacazioneTextField().setValue(properties.getVacazionePrice());
 		getVacazioneAiutanteTextField().setValue(properties.getVacazioneHelperPrice());
 		getUseYearInJobProtocolCheckBox().setSelected(properties.getUseYearsInJobsProtocol());
+		getLogLevelComboBox().setSelectedItem(properties.getLogLevel());
 	}
 }
