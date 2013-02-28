@@ -37,13 +37,12 @@ public class GreenToneAppConfig {
 	/**
 	 * Separatore di path di sistema
 	 */
-	public static final String FILE_SEPARATOR = System
-			.getProperty("file.separator");
+	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	/**
 	 * Path di base dove salavare i dati di GreenTone
 	 */
-	public static final String BASE_PATH = System.getProperty("user.home")
-			+ FILE_SEPARATOR + "GreenTone" + FILE_SEPARATOR;
+	public static final String BASE_PATH = System.getProperty("user.home") + FILE_SEPARATOR + "GreenTone"
+			+ FILE_SEPARATOR;
 	/**
 	 * Path del file di configurazione di Spring Framework
 	 */
@@ -55,27 +54,26 @@ public class GreenToneAppConfig {
 	/**
 	 * Path del repository dei report
 	 */
-	public static final String REPORTS_REPOSITORY = BASE_PATH + "report"
-			+ FILE_SEPARATOR;
+	public static final String REPORTS_REPOSITORY = BASE_PATH + "report" + FILE_SEPARATOR;
 	/**
 	 * Path del repository dove salvare la copia dei file associati a dei
 	 * documenti
 	 */
-	public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents"
-			+ FILE_SEPARATOR;
+	public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents" + FILE_SEPARATOR;
 	/**
 	 * Path dove risiede il manuale utente
 	 */
-	public static final String MANUAL_REPOSITORY = BASE_PATH + "manual"
-			+ FILE_SEPARATOR;
+	public static final String MANUAL_REPOSITORY = BASE_PATH + "manual" + FILE_SEPARATOR;
 	/**
 	 * Nome del file del manuale utente
 	 */
 	public static final String MANUAL_FILE_NAME = "GreenTone-ManualeUtente.pdf";
 	/** Locale applicativo */
 	public static final Locale APPLICATION_LOCALE = Locale.ITALY;
-	/** pattern di default utilizzato per le date nell'applicazione */
+	/** Pattern di default utilizzato per le date nell'applicazione */
 	public static final String DATE_PATTERN = "dd/MM/yy";
+	/** Nome del file di log */
+	public static final String LOG_PATH = BASE_PATH + "log.txt";
 
 	/**
 	 * Resituisce la factory di gestione della persistenza.
@@ -87,8 +85,7 @@ public class GreenToneAppConfig {
 
 		final Properties defaults = new Properties();
 		try {
-			defaults.load(getClass().getResourceAsStream(
-					DATANUCLEUS_CONFIG_LOCATION));
+			defaults.load(getClass().getResourceAsStream(DATANUCLEUS_CONFIG_LOCATION));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

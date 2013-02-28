@@ -79,6 +79,11 @@ public class ConfigurationProperties {
 	public static final Character PROTOCOL_PADDING_CHAR = '0';
 	/** Carattere di padding per il protocollo del documento */
 	public static final Character DOCUMENT_PADDING_CHAR = '0';
+	/**
+	 * Identificativo per la property di impostazione del livello di log da
+	 * impostare
+	 */
+	private static final String CONF_LOG_LEVEL = "logLevel";
 
 	/**
 	 * Configurazione utente del programma
@@ -165,6 +170,26 @@ public class ConfigurationProperties {
 	 */
 	public void setConfirmClosureActivated(boolean isActivated) {
 		properties.setProperty(CONF_CONFIRM_CLOSURE, "" + isActivated);
+	}
+
+	/**
+	 * Restituisce il livello di log dell'applicazione.
+	 * 
+	 * @return il livello di log dell'applicazione
+	 */
+	public Level getLogLevel() {
+		String value = properties.getProperty(CONF_LOG_LEVEL, "" + Level.WARNING.intValue());
+		return Level.parse(value);
+	}
+
+	/**
+	 * Imposta il livello di log dell'applicazione.
+	 * 
+	 * @param level
+	 *            il livello di log dell'applicazione
+	 */
+	public void setLogLevel(Level level) {
+		properties.setProperty(CONF_LOG_LEVEL, "" + level.intValue());
 	}
 
 	/**

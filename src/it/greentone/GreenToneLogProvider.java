@@ -3,9 +3,10 @@ package it.greentone;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
@@ -29,76 +30,57 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class GreenToneLogProvider
-{
+public class GreenToneLogProvider {
+	@Inject
+	ConfigurationProperties properties;
 	Logger logger;
-	private static final String LOG_FILENAME = "log.txt";
 	private FileHandler fileHandler;
-
-	/**
-	 * Crea e configura il sistema di logging dell'applicazione.
-	 */
-	public GreenToneLogProvider()
-	{
-		logger = Logger.getLogger("it.greentone");
-		try
-		{
-			fileHandler =
-			  new FileHandler(GreenToneAppConfig.BASE_PATH + LOG_FILENAME, true);
-			fileHandler.setLevel(Level.ALL);
-			fileHandler.setFormatter(new SimpleFormatter());
-			logger.addHandler(fileHandler);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Restituisce il logger applicativo.
 	 * 
 	 * @return il logger applicativo
 	 */
-	public Logger getLogger()
-	{
+	public Logger getLogger() {
+		if (logger == null) {
+			logger = Logger.getLogger("it.greentone");
+			try {
+				fileHandler = new FileHandler(GreenToneAppConfig.LOG_PATH, true);
+				fileHandler.setLevel(properties.getLogLevel());
+				fileHandler.setFormatter(new SimpleFormatter());
+				logger.addHandler(fileHandler);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return logger;
 	}
 
 	/**
 	 * Elimina i log del programma.
 	 * 
-	 * @return <code>true</code> se i log sono stati eliminati, <code>false</code>
-	 *         altrimenti
+	 * @return <code>true</code> se i log sono stati eliminati,
+	 *         <code>false</code> altrimenti
 	 */
-	public boolean deleteLogs()
-	{
+	public boolean deleteLogs() {
 		logger.removeHandler(fileHandler);
 		logger.info("Removing log file handler");
 		fileHandler.flush();
 		fileHandler.close();
-		String logPath = GreenToneAppConfig.BASE_PATH + LOG_FILENAME;
-		File logFile = new File(logPath);
-		logger.info("Log file to delete: " + logPath);
+		File logFile = new File(GreenToneAppConfig.LOG_PATH);
+		logger.info("Log file to delete: " + GreenToneAppConfig.LOG_PATH);
 		logger.info("Log file exists? : " + logFile.exists());
 		logger.info("Can write log file? : " + logFile.canWrite());
 		boolean result = false;
-		if(logFile.exists() && logFile.canWrite())
-		{
-			try
-			{
+		if (logFile.exists() && logFile.canWrite()) {
+			try {
 				result = logFile.delete();
-				if(result)
-				{
+				if (result) {
 					logger.info("Log file deleted");
-				}
-				else
-				{
+				} else {
 					logger.info("Can't delete log file");
 				}
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				logger.info("Exception " + e.getStackTrace());
 			}
 		}
