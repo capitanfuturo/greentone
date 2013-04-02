@@ -335,7 +335,7 @@ public class Person
 	 *          <code>true</code> se la persona è giuridica, <code>false</code> se
 	 *          fisica
 	 */
-	public void setLegal(boolean isLegal)
+	public void setIsLegal(boolean isLegal)
 	{
 		this.isLegal = isLegal;
 	}

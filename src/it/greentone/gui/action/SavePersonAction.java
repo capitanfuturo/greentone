@@ -79,7 +79,7 @@ public class SavePersonAction extends AbstractBean {
 			person.setEmail(GreenToneUtilities.getText(personsPanel.getEmailTextField()));
 			person.setFax(GreenToneUtilities.getText(personsPanel.getFaxTextField()));
 			person.setIdentityCard(GreenToneUtilities.getText(personsPanel.getIdentityCardTextField()));
-			person.setLegal(personsPanel.getIsLegalCheckBox().isSelected());
+			person.setIsLegal(personsPanel.getIsLegalCheckBox().isSelected());
 			person.setName(GreenToneUtilities.getText(personsPanel.getNameTextField()));
 			person.setPiva(GreenToneUtilities.getText(personsPanel.getPivaTextField()));
 			person.setProvince(GreenToneUtilities.getText(personsPanel.getProvinceTextField()));
