@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.6
+version = '0.2.0'
+group = 'it.greentone'
+
+repositories {
+	mavenCentral()
+	mavenRepo url: 'http://repository.springsource.com/maven/bundles/release'
+	mavenRepo url: 'http://repository.springsource.com/maven/bundles/external'
+}
+
+dependencies {
+	compile 'org.jdesktop.bsaf:bsaf:latest.stable'
+	compile 'org.swinglabs:swingx-core:latest.stable'
+	compile 'com.miglayout:miglayout-swing:latest.stable'
+	compile 'net.java.dev.glazedlists:glazedlists_java15:latest.stable'
+	compile 'joda-time:joda-time:latest.stable'
+	compile 'javax.inject:com.springsource.javax.inject:latest.stable'
+	compile 'javax.jdo:jdo-api:latest.stable'
+	compile 'org.springframework:org.springframework.orm:latest.stable'
+	compile 'net.sf.jasperreports:jasperreports:latest.stable'
+}
+
+task "create-dirs" << {
+	sourceSets*.java.srcDirs*.each { it.mkdirs() }
+	sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.5'
+}
