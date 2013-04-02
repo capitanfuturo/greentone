@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+<!-- File di configurazione dell'installer izPack -->
+<installation version="1.0">
+
+   <!-- Informazioni sul pacchetto di installazione -->
+   <info>
+	  <appname>@{application.name}</appname>
+	  <appversion>@{major.version.number}.@{minor.version.number}.@{minus.version.number}</appversion>
+	  <authors>
+		 <author name="Giuseppe Caliendo (capitanfuturo)" email="greentone.developers@gmail.com"/>
+		 <author name="Davide Marcolongo (dade.may)" email="greentone.developers@gmail.com"/>
+	  </authors>
+	  <url>http://code.google.com/p/greentone/</url>
+	  <javaversion>1.6</javaversion>
+	  <run-privileged condition="izpack.windowsinstall|izpack.macinstall"/>
+	  <uninstaller write="yes" />
+	  <summarylogfilepath>$INSTALL_PATH/installinfo/Summary.htm</summarylogfilepath>
+   </info>
+
+   <!-- Imposto il colore dell'heading personalizzato e un'icona per l'installatore -->
+   <guiprefs width="600" height="480" resizable="no">
+	  <modifier key="useHeadingPanel" value="yes" />
+	  <modifier key="useHeadingForSummary" value="yes" />
+	  <modifier key="headingImageOnLeft" value="yes" />
+	  <modifier key="headingLineCount" value="2" />
+	  <modifier key="headingFontSize" value="1.5" />
+	  <modifier key="headingBackgroundColor" value="0x9cd941" />
+	  <modifier key="headingPanelCounter" value="text" />
+	  <modifier key="headingPanelCounterPos" value="inHeading" />
+   </guiprefs>
+
+   <locale>
+   	<langpack iso3="ita" />
+   </locale>
+
+   <!-- Need to define ant properties we want to use during install as variables -->
+   <variables>
+	  <variable name="application.name" value="@{application.name}"/>
+	  <variable name="major.version.number" value="@{major.version.number}"/>
+	  <variable name="minor.version.number" value="@{minor.version.number}"/>
+	  <variable name="minus.version.number" value="@{minus.version.number}"/>
+	  <variable name="basedir" value="@{basedir}" />
+	  <variable name="tempDir" value="@{tempDir}" />
+   </variables>
+   
+	<resources>
+		<res id="Heading.image" src="@{basedir}/logo_128x128.png" />
+		<res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+		<res id="Unix_shortcutSpec.xml" src="Unix_shortcutSpec.xml" />
+	</resources>
+
+   <panels>
+	  <panel classname="HelloPanel" />
+	  <panel classname="TargetPanel" />
+	  <panel classname="InstallPanel" />
+	  <panel classname="ShortcutPanel" />
+	  <panel classname="FinishPanel" />
+   </panels>
+   
+	<native type="izpack" name="ShellLink.dll"><os family="windows" /></native>
+	<native type="izpack" name="ShellLink_x64.dll"><os family="windows" /></native>
+
+	<listeners>
+		<listener installer="SummaryLoggerInstallerListener" />
+	</listeners>
+
+   <!-- Pacchetti da installare -->
+   <packs>
+	  <!-- Il core del programma -->
+	  <pack name="Base" required="yes" installGroups="Core" >
+		 <description>GreenTone core application</description>
+		 <!-- jar principale --> 
+		 <file src="@{tempDir}/greentone.jar" targetdir="$INSTALL_PATH"/>
+		 <!-- icone -->
+		 <fileset dir="@{basedir}/icons/" targetdir="$INSTALL_PATH">
+			<include name="*"/>
+		</fileset>
+	  </pack>
+	  
+	  <!-- Le librerie necessarie per l'installazione -->
+	  <pack name="Libraries" required="yes" installGroups="Core" >
+		 <description>GreenTone libraries set</description>
+		 <file src="@{basedir}/../lib/bin" targetdir="$INSTALL_PATH"/>
+	  </pack>
+	  
+	  <!-- Manuale utente -->
+	  <pack name="Help" required="yes" installGroups="Core" >
+		 <description>GreenTone manuals set</description>
+		 <file src="@{basedir}/manual" targetdir="$INSTALL_PATH"/>
+	  </pack>
+	  
+	  <!-- Reportistica -->
+	  <pack name="Reports" required="yes" installGroups="Core" >
+		 <description>GreenTone manuals set</description>
+		 <file src="@{tempDir}/report" targetdir="$INSTALL_PATH"/>
+	  </pack>
+   </packs>
+   
+</installation>
