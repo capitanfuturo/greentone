@@ -31,7 +31,7 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.springframework.stereotype.Component;
 
-import ca.odell.glazedlists.swing.EventListModel;
+import ca.odell.glazedlists.swing.DefaultEventListModel;
 
 /**
  * <code>
@@ -54,8 +54,7 @@ import ca.odell.glazedlists.swing.EventListModel;
  */
 @SuppressWarnings("serial")
 @Component
-public class EditJobCategoryDialog extends JDialog
-{
+public class EditJobCategoryDialog extends JDialog {
 	@Inject
 	JobCategoryService jobCategoryService;
 	private static final String LOCALIZATION_PREFIX = "editJobCategory.Dialog.";
@@ -69,10 +68,9 @@ public class EditJobCategoryDialog extends JDialog
 	/**
 	 * Finestra di dialogo per la gestione delle categorie degli incarichi.
 	 */
-	public EditJobCategoryDialog()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
+	public EditJobCategoryDialog() {
+		resourceMap = Application.getInstance(GreenTone.class).getContext()
+				.getResourceMap();
 		setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
 
 		setModal(true);
@@ -80,17 +78,18 @@ public class EditJobCategoryDialog extends JDialog
 		setTitle(resourceMap.getString(LOCALIZATION_PREFIX + "title"));
 		setLayout(new BorderLayout());
 
-
 		JPanel northPanel = new JPanel(new MigLayout("", "[90%][]", ""));
-		northPanel.add(
-		  new JLabel(resourceMap.getString(LOCALIZATION_PREFIX + "name")), "wrap");
+		northPanel
+				.add(new JLabel(resourceMap.getString(LOCALIZATION_PREFIX
+						+ "name")), "wrap");
 		northPanel.add(getInputTextField(), "growx");
 		northPanel.add(getAddButton());
 
-		JPanel centerPanel = new JPanel(new MigLayout("", "[90%][]", "[][top][]"));
+		JPanel centerPanel = new JPanel(new MigLayout("", "[90%][]",
+				"[][top][]"));
 		centerPanel.add(
-		  new JLabel(resourceMap.getString(LOCALIZATION_PREFIX + "categories")),
-		  "wrap");
+				new JLabel(resourceMap.getString(LOCALIZATION_PREFIX
+						+ "categories")), "wrap");
 		centerPanel.add(new JScrollPane(getJobCategoryJList()), "grow");
 		centerPanel.add(getDeleteButton());
 
@@ -106,139 +105,120 @@ public class EditJobCategoryDialog extends JDialog
 		setSize(GreenToneUtilities.DIALOG_SIZE);
 	}
 
-	protected JTextField getInputTextField()
-	{
-		if(inputTextField == null)
+	protected JTextField getInputTextField() {
+		if (inputTextField == null)
 			inputTextField = new JTextField(10);
 		return inputTextField;
 	}
 
-	protected JList getJobCategoryJList()
-	{
-		if(jobCategoryJList == null)
-		{
+	protected JList getJobCategoryJList() {
+		if (jobCategoryJList == null) {
 			jobCategoryJList = new JList();
-			jobCategoryJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			jobCategoryJList
+					.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
 		return jobCategoryJList;
 	}
 
-	protected JButton getAddButton()
-	{
-		if(addButton == null)
-		{
-			addButton = new JButton(new AbstractAction()
-				{
-					private static final long serialVersionUID = 1L;
+	protected JButton getAddButton() {
+		if (addButton == null) {
+			addButton = new JButton(new AbstractAction() {
+				private static final long serialVersionUID = 1L;
 
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						String name = GreenToneUtilities.getText(getInputTextField());
-						if(name != null)
-						{
-							JobCategory jobCategory = new JobCategory();
-							jobCategory.setName(name);
-							jobCategoryService.addJobCategory(jobCategory);
-							getInputTextField().setText(null);
-						}
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = GreenToneUtilities
+							.getText(getInputTextField());
+					if (name != null) {
+						JobCategory jobCategory = new JobCategory();
+						jobCategory.setName(name);
+						jobCategoryService.addJobCategory(jobCategory);
+						getInputTextField().setText(null);
 					}
-				});
+				}
+			});
 			getInputTextField().getDocument().addDocumentListener(
-			  new DocumentListener()
-				  {
+					new DocumentListener() {
 
-					  @Override
-					  public void removeUpdate(DocumentEvent e)
-					  {
-						  toggleButton();
-					  }
+						@Override
+						public void removeUpdate(DocumentEvent e) {
+							toggleButton();
+						}
 
-					  @Override
-					  public void insertUpdate(DocumentEvent e)
-					  {
-						  toggleButton();
-					  }
+						@Override
+						public void insertUpdate(DocumentEvent e) {
+							toggleButton();
+						}
 
-					  @Override
-					  public void changedUpdate(DocumentEvent e)
-					  {
-						  toggleButton();
-					  }
+						@Override
+						public void changedUpdate(DocumentEvent e) {
+							toggleButton();
+						}
 
-					  void toggleButton()
-					  {
-						  addButton.setEnabled(GreenToneUtilities
-						    .getText(getInputTextField()) != null);
-					  }
-				  });
+						void toggleButton() {
+							addButton.setEnabled(GreenToneUtilities
+									.getText(getInputTextField()) != null);
+						}
+					});
 
 			addButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
-			  + "addToolTip"));
-			addButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "addIcon"));
+					+ "addToolTip"));
+			addButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX
+					+ "addIcon"));
 		}
 		return addButton;
 	}
 
-	protected JButton getDeleteButton()
-	{
-		if(deleteButton == null)
-		{
-			deleteButton = new JButton(new AbstractAction()
-				{
-					private static final long serialVersionUID = 1L;
+	protected JButton getDeleteButton() {
+		if (deleteButton == null) {
+			deleteButton = new JButton(new AbstractAction() {
+				private static final long serialVersionUID = 1L;
 
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						int selectedIndex = getJobCategoryJList().getSelectedIndex();
-						if(selectedIndex > -1)
-						{
-							int confirmDialog =
-							  JOptionPane.showConfirmDialog(getContentPane(), resourceMap
-							    .getString("editJobCategory.Action.confirmMessage"));
-							if(confirmDialog == JOptionPane.OK_OPTION)
-							{
-								JobCategory jobCategory =
-								  jobCategoryService.getAllJobCategories().get(selectedIndex);
-								jobCategoryService.deleteJobCategory(jobCategory);
-							}
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int selectedIndex = getJobCategoryJList()
+							.getSelectedIndex();
+					if (selectedIndex > -1) {
+						int confirmDialog = JOptionPane.showConfirmDialog(
+								getContentPane(),
+								resourceMap
+										.getString("editJobCategory.Action.confirmMessage"));
+						if (confirmDialog == JOptionPane.OK_OPTION) {
+							JobCategory jobCategory = jobCategoryService
+									.getAllJobCategories().get(selectedIndex);
+							jobCategoryService.deleteJobCategory(jobCategory);
 						}
 					}
-				});
+				}
+			});
 			getJobCategoryJList().addListSelectionListener(
-			  new ListSelectionListener()
-				  {
+					new ListSelectionListener() {
 
-					  @Override
-					  public void valueChanged(ListSelectionEvent e)
-					  {
-						  deleteButton
-						    .setEnabled(getJobCategoryJList().getSelectedIndex() > -1);
-					  }
-				  });
+						@Override
+						public void valueChanged(ListSelectionEvent e) {
+							deleteButton.setEnabled(getJobCategoryJList()
+									.getSelectedIndex() > -1);
+						}
+					});
 
-			deleteButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
-			  + "deleteToolTip"));
+			deleteButton.setToolTipText(resourceMap
+					.getString(LOCALIZATION_PREFIX + "deleteToolTip"));
 			deleteButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX
-			  + "deleteIcon"));
+					+ "deleteIcon"));
 		}
 		return deleteButton;
 	}
 
-	private JButton getOkButton()
-	{
-		if(okButton == null)
-		{
-			okButton = new JButton(new AbstractAction()
-				{
-					@Override
-					public void actionPerformed(ActionEvent arg0)
-					{
-						setVisible(false);
-					}
-				});
-			okButton.setText(resourceMap.getString(LOCALIZATION_PREFIX + "okButton"));
+	private JButton getOkButton() {
+		if (okButton == null) {
+			okButton = new JButton(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					setVisible(false);
+				}
+			});
+			okButton.setText(resourceMap.getString(LOCALIZATION_PREFIX
+					+ "okButton"));
 		}
 		return okButton;
 	}
@@ -246,10 +226,9 @@ public class EditJobCategoryDialog extends JDialog
 	/**
 	 * Configura la finestra di dialogo prima che venga visualizzata.
 	 */
-	public void setup()
-	{
-		ListModel listModel =
-		  new EventListModel<JobCategory>(jobCategoryService.getAllJobCategories());
+	public void setup() {
+		ListModel listModel = new DefaultEventListModel<JobCategory>(
+				jobCategoryService.getAllJobCategories());
 		getJobCategoryJList().setModel(listModel);
 		getInputTextField().setText(null);
 		getDeleteButton().setEnabled(false);

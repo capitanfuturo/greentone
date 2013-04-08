@@ -50,7 +50,7 @@ import org.springframework.stereotype.Component;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
-import ca.odell.glazedlists.swing.EventComboBoxModel;
+import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
 /**
@@ -574,7 +574,7 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 					}
 				});
 
-		EventComboBoxModel<Person> recipientComboBoxModel = new EventComboBoxModel<Person>(
+		DefaultEventComboBoxModel<Person> recipientComboBoxModel = new DefaultEventComboBoxModel<Person>(
 				sortedAllPersons);
 		getRecipientComboBox().setModel(recipientComboBoxModel);
 
@@ -588,7 +588,7 @@ public class DocumentsPanel extends ContextualPanel<Document> {
 								o1.getProtocol());
 					}
 				});
-		EventComboBoxModel<Job> jobComboBoxModel = new EventComboBoxModel<Job>(
+		DefaultEventComboBoxModel<Job> jobComboBoxModel = new DefaultEventComboBoxModel<Job>(
 				jobsList);
 		getJobComboBox().setModel(jobComboBoxModel);
 	}
