@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
  */
 public class GreenTone extends SingleFrameApplication {
 	private SpringBeansHolder springBeansHolder;
+	private ApplicationContext applicationContext;
 
 	/**
 	 * Esegue l'applicazione. Per il momento non sono disponibili argomenti di
@@ -62,8 +63,8 @@ public class GreenTone extends SingleFrameApplication {
 		}
 		getContext().getLocalStorage().setDirectory(filePath);
 
-		/* carico il contesto creato da Spring Framework */
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(GreenToneAppConfig.SPRING_CONFIG_LOCATION);
+		applicationContext = new ClassPathXmlApplicationContext(
+				GreenToneAppConfig.SPRING_CONFIG_LOCATION);
 		/* recupero il wrapper che contiene i bean creati da Spring Framework */
 		springBeansHolder = applicationContext.getBean(SpringBeansHolder.class);
 		// TODO JXLoginDialog PasswordDialog passwordDialog = new
@@ -73,10 +74,12 @@ public class GreenTone extends SingleFrameApplication {
 
 	@Override
 	protected void startup() {
-		final String applicationTitle = getContext().getResourceMap().getString("Application.title");
+		final String applicationTitle = getContext().getResourceMap()
+				.getString("Application.title");
 		getMainFrame().setTitle(applicationTitle);
 		final MainPanel mainPanel = springBeansHolder.getMainPanel();
-		springBeansHolder.getLogProvider().getLogger().info("Inizializzazione pannello principale");
+		springBeansHolder.getLogProvider().getLogger()
+				.info("Inizializzazione pannello principale");
 		mainPanel.initialize();
 		/* aggiungo un listener per la chiusura dell'applicazione */
 		addExitListener(new ExitListener() {
@@ -92,8 +95,13 @@ public class GreenTone extends SingleFrameApplication {
 				 * se è richiesta la conferma di chiusura allora mostro una
 				 * dialog
 				 */
-				if (springBeansHolder.getConfigurationProperties().isConfirmClosureActivated()) {
-					int confirmDialog = JOptionPane.showConfirmDialog(mainPanel, getContext().getResourceMap().getString("exit.Action.confirmMessage"), applicationTitle, JOptionPane.YES_NO_OPTION);
+				if (springBeansHolder.getConfigurationProperties()
+						.isConfirmClosureActivated()) {
+					int confirmDialog = JOptionPane.showConfirmDialog(
+							mainPanel,
+							getContext().getResourceMap().getString(
+									"exit.Action.confirmMessage"),
+							applicationTitle, JOptionPane.YES_NO_OPTION);
 					return confirmDialog == JOptionPane.OK_OPTION;
 				} else {
 					return true;
@@ -102,13 +110,19 @@ public class GreenTone extends SingleFrameApplication {
 			}
 		});
 		show(mainPanel);
-		springBeansHolder.getLogProvider().getLogger().info("Interfaccia grafica avviata");
+		springBeansHolder.getLogProvider().getLogger()
+				.info("Interfaccia grafica avviata");
 
 		/* se è il primo avvio allora va gestito l'uso dell'annno del protocollo */
 		if (springBeansHolder.getConfigurationProperties().isFirstLaunch()) {
-			springBeansHolder.getLogProvider().getLogger().info("Rilevato primo avvio");
-			int answer = JOptionPane.showConfirmDialog(mainPanel, getContext().getResourceMap().getString("Application.firstLaunch"), applicationTitle, JOptionPane.YES_NO_OPTION);
-			springBeansHolder.getConfigurationProperties().setUseYearsInJobsProtocol(answer == JOptionPane.YES_OPTION);
+			springBeansHolder.getLogProvider().getLogger()
+					.info("Rilevato primo avvio");
+			int answer = JOptionPane.showConfirmDialog(mainPanel, getContext()
+					.getResourceMap().getString("Application.firstLaunch"),
+					applicationTitle, JOptionPane.YES_NO_OPTION);
+			springBeansHolder
+					.getConfigurationProperties()
+					.setUseYearsInJobsProtocol(answer == JOptionPane.YES_OPTION);
 			springBeansHolder.getConfigurationProperties().store();
 		}
 
@@ -116,8 +130,10 @@ public class GreenTone extends SingleFrameApplication {
 		 * se è abilitato il controllo degli aggiornamenti allora avvio il
 		 * processo in background
 		 */
-		if (springBeansHolder.getConfigurationProperties().isCheckUpdateActivated()) {
-			springBeansHolder.getLogProvider().getLogger().info("Controllo aggiornamenti");
+		if (springBeansHolder.getConfigurationProperties()
+				.isCheckUpdateActivated()) {
+			springBeansHolder.getLogProvider().getLogger()
+					.info("Controllo aggiornamenti");
 			springBeansHolder.getUtilities().checkUpdates();
 		}
 
@@ -206,7 +222,8 @@ public class GreenTone extends SingleFrameApplication {
 		 * @param configurationProperties
 		 *            la configurazione utente di Greentone
 		 */
-		public void setConfigurationProperties(ConfigurationProperties configurationProperties) {
+		public void setConfigurationProperties(
+				ConfigurationProperties configurationProperties) {
 			this.configurationProperties = configurationProperties;
 		}
 

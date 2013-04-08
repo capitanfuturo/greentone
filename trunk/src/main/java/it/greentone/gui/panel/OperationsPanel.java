@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
-import ca.odell.glazedlists.swing.EventComboBoxModel;
+import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
 /**
@@ -506,7 +506,7 @@ public class OperationsPanel extends ContextualPanel<Operation> {
 								o1.getProtocol());
 					}
 				});
-		getJobComboBox().setModel(new EventComboBoxModel<Job>(jobsList));
+		getJobComboBox().setModel(new DefaultEventComboBoxModel<Job>(jobsList));
 
 		tableModel = new EventJXTableModel<Operation>(
 				operationService.getAllOperations(),

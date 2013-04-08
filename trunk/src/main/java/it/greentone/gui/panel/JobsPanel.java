@@ -41,7 +41,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
-import ca.odell.glazedlists.swing.EventComboBoxModel;
+import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
 import ca.odell.glazedlists.swing.EventJXTableModel;
 
 /**
@@ -224,7 +224,7 @@ public class JobsPanel extends ContextualPanel<Job> {
 
 		/* carico responsabili e committenti */
 		EventList<Person> allPersons = personService.getAllPersons();
-		SortedList<Person> soertedAllPersons = new SortedList<Person>(
+		SortedList<Person> sortedAllPersons = new SortedList<Person>(
 				allPersons, new Comparator<Person>() {
 					@Override
 					public int compare(Person o1, Person o2) {
@@ -232,9 +232,9 @@ public class JobsPanel extends ContextualPanel<Job> {
 					}
 				});
 		getCustomerComboBox().setModel(
-				new EventComboBoxModel<Person>(soertedAllPersons));
+				new DefaultEventComboBoxModel<Person>(sortedAllPersons));
 		getManagerComboBox().setModel(
-				new EventComboBoxModel<Person>(soertedAllPersons));
+				new DefaultEventComboBoxModel<Person>(sortedAllPersons));
 
 		/* carico le categorie */
 		EventList<JobCategory> allCategories = jobCategoryService
@@ -246,7 +246,7 @@ public class JobsPanel extends ContextualPanel<Job> {
 						return o1.getName().compareToIgnoreCase(o2.getName());
 					}
 				});
-		ComboBoxModel model = new EventComboBoxModel<JobCategory>(
+		ComboBoxModel model = new DefaultEventComboBoxModel<JobCategory>(
 				sortedAllCategories);
 		categoryComboBox.setModel(model);
 	}

@@ -12,15 +12,26 @@ repositories {
 }
 
 dependencies {
-	compile 'org.jdesktop.bsaf:bsaf:latest.stable'
-	compile 'org.swinglabs:swingx-core:latest.stable'
+	compile 'com.lowagie:itext:latest.stable'
 	compile 'com.miglayout:miglayout-swing:latest.stable'
-	compile 'net.java.dev.glazedlists:glazedlists_java15:latest.stable'
 	compile 'joda-time:joda-time:latest.stable'
 	compile 'javax.inject:com.springsource.javax.inject:latest.stable'
 	compile 'javax.jdo:jdo-api:latest.stable'
+	compile 'org.jdesktop.bsaf:bsaf:latest.stable'
 	compile 'org.springframework:org.springframework.orm:latest.stable'
+	compile 'org.springframework:spring-expression:latest.stable'
+	compile 'org.swinglabs:swingx-core:latest.stable'
+	compile 'net.java.dev.glazedlists:glazedlists_java15:latest.stable'
 	compile 'net.sf.jasperreports:jasperreports:latest.stable'
+	
+	runtime 'com.h2database:h2:latest.stable'
+	runtime 'org.datanucleus:datanucleus-api-jdo:latest.stable'
+	runtime 'org.datanucleus:datanucleus-core:latest.stable'
+	runtime 'org.datanucleus:datanucleus-rdbms:latest.stable'
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.5'
 }
 
 task "create-dirs" << {
@@ -28,6 +39,23 @@ task "create-dirs" << {
 	sourceSets*.resources.srcDirs*.each { it.mkdirs() }
 }
 
-task wrapper(type: Wrapper) {
-	gradleVersion = '1.5'
+task jdoEnhance << {
+	try {
+		logger.lifecycle 'Enhancing DataNucleus classes...'
+
+		ant.taskdef(name: 'enhance', classpath: project.configurations.datanucleus.asPath, classname: 'org.datanucleus.enhancer.tools.EnhancerTask')
+		ant.enhance(failonerror: true, verbose: true ) {
+			classpath {
+				pathelement(path: project.configurations.compile.asPath)
+				pathelement(path: project.configurations.datanucleus.asPath)
+			}
+			fileset(dir: sourceSets.main.output.classesDir, includes: '**/*.class')
+		}
+	}
+	catch(Exception e) {
+		throw new GradleException('An error occurred enhancing DataNucleus classes.', e)
+	}
+	finally {
+		logger.lifecycle 'Finished enhancing DataNucleus classes.'
+	}
 }
