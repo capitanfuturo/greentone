@@ -4,8 +4,8 @@
 
    <!-- Informazioni sul pacchetto di installazione -->
    <info>
-	  <appname>@{application.name}</appname>
-	  <appversion>@{major.version.number}.@{minor.version.number}.@{minus.version.number}</appversion>
+	  <appname>@{app.title}</appname>
+	  <appversion>@{app.version}</appversion>
 	  <authors>
 		 <author name="Giuseppe Caliendo (capitanfuturo)" email="greentone.developers@gmail.com"/>
 		 <author name="Davide Marcolongo (dade.may)" email="greentone.developers@gmail.com"/>
@@ -14,7 +14,6 @@
 	  <javaversion>1.6</javaversion>
 	  <run-privileged condition="izpack.windowsinstall|izpack.macinstall"/>
 	  <uninstaller write="yes" />
-	  <summarylogfilepath>$INSTALL_PATH/installinfo/Summary.htm</summarylogfilepath>
    </info>
 
    <!-- Imposto il colore dell'heading personalizzato e un'icona per l'installatore -->
@@ -33,12 +32,10 @@
    	<langpack iso3="ita" />
    </locale>
 
-   <!-- Need to define ant properties we want to use during install as variables -->
+   <!-- Need to define gradle properties we want to use during install as variables -->
    <variables>
-	  <variable name="application.name" value="@{application.name}"/>
-	  <variable name="major.version.number" value="@{major.version.number}"/>
-	  <variable name="minor.version.number" value="@{minor.version.number}"/>
-	  <variable name="minus.version.number" value="@{minus.version.number}"/>
+	  <variable name="app.title" value="@{app.title}"/>
+	  <variable name="app.version" value="@{app.version}"/>
 	  <variable name="basedir" value="@{basedir}" />
 	  <variable name="tempDir" value="@{tempDir}" />
    </variables>
