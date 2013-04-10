@@ -1,9 +1,20 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'izpack'
 
 sourceCompatibility = 1.6
 version = '0.2.0'
 group = 'it.greentone'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-izpack-plugin:0.2.1'
+    }
+}
 
 repositories {
 	mavenCentral()
@@ -28,6 +39,8 @@ dependencies {
 	runtime 'org.datanucleus:datanucleus-api-jdo:latest.stable'
 	runtime 'org.datanucleus:datanucleus-core:latest.stable'
 	runtime 'org.datanucleus:datanucleus-rdbms:latest.stable'
+	
+	izpack 'org.codehaus.izpack:izpack-standalone-compiler:latest.stable'
 }
 
 task wrapper(type: Wrapper) {
