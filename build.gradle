@@ -72,3 +72,13 @@ task jdoEnhance << {
 		logger.lifecycle 'Finished enhancing DataNucleus classes.'
 	}
 }
+
+izpack {
+    baseDir = file("$buildDir/assemble/greentone")
+    installFile = file('installer/installer.xml')
+    outputFile = file("$buildDir/distributions/greentone-${version}-installer.jar")
+    compression = 'deflate'
+    compressionLevel = 9
+    appProperties = ['app.group': 'Greentone', 'app.name': 'greentone', 'app.title': 'Greentone',
+                     'app.version': '0.2.0', 'app.subpath': "Griffon-0.2.0"]
+}
