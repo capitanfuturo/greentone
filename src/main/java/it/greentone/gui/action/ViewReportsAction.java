@@ -1,7 +1,7 @@
 package it.greentone.gui.action;
 
 import it.greentone.report.ReportManager;
-import it.greentone.report.ReportsCategoryInterface;
+import it.greentone.report.group.ReportGroup;
 
 import javax.inject.Inject;
 
@@ -20,42 +20,35 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Visualizza a seconda della categoria impostata da
- * {@link #setup(ReportsCategoryInterface)} la dialog di gestione di report e ne
+ * Visualizza a seconda della categoria impostata da {@link #setup(ReportGroup)} la dialog di gestione di report e ne
  * gestisce la stampa.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewReportsAction
-{
-	@Inject
-	private ReportManager reportManager;
-	private ReportsCategoryInterface category;
+public class ViewReportsAction {
+    @Inject
+    private ReportManager reportManager;
+    private ReportGroup group;
 
-	/**
-	 * Imposta prima che venga eseguita l'azione la categoria di report da
-	 * visualizzare.
-	 * 
-	 * @param category
-	 *          la categoria di report da visualizzare
-	 */
-	public void setup(ReportsCategoryInterface category)
-	{
-		this.category = category;
-	}
+    /**
+     * Imposta prima che venga eseguita l'azione la categoria di report da visualizzare.
+     * 
+     * @param category
+     *            la categoria di report da visualizzare
+     */
+    public void setup(ReportGroup category) {
+        this.group = category;
+    }
 
-	/**
-	 * Visualizza a seconda della categoria impostata da
-	 * {@link #setup(ReportsCategoryInterface)} la dialog di gestione di report e
-	 * ne gestisce la stampa.
-	 */
-	@Action
-	public void viewReports()
-	{
-		reportManager.showDialog(category);
-	}
+    /**
+     * Visualizza a seconda della categoria impostata da {@link #setup(ReportGroup)} la dialog di gestione di report e
+     * ne gestisce la stampa.
+     */
+    @Action
+    public void viewReports() {
+        reportManager.showDialog(group);
+    }
 }

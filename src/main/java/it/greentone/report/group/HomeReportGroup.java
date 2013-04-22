@@ -1,7 +1,10 @@
-package it.greentone.report;
+package it.greentone.report.group;
+
+import it.greentone.report.impl.AbstractReportImpl;
+import it.greentone.report.impl.TemplateReportDescriptor;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
@@ -10,7 +13,7 @@ import org.springframework.stereotype.Component;
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
- * Copyright (C) 2011 GreenTone Developer Team.<br>
+ * Copyright (C) 2013 GreenTone Developer Team.<br>
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -19,26 +22,27 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Categoria dei report per lo studio professionale.
+ * Gruppo di report della home.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class HomeReportsCategory extends ReportsCategoryInterface
-{
-	@Inject
-	CartaIntestataReport cartaIntestataReport;
+public class HomeReportGroup implements ReportGroup {
 
-	@Override
-	public List<ReportDescriptorInterface> getDescriptors()
-	{
-		List<ReportDescriptorInterface> reports =
-		  new ArrayList<ReportDescriptorInterface>();
-		reports.add(cartaIntestataReport);
-		return reports;
-	}
+    Collection<AbstractReportImpl> reports;
+
+    @Inject
+    TemplateReportDescriptor templateReport;
+
+    @Override
+    public Collection<AbstractReportImpl> getReports() {
+        if (reports != null) {
+            reports = new ArrayList<AbstractReportImpl>();
+            reports.add(templateReport);
+        }
+        return reports;
+    }
 
 }

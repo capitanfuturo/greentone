@@ -2,6 +2,8 @@ package it.greentone.report;
 
 import it.greentone.GreenTone;
 import it.greentone.GreenToneUtilities;
+import it.greentone.report.group.ReportGroup;
+import it.greentone.report.impl.AbstractReportImpl;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -39,8 +41,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Finestra di dialogo per la selezione del report da stampare.
  * 
@@ -48,142 +49,116 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("serial")
 @Component
-public class ReportsListDialog extends JDialog
-{
-	private final ResourceMap resourceMap;
-	private List<ReportDescriptorInterface> reportDescriptorList;
-	private ReportDescriptorInterface selectedReportDescriptor;
-	private JList reportsList;
-	private JButton okButton;
-	private JButton cancelButton;
+public class ReportsListDialog extends JDialog {
+    private final ResourceMap resourceMap;
+    private List<AbstractReportImpl> reportDescriptorList;
+    private AbstractReportImpl selectedReportDescriptor;
+    private JList reportsList;
+    private JButton okButton;
+    private JButton cancelButton;
 
-	/**
-	 * Finestra di dialogo per la selezione del report da stampare.
-	 */
-	public ReportsListDialog()
-	{
-		super();
-		setModal(true);
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
-		setTitle(resourceMap.getString("viewReports.Dialog.title"));
+    /**
+     * Finestra di dialogo per la selezione del report da stampare.
+     */
+    public ReportsListDialog() {
+        super();
+        setModal(true);
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+        setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
+        setTitle(resourceMap.getString("viewReports.Dialog.title"));
 
-		setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
 
-		JPanel listContent = new JPanel(new MigLayout("fill"));
-		listContent.add(
-		  new JLabel(resourceMap.getString("viewReports.Dialog.reports")), "wrap");
-		listContent.add(new JScrollPane(getReportsList()), "grow");
+        JPanel listContent = new JPanel(new MigLayout("fill"));
+        listContent.add(new JLabel(resourceMap.getString("viewReports.Dialog.reports")), "wrap");
+        listContent.add(new JScrollPane(getReportsList()), "grow");
 
-		JPanel buttonPanel = new JPanel(new MigLayout("rtl"));
-		buttonPanel.add(getOkButton());
-		buttonPanel.add(getCancelButton());
+        JPanel buttonPanel = new JPanel(new MigLayout("rtl"));
+        buttonPanel.add(getOkButton());
+        buttonPanel.add(getCancelButton());
 
-		getContentPane().add(listContent, BorderLayout.CENTER);
-		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        getContentPane().add(listContent, BorderLayout.CENTER);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
-		setMinimumSize(GreenToneUtilities.DIALOG_SIZE);
-		setLocationRelativeTo(null);
-	}
+        setMinimumSize(GreenToneUtilities.DIALOG_SIZE);
+        setLocationRelativeTo(null);
+    }
 
-	private JList getReportsList()
-	{
-		if(reportsList == null)
-		{
-			reportsList = new JList();
-			reportsList.addListSelectionListener(new ListSelectionListener()
-				{
+    private JList getReportsList() {
+        if (reportsList == null) {
+            reportsList = new JList();
+            reportsList.addListSelectionListener(new ListSelectionListener() {
 
-					@Override
-					public void valueChanged(ListSelectionEvent e)
-					{
-						if(!e.getValueIsAdjusting())
-						{
-							getOkButton().setEnabled(e.getSource() != null);
-						}
-					}
-				});
-		}
-		return reportsList;
-	}
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    if (!e.getValueIsAdjusting()) {
+                        getOkButton().setEnabled(e.getSource() != null);
+                    }
+                }
+            });
+        }
+        return reportsList;
+    }
 
-	private JButton getOkButton()
-	{
-		if(okButton == null)
-		{
-			okButton = new JButton(new AbstractAction()
-				{
-					@Override
-					public void actionPerformed(ActionEvent arg0)
-					{
-						int selectedIndex = getReportsList().getSelectedIndex();
-						if(selectedIndex > -1)
-						{
-							selectedReportDescriptor =
-							  (ReportDescriptorInterface) getReportsList().getSelectedValue();
-						}
-						setVisible(false);
-					}
-				});
-			okButton.setEnabled(false);
-			okButton.setText(resourceMap.getString("viewReports.Dialog.ok"));
-		}
-		return okButton;
-	}
+    private JButton getOkButton() {
+        if (okButton == null) {
+            okButton = new JButton(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    int selectedIndex = getReportsList().getSelectedIndex();
+                    if (selectedIndex > -1) {
+                        selectedReportDescriptor = (AbstractReportImpl) getReportsList().getSelectedValue();
+                    }
+                    setVisible(false);
+                }
+            });
+            okButton.setEnabled(false);
+            okButton.setText(resourceMap.getString("viewReports.Dialog.ok"));
+        }
+        return okButton;
+    }
 
-	private JButton getCancelButton()
-	{
-		if(cancelButton == null)
-		{
-			cancelButton = new JButton(new AbstractAction()
-				{
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						selectedReportDescriptor = null;
-						setVisible(false);
-					}
-				});
-			cancelButton.setText(resourceMap.getString("viewReports.Dialog.cancel"));
-		}
-		return cancelButton;
-	}
+    private JButton getCancelButton() {
+        if (cancelButton == null) {
+            cancelButton = new JButton(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedReportDescriptor = null;
+                    setVisible(false);
+                }
+            });
+            cancelButton.setText(resourceMap.getString("viewReports.Dialog.cancel"));
+        }
+        return cancelButton;
+    }
 
-	/**
-	 * Restituisce il report selezionato.
-	 * 
-	 * @return il report selezionato
-	 */
-	public ReportDescriptorInterface getSelectedReportDescriptor()
-	{
-		return selectedReportDescriptor;
-	}
+    /**
+     * Restituisce il report selezionato.
+     * 
+     * @return il report selezionato
+     */
+    public AbstractReportImpl getSelectedReportDescriptor() {
+        return selectedReportDescriptor;
+    }
 
-	/**
-	 * Imposta la dialog prima di essere utilizzata.
-	 * 
-	 * @param category
-	 */
-	public void setup(ReportsCategoryInterface category)
-	{
-		reportDescriptorList = category.getDescriptors();
-		Collections.sort(reportDescriptorList,
-		  new Comparator<ReportDescriptorInterface>()
-			  {
+    /**
+     * Imposta la dialog prima di essere utilizzata.
+     * 
+     * @param group
+     *            gruppo di report da visualizzare
+     */
+    public void setup(ReportGroup group) {
+        reportDescriptorList = (List<AbstractReportImpl>) group.getReports();
+        Collections.sort(reportDescriptorList, new Comparator<AbstractReportImpl>() {
 
-				  @Override
-				  public int compare(ReportDescriptorInterface o1,
-				    ReportDescriptorInterface o2)
-				  {
-					  return o1.getLocalizedName().compareToIgnoreCase(
-					    o2.getLocalizedName());
-				  }
-			  });
+            @Override
+            public int compare(AbstractReportImpl o1, AbstractReportImpl o2) {
+                return o1.getDescriptor().getName().compareToIgnoreCase(o2.getDescriptor().getName());
+            }
+        });
 
-		ListModel listModel =
-		  new ListComboBoxModel<ReportDescriptorInterface>(reportDescriptorList);
-		getReportsList().setModel(listModel);
-		pack();
-	}
+        ListModel listModel = new ListComboBoxModel<AbstractReportImpl>(reportDescriptorList);
+        getReportsList().setModel(listModel);
+        pack();
+    }
 }
