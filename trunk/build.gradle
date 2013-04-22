@@ -3,7 +3,6 @@ apply plugin: 'eclipse'
 apply plugin: 'izpack'
 
 sourceCompatibility = 1.6
-version = '0.2.0'
 group = 'it.greentone'
 
 buildscript {
@@ -80,5 +79,5 @@ izpack {
     compression = 'deflate'
     compressionLevel = 9
     appProperties = ['app.group': 'Greentone', 'app.name': 'greentone', 'app.title': 'Greentone',
-                     'app.version': '0.2.0', 'app.subpath': "Griffon-0.2.0"]
+                     'app.version': "${version}", 'app.subpath': "Greentone-${version}"]
 }

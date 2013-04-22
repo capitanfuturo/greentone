@@ -11,7 +11,7 @@ import it.greentone.gui.panel.AgendaDetailPanel.TimeStatus;
 import it.greentone.persistence.Job;
 import it.greentone.persistence.JobService;
 import it.greentone.persistence.JobStatus;
-import it.greentone.report.HomeReportsCategory;
+import it.greentone.report.group.HomeReportGroup;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -58,8 +58,7 @@ import ca.odell.glazedlists.matchers.Matcher;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Pannello di inizio dell'applicazione.
  * 
@@ -68,408 +67,363 @@ import ca.odell.glazedlists.matchers.Matcher;
 @SuppressWarnings("serial")
 @Component
 public class HomePanel extends AbstractPanel {
-	private static final String LOCALIZATION_PREFIX = "viewHome.Panel.";
-	private static final String PANEL_BUNDLE = "viewHome";
-	private static final int NEXT_EXPIRING_JOB_DAYS_INTERVAL = 30;
+    private static final String LOCALIZATION_PREFIX = "viewHome.Panel.";
+    private static final String PANEL_BUNDLE = "viewHome";
+    private static final int NEXT_EXPIRING_JOB_DAYS_INTERVAL = 30;
 
-	@Inject
-	private ActionProvider actionProvider;
-	@Inject
-	private JobService jobService;
-	@Inject
-	private JobPanel jobPanel;
-	@Inject
-	private MainPanel mainPanel;
-	@Inject
-	private ViewReportsAction viewReportsAction;
-	@Inject
-	private HomeReportsCategory homeReportsCategory;
+    @Inject
+    private ActionProvider actionProvider;
+    @Inject
+    private JobService jobService;
+    @Inject
+    private JobPanel jobPanel;
+    @Inject
+    private MainPanel mainPanel;
+    @Inject
+    private ViewReportsAction viewReportsAction;
+    @Inject
+    private HomeReportGroup homeReports;
 
-	ResourceMap resourceMap;
-	JPanel centralPanel;
-	private JPanel searchPanel;
-	private JPanel agendaPanel;
-	private JButton searchButton;
-	private JTextField searchTextField;
-	private JPanel resultPanel;
-	private JToolBar contextualToolBar;
-	private JXSplitPane sideSplitPane;
-	private JXSplitPane splitPane;
+    ResourceMap resourceMap;
+    JPanel centralPanel;
+    private JPanel searchPanel;
+    private JPanel agendaPanel;
+    private JButton searchButton;
+    private JTextField searchTextField;
+    private JPanel resultPanel;
+    private JToolBar contextualToolBar;
+    private JXSplitPane sideSplitPane;
+    private JXSplitPane splitPane;
 
-	/**
-	 * Pannello di inizio dell'applicazione.
-	 * 
-	 * @param modelEventManager
-	 *            manager degli eventi
-	 */
-	@Inject
-	public HomePanel(ModelEventManager modelEventManager) {
-		super();
-		setLayout(new BorderLayout());
+    /**
+     * Pannello di inizio dell'applicazione.
+     * 
+     * @param modelEventManager
+     *            manager degli eventi
+     */
+    @Inject
+    public HomePanel(ModelEventManager modelEventManager) {
+        super();
+        setLayout(new BorderLayout());
 
-		add(getContextualToolBar(), BorderLayout.NORTH);
-		add(getSplitPane(), BorderLayout.CENTER);
+        add(getContextualToolBar(), BorderLayout.NORTH);
+        add(getSplitPane(), BorderLayout.CENTER);
 
-		/* aggiornamento dinamico */
-		modelEventManager
-				.addPropertyChangeListener(new PropertyChangeListener() {
+        /* aggiornamento dinamico */
+        modelEventManager.addPropertyChangeListener(new PropertyChangeListener() {
 
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						String propertyName = evt.getPropertyName();
-						if (propertyName.equals(ModelEventManager.JOB_INSERTED)
-								|| propertyName
-										.equals(ModelEventManager.JOB_MODIFIED)
-								|| propertyName
-										.equals(ModelEventManager.JOB_DELETED)) {
-							refresh();
-						}
-					}
-				});
-	}
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String propertyName = evt.getPropertyName();
+                if (propertyName.equals(ModelEventManager.JOB_INSERTED)
+                        || propertyName.equals(ModelEventManager.JOB_MODIFIED)
+                        || propertyName.equals(ModelEventManager.JOB_DELETED)) {
+                    refresh();
+                }
+            }
+        });
+    }
 
-	private JSplitPane getSplitPane() {
-		if (splitPane == null) {
-			splitPane = new JXSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-					getCentralPanel(), getSideSplitPane());
-		}
-		return splitPane;
-	}
+    private JSplitPane getSplitPane() {
+        if (splitPane == null) {
+            splitPane = new JXSplitPane(JSplitPane.HORIZONTAL_SPLIT, getCentralPanel(), getSideSplitPane());
+        }
+        return splitPane;
+    }
 
-	private JXSplitPane getSideSplitPane() {
-		if (sideSplitPane == null) {
-			sideSplitPane = new JXSplitPane(JSplitPane.VERTICAL_SPLIT,
-					getSearchPanel(), getAgendaPanel());
-		}
-		return sideSplitPane;
-	}
+    private JXSplitPane getSideSplitPane() {
+        if (sideSplitPane == null) {
+            sideSplitPane = new JXSplitPane(JSplitPane.VERTICAL_SPLIT, getSearchPanel(), getAgendaPanel());
+        }
+        return sideSplitPane;
+    }
 
-	/**
-	 * Restituisce il pannello centrale della home page.
-	 * 
-	 * @return il pannello centrale della home page
-	 */
-	public JPanel getCentralPanel() {
-		if (centralPanel == null) {
-			centralPanel = new JPanel(new MigLayout("", "[100%]"));
-		}
-		return centralPanel;
-	}
+    /**
+     * Restituisce il pannello centrale della home page.
+     * 
+     * @return il pannello centrale della home page
+     */
+    public JPanel getCentralPanel() {
+        if (centralPanel == null) {
+            centralPanel = new JPanel(new MigLayout("", "[100%]"));
+        }
+        return centralPanel;
+    }
 
-	/**
-	 * Restituisce il pannello dedicato alla ricerca degli incarichi.
-	 * 
-	 * @return il pannello dedicato alla ricerca degli incarichi
-	 */
-	public JPanel getSearchPanel() {
-		if (searchPanel == null) {
-			searchPanel = new JPanel(new MigLayout("", "[70%][30%]", "[][][]"));
-			JLabel searchLabel = new JLabel(getResourceMap().getString(
-					LOCALIZATION_PREFIX + "search"));
-			searchLabel.setFont(FontProvider.TITLE_SMALL);
-			searchLabel.setIcon(getResourceMap().getIcon(
-					LOCALIZATION_PREFIX + "searchIcon"));
+    /**
+     * Restituisce il pannello dedicato alla ricerca degli incarichi.
+     * 
+     * @return il pannello dedicato alla ricerca degli incarichi
+     */
+    public JPanel getSearchPanel() {
+        if (searchPanel == null) {
+            searchPanel = new JPanel(new MigLayout("", "[70%][30%]", "[][][]"));
+            JLabel searchLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "search"));
+            searchLabel.setFont(FontProvider.TITLE_SMALL);
+            searchLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "searchIcon"));
 
-			searchPanel.add(searchLabel, "span 2, wrap");
-			searchPanel.add(getSearchTextField(), "growx");
-			searchPanel.add(getSearchButton(), "wrap");
-			searchPanel.add(getResultPanel(), "span 2");
-		}
-		return searchPanel;
-	}
+            searchPanel.add(searchLabel, "span 2, wrap");
+            searchPanel.add(getSearchTextField(), "growx");
+            searchPanel.add(getSearchButton(), "wrap");
+            searchPanel.add(getResultPanel(), "span 2");
+        }
+        return searchPanel;
+    }
 
-	/**
-	 * Restituisce il campo di testo della ricerca.
-	 * 
-	 * @return il campo di testo della ricerca
-	 */
-	public JTextField getSearchTextField() {
-		if (searchTextField == null) {
-			searchTextField = new JTextField();
-			searchTextField.getDocument().addDocumentListener(
-					new DocumentListener() {
+    /**
+     * Restituisce il campo di testo della ricerca.
+     * 
+     * @return il campo di testo della ricerca
+     */
+    public JTextField getSearchTextField() {
+        if (searchTextField == null) {
+            searchTextField = new JTextField();
+            searchTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-						@Override
-						public void removeUpdate(DocumentEvent e) {
-							validateButton();
-						}
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    validateButton();
+                }
 
-						@Override
-						public void insertUpdate(DocumentEvent e) {
-							validateButton();
-						}
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    validateButton();
+                }
 
-						@Override
-						public void changedUpdate(DocumentEvent e) {
-							validateButton();
-						}
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    validateButton();
+                }
 
-						private void validateButton() {
-							getSearchButton()
-									.setEnabled(
-											GreenToneUtilities
-													.getText(searchTextField) != null);
-						}
-					});
-		}
-		return searchTextField;
-	}
+                private void validateButton() {
+                    getSearchButton().setEnabled(GreenToneUtilities.getText(searchTextField) != null);
+                }
+            });
+        }
+        return searchTextField;
+    }
 
-	/**
-	 * Restituisce il pulsante di ricerca.
-	 * 
-	 * @return il pulsante di ricerca
-	 */
-	public JButton getSearchButton() {
-		if (searchButton == null) {
-			searchButton = new JButton(getResourceMap().getString(
-					LOCALIZATION_PREFIX + "searchButton"));
-			searchButton.setToolTipText(getResourceMap().getString(
-					LOCALIZATION_PREFIX + "searchButtonToolTip"));
-			searchButton.addActionListener(new ActionListener() {
+    /**
+     * Restituisce il pulsante di ricerca.
+     * 
+     * @return il pulsante di ricerca
+     */
+    public JButton getSearchButton() {
+        if (searchButton == null) {
+            searchButton = new JButton(getResourceMap().getString(LOCALIZATION_PREFIX + "searchButton"));
+            searchButton.setToolTipText(getResourceMap().getString(LOCALIZATION_PREFIX + "searchButtonToolTip"));
+            searchButton.addActionListener(new ActionListener() {
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					searchButton.setEnabled(false);
-					getResultPanel().removeAll();
-					getResultPanel().add(
-							new JLabel(getResourceMap().getString(
-									LOCALIZATION_PREFIX + "searching")));
-					getSplitPane().validate();
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    searchButton.setEnabled(false);
+                    getResultPanel().removeAll();
+                    getResultPanel().add(new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "searching")));
+                    getSplitPane().validate();
 
-					new SwingWorker<Void, Void>() {
+                    new SwingWorker<Void, Void>() {
 
-						@Override
-						protected Void doInBackground() throws Exception {
+                        @Override
+                        protected Void doInBackground() throws Exception {
 
-							Collection<Job> jobs = jobService
-									.getJobsContainingDescription(GreenToneUtilities
-											.getText(getSearchTextField()));
-							getResultPanel().removeAll();
+                            Collection<Job> jobs =
+                                    jobService.getJobsContainingDescription(GreenToneUtilities
+                                            .getText(getSearchTextField()));
+                            getResultPanel().removeAll();
 
-							if (jobs.isEmpty()) {
-								getResultPanel()
-										.add(new JLabel(
-												getResourceMap()
-														.getString(
-																LOCALIZATION_PREFIX
-																		+ "noSearchResultFound")));
-							} else {
-								for (Job job : jobs) {
-									getResultPanel().add(
-											new AgendaDetailPanel(job,
-													jobPanel, mainPanel,
-													getResourceMap(),
-													TimeStatus.ON_TIME),
-											"growx, wrap");
-									getSplitPane().validate();
-								}
-							}
-							return null;
-						}
+                            if (jobs.isEmpty()) {
+                                getResultPanel().add(
+                                        new JLabel(getResourceMap().getString(
+                                                LOCALIZATION_PREFIX + "noSearchResultFound")));
+                            } else {
+                                for (Job job : jobs) {
+                                    getResultPanel().add(
+                                            new AgendaDetailPanel(job, jobPanel, mainPanel, getResourceMap(),
+                                                    TimeStatus.ON_TIME), "growx, wrap");
+                                    getSplitPane().validate();
+                                }
+                            }
+                            return null;
+                        }
 
-						@Override
-						protected void done() {
-							searchButton.setEnabled(true);
-							validate();
-						};
-					}.execute();
-				}
-			});
-			searchButton.setEnabled(false);
-		}
-		return searchButton;
-	}
+                        @Override
+                        protected void done() {
+                            searchButton.setEnabled(true);
+                            validate();
+                        };
+                    }.execute();
+                }
+            });
+            searchButton.setEnabled(false);
+        }
+        return searchButton;
+    }
 
-	/**
-	 * Restituisce il pannello con i risultati della ricerca.
-	 * 
-	 * @return il pannello con i risultati della ricerca
-	 */
-	public JPanel getResultPanel() {
-		if (resultPanel == null) {
-			resultPanel = new JPanel(new MigLayout("fillx"));
-		}
-		return resultPanel;
-	}
+    /**
+     * Restituisce il pannello con i risultati della ricerca.
+     * 
+     * @return il pannello con i risultati della ricerca
+     */
+    public JPanel getResultPanel() {
+        if (resultPanel == null) {
+            resultPanel = new JPanel(new MigLayout("fillx"));
+        }
+        return resultPanel;
+    }
 
-	/**
-	 * Restituisce il pannello "Agenda" con con in testa gli incarichi "scaduti"
-	 * senza data di fine e in coda gli incarichi in scadenza nei trenta giorni
-	 * successivi.
-	 * 
-	 * @return il pannello "Agenda" con con in testa gli incarichi "scaduti"
-	 *         senza data di fine e in coda gli incarichi in scadenza nei trenta
-	 *         giorni successivi
-	 */
-	public JPanel getAgendaPanel() {
-		if (agendaPanel == null) {
-			agendaPanel = new JPanel(new MigLayout("fillx"));
-		}
-		return agendaPanel;
-	}
+    /**
+     * Restituisce il pannello "Agenda" con con in testa gli incarichi "scaduti" senza data di fine e in coda gli
+     * incarichi in scadenza nei trenta giorni successivi.
+     * 
+     * @return il pannello "Agenda" con con in testa gli incarichi "scaduti" senza data di fine e in coda gli incarichi
+     *         in scadenza nei trenta giorni successivi
+     */
+    public JPanel getAgendaPanel() {
+        if (agendaPanel == null) {
+            agendaPanel = new JPanel(new MigLayout("fillx"));
+        }
+        return agendaPanel;
+    }
 
-	@Override
-	public void setup() {
-		super.setup();
-		viewReportsAction.setup(homeReportsCategory);
+    @Override
+    public void setup() {
+        super.setup();
+        viewReportsAction.setup(homeReports);
 
-		/* toolbar */
-		getContextualToolBar().removeAll();
-		getContextualToolBar().add(actionProvider.getViewReports());
-		getContextualToolBar().addSeparator();
-		getContextualToolBar().add(actionProvider.getViewHelp());
+        /* toolbar */
+        getContextualToolBar().removeAll();
+        getContextualToolBar().add(actionProvider.getViewReports());
+        getContextualToolBar().addSeparator();
+        getContextualToolBar().add(actionProvider.getViewHelp());
 
-		/* pulisco i pannelli */
-		getCentralPanel().removeAll();
-		getAgendaPanel().removeAll();
+        /* pulisco i pannelli */
+        getCentralPanel().removeAll();
+        getAgendaPanel().removeAll();
 
-		/* aggiorno i pannelli */
-		EventList<Job> allJobs = jobService.getAllJobs();
-		FilterList<Job> fileteredJobs = new FilterList<Job>(allJobs,
-				new Matcher<Job>() {
+        /* aggiorno i pannelli */
+        EventList<Job> allJobs = jobService.getAllJobs();
+        FilterList<Job> fileteredJobs = new FilterList<Job>(allJobs, new Matcher<Job>() {
 
-					@Override
-					public boolean matches(Job job) {
-						if (job.getStatus() == JobStatus.PLANNING
-								|| job.getStatus() == JobStatus.WORKING) {
-							return true;
-						}
-						return false;
-					}
-				});
-		SortedList<Job> allJobsStartDate = new SortedList<Job>(fileteredJobs,
-				new Comparator<Job>() {
+            @Override
+            public boolean matches(Job job) {
+                if (job.getStatus() == JobStatus.PLANNING || job.getStatus() == JobStatus.WORKING) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        SortedList<Job> allJobsStartDate = new SortedList<Job>(fileteredJobs, new Comparator<Job>() {
 
-					@Override
-					public int compare(Job o1, Job o2) {
-						DateTime o1StartDate = o1.getStartDate();
-						DateTime o2StartDate = o2.getStartDate();
+            @Override
+            public int compare(Job o1, Job o2) {
+                DateTime o1StartDate = o1.getStartDate();
+                DateTime o2StartDate = o2.getStartDate();
 
-						if (o1StartDate != null) {
-							return o1StartDate.compareTo(o2StartDate);
-						} else if (o2StartDate != null) {
-							return -(o2StartDate.compareTo(o1StartDate));
-						} else
-							return o1.getProtocol().compareToIgnoreCase(
-									o2.getProtocol());
-					}
-				});
+                if (o1StartDate != null) {
+                    return o1StartDate.compareTo(o2StartDate);
+                } else if (o2StartDate != null) {
+                    return -(o2StartDate.compareTo(o1StartDate));
+                } else
+                    return o1.getProtocol().compareToIgnoreCase(o2.getProtocol());
+            }
+        });
 
-		JLabel titleLabel = new JLabel(getResourceMap().getString(
-				LOCALIZATION_PREFIX + "jobList"));
-		titleLabel.setFont(FontProvider.TITLE_SMALL);
-		titleLabel.setIcon(getResourceMap().getIcon(
-				LOCALIZATION_PREFIX + "jobListIcon"));
+        JLabel titleLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobList"));
+        titleLabel.setFont(FontProvider.TITLE_SMALL);
+        titleLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "jobListIcon"));
 
-		getCentralPanel().add(titleLabel, "wrap");
-		getCentralPanel().add(
-				new JLabel(getResourceMap().getString(
-						LOCALIZATION_PREFIX + "jobListDescription")), "wrap");
+        getCentralPanel().add(titleLabel, "wrap");
+        getCentralPanel().add(new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "jobListDescription")),
+                "wrap");
 
-		/*
-		 * popolo il pannello centrale con gli incarichi in lavorazione ordinati
-		 * per data di inizio. Issue 168: aggiunto il supporto allo striping
-		 */
-		Color stripingColor = null;
-		if (stripingColor == null) {
-			stripingColor = UIManager
-					.getColor("UIColorHighlighter.stripingBackground");
-		}
-		if (stripingColor == null) {
-			stripingColor = HighlighterFactory.GENERIC_GRAY;
-		}
+        /*
+         * popolo il pannello centrale con gli incarichi in lavorazione ordinati per data di inizio. Issue 168: aggiunto
+         * il supporto allo striping
+         */
+        Color stripingColor = null;
+        if (stripingColor == null) {
+            stripingColor = UIManager.getColor("UIColorHighlighter.stripingBackground");
+        }
+        if (stripingColor == null) {
+            stripingColor = HighlighterFactory.GENERIC_GRAY;
+        }
 
-		for (int i = 0; i < allJobsStartDate.size(); i++) {
-			HighlighterFactory.createAlternateStriping();
-			Color color = stripingColor;
-			if (i % 2 == 0) {
-				color = Color.WHITE;
-			}
-			JobDetailsPanel jobDetailsPanel = new JobDetailsPanel(
-					allJobsStartDate.get(i), jobPanel, mainPanel,
-					getResourceMap(), color);
-			getCentralPanel().add(jobDetailsPanel, "growx, wrap");
-		}
+        for (int i = 0; i < allJobsStartDate.size(); i++) {
+            HighlighterFactory.createAlternateStriping();
+            Color color = stripingColor;
+            if (i % 2 == 0) {
+                color = Color.WHITE;
+            }
+            JobDetailsPanel jobDetailsPanel =
+                    new JobDetailsPanel(allJobsStartDate.get(i), jobPanel, mainPanel, getResourceMap(), color);
+            getCentralPanel().add(jobDetailsPanel, "growx, wrap");
+        }
 
-		/*
-		 * Issue 127: se non c'è nessun incarico da visualizzare lo segnalo con
-		 * un messaggio all'utente
-		 */
-		if (allJobsStartDate.isEmpty()) {
-			getCentralPanel().add(
-					new JLabel(getResourceMap().getString(
-							"viewHome.Panel.noJobs")));
-		}
+        /*
+         * Issue 127: se non c'è nessun incarico da visualizzare lo segnalo con un messaggio all'utente
+         */
+        if (allJobsStartDate.isEmpty()) {
+            getCentralPanel().add(new JLabel(getResourceMap().getString("viewHome.Panel.noJobs")));
+        }
 
-		/*
-		 * popolo il pannello laterale con con in testa gli incarichi "scaduti"
-		 * senza data di fine e in coda gli incarichi in scadenza nei trenta
-		 * giorni successivi
-		 */
-		JLabel agendaLabel = new JLabel(getResourceMap().getString(
-				LOCALIZATION_PREFIX + "agenda"));
-		agendaLabel.setFont(FontProvider.TITLE_SMALL);
-		agendaLabel.setIcon(getResourceMap().getIcon(
-				LOCALIZATION_PREFIX + "agendaIcon"));
+        /*
+         * popolo il pannello laterale con con in testa gli incarichi "scaduti" senza data di fine e in coda gli
+         * incarichi in scadenza nei trenta giorni successivi
+         */
+        JLabel agendaLabel = new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "agenda"));
+        agendaLabel.setFont(FontProvider.TITLE_SMALL);
+        agendaLabel.setIcon(getResourceMap().getIcon(LOCALIZATION_PREFIX + "agendaIcon"));
 
-		getAgendaPanel().add(agendaLabel, "wrap");
-		getAgendaPanel().add(
-				new JLabel(getResourceMap().getString(
-						LOCALIZATION_PREFIX + "agendaDescription")), "wrap");
+        getAgendaPanel().add(agendaLabel, "wrap");
+        getAgendaPanel().add(new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "agendaDescription")), "wrap");
 
-		Collection<Job> nextExpiringJob = jobService
-				.getNextExpiringJobs(NEXT_EXPIRING_JOB_DAYS_INTERVAL);
-		Collection<Job> expiredJob = jobService.getExpiredJobs();
-		for (Job job : nextExpiringJob) {
-			AgendaDetailPanel panel = new AgendaDetailPanel(job, jobPanel,
-					mainPanel, getResourceMap(), TimeStatus.EXPIRING);
-			getAgendaPanel().add(panel, "growx, wrap");
-		}
-		for (Job job : expiredJob) {
-			AgendaDetailPanel panel = new AgendaDetailPanel(job, jobPanel,
-					mainPanel, getResourceMap(), TimeStatus.EXPIRED);
-			getAgendaPanel().add(panel, "growx, wrap");
-		}
-		if (nextExpiringJob.isEmpty() && expiredJob.isEmpty()) {
-			getAgendaPanel().add(
-					new JLabel(getResourceMap().getString(
-							LOCALIZATION_PREFIX + "noAgendaEntry")));
-		}
+        Collection<Job> nextExpiringJob = jobService.getNextExpiringJobs(NEXT_EXPIRING_JOB_DAYS_INTERVAL);
+        Collection<Job> expiredJob = jobService.getExpiredJobs();
+        for (Job job : nextExpiringJob) {
+            AgendaDetailPanel panel =
+                    new AgendaDetailPanel(job, jobPanel, mainPanel, getResourceMap(), TimeStatus.EXPIRING);
+            getAgendaPanel().add(panel, "growx, wrap");
+        }
+        for (Job job : expiredJob) {
+            AgendaDetailPanel panel =
+                    new AgendaDetailPanel(job, jobPanel, mainPanel, getResourceMap(), TimeStatus.EXPIRED);
+            getAgendaPanel().add(panel, "growx, wrap");
+        }
+        if (nextExpiringJob.isEmpty() && expiredJob.isEmpty()) {
+            getAgendaPanel().add(new JLabel(getResourceMap().getString(LOCALIZATION_PREFIX + "noAgendaEntry")));
+        }
 
-		/* aggiusto gli splitpane */
-		getSplitPane().setDividerLocation(0.7);
-		getSideSplitPane().setDividerLocation(0.5);
-	}
+        /* aggiusto gli splitpane */
+        getSplitPane().setDividerLocation(0.7);
+        getSideSplitPane().setDividerLocation(0.5);
+    }
 
-	@Override
-	public String getBundleName() {
-		return PANEL_BUNDLE;
-	}
+    @Override
+    public String getBundleName() {
+        return PANEL_BUNDLE;
+    }
 
-	/**
-	 * Restituisce la barra degli strumenti delle azioni disponibili per il
-	 * pannello corrente.
-	 * 
-	 * @return la barra degli strumenti delle azioni disponibili per il pannello
-	 *         corrente
-	 */
-	public JToolBar getContextualToolBar() {
-		if (contextualToolBar == null) {
-			contextualToolBar = new JToolBar();
-			contextualToolBar.setFloatable(false);
-		}
-		return contextualToolBar;
-	}
+    /**
+     * Restituisce la barra degli strumenti delle azioni disponibili per il pannello corrente.
+     * 
+     * @return la barra degli strumenti delle azioni disponibili per il pannello corrente
+     */
+    public JToolBar getContextualToolBar() {
+        if (contextualToolBar == null) {
+            contextualToolBar = new JToolBar();
+            contextualToolBar.setFloatable(false);
+        }
+        return contextualToolBar;
+    }
 
-	/**
-	 * <ul>
-	 * <li>Aggiorna il contenuto del pannello</li>
-	 * <li>Pulisce la ricerca</li>
-	 * </ul>
-	 */
-	private void refresh() {
-		setup();
-		getResultPanel().removeAll();
-	}
+    /**
+     * <ul>
+     * <li>Aggiorna il contenuto del pannello</li>
+     * <li>Pulisce la ricerca</li>
+     * </ul>
+     */
+    private void refresh() {
+        setup();
+        getResultPanel().removeAll();
+    }
 }
