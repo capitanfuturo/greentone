@@ -4,7 +4,6 @@ import it.greentone.GreenTone;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
-import org.springframework.stereotype.Component;
 
 /**
  * <code>
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Component;
  * 
  * @author Giuseppe Caliendo
  */
-@Component
 public class GenericReportDescriptor implements ReportDescriptor {
 
     private final ExtensionType type;
