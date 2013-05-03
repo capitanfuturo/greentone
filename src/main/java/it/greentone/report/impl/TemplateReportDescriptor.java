@@ -54,7 +54,13 @@ public class TemplateReportDescriptor extends AbstractReportImpl {
         return datasource;
     }
 
+    /**
+     * Bean ad uso del template
+     * 
+     * @author Giuseppe Caliendo
+     */
     public class TemplateBean implements Serializable {
+        private static final long serialVersionUID = 1L;
         String field1;
 
         public void setField1(String field1) {
