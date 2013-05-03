@@ -38,7 +38,7 @@ public class HomeReportGroup implements ReportGroup {
 
     @Override
     public Collection<AbstractReportImpl> getReports() {
-        if (reports != null) {
+        if (reports == null) {
             reports = new ArrayList<AbstractReportImpl>();
             reports.add(templateReport);
         }
