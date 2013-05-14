@@ -32,19 +32,19 @@ import org.springframework.stereotype.Component;
  * @author Giuseppe Caliendo
  */
 @Component
-public class TemplateReportDescriptor extends AbstractReportImpl {
+public class TemplateReport extends AbstractReportImpl {
 
     /**
      * Template per lo sviluppo di report.
      */
-    public TemplateReportDescriptor() {
+    public TemplateReport() {
         super(new GenericReportDescriptor("template", ExtensionType.PDF));
     }
 
     @Override
     protected JRDataSource getDataSource(Map<String, Object> inputParams) {
 
-        Collection<TemplateBean> tmp = new ArrayList<TemplateReportDescriptor.TemplateBean>();
+        Collection<TemplateBean> tmp = new ArrayList<TemplateReport.TemplateBean>();
         for (int i = 0; i < 10; i++) {
             TemplateBean bean = new TemplateBean();
             bean.setField1("field1: " + i);
@@ -61,7 +61,7 @@ public class TemplateReportDescriptor extends AbstractReportImpl {
      */
     public class TemplateBean implements Serializable {
         private static final long serialVersionUID = 1L;
-        String field1;
+        private String field1;
 
         public void setField1(String field1) {
             this.field1 = field1;

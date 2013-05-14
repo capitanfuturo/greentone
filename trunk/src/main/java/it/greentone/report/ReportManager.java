@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.inject.Inject;
 import javax.swing.JDialog;
@@ -22,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -74,35 +74,27 @@ public class ReportManager {
      *            descrittore di report
      * @param inputParams
      *            parametri di ingresso
+     * @throws IOException
+     *             eccezione in caso di errore
+     * @throws JRException
+     *             eccezione in caso di errore
      */
-    public void generate(AbstractReportImpl reportImpl, Map<String, Object> inputParams) {
+    public void generate(AbstractReportImpl reportImpl, Map<String, Object> inputParams) throws JRException,
+            IOException {
         ExtensionType type = reportImpl.getDescriptor().getExtensionType();
         String name = reportImpl.getDescriptor().getName();
-
-        try {
-            logProvider.getLogger().info("Filling report " + name);
-            final JasperPrint print = reportImpl.fill(inputParams);
-            File tempFile = null;
-            try {
-                tempFile = File.createTempFile(print.getName(), type.getExtension());
-                logProvider.getLogger().info("Report tmp file created");
-                if (tempFile != null) {
-                    if (type == ExtensionType.PDF) {
-                        JasperExportManager.exportReportToPdfFile(print, tempFile.getPath());
-                    } else if (type == ExtensionType.XML) {
-                        JasperExportManager.exportReportToXmlFile(print, tempFile.getPath(), false);
-                    } else if (type == ExtensionType.HTML) {
-                        JasperExportManager.exportReportToHtmlFile(print, tempFile.getPath());
-                    }
-                    logProvider.getLogger().info("Trying to open new generated report");
-                    utilities.open(tempFile);
-                }
-            } catch (IOException ex) {
-                logProvider.getLogger().log(Level.SEVERE, "Error generating " + name, ex);
-            }
-        } catch (final Exception e) {
-            logProvider.getLogger().log(Level.SEVERE, "Error generating " + name, e);
+        logProvider.getLogger().info("Filling report " + name);
+        JasperPrint print = reportImpl.fill(inputParams);
+        File tempFile = File.createTempFile(print.getName(), type.getExtension());
+        if (type == ExtensionType.PDF) {
+            JasperExportManager.exportReportToPdfFile(print, tempFile.getPath());
+        } else if (type == ExtensionType.XML) {
+            JasperExportManager.exportReportToXmlFile(print, tempFile.getPath(), false);
+        } else if (type == ExtensionType.HTML) {
+            JasperExportManager.exportReportToHtmlFile(print, tempFile.getPath());
         }
+        logProvider.getLogger().info("Trying to open new generated report");
+        utilities.open(tempFile);
     }
 
     /**
@@ -128,7 +120,6 @@ public class ReportManager {
                 protected Void doInBackground() throws Exception {
                     getMessageDialog().setVisible(true);
                     logProvider.getLogger().info("Generating: " + selectedReportDescriptor);
-                    // FIXME
                     generate(selectedReportDescriptor, new HashMap<String, Object>());
                     return null;
                 }

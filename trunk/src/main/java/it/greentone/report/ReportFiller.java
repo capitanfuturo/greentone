@@ -12,7 +12,6 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
@@ -50,20 +49,9 @@ public abstract class ReportFiller {
     public JasperPrint fill(final Map<String, Object> inputParams) throws JRException, IOException {
         final JRDataSource dataSource = getDataSource(inputParams);
         final Map<String, Object> parameters = getJasperParameters(inputParams);
-
-        final Thread cur = Thread.currentThread();
-        final ClassLoader save = cur.getContextClassLoader();
-        /*
-         * overwrites the context classloader of the current thread with the report's one to give jasper libraries
-         * access to the report resources.
-         */
-        cur.setContextClassLoader(getClass().getClassLoader());
-        try {
-            JasperReport report = getReport();
-            return JasperFillManager.fillReport(report, parameters, dataSource);
-        } finally {
-            cur.setContextClassLoader(save);
-        }
+        JasperReport report = getReport();
+        JasperPrint result = JasperFillManager.fillReport(report, parameters, dataSource);
+        return result;
     }
 
     /**
@@ -127,28 +115,16 @@ public abstract class ReportFiller {
      */
     protected JasperReport getReport() throws JRException, IOException {
         final String jasperReportPath = getJasperReportPath();
-        {
-            final InputStream is = getClass().getResourceAsStream(jasperReportPath + ".jasper");
-            if (is != null) {
-                try {
-                    return (JasperReport) JRLoader.loadObject(is);
-                } finally {
-                    is.close();
-                }
+        InputStream is = getClass().getResourceAsStream(jasperReportPath + ".jrxml");
+        if (is != null) {
+            try {
+                final JasperDesign jd = JRXmlLoader.load(is);
+                return JasperCompileManager.compileReport(jd);
+            } finally {
+                is.close();
             }
         }
-        {
-            final InputStream is = getClass().getResourceAsStream(jasperReportPath + ".jrxml");
-            if (is != null) {
-                try {
-                    final JasperDesign jd = JRXmlLoader.load(is);
-                    return JasperCompileManager.compileReport(jd);
-                } finally {
-                    is.close();
-                }
-            }
-        }
-        throw new JRException("Errore generando il report");
+        return null;
     }
 
     /**
