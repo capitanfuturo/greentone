@@ -33,6 +33,7 @@ dependencies {
 	compile 'org.swinglabs:swingx-core:latest.stable'
 	compile 'net.java.dev.glazedlists:glazedlists_java15:latest.stable'
 	compile 'net.sf.jasperreports:jasperreports:latest.stable'
+	compile 'org.codehaus.groovy:groovy-all:latest.stable'
 	
 	runtime 'com.h2database:h2:latest.stable'
 	runtime 'org.datanucleus:datanucleus-api-jdo:latest.stable'

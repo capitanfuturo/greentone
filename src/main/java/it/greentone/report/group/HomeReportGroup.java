@@ -1,7 +1,7 @@
 package it.greentone.report.group;
 
 import it.greentone.report.impl.AbstractReportImpl;
-import it.greentone.report.impl.TemplateReportDescriptor;
+import it.greentone.report.impl.TemplateReport;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +34,7 @@ public class HomeReportGroup implements ReportGroup {
     Collection<AbstractReportImpl> reports;
 
     @Inject
-    TemplateReportDescriptor templateReport;
+    TemplateReport templateReport;
 
     @Override
     public Collection<AbstractReportImpl> getReports() {
