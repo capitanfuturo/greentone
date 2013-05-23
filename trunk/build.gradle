@@ -39,17 +39,10 @@ dependencies {
 	runtime 'org.datanucleus:datanucleus-api-jdo:latest.stable'
 	runtime 'org.datanucleus:datanucleus-core:latest.stable'
 	runtime 'org.datanucleus:datanucleus-rdbms:latest.stable'
-	
-	izpack 'org.codehaus.izpack:izpack-standalone-compiler:latest.stable'
 }
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '1.5'
-}
-
-task "create-dirs" << {
-	sourceSets*.java.srcDirs*.each { it.mkdirs() }
-	sourceSets*.resources.srcDirs*.each { it.mkdirs() }
 }
 
 task jdoEnhance << {
@@ -73,12 +66,7 @@ task jdoEnhance << {
 	}
 }
 
-izpack {
-    baseDir = file("$buildDir/assemble/greentone")
-    installFile = file('installer/installer.xml')
-    outputFile = file("$buildDir/distributions/greentone-${version}-installer.jar")
-    compression = 'deflate'
-    compressionLevel = 9
-    appProperties = ['app.group': 'Greentone', 'app.name': 'greentone', 'app.title': 'Greentone',
-                     'app.version': "${version}", 'app.subpath': "Greentone-${version}"]
+apply {
+    from 'assemble.gradle'
+    from 'installer.gradle'
 }

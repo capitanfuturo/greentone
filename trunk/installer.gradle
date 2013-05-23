@@ -1,0 +1,52 @@
+/*
+ * Copyright 2010-2011 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+task prepareIzpack(type: Copy) {
+    dependsOn { [distBinary] }
+
+    destinationDir = "$buildDir/assemble/izpack" as File
+    from('installer/manual') {
+        into 'manual'
+    }
+}
+
+task izpack(dependsOn: [prepareIzpack]) {
+    description = "Creates an IzPack based installer for both binary and source distributions."
+    inputs.dir("$buildDir/assemble/izpack" as File)
+    outputs.files "$buildDir/distributions/greentone-${version}-installer.jar"
+
+    doLast {
+        ant.taskdef(name: 'izpack',
+                    classpath: fileTree(dir: file('installer/izpack/lib'), includes: ['*.jar']).asPath,
+                    classname: 'com.izforge.izpack.ant.IzPackTask')
+    
+        ant.property(name: 'app.group',   value: 'Greentone')
+        ant.property(name: 'app.name',    value: 'greentone')
+        ant.property(name: 'app.title',   value: 'Greentone')
+        ant.property(name: 'app.version', value: version)
+        ant.property(name: 'app.subpath', value: "Greentone-$version")
+    
+        ant.chmod(dir: "$buildDir/assemble/izpack/binary/bin", excludes: '*.bat', perm: 'ugo+x')
+        ant.izpack(basedir: "$buildDir/assemble/izpack",
+                   output: "$buildDir/distributions/greentone-${version}-installer.jar",
+                   compression: 'deflate',
+                   compressionlevel: '9') {
+            config(file('installer/izpack/installer.xml').text)
+        }
+    }
+}
