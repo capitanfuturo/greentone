@@ -4,7 +4,7 @@
 
    <!-- Informazioni sul pacchetto di installazione -->
    <info>
-	  <appname>@{app.title}</appname>
+	  <appname>Greentone</appname>
 	  <appversion>@{app.version}</appversion>
 	  <authors>
 		 <author name="Giuseppe Caliendo (capitanfuturo)" email="greentone.developers@gmail.com"/>
@@ -33,17 +33,11 @@
    </locale>
 
    <!-- Need to define gradle properties we want to use during install as variables -->
-   <variables>
-	  <variable name="app.title" value="@{app.title}"/>
-	  <variable name="app.version" value="@{app.version}"/>
-	  <variable name="basedir" value="@{basedir}" />
-	  <variable name="tempDir" value="@{tempDir}" />
-   </variables>
    
 	<resources>
-		<res id="Heading.image" src="@{basedir}/logo_128x128.png" />
-		<res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
-		<res id="Unix_shortcutSpec.xml" src="Unix_shortcutSpec.xml" />
+		<res id="Heading.image" src="installer/logo_128x128.png" />
+		<res id="shortcutSpec.xml" src="installer/shortcutSpec.xml"/>
+		<res id="Unix_shortcutSpec.xml" src="installer/Unix_shortcutSpec.xml" />
 	</resources>
 
    <panels>
