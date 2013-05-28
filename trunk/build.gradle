@@ -1,19 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'izpack'
+apply plugin: 'application'
 
 sourceCompatibility = 1.6
 group = 'it.greentone'
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'org.gradle.api.plugins:gradle-izpack-plugin:0.2.1'
-    }
-}
+mainClassName = "it.greentone.GreenTone"
 
 repositories {
 	mavenCentral()
@@ -39,12 +30,10 @@ dependencies {
 	runtime 'org.datanucleus:datanucleus-api-jdo:latest.stable'
 	runtime 'org.datanucleus:datanucleus-core:latest.stable'
 	runtime 'org.datanucleus:datanucleus-rdbms:latest.stable'
-	
-	izpack 'org.codehaus.izpack:izpack-standalone-compiler:4.3.5'
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '1.5'
+	gradleVersion = '1.6'
 }
 
 task jdoEnhance << {
@@ -66,14 +55,4 @@ task jdoEnhance << {
 	finally {
 		logger.lifecycle 'Finished enhancing DataNucleus classes.'
 	}
-}
-
-izpack {
-    baseDir = file("$projectDir")
-    installFile = file("$projectDir/installer/installer.xml")
-    outputFile = file("$buildDir/distributions/greentone-${version}-installer.jar")
-    compression = 'deflate'
-    compressionLevel = 9
-    appProperties = ['app.group': 'Greentone', 'app.name': 'greentone', 'app.title': 'Greentone',
-                     'app.version': version, 'app.subpath': "Greentone-$version"]
 }
