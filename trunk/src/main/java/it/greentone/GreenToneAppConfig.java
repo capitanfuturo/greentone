@@ -51,17 +51,13 @@ public class GreenToneAppConfig {
      */
     public static final String DATANUCLEUS_CONFIG_LOCATION = "/conf/datanucleus.properties";
     /**
-     * Path del repository dei report
-     */
-    public static final String REPORTS_REPOSITORY = BASE_PATH + "report" + FILE_SEPARATOR;
-    /**
      * Path del repository dove salvare la copia dei file associati a dei documenti
      */
     public static final String DOCUMENTS_REPOSITORY = BASE_PATH + "documents" + FILE_SEPARATOR;
     /**
      * Path dove risiede il manuale utente
      */
-    public static final String MANUAL_REPOSITORY = BASE_PATH + "manual" + FILE_SEPARATOR;
+    public static final String MANUAL_REPOSITORY = "/manual/";
     /**
      * Nome del file del manuale utente
      */

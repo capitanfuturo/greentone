@@ -45,8 +45,7 @@ import ca.odell.glazedlists.swing.DefaultEventListModel;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Finestra di dialogo per la gestione delle categorie degli incarichi.
  * 
@@ -55,184 +54,163 @@ import ca.odell.glazedlists.swing.DefaultEventListModel;
 @SuppressWarnings("serial")
 @Component
 public class EditJobCategoryDialog extends JDialog {
-	@Inject
-	JobCategoryService jobCategoryService;
-	private static final String LOCALIZATION_PREFIX = "editJobCategory.Dialog.";
-	private final ResourceMap resourceMap;
-	private JTextField inputTextField;
-	private JList jobCategoryJList;
-	private JButton addButton;
-	private JButton deleteButton;
-	private JButton okButton;
+    @Inject
+    JobCategoryService jobCategoryService;
+    private static final String LOCALIZATION_PREFIX = "editJobCategory.Dialog.";
+    private final ResourceMap resourceMap;
+    private JTextField inputTextField;
+    private JList jobCategoryJList;
+    private JButton addButton;
+    private JButton deleteButton;
+    private JButton okButton;
 
-	/**
-	 * Finestra di dialogo per la gestione delle categorie degli incarichi.
-	 */
-	public EditJobCategoryDialog() {
-		resourceMap = Application.getInstance(GreenTone.class).getContext()
-				.getResourceMap();
-		setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
+    /**
+     * Finestra di dialogo per la gestione delle categorie degli incarichi.
+     */
+    public EditJobCategoryDialog() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+        setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
 
-		setModal(true);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setTitle(resourceMap.getString(LOCALIZATION_PREFIX + "title"));
-		setLayout(new BorderLayout());
+        setModal(true);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setTitle(resourceMap.getString(LOCALIZATION_PREFIX + "title"));
+        setLayout(new BorderLayout());
 
-		JPanel northPanel = new JPanel(new MigLayout("", "[90%][]", ""));
-		northPanel
-				.add(new JLabel(resourceMap.getString(LOCALIZATION_PREFIX
-						+ "name")), "wrap");
-		northPanel.add(getInputTextField(), "growx");
-		northPanel.add(getAddButton());
+        JPanel northPanel = new JPanel(new MigLayout("", "[90%][]", ""));
+        northPanel.add(new JLabel(resourceMap.getString(LOCALIZATION_PREFIX + "name")), "wrap");
+        northPanel.add(getInputTextField(), "growx");
+        northPanel.add(getAddButton());
 
-		JPanel centerPanel = new JPanel(new MigLayout("", "[90%][]",
-				"[][top][]"));
-		centerPanel.add(
-				new JLabel(resourceMap.getString(LOCALIZATION_PREFIX
-						+ "categories")), "wrap");
-		centerPanel.add(new JScrollPane(getJobCategoryJList()), "grow");
-		centerPanel.add(getDeleteButton());
+        JPanel centerPanel = new JPanel(new MigLayout("", "[90%][]", "[][top][]"));
+        centerPanel.add(new JLabel(resourceMap.getString(LOCALIZATION_PREFIX + "categories")), "wrap");
+        centerPanel.add(new JScrollPane(getJobCategoryJList()), "grow");
+        centerPanel.add(getDeleteButton());
 
-		JPanel buttonPanel = new JPanel(new MigLayout("rtl"));
-		buttonPanel.add(getOkButton());
+        JPanel buttonPanel = new JPanel(new MigLayout("rtl"));
+        buttonPanel.add(getOkButton());
 
-		getContentPane().add(northPanel, BorderLayout.NORTH);
-		getContentPane().add(centerPanel, BorderLayout.CENTER);
-		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        getContentPane().add(northPanel, BorderLayout.NORTH);
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
-		setLocationRelativeTo(null);
-		pack();
-		setSize(GreenToneUtilities.DIALOG_SIZE);
-	}
+        setLocationRelativeTo(null);
+        pack();
+        setSize(GreenToneUtilities.DIALOG_SIZE);
+    }
 
-	protected JTextField getInputTextField() {
-		if (inputTextField == null)
-			inputTextField = new JTextField(10);
-		return inputTextField;
-	}
+    protected JTextField getInputTextField() {
+        if (inputTextField == null)
+            inputTextField = new JTextField(10);
+        return inputTextField;
+    }
 
-	protected JList getJobCategoryJList() {
-		if (jobCategoryJList == null) {
-			jobCategoryJList = new JList();
-			jobCategoryJList
-					.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		}
-		return jobCategoryJList;
-	}
+    protected JList getJobCategoryJList() {
+        if (jobCategoryJList == null) {
+            jobCategoryJList = new JList();
+            jobCategoryJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+        return jobCategoryJList;
+    }
 
-	protected JButton getAddButton() {
-		if (addButton == null) {
-			addButton = new JButton(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
+    protected JButton getAddButton() {
+        if (addButton == null) {
+            addButton = new JButton(new AbstractAction() {
+                private static final long serialVersionUID = 1L;
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String name = GreenToneUtilities
-							.getText(getInputTextField());
-					if (name != null) {
-						JobCategory jobCategory = new JobCategory();
-						jobCategory.setName(name);
-						jobCategoryService.addJobCategory(jobCategory);
-						getInputTextField().setText(null);
-					}
-				}
-			});
-			getInputTextField().getDocument().addDocumentListener(
-					new DocumentListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String name = GreenToneUtilities.getText(getInputTextField());
+                    if (name != null) {
+                        JobCategory jobCategory = new JobCategory();
+                        jobCategory.setName(name);
+                        jobCategoryService.addJobCategory(jobCategory);
+                        getInputTextField().setText(null);
+                    }
+                }
+            });
+            getInputTextField().getDocument().addDocumentListener(new DocumentListener() {
 
-						@Override
-						public void removeUpdate(DocumentEvent e) {
-							toggleButton();
-						}
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    toggleButton();
+                }
 
-						@Override
-						public void insertUpdate(DocumentEvent e) {
-							toggleButton();
-						}
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    toggleButton();
+                }
 
-						@Override
-						public void changedUpdate(DocumentEvent e) {
-							toggleButton();
-						}
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    toggleButton();
+                }
 
-						void toggleButton() {
-							addButton.setEnabled(GreenToneUtilities
-									.getText(getInputTextField()) != null);
-						}
-					});
+                void toggleButton() {
+                    addButton.setEnabled(GreenToneUtilities.getText(getInputTextField()) != null);
+                }
+            });
 
-			addButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX
-					+ "addToolTip"));
-			addButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX
-					+ "addIcon"));
-		}
-		return addButton;
-	}
+            addButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX + "addToolTip"));
+            addButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "addIcon"));
+        }
+        return addButton;
+    }
 
-	protected JButton getDeleteButton() {
-		if (deleteButton == null) {
-			deleteButton = new JButton(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
+    protected JButton getDeleteButton() {
+        if (deleteButton == null) {
+            deleteButton = new JButton(new AbstractAction() {
+                private static final long serialVersionUID = 1L;
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int selectedIndex = getJobCategoryJList()
-							.getSelectedIndex();
-					if (selectedIndex > -1) {
-						int confirmDialog = JOptionPane.showConfirmDialog(
-								getContentPane(),
-								resourceMap
-										.getString("editJobCategory.Action.confirmMessage"));
-						if (confirmDialog == JOptionPane.OK_OPTION) {
-							JobCategory jobCategory = jobCategoryService
-									.getAllJobCategories().get(selectedIndex);
-							jobCategoryService.deleteJobCategory(jobCategory);
-						}
-					}
-				}
-			});
-			getJobCategoryJList().addListSelectionListener(
-					new ListSelectionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int selectedIndex = getJobCategoryJList().getSelectedIndex();
+                    if (selectedIndex > -1) {
+                        int confirmDialog =
+                                JOptionPane.showConfirmDialog(getContentPane(),
+                                        resourceMap.getString("editJobCategory.Action.confirmMessage"));
+                        if (confirmDialog == JOptionPane.OK_OPTION) {
+                            JobCategory jobCategory = jobCategoryService.getAllJobCategories().get(selectedIndex);
+                            jobCategoryService.deleteJobCategory(jobCategory);
+                        }
+                    }
+                }
+            });
+            getJobCategoryJList().addListSelectionListener(new ListSelectionListener() {
 
-						@Override
-						public void valueChanged(ListSelectionEvent e) {
-							deleteButton.setEnabled(getJobCategoryJList()
-									.getSelectedIndex() > -1);
-						}
-					});
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    deleteButton.setEnabled(getJobCategoryJList().getSelectedIndex() > -1);
+                }
+            });
 
-			deleteButton.setToolTipText(resourceMap
-					.getString(LOCALIZATION_PREFIX + "deleteToolTip"));
-			deleteButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX
-					+ "deleteIcon"));
-		}
-		return deleteButton;
-	}
+            deleteButton.setToolTipText(resourceMap.getString(LOCALIZATION_PREFIX + "deleteToolTip"));
+            deleteButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "deleteIcon"));
+        }
+        return deleteButton;
+    }
 
-	private JButton getOkButton() {
-		if (okButton == null) {
-			okButton = new JButton(new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					setVisible(false);
-				}
-			});
-			okButton.setText(resourceMap.getString(LOCALIZATION_PREFIX
-					+ "okButton"));
-		}
-		return okButton;
-	}
+    private JButton getOkButton() {
+        if (okButton == null) {
+            okButton = new JButton(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    setVisible(false);
+                }
+            });
+            okButton.setText(resourceMap.getString(LOCALIZATION_PREFIX + "okButton"));
+        }
+        return okButton;
+    }
 
-	/**
-	 * Configura la finestra di dialogo prima che venga visualizzata.
-	 */
-	public void setup() {
-		ListModel listModel = new DefaultEventListModel<JobCategory>(
-				jobCategoryService.getAllJobCategories());
-		getJobCategoryJList().setModel(listModel);
-		getInputTextField().setText(null);
-		getDeleteButton().setEnabled(false);
-		getAddButton().setEnabled(false);
-	}
+    /**
+     * Configura la finestra di dialogo prima che venga visualizzata.
+     */
+    public void setup() {
+        ListModel listModel = new DefaultEventListModel<JobCategory>(jobCategoryService.getAllJobCategories());
+        getJobCategoryJList().setModel(listModel);
+        getInputTextField().setText(null);
+        getDeleteButton().setEnabled(false);
+        getAddButton().setEnabled(false);
+    }
 
 }

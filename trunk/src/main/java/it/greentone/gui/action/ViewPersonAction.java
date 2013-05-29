@@ -22,70 +22,59 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Mostra una persona e i suoi dettagli nel pannello principale
- * dell'applicazione.
+ * Mostra una persona e i suoi dettagli nel pannello principale dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewPersonAction extends AbstractBean
-{
-	@Inject
-	private PersonPanel personPanel;
-	private Person person;
-	boolean viewPersonActionEnabled = false;
-	@Inject
-	private MainPanel mainPanel;
+public class ViewPersonAction extends AbstractBean {
+    @Inject
+    private PersonPanel personPanel;
+    private Person person;
+    boolean viewPersonActionEnabled = false;
+    @Inject
+    private MainPanel mainPanel;
 
-	/**
-	 * Imposta la persona da visualizzare.
-	 * 
-	 * @param person
-	 *          la persona
-	 */
-	public void setPerson(Person person)
-	{
-		this.person = person;
-	}
+    /**
+     * Imposta la persona da visualizzare.
+     * 
+     * @param person
+     *            la persona
+     */
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
-	/**
-	 * Mostra la persona nel pannello principale dell'applicazione.
-	 */
-	@Action(enabledProperty = "viewPersonActionEnabled")
-	public void viewPerson()
-	{
-		personPanel.setPerson(person);
-		personPanel.setup();
-		ContextualAction.addTab(mainPanel, personPanel);
-	}
+    /**
+     * Mostra la persona nel pannello principale dell'applicazione.
+     */
+    @Action(enabledProperty = "viewPersonActionEnabled")
+    public void viewPerson() {
+        personPanel.setPerson(person);
+        personPanel.setup();
+        ContextualAction.addTab(mainPanel, personPanel);
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è possibile abilitare l'azione,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isViewPersonActionEnabled()
-	{
-		return viewPersonActionEnabled;
-	}
+    /**
+     * Restituisce <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti
+     */
+    public boolean isViewPersonActionEnabled() {
+        return viewPersonActionEnabled;
+    }
 
-	/**
-	 * Imposta l'abilitazione dell'azione.
-	 * 
-	 * @param viewPersonActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
-	 */
-	public void setViewPersonActionEnabled(boolean viewPersonActionEnabled)
-	{
-		final boolean oldValue = this.viewPersonActionEnabled;
-		this.viewPersonActionEnabled = viewPersonActionEnabled;
-		firePropertyChange("viewPersonActionEnabled", oldValue,
-		  viewPersonActionEnabled);
-	}
+    /**
+     * Imposta l'abilitazione dell'azione.
+     * 
+     * @param viewPersonActionEnabled
+     *            <code>true</code> se si vuole abilitare l'azione, <code>false</code> altrimenti
+     */
+    public void setViewPersonActionEnabled(boolean viewPersonActionEnabled) {
+        final boolean oldValue = this.viewPersonActionEnabled;
+        this.viewPersonActionEnabled = viewPersonActionEnabled;
+        firePropertyChange("viewPersonActionEnabled", oldValue, viewPersonActionEnabled);
+    }
 }

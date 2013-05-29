@@ -32,8 +32,7 @@ import org.jdesktop.application.ResourceMap;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Pannello di dettaglio di un incarico.
  * 
@@ -42,83 +41,79 @@ import org.jdesktop.application.ResourceMap;
 @SuppressWarnings("serial")
 public class JobDetailsPanel extends JPanel {
 
-	private static final String ACTION_ICON_SUFFIX = ".Action.largeIcon";
+    private static final String ACTION_ICON_SUFFIX = ".Action.largeIcon";
 
-	/**
-	 * Pannello di dettaglio di un incarico.
-	 * 
-	 * @param job
-	 *            incarico di cui mostrare i dettagli
-	 * @param jobPanel
-	 *            pannello degli incarichi
-	 * @param mainPanel
-	 *            pannello principale
-	 * @param resourceMap
-	 *            gestore delle risorse
-	 * @param color
-	 *            colore del pannello
-	 */
-	public JobDetailsPanel(final Job job, final JobPanel jobPanel,
-			final MainPanel mainPanel, ResourceMap resourceMap, Color color) {
-		JButton viewDetailsButton = new JButton(new AbstractAction() {
+    /**
+     * Pannello di dettaglio di un incarico.
+     * 
+     * @param job
+     *            incarico di cui mostrare i dettagli
+     * @param jobPanel
+     *            pannello degli incarichi
+     * @param mainPanel
+     *            pannello principale
+     * @param resourceMap
+     *            gestore delle risorse
+     * @param color
+     *            colore del pannello
+     */
+    public JobDetailsPanel(final Job job, final JobPanel jobPanel, final MainPanel mainPanel, ResourceMap resourceMap,
+            Color color) {
+        JButton viewDetailsButton = new JButton(new AbstractAction() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				jobPanel.setJob(job);
-				jobPanel.setup();
-				ContextualAction.addTab(mainPanel, jobPanel);
-			}
-		});
-		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName()
-				+ ACTION_ICON_SUFFIX));
-		viewDetailsButton.setToolTipText(resourceMap
-				.getString("JobDetailsPanel.jobDetails"));
-		String viewDetailsText = job.getProtocol();
-		if (job.getDescription() != null) {
-			viewDetailsText = viewDetailsText + " " + job.getDescription();
-		}
-		viewDetailsButton.setText(viewDetailsText);
-		viewDetailsButton.setFont(FontProvider.TITLE_SMALL);
-		viewDetailsButton.setHorizontalAlignment(SwingConstants.LEFT);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jobPanel.setJob(job);
+                jobPanel.setup();
+                ContextualAction.addTab(mainPanel, jobPanel);
+            }
+        });
+        viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName() + ACTION_ICON_SUFFIX));
+        viewDetailsButton.setToolTipText(resourceMap.getString("JobDetailsPanel.jobDetails"));
+        String viewDetailsText = job.getProtocol();
+        if (job.getDescription() != null) {
+            viewDetailsText = viewDetailsText + " " + job.getDescription();
+        }
+        viewDetailsButton.setText(viewDetailsText);
+        viewDetailsButton.setFont(FontProvider.TITLE_SMALL);
+        viewDetailsButton.setHorizontalAlignment(SwingConstants.LEFT);
 
-		viewDetailsButton.setBackground(color);
-		viewDetailsButton.setOpaque(true);
-		viewDetailsButton.setBorderPainted(false);
+        viewDetailsButton.setBackground(color);
+        viewDetailsButton.setOpaque(true);
+        viewDetailsButton.setBorderPainted(false);
 
-		JPanel northPanel = new JPanel(new BorderLayout());
-		northPanel.add(viewDetailsButton, BorderLayout.CENTER);
+        JPanel northPanel = new JPanel(new BorderLayout());
+        northPanel.add(viewDetailsButton, BorderLayout.CENTER);
 
-		JPanel southPanel = new JPanel(new BorderLayout());
+        JPanel southPanel = new JPanel(new BorderLayout());
 
-		JPanel leftPanel = new JPanel(new MigLayout());
-		if (job.getCustomer() != null) {
-			JLabel customerLabel = new JLabel(job.getCustomer().toString());
-			customerLabel.setFont(FontProvider.PARAGRAPH_BIG);
-			leftPanel.add(new JLabel(resourceMap
-					.getString("JobDetailsPanel.customer")));
-			leftPanel.add(customerLabel);
-		} else {
-			leftPanel.add(new JLabel());
-		}
-		southPanel.add(leftPanel, BorderLayout.WEST);
+        JPanel leftPanel = new JPanel(new MigLayout());
+        if (job.getCustomer() != null) {
+            JLabel customerLabel = new JLabel(job.getCustomer().toString());
+            customerLabel.setFont(FontProvider.PARAGRAPH_BIG);
+            leftPanel.add(new JLabel(resourceMap.getString("JobDetailsPanel.customer")));
+            leftPanel.add(customerLabel);
+        } else {
+            leftPanel.add(new JLabel());
+        }
+        southPanel.add(leftPanel, BorderLayout.WEST);
 
-		JPanel rightPanel = new JPanel(new MigLayout());
-		if (job.getDueDate() != null) {
-			rightPanel.add(new JLabel(resourceMap
-					.getString("JobDetailsPanel.duedate")
-					+ GreenToneUtilities.formatDateTime(job.getDueDate())));
-		} else {
-			rightPanel.add(new JLabel());
-		}
-		southPanel.add(rightPanel, BorderLayout.EAST);
+        JPanel rightPanel = new JPanel(new MigLayout());
+        if (job.getDueDate() != null) {
+            rightPanel.add(new JLabel(resourceMap.getString("JobDetailsPanel.duedate")
+                    + GreenToneUtilities.formatDateTime(job.getDueDate())));
+        } else {
+            rightPanel.add(new JLabel());
+        }
+        southPanel.add(rightPanel, BorderLayout.EAST);
 
-		setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
 
-		add(northPanel, BorderLayout.NORTH);
-		add(southPanel, BorderLayout.CENTER);
+        add(northPanel, BorderLayout.NORTH);
+        add(southPanel, BorderLayout.CENTER);
 
-		southPanel.setBackground(color);
-		leftPanel.setBackground(color);
-		rightPanel.setBackground(color);
-	}
+        southPanel.setBackground(color);
+        leftPanel.setBackground(color);
+        rightPanel.setBackground(color);
+    }
 }

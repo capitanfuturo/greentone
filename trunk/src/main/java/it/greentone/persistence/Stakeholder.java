@@ -17,100 +17,87 @@ import javax.jdo.annotations.PrimaryKey;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Interessati ad un incarico. Questa tabella di relazione serve per poter
- * definire delle liste di persone che possono aver accesso alle informazioni di
- * un certo incarico o che comunque ne sono coinvolte.
+ * Interessati ad un incarico. Questa tabella di relazione serve per poter definire delle liste di persone che possono
+ * aver accesso alle informazioni di un certo incarico o che comunque ne sono coinvolte.
  * 
  * @author Giuseppe Caliendo
  */
 @PersistenceCapable(table = "GT_STAKEHOLDER", detachable = "true")
-public class Stakeholder
-{
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
-	@Persistent(defaultFetchGroup = "true", dependent = "false")
-	private Person person;
-	@Persistent(defaultFetchGroup = "true", dependent = "false")
-	private Job job;
+public class Stakeholder {
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    private Long id;
+    @Persistent(defaultFetchGroup = "true", dependent = "false")
+    private Person person;
+    @Persistent(defaultFetchGroup = "true", dependent = "false")
+    private Job job;
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj instanceof Stakeholder)
-		{
-			Stakeholder candidate = (Stakeholder) obj;
-			return id.equals(candidate.getId());
-		}
-		else
-			return super.equals(obj);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Stakeholder) {
+            Stakeholder candidate = (Stakeholder) obj;
+            return id.equals(candidate.getId());
+        } else
+            return super.equals(obj);
+    }
 
-	/**
-	 * Restituisce l'identificativo del record.
-	 * 
-	 * @return l'identificativo del record
-	 */
-	public Long getId()
-	{
-		return id;
-	}
+    /**
+     * Restituisce l'identificativo del record.
+     * 
+     * @return l'identificativo del record
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * Imposta l'identificativo del record.
-	 * 
-	 * @param id
-	 *          l'identificativo del record
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
+    /**
+     * Imposta l'identificativo del record.
+     * 
+     * @param id
+     *            l'identificativo del record
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/**
-	 * Restituisce la persona in anagrafica.
-	 * 
-	 * @return la persona in anagrafica
-	 */
-	public Person getPerson()
-	{
-		return person;
-	}
+    /**
+     * Restituisce la persona in anagrafica.
+     * 
+     * @return la persona in anagrafica
+     */
+    public Person getPerson() {
+        return person;
+    }
 
-	/**
-	 * Imposta la persona dell'anagrafica come interessata ad un incarico.
-	 * 
-	 * @param person
-	 *          la persona dell'anagrafica come interessata ad un incarico
-	 */
-	public void setPerson(Person person)
-	{
-		this.person = person;
-	}
+    /**
+     * Imposta la persona dell'anagrafica come interessata ad un incarico.
+     * 
+     * @param person
+     *            la persona dell'anagrafica come interessata ad un incarico
+     */
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
-	/**
-	 * Restituisce l'incarico.
-	 * 
-	 * @return l'incarico
-	 */
-	public Job getJob()
-	{
-		return job;
-	}
+    /**
+     * Restituisce l'incarico.
+     * 
+     * @return l'incarico
+     */
+    public Job getJob() {
+        return job;
+    }
 
-	/**
-	 * Imposta l'incarico di interesse.
-	 * 
-	 * @param job
-	 *          l'incarico
-	 */
-	public void setJob(Job job)
-	{
-		this.job = job;
-	}
-
+    /**
+     * Imposta l'incarico di interesse.
+     * 
+     * @param job
+     *            l'incarico
+     */
+    public void setJob(Job job) {
+        this.job = job;
+    }
 
 }

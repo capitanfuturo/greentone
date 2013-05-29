@@ -17,67 +17,55 @@ import org.jdesktop.application.ResourceMap;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Profili applicativi. A seconda della profilazione di un utente appartenente
- * all'anagrafica il programma consentirà l'utilizzo o meno di alcune
- * funzionalità.
+ * Profili applicativi. A seconda della profilazione di un utente appartenente all'anagrafica il programma consentirà
+ * l'utilizzo o meno di alcune funzionalità.
  * 
  * @author Giuseppe Caliendo
  */
-public enum UserProfile
-{
-	/** Profilo amministrativo */
-	ADMINISTRATOR
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.UserProfile.Administrator";
-		}
-	},
-	/** Geometra */
-	SURVEYOUR
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.UserProfile.Surveyour";
-		}
-	},
-	/** Ospite */
-	GUEST
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.UserProfile.Guest";
-		}
-	};
+public enum UserProfile {
+    /** Profilo amministrativo */
+    ADMINISTRATOR {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.UserProfile.Administrator";
+        }
+    },
+    /** Geometra */
+    SURVEYOUR {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.UserProfile.Surveyour";
+        }
+    },
+    /** Ospite */
+    GUEST {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.UserProfile.Guest";
+        }
+    };
 
-	ResourceMap resourceMap;
+    ResourceMap resourceMap;
 
-	private UserProfile()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    private UserProfile() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	/**
-	 * Restituisce la chiave di localizzazione del valore dell'enumerato.
-	 * 
-	 * @return la chiave di localizzazione del valore dell'enumerato
-	 */
-	public abstract String getLocalizationKey();
+    /**
+     * Restituisce la chiave di localizzazione del valore dell'enumerato.
+     * 
+     * @return la chiave di localizzazione del valore dell'enumerato
+     */
+    public abstract String getLocalizationKey();
 
-	/**
-	 * Restituisce il nome localizzato del valore dell'enumerato.
-	 * 
-	 * @return il nome localizzato del valore dell'enumerato
-	 */
-	public String getLocalizedName()
-	{
-		return resourceMap.getString(getLocalizationKey());
-	}
+    /**
+     * Restituisce il nome localizzato del valore dell'enumerato.
+     * 
+     * @return il nome localizzato del valore dell'enumerato
+     */
+    public String getLocalizedName() {
+        return resourceMap.getString(getLocalizationKey());
+    }
 }

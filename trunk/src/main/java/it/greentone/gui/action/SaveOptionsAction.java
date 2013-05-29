@@ -33,8 +33,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Azione di salvataggio delle opzioni.
  * 
@@ -42,97 +41,101 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SaveOptionsAction extends AbstractBean {
-	@Inject
-	private OptionsPanel optionsPanel;
-	@Inject
-	private ConfigurationProperties properties;
-	@Inject
-	private JobService jobService;
-	@Inject
-	private OfficeService officeService;
-	@Inject
-	private GreenToneLogProvider logger;
-	private final ResourceMap resourceMap;
+    @Inject
+    private OptionsPanel optionsPanel;
+    @Inject
+    private ConfigurationProperties properties;
+    @Inject
+    private JobService jobService;
+    @Inject
+    private OfficeService officeService;
+    @Inject
+    private GreenToneLogProvider logger;
+    private final ResourceMap resourceMap;
 
-	/**
-	 * Azione di salvataggio delle opzioni.
-	 */
-	public SaveOptionsAction() {
-		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    /**
+     * Azione di salvataggio delle opzioni.
+     */
+    public SaveOptionsAction() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	/**
-	 * Azione di salvataggio delle opzioni.
-	 */
-	@Action
-	public void saveOptions() {
-		String vacazione = GreenToneUtilities.getText(optionsPanel.getVacazioneTextField());
-		if (vacazione == null) {
-			JOptionPane.showMessageDialog(optionsPanel, resourceMap.getString("saveOptions.Action.priceNotNull"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
-			optionsPanel.getVacazioneTextField().requestFocus();
-		} else {
-			try {
-				/* salvo i dati relativi allo studio professionale */
-				Office office = officeService.loadOffice();
-				office.setAddress(GreenToneUtilities.getText(optionsPanel.getAddressTextField()));
-				office.setCap(GreenToneUtilities.getText(optionsPanel.getCapTextField()));
-				office.setCf(GreenToneUtilities.getText(optionsPanel.getCfTextField()));
-				office.setCity(GreenToneUtilities.getText(optionsPanel.getCityTextField()));
-				office.setEmail(GreenToneUtilities.getText(optionsPanel.getEmailTextField()));
-				office.setFax(GreenToneUtilities.getText(optionsPanel.getFaxTextField()));
-				office.setName(GreenToneUtilities.getText(optionsPanel.getNameTextField()));
-				office.setPiva(GreenToneUtilities.getText(optionsPanel.getPivaTextField()));
-				office.setProvince(GreenToneUtilities.getText(optionsPanel.getProvinceTextField()));
-				office.setTelephone1(GreenToneUtilities.getText(optionsPanel.getTelephone1TextField()));
-				office.setTelephone2(GreenToneUtilities.getText(optionsPanel.getTelephone2TextField()));
-				if (optionsPanel.getLogoPreviewPanel().getImage() != null) {
-					office.setLogo(GreenToneUtilities.toBufferedImage(optionsPanel.getLogoPreviewPanel().getImage()));
-				} else {
-					office.setLogo(null);
-				}
-				officeService.storeOffice(office);
+    /**
+     * Azione di salvataggio delle opzioni.
+     */
+    @Action
+    public void saveOptions() {
+        String vacazione = GreenToneUtilities.getText(optionsPanel.getVacazioneTextField());
+        if (vacazione == null) {
+            JOptionPane.showMessageDialog(optionsPanel, resourceMap.getString("saveOptions.Action.priceNotNull"),
+                    resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
+            optionsPanel.getVacazioneTextField().requestFocus();
+        } else {
+            try {
+                /* salvo i dati relativi allo studio professionale */
+                Office office = officeService.loadOffice();
+                office.setAddress(GreenToneUtilities.getText(optionsPanel.getAddressTextField()));
+                office.setCap(GreenToneUtilities.getText(optionsPanel.getCapTextField()));
+                office.setCf(GreenToneUtilities.getText(optionsPanel.getCfTextField()));
+                office.setCity(GreenToneUtilities.getText(optionsPanel.getCityTextField()));
+                office.setEmail(GreenToneUtilities.getText(optionsPanel.getEmailTextField()));
+                office.setFax(GreenToneUtilities.getText(optionsPanel.getFaxTextField()));
+                office.setName(GreenToneUtilities.getText(optionsPanel.getNameTextField()));
+                office.setPiva(GreenToneUtilities.getText(optionsPanel.getPivaTextField()));
+                office.setProvince(GreenToneUtilities.getText(optionsPanel.getProvinceTextField()));
+                office.setTelephone1(GreenToneUtilities.getText(optionsPanel.getTelephone1TextField()));
+                office.setTelephone2(GreenToneUtilities.getText(optionsPanel.getTelephone2TextField()));
+                if (optionsPanel.getLogoPreviewPanel().getImage() != null) {
+                    office.setLogo(GreenToneUtilities.toBufferedImage(optionsPanel.getLogoPreviewPanel().getImage()));
+                } else {
+                    office.setLogo(null);
+                }
+                officeService.storeOffice(office);
 
-				/* recupero i dati dal pannello e li salvo */
-				properties.setConfirmClosureActivated(optionsPanel.getConfirmOnCloseCheckBox().isSelected());
+                /* recupero i dati dal pannello e li salvo */
+                properties.setConfirmClosureActivated(optionsPanel.getConfirmOnCloseCheckBox().isSelected());
 
-				properties.setCheckUpdateActivated(optionsPanel.getCheckUpdateCheckBox().isSelected());
+                properties.setCheckUpdateActivated(optionsPanel.getCheckUpdateCheckBox().isSelected());
 
-				optionsPanel.getVacazioneTextField().commitEdit();
-				Object value = optionsPanel.getVacazioneTextField().getValue();
-				properties.setVacazionePrice(GreenToneUtilities.roundTwoDecimals(new Double(value.toString())));
+                optionsPanel.getVacazioneTextField().commitEdit();
+                Object value = optionsPanel.getVacazioneTextField().getValue();
+                properties.setVacazionePrice(GreenToneUtilities.roundTwoDecimals(new Double(value.toString())));
 
-				value = optionsPanel.getVacazioneAiutanteTextField().getValue();
-				properties.setVacazioneHelperPrice(GreenToneUtilities.roundTwoDecimals(new Double(value.toString())));
+                value = optionsPanel.getVacazioneAiutanteTextField().getValue();
+                properties.setVacazioneHelperPrice(GreenToneUtilities.roundTwoDecimals(new Double(value.toString())));
 
-				boolean useYears = properties.getUseYearsInJobsProtocol();
-				if ((optionsPanel.getUseYearInJobProtocolCheckBox().isSelected() && !useYears)
-						|| (!optionsPanel.getUseYearInJobProtocolCheckBox().isSelected() && useYears)) {
-					/*
-					 * se l'utente è sicuro di voler migrare i protocolli degli
-					 * incarichi allora procedo
-					 */
-					int confirm = JOptionPane.showConfirmDialog(optionsPanel, resourceMap.getString("saveOptions.Action.jobProtocolMigrationMessage"));
-					if (confirm == JOptionPane.OK_OPTION) {
-						if (optionsPanel.getUseYearInJobProtocolCheckBox().isSelected()) {
-							jobService.addYearToAllJobProtocols();
-						} else {
-							try {
-								jobService.removeYearToAllJobProtocols();
-							} catch (Exception e) {
-								JOptionPane.showMessageDialog(optionsPanel, resourceMap.getString("saveOptions.Action.tooJobs"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
-							}
-						}
-					}
-				}
-				properties.setUseYearsInJobsProtocol(optionsPanel.getUseYearInJobProtocolCheckBox().isSelected());
+                boolean useYears = properties.getUseYearsInJobsProtocol();
+                if ((optionsPanel.getUseYearInJobProtocolCheckBox().isSelected() && !useYears)
+                        || (!optionsPanel.getUseYearInJobProtocolCheckBox().isSelected() && useYears)) {
+                    /*
+                     * se l'utente è sicuro di voler migrare i protocolli degli incarichi allora procedo
+                     */
+                    int confirm =
+                            JOptionPane.showConfirmDialog(optionsPanel,
+                                    resourceMap.getString("saveOptions.Action.jobProtocolMigrationMessage"));
+                    if (confirm == JOptionPane.OK_OPTION) {
+                        if (optionsPanel.getUseYearInJobProtocolCheckBox().isSelected()) {
+                            jobService.addYearToAllJobProtocols();
+                        } else {
+                            try {
+                                jobService.removeYearToAllJobProtocols();
+                            } catch (Exception e) {
+                                JOptionPane.showMessageDialog(optionsPanel,
+                                        resourceMap.getString("saveOptions.Action.tooJobs"),
+                                        resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }
+                }
+                properties.setUseYearsInJobsProtocol(optionsPanel.getUseYearInJobProtocolCheckBox().isSelected());
 
-				properties.setLogLevel(Level.parse(optionsPanel.getLogLevelComboBox().getSelectedItem().toString()));
+                properties.setLogLevel(Level.parse(optionsPanel.getLogLevelComboBox().getSelectedItem().toString()));
 
-				/* salvo */
-				properties.store();
-			} catch (ParseException e) {
-				logger.getLogger().log(Level.SEVERE, resourceMap.getString("ErrorMessage.saveOptions"), e);
-			}
-		}
-	}
+                /* salvo */
+                properties.store();
+            } catch (ParseException e) {
+                logger.getLogger().log(Level.SEVERE, resourceMap.getString("ErrorMessage.saveOptions"), e);
+            }
+        }
+    }
 }

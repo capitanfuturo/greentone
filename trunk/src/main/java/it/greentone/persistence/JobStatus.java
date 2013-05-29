@@ -17,73 +17,61 @@ import org.jdesktop.application.ResourceMap;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Enumerato che descrive lo stato di un incarico.
  * 
  * @author Giuseppe Caliendo
  */
-public enum JobStatus
-{
-	/** Incarico in pianificazione */
-	PLANNING
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.JobStatus.Planning";
-		}
-	},
-	/** Incarico in lavorazione */
-	WORKING
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.JobStatus.Working";
-		}
-	},
-	/** Incarico sospeso */
-	SUSPEND
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.JobStatus.Suspend";
-		}
-	},
-	/** Incarico chiuso */
-	CLOSED
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.JobStatus.Closed";
-		}
-	};
+public enum JobStatus {
+    /** Incarico in pianificazione */
+    PLANNING {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.JobStatus.Planning";
+        }
+    },
+    /** Incarico in lavorazione */
+    WORKING {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.JobStatus.Working";
+        }
+    },
+    /** Incarico sospeso */
+    SUSPEND {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.JobStatus.Suspend";
+        }
+    },
+    /** Incarico chiuso */
+    CLOSED {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.JobStatus.Closed";
+        }
+    };
 
-	ResourceMap resourceMap;
+    ResourceMap resourceMap;
 
-	private JobStatus()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    private JobStatus() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	/**
-	 * Restituisce la chiave per la localizzazione dell'enumerato.
-	 * 
-	 * @return la chiave per la localizzazione dell'enumerato
-	 */
-	public abstract String getLocalizationKey();
+    /**
+     * Restituisce la chiave per la localizzazione dell'enumerato.
+     * 
+     * @return la chiave per la localizzazione dell'enumerato
+     */
+    public abstract String getLocalizationKey();
 
-	/**
-	 * Restituisce la localizzazione dell'enumerato.
-	 * 
-	 * @return la localizzazione dell'enumerato
-	 */
-	public String getLocalizedName(){
-		return resourceMap.getString(getLocalizationKey());
-	}
+    /**
+     * Restituisce la localizzazione dell'enumerato.
+     * 
+     * @return la localizzazione dell'enumerato
+     */
+    public String getLocalizedName() {
+        return resourceMap.getString(getLocalizationKey());
+    }
 }

@@ -21,30 +21,25 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Visualizza una finestra di dialogo per la gestione delle categorie degli
- * incarichi.
+ * Visualizza una finestra di dialogo per la gestione delle categorie degli incarichi.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class EditJobCategoryAction extends AbstractBean
-{
-	@Inject
-	EditJobCategoryDialog editJobCategoryDialog;
-	@Inject
-	JobsPanel jobsPanel;
+public class EditJobCategoryAction extends AbstractBean {
+    @Inject
+    EditJobCategoryDialog editJobCategoryDialog;
+    @Inject
+    JobsPanel jobsPanel;
 
-	/**
-	 * Visualizza una finestra di dialogo per la gestione delle categorie degli
-	 * incarichi.
-	 */
-	@Action
-	public void editJobCategory()
-	{
-		editJobCategoryDialog.setup();
-		editJobCategoryDialog.setVisible(true);
-	}
+    /**
+     * Visualizza una finestra di dialogo per la gestione delle categorie degli incarichi.
+     */
+    @Action
+    public void editJobCategory() {
+        editJobCategoryDialog.setup();
+        editJobCategoryDialog.setVisible(true);
+    }
 }

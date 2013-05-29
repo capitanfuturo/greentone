@@ -25,8 +25,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Configurazione utente del programma.
  * 
@@ -34,235 +33,227 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ConfigurationProperties {
-	@Inject
-	private GreenToneLogProvider logger;
-	private boolean firstLaunch;
-	final Properties properties;
-	private final String PROPERTY_FILE_NAME = "configuration.properties";
-	/** Identificativo per la property di controllo aggiornamento */
-	private static final String CONF_CHECK_UPDATE = "checkUpdate";
-	/** Identificativo per la property di richiesta conferma alla chiusura */
-	private static final String CONF_CONFIRM_CLOSURE = "confirmClosure";
-	/**
-	 * Identificativo per la property del prezzo della vacazione del
-	 * professionista
-	 */
-	private static final String CONF_VAC_PRICE = "vacPrice";
-	/** Identificativo per la property del prezzo della vacazione dell'aiutante */
-	private static final String CONF_VAC_HELPER_PRICE = "vacHelperPrice";
-	/**
-	 * Identificativo per la property sulla modalità di generazione dei
-	 * protocolli per gli incarichi
-	 */
-	private static final String CONF_JOB_PROT_STYLE = "useYearsInJobProtocol";
-	/**
-	 * Carattere utilizzato come separatore per la costruzione del protocollo di
-	 * un incarico
-	 */
-	public static final String JOB_PROTOCOL_SEPARATOR = "-";
-	/**
-	 * Carattere utilizzato come separatore per la costruzione del protocollo di
-	 * un documento
-	 */
-	public static final String DOCUMENT_PROTOCOL_SEPARATOR = "-";
-	/**
-	 * Numero di caratteri da utilizzare come padding di 0 nel codice del
-	 * protocollo incarico parte numerica
-	 */
-	public static final int JOB_PROTOCOL_NUMERIC_LENGTH = 4;
-	/**
-	 * Numero di caratteri da utilizzare come padding di 0 nel codice del
-	 * protocollo documento parte numerica
-	 */
-	public static final int DOCUMENT_PROTOCOL_NUMERIC_LENGHT = 5;
-	/** Carattere di padding per il protocollo dell'incarico */
-	public static final Character PROTOCOL_PADDING_CHAR = '0';
-	/** Carattere di padding per il protocollo del documento */
-	public static final Character DOCUMENT_PADDING_CHAR = '0';
-	/**
-	 * Identificativo per la property di impostazione del livello di log da
-	 * impostare
-	 */
-	private static final String CONF_LOG_LEVEL = "logLevel";
+    @Inject
+    private GreenToneLogProvider logger;
+    private boolean firstLaunch;
+    final Properties properties;
+    private final String PROPERTY_FILE_NAME = "configuration.properties";
+    /** Identificativo per la property di controllo aggiornamento */
+    private static final String CONF_CHECK_UPDATE = "checkUpdate";
+    /** Identificativo per la property di richiesta conferma alla chiusura */
+    private static final String CONF_CONFIRM_CLOSURE = "confirmClosure";
+    /**
+     * Identificativo per la property del prezzo della vacazione del professionista
+     */
+    private static final String CONF_VAC_PRICE = "vacPrice";
+    /** Identificativo per la property del prezzo della vacazione dell'aiutante */
+    private static final String CONF_VAC_HELPER_PRICE = "vacHelperPrice";
+    /**
+     * Identificativo per la property sulla modalità di generazione dei protocolli per gli incarichi
+     */
+    private static final String CONF_JOB_PROT_STYLE = "useYearsInJobProtocol";
+    /**
+     * Carattere utilizzato come separatore per la costruzione del protocollo di un incarico
+     */
+    public static final String JOB_PROTOCOL_SEPARATOR = "-";
+    /**
+     * Carattere utilizzato come separatore per la costruzione del protocollo di un documento
+     */
+    public static final String DOCUMENT_PROTOCOL_SEPARATOR = "-";
+    /**
+     * Numero di caratteri da utilizzare come padding di 0 nel codice del protocollo incarico parte numerica
+     */
+    public static final int JOB_PROTOCOL_NUMERIC_LENGTH = 4;
+    /**
+     * Numero di caratteri da utilizzare come padding di 0 nel codice del protocollo documento parte numerica
+     */
+    public static final int DOCUMENT_PROTOCOL_NUMERIC_LENGHT = 5;
+    /** Carattere di padding per il protocollo dell'incarico */
+    public static final Character PROTOCOL_PADDING_CHAR = '0';
+    /** Carattere di padding per il protocollo del documento */
+    public static final Character DOCUMENT_PADDING_CHAR = '0';
+    /**
+     * Identificativo per la property di impostazione del livello di log da impostare
+     */
+    private static final String CONF_LOG_LEVEL = "logLevel";
 
-	/**
-	 * Configurazione utente del programma
-	 */
-	public ConfigurationProperties() {
-		/* carico la configurazione del programma */
-		properties = new Properties();
-		firstLaunch = false;
+    /**
+     * Configurazione utente del programma
+     */
+    public ConfigurationProperties() {
+        /* carico la configurazione del programma */
+        properties = new Properties();
+        firstLaunch = false;
 
-		FileInputStream in;
-		try {
-			File fileProperty = new File(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
-			if (!fileProperty.exists()) {
-				fileProperty.createNewFile();
-				firstLaunch = true;
-			}
-			in = new FileInputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
-			properties.load(in);
-			in.close();
-		} catch (FileNotFoundException fnfe) {
-			logger.getLogger().info(Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.configurationNotFound"));
-		} catch (IOException e) {
-			logger.getLogger().log(Level.SEVERE, Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.loadConfiguration"), e);
-		}
-	}
+        FileInputStream in;
+        try {
+            File fileProperty = new File(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
+            if (!fileProperty.exists()) {
+                fileProperty.createNewFile();
+                firstLaunch = true;
+            }
+            in = new FileInputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
+            properties.load(in);
+            in.close();
+        } catch (FileNotFoundException fnfe) {
+            logger.getLogger().info(
+                    Application.getInstance(GreenTone.class).getContext().getResourceMap()
+                            .getString("ErrorMessage.configurationNotFound"));
+        } catch (IOException e) {
+            logger.getLogger().log(
+                    Level.SEVERE,
+                    Application.getInstance(GreenTone.class).getContext().getResourceMap()
+                            .getString("ErrorMessage.loadConfiguration"), e);
+        }
+    }
 
-	/**
-	 * Salva la configurazione su file.
-	 */
-	public void store() {
-		FileOutputStream out;
-		try {
-			out = new FileOutputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
-			properties.store(out, "Greentone - file autogenerato, non cancellare o modificare manualmente");
-			out.close();
-		} catch (FileNotFoundException e) {
-			logger.getLogger().warning(Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.configurationNotFound"));
-		} catch (IOException e) {
-			logger.getLogger().log(Level.SEVERE, Application.getInstance(GreenTone.class).getContext().getResourceMap().getString("ErrorMessage.storeConfiguration"), e);
-		}
-	}
+    /**
+     * Salva la configurazione su file.
+     */
+    public void store() {
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream(GreenToneAppConfig.BASE_PATH + PROPERTY_FILE_NAME);
+            properties.store(out, "Greentone - file autogenerato, non cancellare o modificare manualmente");
+            out.close();
+        } catch (FileNotFoundException e) {
+            logger.getLogger().warning(
+                    Application.getInstance(GreenTone.class).getContext().getResourceMap()
+                            .getString("ErrorMessage.configurationNotFound"));
+        } catch (IOException e) {
+            logger.getLogger().log(
+                    Level.SEVERE,
+                    Application.getInstance(GreenTone.class).getContext().getResourceMap()
+                            .getString("ErrorMessage.storeConfiguration"), e);
+        }
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è attivato il controllo degli
-	 * aggiornamenti, <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è attivato il controllo degli aggiornamenti,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isCheckUpdateActivated() {
-		String value = properties.getProperty(CONF_CHECK_UPDATE, "true");
-		return Boolean.valueOf(value).booleanValue();
-	}
+    /**
+     * Restituisce <code>true</code> se è attivato il controllo degli aggiornamenti, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è attivato il controllo degli aggiornamenti, <code>false</code> altrimenti
+     */
+    public boolean isCheckUpdateActivated() {
+        String value = properties.getProperty(CONF_CHECK_UPDATE, "true");
+        return Boolean.valueOf(value).booleanValue();
+    }
 
-	/**
-	 * Imposta l'attivazione del controllo degli aggiornamenti.
-	 * 
-	 * @param isActivated
-	 *            <code>true</code> se è attivato il controllo degli
-	 *            aggiornamenti, <code>false</code> altrimenti
-	 */
-	public void setCheckUpdateActivated(boolean isActivated) {
-		properties.setProperty(CONF_CHECK_UPDATE, "" + isActivated);
-	}
+    /**
+     * Imposta l'attivazione del controllo degli aggiornamenti.
+     * 
+     * @param isActivated
+     *            <code>true</code> se è attivato il controllo degli aggiornamenti, <code>false</code> altrimenti
+     */
+    public void setCheckUpdateActivated(boolean isActivated) {
+        properties.setProperty(CONF_CHECK_UPDATE, "" + isActivated);
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è attivato il controllo degli
-	 * aggiornamenti, <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è attivato il controllo degli aggiornamenti,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isConfirmClosureActivated() {
-		String value = properties.getProperty(CONF_CONFIRM_CLOSURE, "true");
-		return Boolean.valueOf(value).booleanValue();
-	}
+    /**
+     * Restituisce <code>true</code> se è attivato il controllo degli aggiornamenti, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è attivato il controllo degli aggiornamenti, <code>false</code> altrimenti
+     */
+    public boolean isConfirmClosureActivated() {
+        String value = properties.getProperty(CONF_CONFIRM_CLOSURE, "true");
+        return Boolean.valueOf(value).booleanValue();
+    }
 
-	/**
-	 * Imposta l'attivazione del controllo degli aggiornamenti.
-	 * 
-	 * @param isActivated
-	 *            <code>true</code> se è attivato il controllo degli
-	 *            aggiornamenti, <code>false</code> altrimenti
-	 */
-	public void setConfirmClosureActivated(boolean isActivated) {
-		properties.setProperty(CONF_CONFIRM_CLOSURE, "" + isActivated);
-	}
+    /**
+     * Imposta l'attivazione del controllo degli aggiornamenti.
+     * 
+     * @param isActivated
+     *            <code>true</code> se è attivato il controllo degli aggiornamenti, <code>false</code> altrimenti
+     */
+    public void setConfirmClosureActivated(boolean isActivated) {
+        properties.setProperty(CONF_CONFIRM_CLOSURE, "" + isActivated);
+    }
 
-	/**
-	 * Restituisce il livello di log dell'applicazione.
-	 * 
-	 * @return il livello di log dell'applicazione
-	 */
-	public Level getLogLevel() {
-		String value = properties.getProperty(CONF_LOG_LEVEL, "" + Level.WARNING.intValue());
-		return Level.parse(value);
-	}
+    /**
+     * Restituisce il livello di log dell'applicazione.
+     * 
+     * @return il livello di log dell'applicazione
+     */
+    public Level getLogLevel() {
+        String value = properties.getProperty(CONF_LOG_LEVEL, "" + Level.WARNING.intValue());
+        return Level.parse(value);
+    }
 
-	/**
-	 * Imposta il livello di log dell'applicazione.
-	 * 
-	 * @param level
-	 *            il livello di log dell'applicazione
-	 */
-	public void setLogLevel(Level level) {
-		properties.setProperty(CONF_LOG_LEVEL, "" + level.intValue());
-	}
+    /**
+     * Imposta il livello di log dell'applicazione.
+     * 
+     * @param level
+     *            il livello di log dell'applicazione
+     */
+    public void setLogLevel(Level level) {
+        properties.setProperty(CONF_LOG_LEVEL, "" + level.intValue());
+    }
 
-	/**
-	 * Restituice il prezzo della vacazione del professionista.
-	 * 
-	 * @return il prezzo della vacazione del professionista
-	 */
-	public Double getVacazionePrice() {
-		String value = properties.getProperty(CONF_VAC_PRICE, "44.93d");
-		return Double.parseDouble(value);
-	}
+    /**
+     * Restituice il prezzo della vacazione del professionista.
+     * 
+     * @return il prezzo della vacazione del professionista
+     */
+    public Double getVacazionePrice() {
+        String value = properties.getProperty(CONF_VAC_PRICE, "44.93d");
+        return Double.parseDouble(value);
+    }
 
-	/**
-	 * Imposta il prezzo della vacazione del professionista.
-	 * 
-	 * @param price
-	 *            il prezzo della vacazione del professionista
-	 */
-	public void setVacazionePrice(double price) {
-		properties.setProperty(CONF_VAC_PRICE, "" + price);
-	}
+    /**
+     * Imposta il prezzo della vacazione del professionista.
+     * 
+     * @param price
+     *            il prezzo della vacazione del professionista
+     */
+    public void setVacazionePrice(double price) {
+        properties.setProperty(CONF_VAC_PRICE, "" + price);
+    }
 
-	/**
-	 * Restituice il prezzo della vacazione dell'aiutante.
-	 * 
-	 * @return il prezzo della vacazione dell'aiutante
-	 */
-	public Double getVacazioneHelperPrice() {
-		String value = properties.getProperty(CONF_VAC_HELPER_PRICE, "28.41d");
-		return Double.parseDouble(value);
-	}
+    /**
+     * Restituice il prezzo della vacazione dell'aiutante.
+     * 
+     * @return il prezzo della vacazione dell'aiutante
+     */
+    public Double getVacazioneHelperPrice() {
+        String value = properties.getProperty(CONF_VAC_HELPER_PRICE, "28.41d");
+        return Double.parseDouble(value);
+    }
 
-	/**
-	 * Imposta il prezzo della vacazione dell'aiutante.
-	 * 
-	 * @param price
-	 *            il prezzo della vacazione dell'aiutante
-	 */
-	public void setVacazioneHelperPrice(double price) {
-		properties.setProperty(CONF_VAC_HELPER_PRICE, "" + price);
-	}
+    /**
+     * Imposta il prezzo della vacazione dell'aiutante.
+     * 
+     * @param price
+     *            il prezzo della vacazione dell'aiutante
+     */
+    public void setVacazioneHelperPrice(double price) {
+        properties.setProperty(CONF_VAC_HELPER_PRICE, "" + price);
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è attivato l'uso dell'annata nel
-	 * protocollo, <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è attivato l'uso dell'annata nel protocollo,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean getUseYearsInJobsProtocol() {
-		String value = properties.getProperty(CONF_JOB_PROT_STYLE, "true");
-		return Boolean.valueOf(value).booleanValue();
-	}
+    /**
+     * Restituisce <code>true</code> se è attivato l'uso dell'annata nel protocollo, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è attivato l'uso dell'annata nel protocollo, <code>false</code> altrimenti
+     */
+    public boolean getUseYearsInJobsProtocol() {
+        String value = properties.getProperty(CONF_JOB_PROT_STYLE, "true");
+        return Boolean.valueOf(value).booleanValue();
+    }
 
-	/**
-	 * Imposta l'attivazione del controllo degli aggiornamenti.
-	 * 
-	 * @param isActivated
-	 *            <code>true</code> se è attivato l'uso dell'annata nel
-	 *            protocollo, <code>false</code> altrimenti.
-	 */
-	public void setUseYearsInJobsProtocol(boolean isActivated) {
-		properties.setProperty(CONF_JOB_PROT_STYLE, "" + isActivated);
-	}
+    /**
+     * Imposta l'attivazione del controllo degli aggiornamenti.
+     * 
+     * @param isActivated
+     *            <code>true</code> se è attivato l'uso dell'annata nel protocollo, <code>false</code> altrimenti.
+     */
+    public void setUseYearsInJobsProtocol(boolean isActivated) {
+        properties.setProperty(CONF_JOB_PROT_STYLE, "" + isActivated);
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è la prima volta che viene eseguito il
-	 * programma, <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è la prima volta che viene eseguito il
-	 *         programma, <code>false</code> altrimenti
-	 */
-	public boolean isFirstLaunch() {
-		return firstLaunch;
-	}
+    /**
+     * Restituisce <code>true</code> se è la prima volta che viene eseguito il programma, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è la prima volta che viene eseguito il programma, <code>false</code> altrimenti
+     */
+    public boolean isFirstLaunch() {
+        return firstLaunch;
+    }
 }

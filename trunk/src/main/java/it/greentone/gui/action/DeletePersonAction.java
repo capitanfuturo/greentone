@@ -26,81 +26,65 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Elimina una persona dall'anagrafica.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class DeletePersonAction extends AbstractBean
-{
-	@Inject
-	PersonsPanel personsPanel;
-	@Inject
-	PersonService personService;
-	boolean deletePersonActionEnabled = false;
-	private final ResourceMap resourceMap;
+public class DeletePersonAction extends AbstractBean {
+    @Inject
+    PersonsPanel personsPanel;
+    @Inject
+    PersonService personService;
+    boolean deletePersonActionEnabled = false;
+    private final ResourceMap resourceMap;
 
-	/**
-	 * Elimina una persona dall'anagrafica.
-	 */
-	public DeletePersonAction()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    /**
+     * Elimina una persona dall'anagrafica.
+     */
+    public DeletePersonAction() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	/**
-	 * Elimina una persona dall'anagrafica.
-	 */
-	@Action(enabledProperty = "deletePersonActionEnabled")
-	public void deletePerson()
-	{
-		Person person = personsPanel.getSelectedItem();
-		if(personService.canDeletePerson(person))
-		{
-			int confirmDialog =
-			  JOptionPane.showConfirmDialog(personsPanel,
-			    resourceMap.getString("deletePerson.Action.confirmMessage"));
-			if(confirmDialog == JOptionPane.OK_OPTION)
-			{
-				personService.deletePerson(person);
-				personsPanel.postSaveData();
-			}
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(personsPanel,
-			  resourceMap.getString("deletePerson.Action.cannotDelete"));
-		}
-	}
+    /**
+     * Elimina una persona dall'anagrafica.
+     */
+    @Action(enabledProperty = "deletePersonActionEnabled")
+    public void deletePerson() {
+        Person person = personsPanel.getSelectedItem();
+        if (personService.canDeletePerson(person)) {
+            int confirmDialog =
+                    JOptionPane.showConfirmDialog(personsPanel,
+                            resourceMap.getString("deletePerson.Action.confirmMessage"));
+            if (confirmDialog == JOptionPane.OK_OPTION) {
+                personService.deletePerson(person);
+                personsPanel.postSaveData();
+            }
+        } else {
+            JOptionPane.showMessageDialog(personsPanel, resourceMap.getString("deletePerson.Action.cannotDelete"));
+        }
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è possibile abilitare l'azione,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isDeletePersonActionEnabled()
-	{
-		return deletePersonActionEnabled;
-	}
+    /**
+     * Restituisce <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti
+     */
+    public boolean isDeletePersonActionEnabled() {
+        return deletePersonActionEnabled;
+    }
 
-	/**
-	 * Imposta l'abilitazione dell'azione.
-	 * 
-	 * @param deletePersonActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
-	 */
-	public void setDeletePersonActionEnabled(boolean deletePersonActionEnabled)
-	{
-		final boolean oldValue = this.deletePersonActionEnabled;
-		this.deletePersonActionEnabled = deletePersonActionEnabled;
-		firePropertyChange("deletePersonActionEnabled", oldValue,
-		  deletePersonActionEnabled);
-	}
+    /**
+     * Imposta l'abilitazione dell'azione.
+     * 
+     * @param deletePersonActionEnabled
+     *            <code>true</code> se si vuole abilitare l'azione, <code>false</code> altrimenti
+     */
+    public void setDeletePersonActionEnabled(boolean deletePersonActionEnabled) {
+        final boolean oldValue = this.deletePersonActionEnabled;
+        this.deletePersonActionEnabled = deletePersonActionEnabled;
+        firePropertyChange("deletePersonActionEnabled", oldValue, deletePersonActionEnabled);
+    }
 }

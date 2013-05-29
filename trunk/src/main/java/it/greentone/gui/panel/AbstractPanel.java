@@ -19,83 +19,74 @@ import org.jdesktop.application.ResourceMap;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Pannello generico da estendere per poter avere delle facilities utili.
  * 
  * @author Giuseppe Caliendo
  */
 @SuppressWarnings("serial")
-public abstract class AbstractPanel extends JPanel
-{
-	private final ResourceMap resourceMap;
-	private EStatus status;
+public abstract class AbstractPanel extends JPanel {
+    private final ResourceMap resourceMap;
+    private EStatus status;
 
-	/**
-	 * Pannello generico da estendere per poter avere delle facilities utili.
-	 */
-	public AbstractPanel()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    /**
+     * Pannello generico da estendere per poter avere delle facilities utili.
+     */
+    public AbstractPanel() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	protected ResourceMap getResourceMap()
-	{
-		return resourceMap;
-	}
+    protected ResourceMap getResourceMap() {
+        return resourceMap;
+    }
 
-	/**
-	 * Inizializza o re-inizializza il pannello intero
-	 */
-	public void setup()
-	{
-		setStatus(EStatus.NEW);
-	}
+    /**
+     * Inizializza o re-inizializza il pannello intero
+     */
+    public void setup() {
+        setStatus(EStatus.NEW);
+    }
 
-	/**
-	 * Restituisce il nome del bundle del pannello.
-	 * 
-	 * @return il nome del bundle del pannello
-	 */
-	public abstract String getBundleName();
+    /**
+     * Restituisce il nome del bundle del pannello.
+     * 
+     * @return il nome del bundle del pannello
+     */
+    public abstract String getBundleName();
 
-	/**
-	 * Restituisce lo stato attuale del pannello contestuale.
-	 * 
-	 * @return lo stato attuale del pannello contestuale
-	 */
-	public EStatus getStatus()
-	{
-		return status;
-	}
+    /**
+     * Restituisce lo stato attuale del pannello contestuale.
+     * 
+     * @return lo stato attuale del pannello contestuale
+     */
+    public EStatus getStatus() {
+        return status;
+    }
 
-	/**
-	 * Imposta lo stato attuale del pannello contestuale.
-	 * 
-	 * @param status
-	 *          lo stato attuale del pannello contestuale
-	 */
-	public void setStatus(EStatus status)
-	{
-		this.status = status;
-	}
+    /**
+     * Imposta lo stato attuale del pannello contestuale.
+     * 
+     * @param status
+     *            lo stato attuale del pannello contestuale
+     */
+    public void setStatus(EStatus status) {
+        this.status = status;
+    }
 
-	/**
-	 * Stato di un pannello contestuale.
-	 * 
-	 * @author Giuseppe Caliendo
-	 */
-	public enum EStatus
-	{
-		/**
-		 * Modalità modifica.
-		 */
-		EDIT,
-		/**
-		 * Modalità nuovo inserimento.
-		 */
-		NEW;
-	}
+    /**
+     * Stato di un pannello contestuale.
+     * 
+     * @author Giuseppe Caliendo
+     */
+    public enum EStatus {
+        /**
+         * Modalità modifica.
+         */
+        EDIT,
+        /**
+         * Modalità nuovo inserimento.
+         */
+        NEW;
+    }
 }

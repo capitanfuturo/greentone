@@ -20,27 +20,22 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Visualizza una finestra di dialogo per la gestione delle persone interessate
- * ad un incarico.
+ * Visualizza una finestra di dialogo per la gestione delle persone interessate ad un incarico.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class EditJobStakeholderAction extends AbstractBean
-{
-	@Inject
-	EditJobStakeholderDialog editJobStakeholderDialog;
+public class EditJobStakeholderAction extends AbstractBean {
+    @Inject
+    EditJobStakeholderDialog editJobStakeholderDialog;
 
-	/**
-	 * Visualizza una finestra di dialogo per la gestione delle persone
-	 * interessate ad un incarico.
-	 */
-	@Action
-	public void editJobStakeholder()
-	{
-		editJobStakeholderDialog.setVisible(true);
-	}
+    /**
+     * Visualizza una finestra di dialogo per la gestione delle persone interessate ad un incarico.
+     */
+    @Action
+    public void editJobStakeholder() {
+        editJobStakeholderDialog.setVisible(true);
+    }
 }

@@ -20,27 +20,24 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Mostra gli incarichi nel pannello principale dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewJobsAction
-{
-	@Inject
-	private JobsPanel jobsPanel;
-	@Inject
-	private MainPanel mainPanel;
+public class ViewJobsAction {
+    @Inject
+    private JobsPanel jobsPanel;
+    @Inject
+    private MainPanel mainPanel;
 
-	/**
-	 * Mostra gli incarichi nel pannello principale dell'applicazione.
-	 */
-	@Action
-	public void viewJobs()
-	{
-		ContextualAction.addTab(mainPanel, jobsPanel);
-	}
+    /**
+     * Mostra gli incarichi nel pannello principale dell'applicazione.
+     */
+    @Action
+    public void viewJobs() {
+        ContextualAction.addTab(mainPanel, jobsPanel);
+    }
 }

@@ -30,8 +30,7 @@ import org.jdesktop.application.ResourceMap;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Pannello di dettaglio di un incarico nell'agenda della schermata iniziale.
  * 
@@ -39,108 +38,108 @@ import org.jdesktop.application.ResourceMap;
  */
 @SuppressWarnings("serial")
 public class AgendaDetailPanel extends JPanel {
-	private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
+    private static final String ACTION_SMALL_ICON_SUFFIX = ".Action.smallIcon";
 
-	/**
-	 * Pannello di dettaglio di un incarico nell'agenda della schermata
-	 * iniziale.
-	 * 
-	 * @param job
-	 *            incarico di cui mostrare il dettaglio
-	 * @param jobPanel
-	 * @param mainPanel
-	 * @param resourceMap
-	 * @param status
-	 */
-	public AgendaDetailPanel(final Job job, final JobPanel jobPanel, final MainPanel mainPanel, ResourceMap resourceMap, TimeStatus status) {
-		JButton viewDetailsButton = new JButton(new AbstractAction() {
+    /**
+     * Pannello di dettaglio di un incarico nell'agenda della schermata iniziale.
+     * 
+     * @param job
+     *            incarico di cui mostrare il dettaglio
+     * @param jobPanel
+     * @param mainPanel
+     * @param resourceMap
+     * @param status
+     */
+    public AgendaDetailPanel(final Job job, final JobPanel jobPanel, final MainPanel mainPanel,
+            ResourceMap resourceMap, TimeStatus status) {
+        JButton viewDetailsButton = new JButton(new AbstractAction() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				jobPanel.setJob(job);
-				jobPanel.setup();
-				ContextualAction.addTab(mainPanel, jobPanel);
-			}
-		});
-		viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName() + ACTION_SMALL_ICON_SUFFIX));
-		viewDetailsButton.setToolTipText(resourceMap.getString("JobDetailsPanel.jobDetails"));
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jobPanel.setJob(job);
+                jobPanel.setup();
+                ContextualAction.addTab(mainPanel, jobPanel);
+            }
+        });
+        viewDetailsButton.setIcon(resourceMap.getIcon(jobPanel.getBundleName() + ACTION_SMALL_ICON_SUFFIX));
+        viewDetailsButton.setToolTipText(resourceMap.getString("JobDetailsPanel.jobDetails"));
 
-		JLabel protocolFieldLabel = new JLabel(job.getProtocol());
-		protocolFieldLabel.setFont(FontProvider.PARAGRAPH_BIG);
+        JLabel protocolFieldLabel = new JLabel(job.getProtocol());
+        protocolFieldLabel.setFont(FontProvider.PARAGRAPH_BIG);
 
-		JLabel iconLabel = null;
-		JLabel dueDateFieldLabel = new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
-		JLabel descriptionLabel = new JLabel(job.getDescription());
+        JLabel iconLabel = null;
+        JLabel dueDateFieldLabel = new JLabel(GreenToneUtilities.formatDateTime(job.getDueDate()));
+        JLabel descriptionLabel = new JLabel(job.getDescription());
 
-		if (status.getIconName() != null) {
-			iconLabel = new JLabel(resourceMap.getIcon("JobDetailsPanel." + status.getIconName()));
-		}
+        if (status.getIconName() != null) {
+            iconLabel = new JLabel(resourceMap.getIcon("JobDetailsPanel." + status.getIconName()));
+        }
 
-		setLayout(new MigLayout());
-		add(viewDetailsButton);
-		if (iconLabel != null) {
-			add(iconLabel);
-		}
-		add(dueDateFieldLabel);
-		add(protocolFieldLabel);
-		add(descriptionLabel);
-	}
+        setLayout(new MigLayout());
+        add(viewDetailsButton);
+        if (iconLabel != null) {
+            add(iconLabel);
+        }
+        add(dueDateFieldLabel);
+        add(protocolFieldLabel);
+        add(descriptionLabel);
+    }
 
-	/**
-	 * Stato temporale dell'incarico
-	 * 
-	 * @author Giuseppe Caliendo
-	 */
-	public enum TimeStatus {
-		/** Incarico nelle tempistiche */
-		ON_TIME {
-			@Override
-			public Color getColor() {
-				return null;
-			}
+    /**
+     * Stato temporale dell'incarico
+     * 
+     * @author Giuseppe Caliendo
+     */
+    public enum TimeStatus {
+        /** Incarico nelle tempistiche */
+        ON_TIME {
+            @Override
+            public Color getColor() {
+                return null;
+            }
 
-			@Override
-			public String getIconName() {
-				return null;
-			}
-		},
-		/** Incarico in scadenza */
-		EXPIRING {
-			@Override
-			public Color getColor() {
-				return new Color(245, 230, 90);
-			}
+            @Override
+            public String getIconName() {
+                return null;
+            }
+        },
+        /** Incarico in scadenza */
+        EXPIRING {
+            @Override
+            public Color getColor() {
+                return new Color(245, 230, 90);
+            }
 
-			@Override
-			public String getIconName() {
-				return "expiringIcon";
-			}
-		},
-		/** Incarico scaduto */
-		EXPIRED {
-			@Override
-			public Color getColor() {
-				return new Color(220, 55, 20);
-			}
+            @Override
+            public String getIconName() {
+                return "expiringIcon";
+            }
+        },
+        /** Incarico scaduto */
+        EXPIRED {
+            @Override
+            public Color getColor() {
+                return new Color(220, 55, 20);
+            }
 
-			@Override
-			public String getIconName() {
-				return "expiredIcon";
-			}
-		};
+            @Override
+            public String getIconName() {
+                return "expiredIcon";
+            }
+        };
 
-		/**
-		 * Restituisce il colore con sui segnalare l'incarico.
-		 * 
-		 * @return il colore con sui segnalare l'incarico
-		 */
-		public abstract Color getColor();
+        /**
+         * Restituisce il colore con sui segnalare l'incarico.
+         * 
+         * @return il colore con sui segnalare l'incarico
+         */
+        public abstract Color getColor();
 
-		/**
-		 * Restituisce il nome dell'icona da usare
-		 * 
-		 * @return il nome dell'icona da usare
-		 */
-		public abstract String getIconName();
-	}
+        /**
+         * Restituisce il nome dell'icona da usare
+         * 
+         * @return il nome dell'icona da usare
+         */
+        public abstract String getIconName();
+    }
 }

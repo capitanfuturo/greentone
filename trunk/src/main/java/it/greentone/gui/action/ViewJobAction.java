@@ -22,69 +22,59 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Mostra un incarico e i suoi dettagli nel pannello principale
- * dell'applicazione.
+ * Mostra un incarico e i suoi dettagli nel pannello principale dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewJobAction extends AbstractBean
-{
-	@Inject
-	private JobPanel jobPanel;
-	private Job job;
-	boolean viewJobActionEnabled = false;
-	@Inject
-	private MainPanel mainPanel;
+public class ViewJobAction extends AbstractBean {
+    @Inject
+    private JobPanel jobPanel;
+    private Job job;
+    boolean viewJobActionEnabled = false;
+    @Inject
+    private MainPanel mainPanel;
 
-	/**
-	 * Imposta l'incarico da visualizzare.
-	 * 
-	 * @param job
-	 *          l'incarico da visualizzare
-	 */
-	public void setJob(Job job)
-	{
-		this.job = job;
-	}
+    /**
+     * Imposta l'incarico da visualizzare.
+     * 
+     * @param job
+     *            l'incarico da visualizzare
+     */
+    public void setJob(Job job) {
+        this.job = job;
+    }
 
-	/**
-	 * Mostra gli incarichi nel pannello principale dell'applicazione.
-	 */
-	@Action(enabledProperty = "viewJobActionEnabled")
-	public void viewJob()
-	{
-		jobPanel.setJob(job);
-		jobPanel.setup();
-		ContextualAction.addTab(mainPanel, jobPanel);
-	}
+    /**
+     * Mostra gli incarichi nel pannello principale dell'applicazione.
+     */
+    @Action(enabledProperty = "viewJobActionEnabled")
+    public void viewJob() {
+        jobPanel.setJob(job);
+        jobPanel.setup();
+        ContextualAction.addTab(mainPanel, jobPanel);
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è possibile abilitare l'azione,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isViewJobActionEnabled()
-	{
-		return viewJobActionEnabled;
-	}
+    /**
+     * Restituisce <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti
+     */
+    public boolean isViewJobActionEnabled() {
+        return viewJobActionEnabled;
+    }
 
-	/**
-	 * Imposta l'abilitazione dell'azione.
-	 * 
-	 * @param viewJobActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
-	 */
-	public void setViewJobActionEnabled(boolean viewJobActionEnabled)
-	{
-		final boolean oldValue = this.viewJobActionEnabled;
-		this.viewJobActionEnabled = viewJobActionEnabled;
-		firePropertyChange("viewJobActionEnabled", oldValue, viewJobActionEnabled);
-	}
+    /**
+     * Imposta l'abilitazione dell'azione.
+     * 
+     * @param viewJobActionEnabled
+     *            <code>true</code> se si vuole abilitare l'azione, <code>false</code> altrimenti
+     */
+    public void setViewJobActionEnabled(boolean viewJobActionEnabled) {
+        final boolean oldValue = this.viewJobActionEnabled;
+        this.viewJobActionEnabled = viewJobActionEnabled;
+        firePropertyChange("viewJobActionEnabled", oldValue, viewJobActionEnabled);
+    }
 }

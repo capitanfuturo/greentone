@@ -22,8 +22,7 @@ import ca.odell.glazedlists.EventList;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Classe di supporto per l'accesso e gestione di {@link JobCategory}.
  * 
@@ -31,59 +30,52 @@ import ca.odell.glazedlists.EventList;
  */
 @Service("jobCategoryService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class JobCategoryService
-{
-	@Inject
-	private JobCategoryDAO jobCategoryDAO;
-	private final EventList<JobCategory> allJobCategories =
-	  new BasicEventList<JobCategory>();
+public class JobCategoryService {
+    @Inject
+    private JobCategoryDAO jobCategoryDAO;
+    private final EventList<JobCategory> allJobCategories = new BasicEventList<JobCategory>();
 
-	/**
-	 * Rende persistente un oggetto nel database.
-	 * 
-	 * @param jobCategory
-	 *          oggetto da rendere persistente
-	 */
-	public void storeJobCategory(final JobCategory jobCategory)
-	{
-		jobCategoryDAO.storeJobCategory(jobCategory);
-	}
+    /**
+     * Rende persistente un oggetto nel database.
+     * 
+     * @param jobCategory
+     *            oggetto da rendere persistente
+     */
+    public void storeJobCategory(final JobCategory jobCategory) {
+        jobCategoryDAO.storeJobCategory(jobCategory);
+    }
 
-	/**
-	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
-	 * 
-	 * @param jobCategory
-	 *          categoria di incarico
-	 */
-	public void addJobCategory(JobCategory jobCategory)
-	{
-		storeJobCategory(jobCategory);
-		allJobCategories.add(jobCategory);
-	}
+    /**
+     * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+     * 
+     * @param jobCategory
+     *            categoria di incarico
+     */
+    public void addJobCategory(JobCategory jobCategory) {
+        storeJobCategory(jobCategory);
+        allJobCategories.add(jobCategory);
+    }
 
-	/**
-	 * Elimina l'oggetto passato in ingresso.
-	 * 
-	 * @param jobCategory
-	 *          l'oggetto da eliminare
-	 */
-	public void deleteJobCategory(final JobCategory jobCategory)
-	{
-		jobCategoryDAO.deleteJobCategory(jobCategory);
-		allJobCategories.remove(jobCategory);
-	}
+    /**
+     * Elimina l'oggetto passato in ingresso.
+     * 
+     * @param jobCategory
+     *            l'oggetto da eliminare
+     */
+    public void deleteJobCategory(final JobCategory jobCategory) {
+        jobCategoryDAO.deleteJobCategory(jobCategory);
+        allJobCategories.remove(jobCategory);
+    }
 
-	/**
-	 * Restituisce la lista di tutti gli oggetti presenti in database.
-	 * 
-	 * @return la lista di tutti gli oggetti presenti in database
-	 * @throws DataAccessException
-	 */
-	public EventList<JobCategory> getAllJobCategories()
-	  throws DataAccessException
-	{
-		if(allJobCategories.isEmpty())
-			allJobCategories.addAll(jobCategoryDAO.getAllJobCategories());
-		return allJobCategories;
-	}
+    /**
+     * Restituisce la lista di tutti gli oggetti presenti in database.
+     * 
+     * @return la lista di tutti gli oggetti presenti in database
+     * @throws DataAccessException
+     */
+    public EventList<JobCategory> getAllJobCategories() throws DataAccessException {
+        if (allJobCategories.isEmpty())
+            allJobCategories.addAll(jobCategoryDAO.getAllJobCategories());
+        return allJobCategories;
+    }
 }

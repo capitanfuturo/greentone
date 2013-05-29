@@ -20,29 +20,26 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Visualizza la calcolatrice dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewCalcAction
-{
-	@Inject
-	private CalculatorDialog calcDialog;
-	@Inject
-	private OperationsPanel operationsPanel;
+public class ViewCalcAction {
+    @Inject
+    private CalculatorDialog calcDialog;
+    @Inject
+    private OperationsPanel operationsPanel;
 
-	/**
-	 * Visualizza il pannello sulle informazioni dell'applicazione.
-	 */
-	@Action
-	public void viewCalc()
-	{
-		String amount = operationsPanel.getAmountTextField().getText();
-		calcDialog.setup(amount);
-		calcDialog.setVisible(true);
-	}
+    /**
+     * Visualizza il pannello sulle informazioni dell'applicazione.
+     */
+    @Action
+    public void viewCalc() {
+        String amount = operationsPanel.getAmountTextField().getText();
+        calcDialog.setup(amount);
+        calcDialog.setVisible(true);
+    }
 }

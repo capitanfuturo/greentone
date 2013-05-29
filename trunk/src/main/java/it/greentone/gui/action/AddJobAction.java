@@ -19,25 +19,22 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Aggiunge un incarico.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class AddJobAction
-{
-	@Inject
-	private JobsPanel jobsPanel;
+public class AddJobAction {
+    @Inject
+    private JobsPanel jobsPanel;
 
-	/**
-	 * Aggiunge un incarico.
-	 */
-	@Action
-	public void addJob()
-	{
-		jobsPanel.initializeForInsertion();
-	}
+    /**
+     * Aggiunge un incarico.
+     */
+    @Action
+    public void addJob() {
+        jobsPanel.initializeForInsertion();
+    }
 }

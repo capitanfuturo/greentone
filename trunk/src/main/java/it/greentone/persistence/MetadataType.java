@@ -12,16 +12,13 @@ package it.greentone.persistence;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Tipo di dato salvato in una riga della tabella dei metadati
- * dell'applicazione.
+ * Tipo di dato salvato in una riga della tabella dei metadati dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
-public enum MetadataType
-{
-	/** Stringa */
-	STRING;
+public enum MetadataType {
+    /** Stringa */
+    STRING;
 }

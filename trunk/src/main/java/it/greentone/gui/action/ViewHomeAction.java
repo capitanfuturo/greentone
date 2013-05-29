@@ -20,28 +20,25 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Visualizza la pagina iniziale del programma.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewHomeAction
-{
-	@Inject
-	private HomePanel homePanel;
-	@Inject
-	private MainPanel mainPanel;
+public class ViewHomeAction {
+    @Inject
+    private HomePanel homePanel;
+    @Inject
+    private MainPanel mainPanel;
 
-	/**
-	 * Visualizza le persone presenti nel database.
-	 */
-	@Action
-	public void viewHome()
-	{
-		homePanel.setup();
-		ContextualAction.addTab(mainPanel, homePanel);
-	}
+    /**
+     * Visualizza le persone presenti nel database.
+     */
+    @Action
+    public void viewHome() {
+        homePanel.setup();
+        ContextualAction.addTab(mainPanel, homePanel);
+    }
 }

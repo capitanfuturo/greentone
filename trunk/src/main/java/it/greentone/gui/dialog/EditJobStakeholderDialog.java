@@ -29,8 +29,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Finestra di dialogo per la gestione delle persone interessate ad un incarico.
  * 
@@ -38,82 +37,67 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("serial")
 @Component
-public class EditJobStakeholderDialog extends JDialog
-{
-	private static final String LOCALIZATION_PREFIX =
-	  "editJobStakeholder.Dialog.";
-	private final ResourceMap resourceMap;
+public class EditJobStakeholderDialog extends JDialog {
+    private static final String LOCALIZATION_PREFIX = "editJobStakeholder.Dialog.";
+    private final ResourceMap resourceMap;
 
-	private JList canditatePersonList;
-	private JList selectedPersonList;
-	private JButton addToListButton;
-	private JButton removeFromListButton;
+    private JList canditatePersonList;
+    private JList selectedPersonList;
+    private JButton addToListButton;
+    private JButton removeFromListButton;
 
-	/**
-	 * Finestra di dialogo per la gestione delle persone interessate ad un
-	 * incarico.
-	 */
-	public EditJobStakeholderDialog()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
+    /**
+     * Finestra di dialogo per la gestione delle persone interessate ad un incarico.
+     */
+    public EditJobStakeholderDialog() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+        setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
 
-		setModal(true);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setTitle(resourceMap.getString(LOCALIZATION_PREFIX + "title"));
-		setLayout(new BorderLayout());
+        setModal(true);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setTitle(resourceMap.getString(LOCALIZATION_PREFIX + "title"));
+        setLayout(new BorderLayout());
 
-		JPanel buttonPanel = new JPanel(new MigLayout());
-		buttonPanel.add(new JLabel(), "wrap");
-		buttonPanel.add(getAddToListButton(), "wrap");
-		buttonPanel.add(new JLabel(), "wrap");
-		buttonPanel.add(getRemoveFromListButton(), "wrap");
-		buttonPanel.add(new JLabel(), "wrap");
+        JPanel buttonPanel = new JPanel(new MigLayout());
+        buttonPanel.add(new JLabel(), "wrap");
+        buttonPanel.add(getAddToListButton(), "wrap");
+        buttonPanel.add(new JLabel(), "wrap");
+        buttonPanel.add(getRemoveFromListButton(), "wrap");
+        buttonPanel.add(new JLabel(), "wrap");
 
-		getContentPane().add(new JScrollPane(getCanditatePersonList()),
-		  BorderLayout.WEST);
-		getContentPane().add(buttonPanel, BorderLayout.CENTER);
-		getContentPane().add(new JScrollPane(getSelectedPersonList()),
-		  BorderLayout.EAST);
+        getContentPane().add(new JScrollPane(getCanditatePersonList()), BorderLayout.WEST);
+        getContentPane().add(buttonPanel, BorderLayout.CENTER);
+        getContentPane().add(new JScrollPane(getSelectedPersonList()), BorderLayout.EAST);
 
-		setLocationRelativeTo(null);
-		pack();
-	}
+        setLocationRelativeTo(null);
+        pack();
+    }
 
-	protected JList getCanditatePersonList()
-	{
-		if(canditatePersonList == null)
-			canditatePersonList = new JList();
-		return canditatePersonList;
-	}
+    protected JList getCanditatePersonList() {
+        if (canditatePersonList == null)
+            canditatePersonList = new JList();
+        return canditatePersonList;
+    }
 
-	protected JList getSelectedPersonList()
-	{
-		if(selectedPersonList == null)
-			selectedPersonList = new JList();
-		return selectedPersonList;
-	}
+    protected JList getSelectedPersonList() {
+        if (selectedPersonList == null)
+            selectedPersonList = new JList();
+        return selectedPersonList;
+    }
 
-	protected JButton getAddToListButton()
-	{
-		if(addToListButton == null)
-		{
-			addToListButton = new JButton();
-			addToListButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX
-			  + "addToListIcon"));
-		}
-		return addToListButton;
-	}
+    protected JButton getAddToListButton() {
+        if (addToListButton == null) {
+            addToListButton = new JButton();
+            addToListButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "addToListIcon"));
+        }
+        return addToListButton;
+    }
 
-	protected JButton getRemoveFromListButton()
-	{
-		if(removeFromListButton == null)
-		{
-			removeFromListButton = new JButton();
-			removeFromListButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX
-			  + "removeFromListIcon"));
-		}
-		return removeFromListButton;
-	}
+    protected JButton getRemoveFromListButton() {
+        if (removeFromListButton == null) {
+            removeFromListButton = new JButton();
+            removeFromListButton.setIcon(resourceMap.getIcon(LOCALIZATION_PREFIX + "removeFromListIcon"));
+        }
+        return removeFromListButton;
+    }
 }

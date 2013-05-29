@@ -27,8 +27,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Elimina l'operazione selezionata in tabella.
  * 
@@ -36,57 +35,56 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DeleteOperationAction extends AbstractBean {
-	@Inject
-	OperationsPanel operationsPanel;
-	@Inject
-	OperationService operationService;
-	@Inject
-	ModelEventManager modelEventManager;
-	boolean deleteOperationActionEnabled = false;
-	private final ResourceMap resourceMap;
+    @Inject
+    OperationsPanel operationsPanel;
+    @Inject
+    OperationService operationService;
+    @Inject
+    ModelEventManager modelEventManager;
+    boolean deleteOperationActionEnabled = false;
+    private final ResourceMap resourceMap;
 
-	/**
-	 * Elimina l'operazione selezionata in tabella.
-	 */
-	public DeleteOperationAction() {
-		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    /**
+     * Elimina l'operazione selezionata in tabella.
+     */
+    public DeleteOperationAction() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	/**
-	 * Elimina l'operazione selezionata in tabella.
-	 */
-	@Action(enabledProperty = "deleteOperationActionEnabled")
-	public void deleteOperation() {
-		int confirmDialog = JOptionPane.showConfirmDialog(operationsPanel, resourceMap.getString("deleteOperation.Action.confirmMessage"));
-		if (confirmDialog == JOptionPane.OK_OPTION) {
-			Operation operation = operationsPanel.getSelectedItem();
-			operationService.deleteOperation(operation);
-			operationsPanel.postSaveData();
-			modelEventManager.fireOperationDeleted(operation);
-		}
-	}
+    /**
+     * Elimina l'operazione selezionata in tabella.
+     */
+    @Action(enabledProperty = "deleteOperationActionEnabled")
+    public void deleteOperation() {
+        int confirmDialog =
+                JOptionPane.showConfirmDialog(operationsPanel,
+                        resourceMap.getString("deleteOperation.Action.confirmMessage"));
+        if (confirmDialog == JOptionPane.OK_OPTION) {
+            Operation operation = operationsPanel.getSelectedItem();
+            operationService.deleteOperation(operation);
+            operationsPanel.postSaveData();
+            modelEventManager.fireOperationDeleted(operation);
+        }
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è possibile abilitare l'azione,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isDeleteOperationActionEnabled() {
-		return deleteOperationActionEnabled;
-	}
+    /**
+     * Restituisce <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti
+     */
+    public boolean isDeleteOperationActionEnabled() {
+        return deleteOperationActionEnabled;
+    }
 
-	/**
-	 * Imposta l'abilitazione dell'azione.
-	 * 
-	 * @param deleteOperationActionEnabled
-	 *            <code>true</code> se si vuole abilitare l'azione,
-	 *            <code>false</code> altrimenti
-	 */
-	public void setDeleteOperationActionEnabled(boolean deleteOperationActionEnabled) {
-		final boolean oldValue = this.deleteOperationActionEnabled;
-		this.deleteOperationActionEnabled = deleteOperationActionEnabled;
-		firePropertyChange("deleteOperationActionEnabled", oldValue, deleteOperationActionEnabled);
-	}
+    /**
+     * Imposta l'abilitazione dell'azione.
+     * 
+     * @param deleteOperationActionEnabled
+     *            <code>true</code> se si vuole abilitare l'azione, <code>false</code> altrimenti
+     */
+    public void setDeleteOperationActionEnabled(boolean deleteOperationActionEnabled) {
+        final boolean oldValue = this.deleteOperationActionEnabled;
+        this.deleteOperationActionEnabled = deleteOperationActionEnabled;
+        firePropertyChange("deleteOperationActionEnabled", oldValue, deleteOperationActionEnabled);
+    }
 }

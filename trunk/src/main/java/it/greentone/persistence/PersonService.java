@@ -22,8 +22,7 @@ import ca.odell.glazedlists.EventList;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Classe di supporto per l'accesso e gestione di {@link Person}.
  * 
@@ -31,89 +30,79 @@ import ca.odell.glazedlists.EventList;
  */
 @Service("personService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class PersonService
-{
-	@Inject
-	private PersonDAO personDAO;
-	@Inject
-	private JobService jobService;
-	@Inject
-	private DocumentDAO documentDAO;
+public class PersonService {
+    @Inject
+    private PersonDAO personDAO;
+    @Inject
+    private JobService jobService;
+    @Inject
+    private DocumentDAO documentDAO;
 
-	private final EventList<Person> allPersonsEventList =
-	  new BasicEventList<Person>();
+    private final EventList<Person> allPersonsEventList = new BasicEventList<Person>();
 
-	/**
-	 * Rende persistente un oggetto nel database.
-	 * 
-	 * @param person
-	 *          oggetto da rendere persistente
-	 */
-	public void storePerson(final Person person)
-	{
-		personDAO.storePerson(person);
-	}
+    /**
+     * Rende persistente un oggetto nel database.
+     * 
+     * @param person
+     *            oggetto da rendere persistente
+     */
+    public void storePerson(final Person person) {
+        personDAO.storePerson(person);
+    }
 
-	/**
-	 * Aggiunge una nuova persona in anagrafica.
-	 * 
-	 * @param person
-	 *          nuova persona da inserire
-	 */
-	public void addPerson(Person person)
-	{
-		storePerson(person);
-		allPersonsEventList.add(person);
-	}
+    /**
+     * Aggiunge una nuova persona in anagrafica.
+     * 
+     * @param person
+     *            nuova persona da inserire
+     */
+    public void addPerson(Person person) {
+        storePerson(person);
+        allPersonsEventList.add(person);
+    }
 
-	/**
-	 * Rimuove la persona dall'anagrafica.
-	 * 
-	 * @param person
-	 *          la persona da eliminare
-	 */
-	public void deletePerson(final Person person)
-	{
-		if(canDeletePerson(person))
-		{
-			personDAO.deletePerson(person);
-			allPersonsEventList.remove(person);
-		}
-	}
+    /**
+     * Rimuove la persona dall'anagrafica.
+     * 
+     * @param person
+     *            la persona da eliminare
+     */
+    public void deletePerson(final Person person) {
+        if (canDeletePerson(person)) {
+            personDAO.deletePerson(person);
+            allPersonsEventList.remove(person);
+        }
+    }
 
-	/**
-	 * Restituisce la lista di tutte le persone presenti in anagrafica.
-	 * 
-	 * @return la lista di tutte le persone presenti in anagrafica
-	 * @throws DataAccessException
-	 */
-	public EventList<Person> getAllPersons() throws DataAccessException
-	{
-		if(allPersonsEventList.isEmpty())
-			allPersonsEventList.addAll(personDAO.getAllPersons());
-		return allPersonsEventList;
-	}
+    /**
+     * Restituisce la lista di tutte le persone presenti in anagrafica.
+     * 
+     * @return la lista di tutte le persone presenti in anagrafica
+     * @throws DataAccessException
+     */
+    public EventList<Person> getAllPersons() throws DataAccessException {
+        if (allPersonsEventList.isEmpty())
+            allPersonsEventList.addAll(personDAO.getAllPersons());
+        return allPersonsEventList;
+    }
 
-	/**
-	 * Le condizioni per eliminare una persona sono:
-	 * <ul>
-	 * <li>la persona non deve essere coinvolta in un incarico come responsabile</li>
-	 * <li>la persona non deve essere coinvolta in un incarico come committente</li>
-	 * <li>la persona non deve avere dei documenti</li>
-	 * </ul>
-	 * 
-	 * @param person
-	 *          persona da eliminare
-	 * @return <code>true</code> se è possibile eliminare la persona,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean canDeletePerson(Person person)
-	{
-		boolean isManager = jobService.getJobsAsManager(person).size() > 0;
-		boolean isCustomer = jobService.getJobsAsCustomer(person).size() > 0;
-		boolean hasDocument =
-		  documentDAO.getDocumentsAsRecipient(person).size() > 0;
+    /**
+     * Le condizioni per eliminare una persona sono:
+     * <ul>
+     * <li>la persona non deve essere coinvolta in un incarico come responsabile</li>
+     * <li>la persona non deve essere coinvolta in un incarico come committente</li>
+     * <li>la persona non deve avere dei documenti</li>
+     * </ul>
+     * 
+     * @param person
+     *            persona da eliminare
+     * @return <code>true</code> se è possibile eliminare la persona, <code>false</code> altrimenti
+     */
+    public boolean canDeletePerson(Person person) {
+        boolean isManager = jobService.getJobsAsManager(person).size() > 0;
+        boolean isCustomer = jobService.getJobsAsCustomer(person).size() > 0;
+        boolean hasDocument = documentDAO.getDocumentsAsRecipient(person).size() > 0;
 
-		return !isManager && !isCustomer && !hasDocument;
-	}
+        return !isManager && !isCustomer && !hasDocument;
+    }
 }

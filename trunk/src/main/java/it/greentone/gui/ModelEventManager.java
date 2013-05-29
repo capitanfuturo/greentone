@@ -22,164 +22,161 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Accentratore degli eventi che possono coinvolgere diverse schede
- * dell'interfaccia utente.
+ * Accentratore degli eventi che possono coinvolgere diverse schede dell'interfaccia utente.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
 public class ModelEventManager {
 
-	private final PropertyChangeSupport support;
-	/** Evento: operazione inserita */
-	public static final String OPERATION_INSERTED = "OPERATION_INSERTED";
-	/** Evento: operazione modificata */
-	public static final String OPERATION_MODIFIED = "OPERATION_MODIFIED";
-	/** Evento: operazione eliminata */
-	public static final String OPERATION_DELETED = "OPERATION_DELETED";
-	/** Evento: documento inserito */
-	public static final String DOCUMENT_INSERTED = "DOCUMENT_INSERTED";
-	/** Evento: documento modificato */
-	public static final String DOCUMENT_MODIFIED = "DOCUMENT_MODIFIED";
-	/** Evento: documento eliminato */
-	public static final String DOCUMENT_DELETED = "DOCUMENT_DELETED";
-	/** Evento: incarico inserito */
-	public static final String JOB_INSERTED = "JOB_INSERTED";
-	/** Evento: incarico modificato */
-	public static final String JOB_MODIFIED = "JOB_MODIFIED";
-	/** Evento: incarico eliminato */
-	public static final String JOB_DELETED = "JOB_DELETED";
-	/** Evento: anagrafica modificata */
-	public static final String PERSON_MODIFIED = "PERSON_MODIFIED";
+    private final PropertyChangeSupport support;
+    /** Evento: operazione inserita */
+    public static final String OPERATION_INSERTED = "OPERATION_INSERTED";
+    /** Evento: operazione modificata */
+    public static final String OPERATION_MODIFIED = "OPERATION_MODIFIED";
+    /** Evento: operazione eliminata */
+    public static final String OPERATION_DELETED = "OPERATION_DELETED";
+    /** Evento: documento inserito */
+    public static final String DOCUMENT_INSERTED = "DOCUMENT_INSERTED";
+    /** Evento: documento modificato */
+    public static final String DOCUMENT_MODIFIED = "DOCUMENT_MODIFIED";
+    /** Evento: documento eliminato */
+    public static final String DOCUMENT_DELETED = "DOCUMENT_DELETED";
+    /** Evento: incarico inserito */
+    public static final String JOB_INSERTED = "JOB_INSERTED";
+    /** Evento: incarico modificato */
+    public static final String JOB_MODIFIED = "JOB_MODIFIED";
+    /** Evento: incarico eliminato */
+    public static final String JOB_DELETED = "JOB_DELETED";
+    /** Evento: anagrafica modificata */
+    public static final String PERSON_MODIFIED = "PERSON_MODIFIED";
 
-	/**
-	 * Accentratore degli eventi che possono coinvolgere diverse schede
-	 * dell'interfaccia utente.
-	 */
-	public ModelEventManager() {
-		support = new PropertyChangeSupport(this);
-	}
+    /**
+     * Accentratore degli eventi che possono coinvolgere diverse schede dell'interfaccia utente.
+     */
+    public ModelEventManager() {
+        support = new PropertyChangeSupport(this);
+    }
 
-	/**
-	 * Aggiunge un listener a questa classe.
-	 * 
-	 * @param listener
-	 *            listener
-	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		support.addPropertyChangeListener(listener);
-	}
+    /**
+     * Aggiunge un listener a questa classe.
+     * 
+     * @param listener
+     *            listener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
 
-	/**
-	 * Rimuove un listener a questa classe.
-	 * 
-	 * @param listener
-	 *            listener
-	 */
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		support.removePropertyChangeListener(listener);
-	}
+    /**
+     * Rimuove un listener a questa classe.
+     * 
+     * @param listener
+     *            listener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        support.removePropertyChangeListener(listener);
+    }
 
-	/**
-	 * Comunica l'inserimento di una nuova operazione
-	 * 
-	 * @param operation
-	 *            operazione inserita
-	 */
-	public void fireOperationInserted(Operation operation) {
-		support.firePropertyChange(OPERATION_INSERTED, null, operation);
-	}
+    /**
+     * Comunica l'inserimento di una nuova operazione
+     * 
+     * @param operation
+     *            operazione inserita
+     */
+    public void fireOperationInserted(Operation operation) {
+        support.firePropertyChange(OPERATION_INSERTED, null, operation);
+    }
 
-	/**
-	 * Comunica la modifica di un'operazione.
-	 * 
-	 * @param newValue
-	 *            operazione modificata
-	 */
-	public void fireOperationModified(Operation newValue) {
-		support.firePropertyChange(OPERATION_MODIFIED, null, newValue);
-	}
+    /**
+     * Comunica la modifica di un'operazione.
+     * 
+     * @param newValue
+     *            operazione modificata
+     */
+    public void fireOperationModified(Operation newValue) {
+        support.firePropertyChange(OPERATION_MODIFIED, null, newValue);
+    }
 
-	/**
-	 * Comunica l'eliminazione di un'operazione
-	 * 
-	 * @param operation
-	 *            operation eliminata
-	 */
-	public void fireOperationDeleted(Operation operation) {
-		support.firePropertyChange(OPERATION_DELETED, null, operation);
-	}
+    /**
+     * Comunica l'eliminazione di un'operazione
+     * 
+     * @param operation
+     *            operation eliminata
+     */
+    public void fireOperationDeleted(Operation operation) {
+        support.firePropertyChange(OPERATION_DELETED, null, operation);
+    }
 
-	/**
-	 * Comunica l'inserimento di un documento
-	 * 
-	 * @param document
-	 *            documento inserito
-	 */
-	public void fireDocumentInserted(Document document) {
-		support.firePropertyChange(DOCUMENT_INSERTED, null, document);
-	}
+    /**
+     * Comunica l'inserimento di un documento
+     * 
+     * @param document
+     *            documento inserito
+     */
+    public void fireDocumentInserted(Document document) {
+        support.firePropertyChange(DOCUMENT_INSERTED, null, document);
+    }
 
-	/**
-	 * Comunica la modifica di un documento
-	 * 
-	 * @param document
-	 *            documento modificato
-	 */
-	public void fireDocumentModified(Document document) {
-		support.firePropertyChange(DOCUMENT_MODIFIED, null, document);
-	}
+    /**
+     * Comunica la modifica di un documento
+     * 
+     * @param document
+     *            documento modificato
+     */
+    public void fireDocumentModified(Document document) {
+        support.firePropertyChange(DOCUMENT_MODIFIED, null, document);
+    }
 
-	/**
-	 * Comunica l'eliminazione di un documento
-	 * 
-	 * @param document
-	 *            documento eliminato
-	 */
-	public void fireDocumentDeleted(Document document) {
-		support.firePropertyChange(DOCUMENT_DELETED, null, document);
-	}
+    /**
+     * Comunica l'eliminazione di un documento
+     * 
+     * @param document
+     *            documento eliminato
+     */
+    public void fireDocumentDeleted(Document document) {
+        support.firePropertyChange(DOCUMENT_DELETED, null, document);
+    }
 
-	/**
-	 * Comunica l'inserimento di un incarico
-	 * 
-	 * @param job
-	 *            incarico inserito
-	 */
-	public void fireJobInserted(Job job) {
-		support.firePropertyChange(JOB_INSERTED, null, job);
-	}
+    /**
+     * Comunica l'inserimento di un incarico
+     * 
+     * @param job
+     *            incarico inserito
+     */
+    public void fireJobInserted(Job job) {
+        support.firePropertyChange(JOB_INSERTED, null, job);
+    }
 
-	/**
-	 * Comunica la modifica di un incarico
-	 * 
-	 * @param job
-	 *            incarico modificato
-	 */
-	public void fireJobModified(Job job) {
-		support.firePropertyChange(JOB_MODIFIED, null, job);
-	}
+    /**
+     * Comunica la modifica di un incarico
+     * 
+     * @param job
+     *            incarico modificato
+     */
+    public void fireJobModified(Job job) {
+        support.firePropertyChange(JOB_MODIFIED, null, job);
+    }
 
-	/**
-	 * Comunica l'eliminazione di un incarico
-	 * 
-	 * @param job
-	 *            incarico eliminato
-	 */
-	public void fireJobDeleted(Job job) {
-		support.firePropertyChange(JOB_DELETED, null, job);
-	}
+    /**
+     * Comunica l'eliminazione di un incarico
+     * 
+     * @param job
+     *            incarico eliminato
+     */
+    public void fireJobDeleted(Job job) {
+        support.firePropertyChange(JOB_DELETED, null, job);
+    }
 
-	/**
-	 * Comunica la modifica di un'anagrafica
-	 * 
-	 * @param person
-	 *            anagrafica modificata
-	 */
-	public void firePersonModified(Person person) {
-		support.firePropertyChange(PERSON_MODIFIED, null, person);
-	}
+    /**
+     * Comunica la modifica di un'anagrafica
+     * 
+     * @param person
+     *            anagrafica modificata
+     */
+    public void firePersonModified(Person person) {
+        support.firePropertyChange(PERSON_MODIFIED, null, person);
+    }
 }

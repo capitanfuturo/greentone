@@ -19,25 +19,22 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Aggiunge una nuova operazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class AddOperationAction
-{
-	@Inject
-	private OperationsPanel operationsPanel;
+public class AddOperationAction {
+    @Inject
+    private OperationsPanel operationsPanel;
 
-	/**
-	 * Aggiunge una nuova operazione.
-	 */
-	@Action
-	public void addOperation()
-	{
-		operationsPanel.initializeForInsertion();
-	}
+    /**
+     * Aggiunge una nuova operazione.
+     */
+    @Action
+    public void addOperation() {
+        operationsPanel.initializeForInsertion();
+    }
 }
