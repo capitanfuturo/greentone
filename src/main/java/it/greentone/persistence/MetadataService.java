@@ -19,8 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Classe di supporto per l'accesso e gestione di {@link Metadata}.
  * 
@@ -28,47 +27,43 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service("metadataService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class MetadataService
-{
-	/** Property di sistema contenente l'ultimo protocollo dei documenti usato */
-	public static final String DOCUMENT_LAST_PROTOCOL = "documentLastProtocol";
+public class MetadataService {
+    /** Property di sistema contenente l'ultimo protocollo dei documenti usato */
+    public static final String DOCUMENT_LAST_PROTOCOL = "documentLastProtocol";
 
-	@Inject
-	private MetadataDAO metadataDAO;
+    @Inject
+    private MetadataDAO metadataDAO;
 
-	/**
-	 * Restituisce il metadato con nome passato in ingresso.
-	 * 
-	 * @param name
-	 *          nome del metadato
-	 * @return il metadato con nome passato in ingresso
-	 */
-	public Metadata getMetadataFromName(String name)
-	{
-		return metadataDAO.getMetadataFromName(name);
-	}
+    /**
+     * Restituisce il metadato con nome passato in ingresso.
+     * 
+     * @param name
+     *            nome del metadato
+     * @return il metadato con nome passato in ingresso
+     */
+    public Metadata getMetadataFromName(String name) {
+        return metadataDAO.getMetadataFromName(name);
+    }
 
-	/**
-	 * Rende persistente l'oggetto passato come parametro.
-	 * 
-	 * @param metadata
-	 *          l'oggetto da rendere persistente
-	 * @throws DataAccessException
-	 */
-	public void storeMetadata(final Metadata metadata)
-	{
-		metadataDAO.storeMetadata(metadata);
-	}
+    /**
+     * Rende persistente l'oggetto passato come parametro.
+     * 
+     * @param metadata
+     *            l'oggetto da rendere persistente
+     * @throws DataAccessException
+     */
+    public void storeMetadata(final Metadata metadata) {
+        metadataDAO.storeMetadata(metadata);
+    }
 
-	/**
-	 * Elimina l'oggetto passato in ingresso.
-	 * 
-	 * @param metadata
-	 *          l'oggetto da eliminare
-	 * @throws DataAccessException
-	 */
-	public void deleteMetadata(final JobCategory metadata)
-	{
-		metadataDAO.deleteMetadata(metadata);
-	}
+    /**
+     * Elimina l'oggetto passato in ingresso.
+     * 
+     * @param metadata
+     *            l'oggetto da eliminare
+     * @throws DataAccessException
+     */
+    public void deleteMetadata(final JobCategory metadata) {
+        metadataDAO.deleteMetadata(metadata);
+    }
 }

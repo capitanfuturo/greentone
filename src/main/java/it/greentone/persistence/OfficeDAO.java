@@ -21,51 +21,46 @@ import org.springframework.stereotype.Repository;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Classe di accessso alla tabella Office nel database.
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("officeDAO")
-public class OfficeDAO extends JdoDaoSupport
-{
-	/**
-	 * Classe di accessso alla tabella Person nel database.
-	 * 
-	 * @param pmf
-	 *          manager della persistenza
-	 */
-	@Inject
-	public OfficeDAO(final PersistenceManagerFactory pmf)
-	{
-		setPersistenceManagerFactory(pmf);
-	}
+public class OfficeDAO extends JdoDaoSupport {
+    /**
+     * Classe di accessso alla tabella Person nel database.
+     * 
+     * @param pmf
+     *            manager della persistenza
+     */
+    @Inject
+    public OfficeDAO(final PersistenceManagerFactory pmf) {
+        setPersistenceManagerFactory(pmf);
+    }
 
-	/**
-	 * Restituice lo studio professionale.
-	 * 
-	 * @return lo studio professionale
-	 * @throws DataAccessException
-	 */
-	public Office loadOffice() throws DataAccessException
-	{
-		final Collection<Office> offices = getJdoTemplate().find(Office.class);
-		if(offices == null || offices.isEmpty())
-			return new Office();
-		return getPersistenceManager().detachCopy(offices.iterator().next());
-	}
+    /**
+     * Restituice lo studio professionale.
+     * 
+     * @return lo studio professionale
+     * @throws DataAccessException
+     */
+    public Office loadOffice() throws DataAccessException {
+        final Collection<Office> offices = getJdoTemplate().find(Office.class);
+        if (offices == null || offices.isEmpty())
+            return new Office();
+        return getPersistenceManager().detachCopy(offices.iterator().next());
+    }
 
-	/**
-	 * Rende persistente l'oggetto passato come parametro.
-	 * 
-	 * @param office
-	 *          l'oggetto da rendere persistente
-	 * @throws DataAccessException
-	 */
-	public void storeOffice(final Office office) throws DataAccessException
-	{
-		getJdoTemplate().makePersistent(office);
-	}
+    /**
+     * Rende persistente l'oggetto passato come parametro.
+     * 
+     * @param office
+     *            l'oggetto da rendere persistente
+     * @throws DataAccessException
+     */
+    public void storeOffice(final Office office) throws DataAccessException {
+        getJdoTemplate().makePersistent(office);
+    }
 }

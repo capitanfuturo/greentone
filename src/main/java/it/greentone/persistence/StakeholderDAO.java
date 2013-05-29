@@ -21,86 +21,72 @@ import org.springframework.stereotype.Repository;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Classe di accesso alla tabella degli stakeholder, ovvero interessati ad un
- * certo incarico.
+ * Classe di accesso alla tabella degli stakeholder, ovvero interessati ad un certo incarico.
  * 
  * @author Giuseppe Caliendo
  */
 @Repository("stakeholderDAO")
-public class StakeholderDAO extends JdoDaoSupport
-{
-	/**
-	 * Classe di accesso alla tabella degli stakeholder, ovvero interessati ad un
-	 * certo incarico.
-	 * 
-	 * @param pmf
-	 *          manager della persistenza
-	 */
-	@Inject
-	public StakeholderDAO(final PersistenceManagerFactory pmf)
-	{
-		setPersistenceManagerFactory(pmf);
-	}
+public class StakeholderDAO extends JdoDaoSupport {
+    /**
+     * Classe di accesso alla tabella degli stakeholder, ovvero interessati ad un certo incarico.
+     * 
+     * @param pmf
+     *            manager della persistenza
+     */
+    @Inject
+    public StakeholderDAO(final PersistenceManagerFactory pmf) {
+        setPersistenceManagerFactory(pmf);
+    }
 
-	/**
-	 * Cerca e restituisce lo stakholder con identificativo id.
-	 * 
-	 * @param id
-	 *          identificativo dello stakeholder
-	 * @return eventuale stakeholder identificato dall'id passato in ingresso
-	 * @throws DataAccessException
-	 */
-	public Stakeholder loadStakeholder(final long id) throws DataAccessException
-	{
-		final Stakeholder stakeholder =
-		  getJdoTemplate().getObjectById(Stakeholder.class, Long.valueOf(id));
-		if(stakeholder == null)
-			throw new RuntimeException("Stakeholder " + id + " not found");
-		return getPersistenceManager().detachCopy(stakeholder);
-	}
+    /**
+     * Cerca e restituisce lo stakholder con identificativo id.
+     * 
+     * @param id
+     *            identificativo dello stakeholder
+     * @return eventuale stakeholder identificato dall'id passato in ingresso
+     * @throws DataAccessException
+     */
+    public Stakeholder loadStakeholder(final long id) throws DataAccessException {
+        final Stakeholder stakeholder = getJdoTemplate().getObjectById(Stakeholder.class, Long.valueOf(id));
+        if (stakeholder == null)
+            throw new RuntimeException("Stakeholder " + id + " not found");
+        return getPersistenceManager().detachCopy(stakeholder);
+    }
 
-	/**
-	 * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
-	 * 
-	 * @param stakeholder
-	 *          l'interessato all'incarico
-	 * @throws DataAccessException
-	 */
-	public void storeStakeholder(final Stakeholder stakeholder)
-	  throws DataAccessException
-	{
-		getJdoTemplate().makePersistent(stakeholder);
-	}
+    /**
+     * Aggiunge un nuovo oggetto nell'insieme di quelli persistenti.
+     * 
+     * @param stakeholder
+     *            l'interessato all'incarico
+     * @throws DataAccessException
+     */
+    public void storeStakeholder(final Stakeholder stakeholder) throws DataAccessException {
+        getJdoTemplate().makePersistent(stakeholder);
+    }
 
-	/**
-	 * Elimina l'oggetto passato in ingresso.
-	 * 
-	 * @param stakeholder
-	 *          l'interessato all'incarico
-	 * @throws DataAccessException
-	 */
-	public void deleteStakeholder(final Stakeholder stakeholder)
-	  throws DataAccessException
-	{
-		if(stakeholder == null || stakeholder.getId() == null)
-			throw new RuntimeException("Stakeholder is not persistent");
-		else
-			getPersistenceManager().deletePersistent(stakeholder);
-	}
+    /**
+     * Elimina l'oggetto passato in ingresso.
+     * 
+     * @param stakeholder
+     *            l'interessato all'incarico
+     * @throws DataAccessException
+     */
+    public void deleteStakeholder(final Stakeholder stakeholder) throws DataAccessException {
+        if (stakeholder == null || stakeholder.getId() == null)
+            throw new RuntimeException("Stakeholder is not persistent");
+        else
+            getPersistenceManager().deletePersistent(stakeholder);
+    }
 
-	/**
-	 * Restituisce la lista degli elementi presenti in database.
-	 * 
-	 * @return la lista degli elementi presenti in database
-	 * @throws DataAccessException
-	 */
-	public Collection<Stakeholder> getAllStakeholders()
-	  throws DataAccessException
-	{
-		return getPersistenceManager().detachCopyAll(
-		  getJdoTemplate().find(Stakeholder.class));
-	}
+    /**
+     * Restituisce la lista degli elementi presenti in database.
+     * 
+     * @return la lista degli elementi presenti in database
+     * @throws DataAccessException
+     */
+    public Collection<Stakeholder> getAllStakeholders() throws DataAccessException {
+        return getPersistenceManager().detachCopyAll(getJdoTemplate().find(Stakeholder.class));
+    }
 }

@@ -20,27 +20,24 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Mostra i documenti nel pannello principale dell'applicazione.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewDocumentsAction
-{
-	@Inject
-	private DocumentsPanel documentsPanel;
-	@Inject
-	private MainPanel mainPanel;
+public class ViewDocumentsAction {
+    @Inject
+    private DocumentsPanel documentsPanel;
+    @Inject
+    private MainPanel mainPanel;
 
-	/**
-	 * Mostra i documenti nel pannello principale dell'applicazione.
-	 */
-	@Action
-	public void viewDocuments()
-	{
-		ContextualAction.addTab(mainPanel, documentsPanel);
-	}
+    /**
+     * Mostra i documenti nel pannello principale dell'applicazione.
+     */
+    @Action
+    public void viewDocuments() {
+        ContextualAction.addTab(mainPanel, documentsPanel);
+    }
 }

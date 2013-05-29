@@ -86,6 +86,8 @@ public class GreenToneUtilities {
     private final ResourceMap resourceMap;
     private UpdateCheckDialog upgradeDialog;
 
+    private File manualTempFile;
+
     /**
      * Insieme di metodi di utilità grafiche e di business.
      */
@@ -501,7 +503,6 @@ public class GreenToneUtilities {
      * 
      * @return un date picker secondo alcune convenzioni utili per tutta l'applicazione
      */
-
     public static JXDatePicker createJXDataPicker() {
         JXDatePicker datePicker = new JXDatePicker();
         /* imposto il formato per le date */
@@ -510,5 +511,35 @@ public class GreenToneUtilities {
         JXMonthView monthView = datePicker.getMonthView();
         monthView.setLocale(GreenToneAppConfig.APPLICATION_LOCALE);
         return datePicker;
+    }
+
+    /**
+     * Apre il manuale utente con il pdf writer di sistema.
+     * 
+     * @throws IOException
+     *             eccezione in caso di apertura del manuale
+     */
+    public void viewManual() throws IOException {
+        if (manualTempFile == null) {
+            manualTempFile = File.createTempFile("GreenTone-ManualeUtente", ".pdf");
+            manualTempFile.deleteOnExit();
+            FileOutputStream fout = null;
+            InputStream in = getClass().getResourceAsStream("/manual/GreenTone-ManualeUtente.pdf");
+            try {
+                fout = new FileOutputStream(manualTempFile);
+                int c;
+                while ((c = in.read()) != -1) {
+                    fout.write(c);
+                }
+            } finally {
+                if (in != null) {
+                    in.close();
+                }
+                if (fout != null) {
+                    fout.close();
+                }
+            }
+        }
+        open(manualTempFile);
     }
 }

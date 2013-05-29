@@ -28,8 +28,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Elimina un incarico.
  * 
@@ -37,68 +36,66 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DeleteJobAction extends AbstractBean {
-	@Inject
-	JobsPanel jobsPanel;
-	@Inject
-	JobService jobService;
-	@Inject
-	DocumentService documentService;
-	@Inject
-	private ModelEventManager modelEventManager;
-	boolean deleteJobActionEnabled = false;
-	private final ResourceMap resourceMap;
+    @Inject
+    JobsPanel jobsPanel;
+    @Inject
+    JobService jobService;
+    @Inject
+    DocumentService documentService;
+    @Inject
+    private ModelEventManager modelEventManager;
+    boolean deleteJobActionEnabled = false;
+    private final ResourceMap resourceMap;
 
-	/**
-	 * Elimina un incarico.
-	 */
-	public DeleteJobAction() {
-		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    /**
+     * Elimina un incarico.
+     */
+    public DeleteJobAction() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	/**
-	 * Elimina un incarico.
-	 */
-	@Action(enabledProperty = "deleteJobActionEnabled")
-	public void deleteJob() {
-		Job job = jobsPanel.getSelectedItem();
-		/*
-		 * Issue 82: Non è possibile eliminare un incarico se ci sono dei
-		 * documenti collegati
-		 */
-		if (documentService.getDocumentsJob(job).size() > 0) {
-			JOptionPane.showMessageDialog(jobsPanel, resourceMap.getString("deleteJob.Action.errorMessage"), resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+    /**
+     * Elimina un incarico.
+     */
+    @Action(enabledProperty = "deleteJobActionEnabled")
+    public void deleteJob() {
+        Job job = jobsPanel.getSelectedItem();
+        /*
+         * Issue 82: Non è possibile eliminare un incarico se ci sono dei documenti collegati
+         */
+        if (documentService.getDocumentsJob(job).size() > 0) {
+            JOptionPane.showMessageDialog(jobsPanel, resourceMap.getString("deleteJob.Action.errorMessage"),
+                    resourceMap.getString("ErrorMessage.title"), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-		int confirmDialog = JOptionPane.showConfirmDialog(jobsPanel, resourceMap.getString("deleteJob.Action.confirmMessage"));
-		if (confirmDialog == JOptionPane.OK_OPTION) {
-			jobService.deleteJob(job);
-			jobsPanel.postSaveData();
-			modelEventManager.fireJobDeleted(job);
-		}
-	}
+        int confirmDialog =
+                JOptionPane.showConfirmDialog(jobsPanel, resourceMap.getString("deleteJob.Action.confirmMessage"));
+        if (confirmDialog == JOptionPane.OK_OPTION) {
+            jobService.deleteJob(job);
+            jobsPanel.postSaveData();
+            modelEventManager.fireJobDeleted(job);
+        }
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è possibile abilitare l'azione,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isDeleteJobActionEnabled() {
-		return deleteJobActionEnabled;
-	}
+    /**
+     * Restituisce <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti
+     */
+    public boolean isDeleteJobActionEnabled() {
+        return deleteJobActionEnabled;
+    }
 
-	/**
-	 * Imposta l'abilitazione dell'azione.
-	 * 
-	 * @param deleteJobActionEnabled
-	 *            <code>true</code> se si vuole abilitare l'azione,
-	 *            <code>false</code> altrimenti
-	 */
-	public void setDeleteJobActionEnabled(boolean deleteJobActionEnabled) {
-		final boolean oldValue = this.deleteJobActionEnabled;
-		this.deleteJobActionEnabled = deleteJobActionEnabled;
-		firePropertyChange("deleteJobActionEnabled", oldValue, deleteJobActionEnabled);
-	}
+    /**
+     * Imposta l'abilitazione dell'azione.
+     * 
+     * @param deleteJobActionEnabled
+     *            <code>true</code> se si vuole abilitare l'azione, <code>false</code> altrimenti
+     */
+    public void setDeleteJobActionEnabled(boolean deleteJobActionEnabled) {
+        final boolean oldValue = this.deleteJobActionEnabled;
+        this.deleteJobActionEnabled = deleteJobActionEnabled;
+        firePropertyChange("deleteJobActionEnabled", oldValue, deleteJobActionEnabled);
+    }
 }

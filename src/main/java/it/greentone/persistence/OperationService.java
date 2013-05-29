@@ -24,8 +24,7 @@ import ca.odell.glazedlists.EventList;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Classe di supporto per l'accesso e gestione di {@link Operation}.
  * 
@@ -33,71 +32,64 @@ import ca.odell.glazedlists.EventList;
  */
 @Service("operationService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class OperationService
-{
-	@Inject
-	private OperationDAO operationDAO;
-	private final EventList<Operation> allOperationEventList =
-	  new BasicEventList<Operation>();
+public class OperationService {
+    @Inject
+    private OperationDAO operationDAO;
+    private final EventList<Operation> allOperationEventList = new BasicEventList<Operation>();
 
-	/**
-	 * Aggiunge una nuova operazione.
-	 * 
-	 * @param operation
-	 *          operazione da aggiungere
-	 */
-	public void addOperation(Operation operation)
-	{
-		storeOperation(operation);
-		allOperationEventList.add(operation);
-	}
+    /**
+     * Aggiunge una nuova operazione.
+     * 
+     * @param operation
+     *            operazione da aggiungere
+     */
+    public void addOperation(Operation operation) {
+        storeOperation(operation);
+        allOperationEventList.add(operation);
+    }
 
-	/**
-	 * Rende persistente un oggetto nel database.
-	 * 
-	 * @param operation
-	 *          oggetto da rendere persistente
-	 */
-	public void storeOperation(final Operation operation)
-	{
-		operationDAO.storeOperation(operation);
-	}
+    /**
+     * Rende persistente un oggetto nel database.
+     * 
+     * @param operation
+     *            oggetto da rendere persistente
+     */
+    public void storeOperation(final Operation operation) {
+        operationDAO.storeOperation(operation);
+    }
 
-	/**
-	 * Elimina l'operazione.
-	 * 
-	 * @param operation
-	 *          operazione da eliminare
-	 */
-	public void deleteOperation(final Operation operation)
-	{
-		operationDAO.deleteOperation(operation);
-		allOperationEventList.remove(operation);
-	}
+    /**
+     * Elimina l'operazione.
+     * 
+     * @param operation
+     *            operazione da eliminare
+     */
+    public void deleteOperation(final Operation operation) {
+        operationDAO.deleteOperation(operation);
+        allOperationEventList.remove(operation);
+    }
 
-	/**
-	 * Restituisce la lista di tutte le operazioni.
-	 * 
-	 * @return la lista di tutte le operazioni
-	 * @throws DataAccessException
-	 */
-	public EventList<Operation> getAllOperations() throws DataAccessException
-	{
-		if(allOperationEventList.isEmpty())
-			allOperationEventList.addAll(operationDAO.getAllOperations());
-		return allOperationEventList;
-	}
+    /**
+     * Restituisce la lista di tutte le operazioni.
+     * 
+     * @return la lista di tutte le operazioni
+     * @throws DataAccessException
+     */
+    public EventList<Operation> getAllOperations() throws DataAccessException {
+        if (allOperationEventList.isEmpty())
+            allOperationEventList.addAll(operationDAO.getAllOperations());
+        return allOperationEventList;
+    }
 
-	/**
-	 * Restituisce la lista delle operazioni dell'incarico passato in ingresso.
-	 * 
-	 * @param job
-	 *          incarico
-	 * @return la lista delle operazioni dell'incarico passato in ingresso
-	 */
-	public Collection<Operation> getOperationsJob(Job job)
-	{
-		return operationDAO.getOperationsJob(job);
-	}
+    /**
+     * Restituisce la lista delle operazioni dell'incarico passato in ingresso.
+     * 
+     * @param job
+     *            incarico
+     * @return la lista delle operazioni dell'incarico passato in ingresso
+     */
+    public Collection<Operation> getOperationsJob(Job job) {
+        return operationDAO.getOperationsJob(job);
+    }
 
 }

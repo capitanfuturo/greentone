@@ -5,7 +5,6 @@ import it.greentone.GreenTone;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 
-
 /**
  * <code>
  * GreenTone - gestionale per geometri italiani.<br>
@@ -18,8 +17,7 @@ import org.jdesktop.application.ResourceMap;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Tipo di operazione:
  * <ul>
@@ -31,95 +29,77 @@ import org.jdesktop.application.ResourceMap;
  * 
  * @author Giuseppe Caliendo
  */
-public enum OperationType
-{
-	/** Lavoro */
-	TASK(true, true)
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.OperationType.Task";
-		}
-	},
-	/** Spesa */
-	EXPENSE(false, true)
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.OperationType.Expense";
-		}
-	},
-	/** Spesa non imponibile */
-	NO_TAXABLE_EXPENSE(false, false)
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.OperationType.NoTaxableExpense";
-		}
-	},
-	/** Acconto di spesa */
-	EXPENSE_DEPOSIT(false, false)
-	{
-		@Override
-		public String getLocalizationKey()
-		{
-			return "Enum.OperationType.ExpenseDeposit";
-		}
-	};
+public enum OperationType {
+    /** Lavoro */
+    TASK(true, true) {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.OperationType.Task";
+        }
+    },
+    /** Spesa */
+    EXPENSE(false, true) {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.OperationType.Expense";
+        }
+    },
+    /** Spesa non imponibile */
+    NO_TAXABLE_EXPENSE(false, false) {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.OperationType.NoTaxableExpense";
+        }
+    },
+    /** Acconto di spesa */
+    EXPENSE_DEPOSIT(false, false) {
+        @Override
+        public String getLocalizationKey() {
+            return "Enum.OperationType.ExpenseDeposit";
+        }
+    };
 
-	ResourceMap resourceMap;
-	boolean isActive;
-	boolean isTaxable;
+    ResourceMap resourceMap;
+    boolean isActive;
+    boolean isTaxable;
 
-	OperationType(boolean isActive, boolean isTaxable)
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		this.isActive = isActive;
-		this.isTaxable = isTaxable;
-	}
+    OperationType(boolean isActive, boolean isTaxable) {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+        this.isActive = isActive;
+        this.isTaxable = isTaxable;
+    }
 
-	/**
-	 * Restituisce <code>true</code> se il tipo di operazione è attivo,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se il tipo di operazione è attivo,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isActive()
-	{
-		return isActive;
-	}
+    /**
+     * Restituisce <code>true</code> se il tipo di operazione è attivo, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se il tipo di operazione è attivo, <code>false</code> altrimenti
+     */
+    public boolean isActive() {
+        return isActive;
+    }
 
-	/**
-	 * Restituisce <code>true</code> se il tipo di operazione è imponibile,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se il tipo di operazione è imponibile,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isTaxable()
-	{
-		return isTaxable;
-	}
+    /**
+     * Restituisce <code>true</code> se il tipo di operazione è imponibile, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se il tipo di operazione è imponibile, <code>false</code> altrimenti
+     */
+    public boolean isTaxable() {
+        return isTaxable;
+    }
 
-	/**
-	 * Restituisce la chiave di localizzazione del valore dell'enumerato.
-	 * 
-	 * @return la chiave di localizzazione del valore dell'enumerato
-	 */
-	public abstract String getLocalizationKey();
+    /**
+     * Restituisce la chiave di localizzazione del valore dell'enumerato.
+     * 
+     * @return la chiave di localizzazione del valore dell'enumerato
+     */
+    public abstract String getLocalizationKey();
 
-	/**
-	 * Restituisce il nome localizzato del valore dell'enumerato.
-	 * 
-	 * @return il nome localizzato del valore dell'enumerato
-	 */
-	public String getLocalizedName()
-	{
-		return resourceMap.getString(getLocalizationKey());
-	}
+    /**
+     * Restituisce il nome localizzato del valore dell'enumerato.
+     * 
+     * @return il nome localizzato del valore dell'enumerato
+     */
+    public String getLocalizedName() {
+        return resourceMap.getString(getLocalizationKey());
+    }
 }

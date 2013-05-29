@@ -24,63 +24,60 @@ import net.miginfocom.swing.MigLayout;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * 
  * @author Giuseppe Caliendo
  */
 @SuppressWarnings("serial")
-public class PasswordDialog extends JDialog
-{
+public class PasswordDialog extends JDialog {
 
-	private final JPanel contentPanel = new JPanel();
-	private JTextField usernameTextField;
-	private JPasswordField passwordField;
+    private final JPanel contentPanel = new JPanel();
+    private JTextField usernameTextField;
+    private JPasswordField passwordField;
 
-	/**
-	 * Create the dialog.
-	 */
-	public PasswordDialog()
-	{
-		setModal(true);
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][]"));
-		{
-			JLabel usernameLabel = new JLabel("New label");
-			contentPanel.add(usernameLabel, "cell 0 0,alignx trailing");
-		}
-		{
-			usernameTextField = new JTextField();
-			contentPanel.add(usernameTextField, "cell 1 0,growx");
-			usernameTextField.setColumns(10);
-		}
-		{
-			JLabel passwordLabel = new JLabel("New label");
-			contentPanel.add(passwordLabel, "cell 0 1,alignx trailing");
-		}
-		{
-			passwordField = new JPasswordField();
-			contentPanel.add(passwordField, "cell 1 1,growx");
-		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
-		}
-		setLocationRelativeTo(null);
-		pack();
-	}
+    /**
+     * Create the dialog.
+     */
+    public PasswordDialog() {
+        setModal(true);
+        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        contentPanel.setLayout(new MigLayout("", "[][grow]", "[][]"));
+        {
+            JLabel usernameLabel = new JLabel("New label");
+            contentPanel.add(usernameLabel, "cell 0 0,alignx trailing");
+        }
+        {
+            usernameTextField = new JTextField();
+            contentPanel.add(usernameTextField, "cell 1 0,growx");
+            usernameTextField.setColumns(10);
+        }
+        {
+            JLabel passwordLabel = new JLabel("New label");
+            contentPanel.add(passwordLabel, "cell 0 1,alignx trailing");
+        }
+        {
+            passwordField = new JPasswordField();
+            contentPanel.add(passwordField, "cell 1 1,growx");
+        }
+        {
+            JPanel buttonPane = new JPanel();
+            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            getContentPane().add(buttonPane, BorderLayout.SOUTH);
+            {
+                JButton okButton = new JButton("OK");
+                okButton.setActionCommand("OK");
+                buttonPane.add(okButton);
+                getRootPane().setDefaultButton(okButton);
+            }
+            {
+                JButton cancelButton = new JButton("Cancel");
+                cancelButton.setActionCommand("Cancel");
+                buttonPane.add(cancelButton);
+            }
+        }
+        setLocationRelativeTo(null);
+        pack();
+    }
 
 }

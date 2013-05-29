@@ -20,8 +20,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Visualizza le operazioni presenti nel database.
  * 
@@ -31,17 +30,16 @@ import org.springframework.stereotype.Component;
 public class ViewOperationsAction
 
 {
-	@Inject
-	private OperationsPanel operationsPanel;
-	@Inject
-	private MainPanel mainPanel;
+    @Inject
+    private OperationsPanel operationsPanel;
+    @Inject
+    private MainPanel mainPanel;
 
-	/**
-	 * Visualizza le operazioni presenti nel database.
-	 */
-	@Action
-	public void viewOperations()
-	{
-		ContextualAction.addTab(mainPanel, operationsPanel);
-	}
+    /**
+     * Visualizza le operazioni presenti nel database.
+     */
+    @Action
+    public void viewOperations() {
+        ContextualAction.addTab(mainPanel, operationsPanel);
+    }
 }

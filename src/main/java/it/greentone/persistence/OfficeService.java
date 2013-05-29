@@ -18,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Classe di supporto per l'accesso e gestione di {@link Office}.
  * 
@@ -27,29 +26,26 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service("officeService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class OfficeService
-{
-	@Inject
-	private OfficeDAO officeDAO;
+public class OfficeService {
+    @Inject
+    private OfficeDAO officeDAO;
 
-	/**
-	 * Rende persistente un oggetto nel database.
-	 * 
-	 * @param office
-	 *          oggetto da rendere persistente
-	 */
-	public void storeOffice(final Office office)
-	{
-		officeDAO.storeOffice(office);
-	}
+    /**
+     * Rende persistente un oggetto nel database.
+     * 
+     * @param office
+     *            oggetto da rendere persistente
+     */
+    public void storeOffice(final Office office) {
+        officeDAO.storeOffice(office);
+    }
 
-	/**
-	 * Restituisce lo studio professionale.
-	 * 
-	 * @return lo studio professionale
-	 */
-	public Office loadOffice()
-	{
-		return officeDAO.loadOffice();
-	}
+    /**
+     * Restituisce lo studio professionale.
+     * 
+     * @return lo studio professionale
+     */
+    public Office loadOffice() {
+        return officeDAO.loadOffice();
+    }
 }

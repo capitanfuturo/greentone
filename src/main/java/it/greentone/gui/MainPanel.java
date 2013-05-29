@@ -32,8 +32,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Pannello principale dell'applicazione.
  * 
@@ -41,98 +40,86 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("serial")
 @Component
-public class MainPanel extends JPanel
-{
-	private JToolBar mainToolBar;
-	@Inject
-	private ActionProvider actionProvider;
-	private JTabbedPane mainTabbedPane;
-	private JLabel statusLabel;
-	private ResourceMap resourceMap;
-	private String applicationName;
+public class MainPanel extends JPanel {
+    private JToolBar mainToolBar;
+    @Inject
+    private ActionProvider actionProvider;
+    private JTabbedPane mainTabbedPane;
+    private JLabel statusLabel;
+    private ResourceMap resourceMap;
+    private String applicationName;
 
-	/**
-	 * Inizializza l'interfaccia grafica.
-	 */
-	public void initialize()
-	{
-		resourceMap =
-		  Application.getInstance(GreenTone.class).getContext().getResourceMap();
-		applicationName = resourceMap.getString("Application.title");
+    /**
+     * Inizializza l'interfaccia grafica.
+     */
+    public void initialize() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+        applicationName = resourceMap.getString("Application.title");
 
-		setLayout(new BorderLayout());
-		add(getMainToolBar(), BorderLayout.WEST);
-		add(getMainTabbedPane(), BorderLayout.CENTER);
+        setLayout(new BorderLayout());
+        add(getMainToolBar(), BorderLayout.WEST);
+        add(getMainTabbedPane(), BorderLayout.CENTER);
 
-		DateTime now = new DateTime();
-		String today = GreenToneUtilities.formatDateTime(now);
-		String appName = resourceMap.getString("Application.name");
-		String version = resourceMap.getString("Application.version");
-		String ready = resourceMap.getString("MainPanel.statusBarReady");
+        DateTime now = new DateTime();
+        String today = GreenToneUtilities.formatDateTime(now);
+        String appName = resourceMap.getString("Application.name");
+        String version = resourceMap.getString("Application.version");
+        String ready = resourceMap.getString("MainPanel.statusBarReady");
 
-		statusLabel =
-		  new JLabel(appName + " " + version + " - " + today + " " + ready);
-		add(statusLabel, BorderLayout.PAGE_END);
-	}
+        statusLabel = new JLabel(appName + " " + version + " - " + today + " " + ready);
+        add(statusLabel, BorderLayout.PAGE_END);
+    }
 
-	/**
-	 * Restituisce la barra laterale con la barra dei bottoni principale.
-	 * 
-	 * @return la barra laterale con la barra dei bottoni principale
-	 */
-	public JToolBar getMainToolBar()
-	{
-		if(mainToolBar == null)
-		{
-			mainToolBar = new JToolBar();
-			mainToolBar.setFloatable(false);
-			mainToolBar.add(actionProvider.getViewHome());
-			mainToolBar.add(actionProvider.getViewJobs());
-			mainToolBar.add(actionProvider.getViewOperations());
-			mainToolBar.add(actionProvider.getViewDocuments());
-			mainToolBar.add(actionProvider.getViewPersons());
-			mainToolBar.add(actionProvider.getViewOptions());
-			mainToolBar.add(actionProvider.getExit());
-			mainToolBar.add(actionProvider.getViewAbout());
-			mainToolBar.setOrientation(SwingConstants.VERTICAL);
-		}
-		return mainToolBar;
-	}
+    /**
+     * Restituisce la barra laterale con la barra dei bottoni principale.
+     * 
+     * @return la barra laterale con la barra dei bottoni principale
+     */
+    public JToolBar getMainToolBar() {
+        if (mainToolBar == null) {
+            mainToolBar = new JToolBar();
+            mainToolBar.setFloatable(false);
+            mainToolBar.add(actionProvider.getViewHome());
+            mainToolBar.add(actionProvider.getViewJobs());
+            mainToolBar.add(actionProvider.getViewOperations());
+            mainToolBar.add(actionProvider.getViewDocuments());
+            mainToolBar.add(actionProvider.getViewPersons());
+            mainToolBar.add(actionProvider.getViewOptions());
+            mainToolBar.add(actionProvider.getExit());
+            mainToolBar.add(actionProvider.getViewAbout());
+            mainToolBar.setOrientation(SwingConstants.VERTICAL);
+        }
+        return mainToolBar;
+    }
 
-	/**
-	 * Restituisce la tabbed pane che contiene le schede aperte dell'applicazione.
-	 * 
-	 * @return la tabbed pane che contiene le schede aperte dell'applicazione
-	 */
-	public JTabbedPane getMainTabbedPane()
-	{
-		if(mainTabbedPane == null)
-		{
-			mainTabbedPane = new DnDTabbedPane();
-			mainTabbedPane.addChangeListener(new ChangeListener()
-				{
+    /**
+     * Restituisce la tabbed pane che contiene le schede aperte dell'applicazione.
+     * 
+     * @return la tabbed pane che contiene le schede aperte dell'applicazione
+     */
+    public JTabbedPane getMainTabbedPane() {
+        if (mainTabbedPane == null) {
+            mainTabbedPane = new DnDTabbedPane();
+            mainTabbedPane.addChangeListener(new ChangeListener() {
 
-					@Override
-					public void stateChanged(ChangeEvent e)
-					{
-						/* aggiorno il titolo dell'applicazione */
-						int selectedIndex = mainTabbedPane.getSelectedIndex();
-						String title = mainTabbedPane.getTitleAt(selectedIndex);
-						Application.getInstance(GreenTone.class).getMainFrame()
-						  .setTitle(title + " - " + applicationName);
-					}
-				});
-		}
-		return mainTabbedPane;
-	}
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    /* aggiorno il titolo dell'applicazione */
+                    int selectedIndex = mainTabbedPane.getSelectedIndex();
+                    String title = mainTabbedPane.getTitleAt(selectedIndex);
+                    Application.getInstance(GreenTone.class).getMainFrame().setTitle(title + " - " + applicationName);
+                }
+            });
+        }
+        return mainTabbedPane;
+    }
 
-	/**
-	 * Restituisce l'etichetta di stato.
-	 * 
-	 * @return l'etichetta di stato
-	 */
-	public JLabel getStatusLabel()
-	{
-		return statusLabel;
-	}
+    /**
+     * Restituisce l'etichetta di stato.
+     * 
+     * @return l'etichetta di stato
+     */
+    public JLabel getStatusLabel() {
+        return statusLabel;
+    }
 }

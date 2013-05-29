@@ -19,25 +19,22 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Aggiunge una persona in anagrafica.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class AddPersonAction
-{
-	@Inject
-	private PersonsPanel personsPanel;
+public class AddPersonAction {
+    @Inject
+    private PersonsPanel personsPanel;
 
-	/**
-	 * Aggiunge una persona in anagrafica.
-	 */
-	@Action
-	public void addPerson()
-	{
-		personsPanel.initializeForInsertion();
-	}
+    /**
+     * Aggiunge una persona in anagrafica.
+     */
+    @Action
+    public void addPerson() {
+        personsPanel.initializeForInsertion();
+    }
 }

@@ -27,8 +27,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Elimina un documento.
  * 
@@ -36,57 +35,56 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DeleteDocumentAction extends AbstractBean {
-	@Inject
-	DocumentsPanel documentsPanel;
-	@Inject
-	DocumentService documentService;
-	@Inject
-	ModelEventManager modelEventManager;
-	boolean deleteDocumentActionEnabled = false;
-	private final ResourceMap resourceMap;
+    @Inject
+    DocumentsPanel documentsPanel;
+    @Inject
+    DocumentService documentService;
+    @Inject
+    ModelEventManager modelEventManager;
+    boolean deleteDocumentActionEnabled = false;
+    private final ResourceMap resourceMap;
 
-	/**
-	 * Elimina un documento.
-	 */
-	public DeleteDocumentAction() {
-		resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
-	}
+    /**
+     * Elimina un documento.
+     */
+    public DeleteDocumentAction() {
+        resourceMap = Application.getInstance(GreenTone.class).getContext().getResourceMap();
+    }
 
-	/**
-	 * Elimina un documento.
-	 */
-	@Action(enabledProperty = "deleteDocumentActionEnabled")
-	public void deleteDocument() {
-		int confirmDialog = JOptionPane.showConfirmDialog(documentsPanel, resourceMap.getString("deleteDocument.Action.confirmMessage"));
-		if (confirmDialog == JOptionPane.OK_OPTION) {
-			Document document = documentsPanel.getSelectedItem();
-			documentService.deleteDocument(document);
-			documentsPanel.postSaveData();
-			modelEventManager.fireDocumentDeleted(document);
-		}
-	}
+    /**
+     * Elimina un documento.
+     */
+    @Action(enabledProperty = "deleteDocumentActionEnabled")
+    public void deleteDocument() {
+        int confirmDialog =
+                JOptionPane.showConfirmDialog(documentsPanel,
+                        resourceMap.getString("deleteDocument.Action.confirmMessage"));
+        if (confirmDialog == JOptionPane.OK_OPTION) {
+            Document document = documentsPanel.getSelectedItem();
+            documentService.deleteDocument(document);
+            documentsPanel.postSaveData();
+            modelEventManager.fireDocumentDeleted(document);
+        }
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è possibile abilitare l'azione,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isDeleteDocumentActionEnabled() {
-		return deleteDocumentActionEnabled;
-	}
+    /**
+     * Restituisce <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti
+     */
+    public boolean isDeleteDocumentActionEnabled() {
+        return deleteDocumentActionEnabled;
+    }
 
-	/**
-	 * Imposta l'abilitazione dell'azione.
-	 * 
-	 * @param deleteDocumentActionEnabled
-	 *            <code>true</code> se si vuole abilitare l'azione,
-	 *            <code>false</code> altrimenti
-	 */
-	public void setDeleteDocumentActionEnabled(boolean deleteDocumentActionEnabled) {
-		final boolean oldValue = this.deleteDocumentActionEnabled;
-		this.deleteDocumentActionEnabled = deleteDocumentActionEnabled;
-		firePropertyChange("deleteDocumentActionEnabled", oldValue, deleteDocumentActionEnabled);
-	}
+    /**
+     * Imposta l'abilitazione dell'azione.
+     * 
+     * @param deleteDocumentActionEnabled
+     *            <code>true</code> se si vuole abilitare l'azione, <code>false</code> altrimenti
+     */
+    public void setDeleteDocumentActionEnabled(boolean deleteDocumentActionEnabled) {
+        final boolean oldValue = this.deleteDocumentActionEnabled;
+        this.deleteDocumentActionEnabled = deleteDocumentActionEnabled;
+        firePropertyChange("deleteDocumentActionEnabled", oldValue, deleteDocumentActionEnabled);
+    }
 }

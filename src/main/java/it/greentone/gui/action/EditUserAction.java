@@ -22,58 +22,48 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
+ * </code> <br>
  * <br>
- * <br>
- * Visualizza la finestra di dialogo per la gestione dell'account
- * dell'anagrafica selezionata.
+ * Visualizza la finestra di dialogo per la gestione dell'account dell'anagrafica selezionata.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class EditUserAction extends AbstractBean
-{
-	@Inject
-	private PersonsPanel personsPanel;
-	@Inject
-	private EditUserDialog editUserDialog;
-	boolean editUserActionEnabled = false;
+public class EditUserAction extends AbstractBean {
+    @Inject
+    private PersonsPanel personsPanel;
+    @Inject
+    private EditUserDialog editUserDialog;
+    boolean editUserActionEnabled = false;
 
-	/**
-	 * Visualizza la finestra di dialogo per la gestione dell'account
-	 * dell'anagrafica selezionata.
-	 */
-	@Action(enabledProperty = "editUserActionEnabled")
-	public void editUser()
-	{
-		Person person = personsPanel.getSelectedItem();
-		editUserDialog.setup(person);
-		editUserDialog.setVisible(true);
-	}
+    /**
+     * Visualizza la finestra di dialogo per la gestione dell'account dell'anagrafica selezionata.
+     */
+    @Action(enabledProperty = "editUserActionEnabled")
+    public void editUser() {
+        Person person = personsPanel.getSelectedItem();
+        editUserDialog.setup(person);
+        editUserDialog.setVisible(true);
+    }
 
-	/**
-	 * Restituisce <code>true</code> se è possibile abilitare l'azione,
-	 * <code>false</code> altrimenti.
-	 * 
-	 * @return <code>true</code> se è possibile abilitare l'azione,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean isEditUserActionEnabled()
-	{
-		return editUserActionEnabled;
-	}
+    /**
+     * Restituisce <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti.
+     * 
+     * @return <code>true</code> se è possibile abilitare l'azione, <code>false</code> altrimenti
+     */
+    public boolean isEditUserActionEnabled() {
+        return editUserActionEnabled;
+    }
 
-	/**
-	 * Imposta l'abilitazione dell'azione.
-	 * 
-	 * @param editUserActionEnabled
-	 *          <code>true</code> se si vuole abilitare l'azione,
-	 *          <code>false</code> altrimenti
-	 */
-	public void setEditUserActionEnabled(boolean editUserActionEnabled)
-	{
-		final boolean oldValue = this.editUserActionEnabled;
-		this.editUserActionEnabled = editUserActionEnabled;
-		firePropertyChange("editUserActionEnabled", oldValue, editUserActionEnabled);
-	}
+    /**
+     * Imposta l'abilitazione dell'azione.
+     * 
+     * @param editUserActionEnabled
+     *            <code>true</code> se si vuole abilitare l'azione, <code>false</code> altrimenti
+     */
+    public void setEditUserActionEnabled(boolean editUserActionEnabled) {
+        final boolean oldValue = this.editUserActionEnabled;
+        this.editUserActionEnabled = editUserActionEnabled;
+        firePropertyChange("editUserActionEnabled", oldValue, editUserActionEnabled);
+    }
 }

@@ -22,8 +22,7 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Logger del programma.
  * 
@@ -31,59 +30,58 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class GreenToneLogProvider {
-	@Inject
-	ConfigurationProperties properties;
-	Logger logger;
-	private FileHandler fileHandler;
+    @Inject
+    ConfigurationProperties properties;
+    Logger logger;
+    private FileHandler fileHandler;
 
-	/**
-	 * Restituisce il logger applicativo.
-	 * 
-	 * @return il logger applicativo
-	 */
-	public Logger getLogger() {
-		if (logger == null) {
-			logger = Logger.getLogger("it.greentone");
-			try {
-				fileHandler = new FileHandler(GreenToneAppConfig.LOG_PATH, true);
-				fileHandler.setLevel(properties.getLogLevel());
-				fileHandler.setFormatter(new SimpleFormatter());
-				logger.addHandler(fileHandler);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return logger;
-	}
+    /**
+     * Restituisce il logger applicativo.
+     * 
+     * @return il logger applicativo
+     */
+    public Logger getLogger() {
+        if (logger == null) {
+            logger = Logger.getLogger("it.greentone");
+            try {
+                fileHandler = new FileHandler(GreenToneAppConfig.LOG_PATH, true);
+                fileHandler.setLevel(properties.getLogLevel());
+                fileHandler.setFormatter(new SimpleFormatter());
+                logger.addHandler(fileHandler);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return logger;
+    }
 
-	/**
-	 * Elimina i log del programma.
-	 * 
-	 * @return <code>true</code> se i log sono stati eliminati,
-	 *         <code>false</code> altrimenti
-	 */
-	public boolean deleteLogs() {
-		logger.removeHandler(fileHandler);
-		logger.info("Removing log file handler");
-		fileHandler.flush();
-		fileHandler.close();
-		File logFile = new File(GreenToneAppConfig.LOG_PATH);
-		logger.info("Log file to delete: " + GreenToneAppConfig.LOG_PATH);
-		logger.info("Log file exists? : " + logFile.exists());
-		logger.info("Can write log file? : " + logFile.canWrite());
-		boolean result = false;
-		if (logFile.exists() && logFile.canWrite()) {
-			try {
-				result = logFile.delete();
-				if (result) {
-					logger.info("Log file deleted");
-				} else {
-					logger.info("Can't delete log file");
-				}
-			} catch (Exception e) {
-				logger.info("Exception " + e.getStackTrace());
-			}
-		}
-		return result;
-	}
+    /**
+     * Elimina i log del programma.
+     * 
+     * @return <code>true</code> se i log sono stati eliminati, <code>false</code> altrimenti
+     */
+    public boolean deleteLogs() {
+        logger.removeHandler(fileHandler);
+        logger.info("Removing log file handler");
+        fileHandler.flush();
+        fileHandler.close();
+        File logFile = new File(GreenToneAppConfig.LOG_PATH);
+        logger.info("Log file to delete: " + GreenToneAppConfig.LOG_PATH);
+        logger.info("Log file exists? : " + logFile.exists());
+        logger.info("Can write log file? : " + logFile.canWrite());
+        boolean result = false;
+        if (logFile.exists() && logFile.canWrite()) {
+            try {
+                result = logFile.delete();
+                if (result) {
+                    logger.info("Log file deleted");
+                } else {
+                    logger.info("Can't delete log file");
+                }
+            } catch (Exception e) {
+                logger.info("Exception " + e.getStackTrace());
+            }
+        }
+        return result;
+    }
 }

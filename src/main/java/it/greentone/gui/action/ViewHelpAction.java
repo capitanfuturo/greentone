@@ -1,12 +1,10 @@
 package it.greentone.gui.action;
 
-import it.greentone.GreenToneAppConfig;
 import it.greentone.GreenToneUtilities;
 
-import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
-import javax.swing.SwingWorker;
 
 import org.jdesktop.application.Action;
 import org.springframework.stereotype.Component;
@@ -23,38 +21,25 @@ import org.springframework.stereotype.Component;
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details. You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * </code>
- * <br>
+ * </code> <br>
  * <br>
  * Lancia la visualizzazione del Visualizza la pagina iniziale del programma.
  * 
  * @author Giuseppe Caliendo
  */
 @Component
-public class ViewHelpAction
-{
-	@Inject
-	GreenToneUtilities utilities;
+public class ViewHelpAction {
+    @Inject
+    GreenToneUtilities utilities;
 
-	/**
-	 * Lancia la visualizzazione del Visualizza la pagina iniziale del programma.
-	 */
-	@Action
-	public void viewHelp()
-	{
-		final File manualFile =
-		  new File(GreenToneAppConfig.MANUAL_REPOSITORY
-		    + GreenToneAppConfig.MANUAL_FILE_NAME);
-		new SwingWorker<Void, Void>()
-			{
-
-				@Override
-				protected Void doInBackground() throws Exception
-				{
-					utilities.open(manualFile);
-					return null;
-				}
-			}.execute();
-	}
+    /**
+     * Lancia la visualizzazione del Visualizza la pagina iniziale del programma.
+     * 
+     * @throws IOException
+     */
+    @Action
+    public void viewHelp() throws IOException {
+        utilities.viewManual();
+    }
 
 }
