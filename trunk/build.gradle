@@ -13,23 +13,23 @@ repositories {
 }
 
 dependencies {
-	compile 'com.lowagie:itext:latest.stable'
-	compile 'com.miglayout:miglayout-swing:latest.stable'
-	compile 'joda-time:joda-time:latest.stable'
-	compile 'javax.inject:com.springsource.javax.inject:latest.stable'
-	compile 'javax.jdo:jdo-api:latest.stable'
-	compile 'org.jdesktop.bsaf:bsaf:latest.stable'
-	compile 'org.springframework:org.springframework.orm:latest.stable'
-	compile 'org.springframework:spring-expression:latest.stable'
+	compile 'com.lowagie:itext:4.2.0'
+	compile 'com.miglayout:miglayout-swing:4.2'
+	compile 'joda-time:joda-time:2.2'
+	compile 'javax.inject:com.springsource.javax.inject:1.0.0'
+	compile 'javax.jdo:jdo-api:3.0.1'
+	compile 'org.jdesktop.bsaf:bsaf:1.9.2'
+	compile 'org.springframework:org.springframework.orm:3.2.3'
+	compile 'org.springframework:spring-expression:3.2.3'
 	compile 'org.swinglabs:swingx-core:latest.stable'
-	compile 'net.java.dev.glazedlists:glazedlists_java15:latest.stable'
-	compile 'net.sf.jasperreports:jasperreports:latest.stable'
-	compile 'org.codehaus.groovy:groovy-all:latest.stable'
+	compile 'net.java.dev.glazedlists:glazedlists_java15:1.9.0'
+	compile 'net.sf.jasperreports:jasperreports:5.1.2'
+	compile 'org.codehaus.groovy:groovy-all:2.1.5'
 	
-	runtime 'com.h2database:h2:latest.stable'
-	runtime 'org.datanucleus:datanucleus-api-jdo:latest.stable'
-	runtime 'org.datanucleus:datanucleus-core:latest.stable'
-	runtime 'org.datanucleus:datanucleus-rdbms:latest.stable'
+	runtime 'com.h2database:h2:1.3.172'
+	runtime 'org.datanucleus:datanucleus-api-jdo:3.2.3'
+	runtime 'org.datanucleus:datanucleus-core:3.2.3'
+	runtime 'org.datanucleus:datanucleus-rdbms:3.2.3'
 }
 
 task wrapper(type: Wrapper) {
