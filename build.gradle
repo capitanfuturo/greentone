@@ -8,19 +8,17 @@ mainClassName = "it.greentone.GreenTone"
 
 repositories {
 	mavenCentral()
-	mavenRepo url: 'http://repository.springsource.com/maven/bundles/release'
-	mavenRepo url: 'http://repository.springsource.com/maven/bundles/external'
 }
 
 dependencies {
 	compile 'com.lowagie:itext:4.2.0'
 	compile 'com.miglayout:miglayout-swing:4.2'
 	compile 'joda-time:joda-time:2.2'
-	compile 'javax.inject:com.springsource.javax.inject:1.0.0'
+	compile 'javax.inject:javax.inject:1'
 	compile 'javax.jdo:jdo-api:3.0.1'
 	compile 'org.jdesktop.bsaf:bsaf:1.9.2'
-	compile 'org.springframework:org.springframework.orm:3.2.3'
-	compile 'org.springframework:spring-expression:3.2.3'
+	compile 'org.springframework:spring-orm:3.2.4.RELEASE'
+	compile 'org.springframework:spring-context:3.2.4.RELEASE'
 	compile 'org.swinglabs:swingx-core:latest.stable'
 	compile 'net.java.dev.glazedlists:glazedlists_java15:1.9.0'
 	compile 'net.sf.jasperreports:jasperreports:5.1.2'
